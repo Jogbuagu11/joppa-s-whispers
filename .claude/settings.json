@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "cd /Users/jenniferogbuagu/Downloads/WhispersofJoppa && flutter analyze --no-pub || true" }
+        ]
+      }
+    ]
+  }
+}

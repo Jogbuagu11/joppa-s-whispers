@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter doctor 2>&1 | head -60)",
+      "Bash(flutter doctor 2>&1 | head -20)",
+      "Bash(xcodebuild -version 2>&1 && xcrun simctl list devices available 2>&1 | head -20)",
+      "Bash(sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer 2>&1)",
+      "Bash(xcode-select -p 2>&1 && xcrun --sdk iphonesimulator --show-sdk-path 2>&1)",
+      "Bash(xcrun simctl list runtimes 2>&1 | head -20)",
+      "Bash(flutter create --org com.whispersofjoppa --project-name whispers_of_joppa --platforms ios,android --no-pub . 2>&1)",
+      "Bash(flutter pub add flame flame_audio flutter_riverpod supabase_flutter in_app_purchase google_mobile_ads firebase_crashlytics firebase_analytics firebase_messaging flutter_local_notifications path_provider sign_in_with_apple google_sign_in logging 2>&1 | tail -30)",
+      "Bash(grep -E \"^\\\\s+\\(flame|flame_audio|flutter_riverpod|supabase_flutter|in_app_purchase|google_mobile_ads|firebase_crashlytics|firebase_analytics|firebase_messaging|flutter_local_notifications|path_provider|sign_in_with_apple|google_sign_in|logging|cupertino_icons|flutter_lints\\):$\" -A3 pubspec.lock | grep -E \"version:|^\\\\s+\\(flame|flame_audio|flutter_riverpod|supabase_flutter|in_app_purchase|google_mobile_ads|firebase_crashlytics|firebase_analytics|firebase_messaging|flutter_local_notifications|path_provider|sign_in_with_apple|google_sign_in|logging|cupertino_icons|flutter_lints\\):\" | paste - -)",
+      "Bash(python3 -c \"\nimport re\nwith open\\('pubspec.lock'\\) as f:\n    content = f.read\\(\\)\n\npackages = ['cupertino_icons', 'flame', 'flame_audio', 'flutter_riverpod', 'supabase_flutter', \n            'in_app_purchase', 'google_mobile_ads', 'firebase_crashlytics', 'firebase_analytics',\n            'firebase_messaging', 'flutter_local_notifications', 'path_provider', 'sign_in_with_apple',\n            'google_sign_in', 'logging', 'flutter_lints', 'riverpod']\nfor pkg in packages:\n    m = re.search\\(rf'  {pkg}:\\\\n    dependency:.*\\\\n    description:.*\\\\n      .*\\\\n      .*\\\\n    source:.*\\\\n    version: \\\\\"\\([^\\\\\"]+\\)\\\\\"', content\\)\n    if m:\n        print\\(f'{pkg}: {m.group\\(1\\)}'\\)\n\" 2>&1)",
+      "Bash(flutter pub get 2>&1)",
+      "Bash(flutter analyze --no-pub 2>&1)",
+      "Bash(mkdir -p /Users/jenniferogbuagu/Downloads/WhispersofJoppa/android/app/src/main/kotlin/com/whispersofjoppa/game\ncat > /Users/jenniferogbuagu/Downloads/WhispersofJoppa/android/app/src/main/kotlin/com/whispersofjoppa/game/MainActivity.kt << 'EOF'\npackage com.whispersofjoppa.game\n\nimport io.flutter.embedding.android.FlutterActivity\n\nclass MainActivity : FlutterActivity\\(\\)\nEOF\necho \"Created\")",
+      "Bash(cat /Users/jenniferogbuagu/Downloads/WhispersofJoppa/android/app/google-services.json | python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('package_name:', d['client'][0]['client_info']['android_client_info']['package_name']\\)\")",
+      "Bash(sleep 30 && flutter install -d emulator-5554 --no-pub 2>&1 | tail -5)",
+      "Bash(adb -s emulator-5554 install -r build/app/outputs/flutter-apk/app-debug.apk 2>&1 && adb -s emulator-5554 shell am start -n com.whispersofjoppa.game/.MainActivity 2>&1)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb -s emulator-5554 install -r build/app/outputs/flutter-apk/app-debug.apk 2>&1)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb -s emulator-5554 shell pm clear com.whispersofjoppa.game 2>&1; ~/Library/Android/sdk/platform-tools/adb -s emulator-5554 install -r build/app/outputs/flutter-apk/app-debug.apk 2>&1)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb -s emulator-5554 shell df /data 2>&1)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb -s emulator-5554 shell pm trim-caches 999999999 2>&1; ~/Library/Android/sdk/platform-tools/adb -s emulator-5554 shell df /data 2>&1)",
+      "Bash(flutter run -d emulator-5556 --no-pub 2>&1 | tail -20)",
+      "Bash(flutter build apk --debug --no-pub 2>&1)",
+      "Bash(flutter analyze --no-pub 2>&1; flutter test 2>&1)",
+      "Read(//private/tmp/**)",
+      "Read(//Users/jenniferogbuagu/Library/Developer/**)",
+      "Bash(xargs kill -9)",
+      "Bash(sleep 2 && flutter analyze --no-pub 2>&1)",
+      "Bash(flutter analyze --no-pub 2>&1 && flutter test 2>&1)",
+      "Bash(git add \\\\\n  lib/ integration_test/ test/ content/ assets/ \\\\\n  pubspec.yaml pubspec.lock analysis_options.yaml \\\\\n  android/app/build.gradle.kts android/app/src/main/AndroidManifest.xml \\\\\n  android/settings.gradle.kts android/app/google-services.json \\\\\n  android/app/src/main/kotlin/com/whispersofjoppa/game/MainActivity.kt \\\\\n  PROGRESS.md CLAUDE.md \\\\\n  .claude/settings.json .claude/agents/ \\\\\n  .gitignore 2>&1 && git status --short 2>&1 | head -30)",
+      "Bash(git add . 2>&1 && git status --short | wc -l)"
+    ]
+  }
+}

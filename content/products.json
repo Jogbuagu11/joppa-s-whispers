@@ -1,0 +1,9 @@
+[
+  { "id": "pearls_tier1", "type": "consumable", "pearls": 50 },
+  { "id": "pearls_tier2", "type": "consumable", "pearls": 270 },
+  { "id": "pearls_tier3", "type": "consumable", "pearls": 560 },
+  { "id": "pearls_tier4", "type": "consumable", "pearls": 1200 },
+  { "id": "pearls_tier5", "type": "consumable", "pearls": 3200 },
+  { "id": "pearls_tier6", "type": "consumable", "pearls": 7000 },
+  { "id": "starter_pack", "type": "non_consumable", "pearls": 100, "manna": 100, "generator_level": 2 }
+]

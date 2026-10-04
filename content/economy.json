@@ -1,0 +1,11 @@
+{
+  "max_manna": 100,
+  "manna_regen_seconds": 120,
+  "generator_tap_cost": 1,
+  "manna_refill_base_pearls": 10,
+  "basket_slot_base_pearls": 10,
+  "order_skip_cooldown_seconds": 1800,
+  "rewarded_ad_manna_bonus": 20,
+  "rewarded_ad_manna_daily_cap": 5,
+  "rewarded_ad_double_reward_daily_cap": 3
+}

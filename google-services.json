@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "354863651849",
+    "project_id": "whispers-of-joppa",
+    "storage_bucket": "whispers-of-joppa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:354863651849:android:83068d29974be0d040acd8",
+        "android_client_info": {
+          "package_name": "com.whispersofjoppa.game"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaz7AXoM68htMw_VwQYJ7MbOz6RBiHXdY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
