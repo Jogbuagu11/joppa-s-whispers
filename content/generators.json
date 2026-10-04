@@ -1,1 +1,100 @@
-[]
+[
+  {
+    "id": "gen_pantry",
+    "name": "Grandma's Pantry",
+    "chain_id": "bakery",
+    "energy_cost": 1,
+    "unlock_chapter": 1,
+    "levels": [
+      { "level": 1, "odds": { "1": 1.0 } },
+      { "level": 2, "odds": { "1": 0.9, "2": 0.1 } },
+      { "level": 3, "odds": { "1": 0.8, "2": 0.2 } },
+      { "level": 4, "odds": { "1": 0.75, "2": 0.25, "3": 0.05 } },
+      { "level": 5, "odds": { "1": 0.7, "2": 0.3, "3": 0.1 } }
+    ]
+  },
+  {
+    "id": "gen_tree",
+    "name": "Tree of Life",
+    "chain_id": "fruit",
+    "energy_cost": 1,
+    "unlock_chapter": 1,
+    "levels": [
+      { "level": 1, "odds": { "1": 1.0 } },
+      { "level": 2, "odds": { "1": 0.9, "2": 0.1 } },
+      { "level": 3, "odds": { "1": 0.8, "2": 0.2 } },
+      { "level": 4, "odds": { "1": 0.75, "2": 0.25, "3": 0.05 } },
+      { "level": 5, "odds": { "1": 0.7, "2": 0.3, "3": 0.1 } }
+    ]
+  },
+  {
+    "id": "gen_chest",
+    "name": "Elder's Chest",
+    "chain_id": "church",
+    "energy_cost": 1,
+    "unlock_chapter": 2,
+    "levels": [
+      { "level": 1, "odds": { "1": 1.0 } },
+      { "level": 2, "odds": { "1": 0.9, "2": 0.1 } },
+      { "level": 3, "odds": { "1": 0.8, "2": 0.2 } },
+      { "level": 4, "odds": { "1": 0.75, "2": 0.25, "3": 0.05 } },
+      { "level": 5, "odds": { "1": 0.7, "2": 0.3, "3": 0.1 } }
+    ]
+  },
+  {
+    "id": "gen_armor",
+    "name": "Armor Rack",
+    "chain_id": "armor",
+    "energy_cost": 1,
+    "unlock_chapter": 3,
+    "levels": [
+      { "level": 1, "odds": { "1": 1.0 } },
+      { "level": 2, "odds": { "1": 0.9, "2": 0.1 } },
+      { "level": 3, "odds": { "1": 0.8, "2": 0.2 } },
+      { "level": 4, "odds": { "1": 0.75, "2": 0.25, "3": 0.05 } },
+      { "level": 5, "odds": { "1": 0.7, "2": 0.3, "3": 0.1 } }
+    ]
+  },
+  {
+    "id": "gen_loom",
+    "name": "Loom",
+    "chain_id": "loom",
+    "energy_cost": 1,
+    "unlock_chapter": 4,
+    "levels": [
+      { "level": 1, "odds": { "1": 1.0 } },
+      { "level": 2, "odds": { "1": 0.9, "2": 0.1 } },
+      { "level": 3, "odds": { "1": 0.8, "2": 0.2 } },
+      { "level": 4, "odds": { "1": 0.75, "2": 0.25, "3": 0.05 } },
+      { "level": 5, "odds": { "1": 0.7, "2": 0.3, "3": 0.1 } }
+    ]
+  },
+  {
+    "id": "gen_press",
+    "name": "Olive Press",
+    "chain_id": "oil",
+    "energy_cost": 1,
+    "unlock_chapter": 5,
+    "levels": [
+      { "level": 1, "odds": { "1": 1.0 } },
+      { "level": 2, "odds": { "1": 0.9, "2": 0.1 } },
+      { "level": 3, "odds": { "1": 0.8, "2": 0.2 } },
+      { "level": 4, "odds": { "1": 0.75, "2": 0.25, "3": 0.05 } },
+      { "level": 5, "odds": { "1": 0.7, "2": 0.3, "3": 0.1 } }
+    ]
+  },
+  {
+    "id": "gen_scribe",
+    "name": "Scribe's Desk",
+    "chain_id": "word",
+    "energy_cost": 1,
+    "unlock_chapter": 6,
+    "levels": [
+      { "level": 1, "odds": { "1": 1.0 } },
+      { "level": 2, "odds": { "1": 0.9, "2": 0.1 } },
+      { "level": 3, "odds": { "1": 0.8, "2": 0.2 } },
+      { "level": 4, "odds": { "1": 0.75, "2": 0.25, "3": 0.05 } },
+      { "level": 5, "odds": { "1": 0.7, "2": 0.3, "3": 0.1 } }
+    ]
+  }
+]

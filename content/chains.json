@@ -1,1 +1,118 @@
-[]
+[
+  {
+    "id": "bakery",
+    "name": "Bakery",
+    "kind": "literal",
+    "generator_id": "gen_pantry",
+    "unlock_chapter": 1,
+    "tiers": [
+      { "tier": 1, "item_id": "bakery_01", "name": "Barley sheaf",    "sell": 2,  "asset": "assets/items/item_bakery_01.jpeg" },
+      { "tier": 2, "item_id": "bakery_02", "name": "Flour",           "sell": 4,  "asset": "assets/items/item_bakery_02.jpeg" },
+      { "tier": 3, "item_id": "bakery_03", "name": "Dough",           "sell": 6,  "asset": "assets/items/item_bakery_03.jpeg" },
+      { "tier": 4, "item_id": "bakery_04", "name": "Flatbread",       "sell": 8,  "asset": "assets/items/item_bakery_04.jpeg" },
+      { "tier": 5, "item_id": "bakery_05", "name": "Loaf",            "sell": 10, "asset": "assets/items/item_bakery_05.jpeg" },
+      { "tier": 6, "item_id": "bakery_06", "name": "Fig cake",        "sell": 12, "asset": "assets/items/item_bakery_06.jpeg" },
+      { "tier": 7, "item_id": "bakery_07", "name": "Honey cake",      "sell": 14, "asset": "assets/items/item_bakery_07.jpeg" },
+      { "tier": 8, "item_id": "bakery_08", "name": "Wedding feast cake", "sell": 16, "asset": "assets/items/item_bakery_08.jpeg" }
+    ]
+  },
+  {
+    "id": "church",
+    "name": "House Church",
+    "kind": "literal",
+    "generator_id": "gen_chest",
+    "unlock_chapter": 2,
+    "tiers": [
+      { "tier": 1, "item_id": "church_01", "name": "Clay lamp",             "sell": 2,  "asset": "assets/items/item_church_01.jpeg" },
+      { "tier": 2, "item_id": "church_02", "name": "Oil lamp",              "sell": 4,  "asset": "assets/items/item_church_02.jpeg" },
+      { "tier": 3, "item_id": "church_03", "name": "Bench",                 "sell": 6,  "asset": "assets/items/item_church_03.jpeg" },
+      { "tier": 4, "item_id": "church_04", "name": "Bread basket",          "sell": 8,  "asset": "assets/items/item_church_04.jpeg" },
+      { "tier": 5, "item_id": "church_05", "name": "Table for breaking bread", "sell": 10, "asset": "assets/items/item_church_05.jpeg" },
+      { "tier": 6, "item_id": "church_06", "name": "The upper room",        "sell": 12, "asset": "assets/items/item_church_06.jpeg" }
+    ]
+  },
+  {
+    "id": "loom",
+    "name": "Tabitha's Loom",
+    "kind": "literal",
+    "generator_id": "gen_loom",
+    "unlock_chapter": 4,
+    "tiers": [
+      { "tier": 1, "item_id": "loom_01", "name": "Wool",              "sell": 2,  "asset": "" },
+      { "tier": 2, "item_id": "loom_02", "name": "Thread",            "sell": 4,  "asset": "" },
+      { "tier": 3, "item_id": "loom_03", "name": "Spindle",           "sell": 6,  "asset": "" },
+      { "tier": 4, "item_id": "loom_04", "name": "Cloth",             "sell": 8,  "asset": "" },
+      { "tier": 5, "item_id": "loom_05", "name": "Tunic",             "sell": 10, "asset": "" },
+      { "tier": 6, "item_id": "loom_06", "name": "Cloak",             "sell": 12, "asset": "" },
+      { "tier": 7, "item_id": "loom_07", "name": "Robe",              "sell": 14, "asset": "" },
+      { "tier": 8, "item_id": "loom_08", "name": "Tabitha's garments","sell": 16, "asset": "" }
+    ]
+  },
+  {
+    "id": "armor",
+    "name": "Armor of God",
+    "kind": "spiritual",
+    "generator_id": "gen_armor",
+    "unlock_chapter": 3,
+    "tiers": [
+      { "tier": 1, "item_id": "armor_01", "name": "Belt of Truth",          "sell": 2,  "asset": "" },
+      { "tier": 2, "item_id": "armor_02", "name": "Shoes of Peace",         "sell": 4,  "asset": "" },
+      { "tier": 3, "item_id": "armor_03", "name": "Breastplate of Righteousness", "sell": 6, "asset": "" },
+      { "tier": 4, "item_id": "armor_04", "name": "Shield of Faith",        "sell": 8,  "asset": "" },
+      { "tier": 5, "item_id": "armor_05", "name": "Helmet of Salvation",    "sell": 10, "asset": "" },
+      { "tier": 6, "item_id": "armor_06", "name": "Sword of the Spirit",    "sell": 12, "asset": "" },
+      { "tier": 7, "item_id": "armor_07", "name": "Full Armor of God",      "sell": 14, "asset": "" }
+    ]
+  },
+  {
+    "id": "fruit",
+    "name": "Fruit of the Spirit",
+    "kind": "spiritual",
+    "generator_id": "gen_tree",
+    "unlock_chapter": 1,
+    "tiers": [
+      { "tier": 1,  "item_id": "fruit_01", "name": "Love",        "sell": 2,  "asset": "" },
+      { "tier": 2,  "item_id": "fruit_02", "name": "Joy",         "sell": 4,  "asset": "" },
+      { "tier": 3,  "item_id": "fruit_03", "name": "Peace",       "sell": 6,  "asset": "" },
+      { "tier": 4,  "item_id": "fruit_04", "name": "Patience",    "sell": 8,  "asset": "" },
+      { "tier": 5,  "item_id": "fruit_05", "name": "Kindness",    "sell": 10, "asset": "" },
+      { "tier": 6,  "item_id": "fruit_06", "name": "Goodness",    "sell": 12, "asset": "" },
+      { "tier": 7,  "item_id": "fruit_07", "name": "Faithfulness","sell": 14, "asset": "" },
+      { "tier": 8,  "item_id": "fruit_08", "name": "Gentleness",  "sell": 16, "asset": "" },
+      { "tier": 9,  "item_id": "fruit_09", "name": "Self-Control","sell": 18, "asset": "" },
+      { "tier": 10, "item_id": "fruit_10", "name": "Basket of the Spirit", "sell": 20, "asset": "" }
+    ]
+  },
+  {
+    "id": "word",
+    "name": "The Word",
+    "kind": "spiritual",
+    "generator_id": "gen_scribe",
+    "unlock_chapter": 6,
+    "tiers": [
+      { "tier": 1, "item_id": "word_01", "name": "Reed pen",        "sell": 2,  "asset": "" },
+      { "tier": 2, "item_id": "word_02", "name": "Ink pot",         "sell": 4,  "asset": "" },
+      { "tier": 3, "item_id": "word_03", "name": "Papyrus",         "sell": 6,  "asset": "" },
+      { "tier": 4, "item_id": "word_04", "name": "Scroll",          "sell": 8,  "asset": "" },
+      { "tier": 5, "item_id": "word_05", "name": "Sealed scroll",   "sell": 10, "asset": "" },
+      { "tier": 6, "item_id": "word_06", "name": "Scroll jar",      "sell": 12, "asset": "" },
+      { "tier": 7, "item_id": "word_07", "name": "Apostle's letter","sell": 14, "asset": "" },
+      { "tier": 8, "item_id": "word_08", "name": "Isaiah scroll",   "sell": 16, "asset": "" }
+    ]
+  },
+  {
+    "id": "oil",
+    "name": "Anointing Oil",
+    "kind": "spiritual",
+    "generator_id": "gen_press",
+    "unlock_chapter": 5,
+    "tiers": [
+      { "tier": 1, "item_id": "oil_01", "name": "Olive",           "sell": 2,  "asset": "" },
+      { "tier": 2, "item_id": "oil_02", "name": "Olive branch",    "sell": 4,  "asset": "" },
+      { "tier": 3, "item_id": "oil_03", "name": "Oil flask",       "sell": 6,  "asset": "" },
+      { "tier": 4, "item_id": "oil_04", "name": "Anointing vial",  "sell": 8,  "asset": "" },
+      { "tier": 5, "item_id": "oil_05", "name": "Alabaster jar",   "sell": 10, "asset": "" },
+      { "tier": 6, "item_id": "oil_06", "name": "Horn of oil",     "sell": 12, "asset": "" }
+    ]
+  }
+]
