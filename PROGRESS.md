@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 0 — Project setup (IN PROGRESS)
+## Current milestone: 4 — Generators
 
 ---
 
@@ -8,12 +8,12 @@
 
 | # | Milestone | Status |
 |---|---|---|
-| 0 | Project setup | IN PROGRESS |
-| 1 | Empty board | Not started |
-| 2 | Drag & drop | Not started |
-| 3 | Merging | Not started |
-| 4 | Generators | Not started |
-| 5 | Content loading | Not started |
+| 0 | Project setup | DONE (m0-working) |
+| 1 | Empty board | DONE (m1-working) |
+| 2 | Drag & drop | DONE (m2-working) |
+| 3 | Merging | DONE (m3-working) |
+| 4 | Generators | IN PROGRESS |
+| 5 | Content loading | Partially done (ContentLoader built) |
 | 6 | Energy (Manna) | Not started |
 | 7 | Orders | Not started |
 | 8 | Save/load (local) | Not started |
