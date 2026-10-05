@@ -159,6 +159,8 @@ class BoardGame extends FlameGame with DragCallbacks {
 
     final gen = placement.gen;
 
+    // Collect any Manna that is already due before deciding.
+    manna.tick();
     final result = resolveGeneratorTap(
       gen: gen,
       manna: manna.manna,

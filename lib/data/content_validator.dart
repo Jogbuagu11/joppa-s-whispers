@@ -5,6 +5,9 @@ import 'package:whispers_of_joppa/domain/models.dart';
 final _idPattern = RegExp(r'^[a-z][a-z0-9_]*$');
 final _colorPattern = RegExp(r'^#[0-9a-fA-F]{6}$');
 
+/// Economy values the game divides by, so they can never be 0.
+const _mustBePositive = {'max_manna', 'manna_regen_seconds'};
+
 /// Every key the game reads from content/economy.json.
 const requiredEconomyKeys = [
   'max_manna',
@@ -166,6 +169,8 @@ void _checkEconomy(Map<String, dynamic> economy, List<String> problems) {
     final value = entry.value;
     if (value is! int || value < 0) {
       problems.add('Economy ${entry.key}: must be a whole number, 0 or more');
+    } else if (value == 0 && _mustBePositive.contains(entry.key)) {
+      problems.add('Economy ${entry.key}: must be at least 1');
     }
   }
 }

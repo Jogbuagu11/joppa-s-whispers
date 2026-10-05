@@ -86,8 +86,8 @@ Future<void> showOutOfMannaPopup(
         builder: (context, _) {
           final seconds = controller.secondsUntilNext;
           return Text(
-            seconds == null
-                ? 'Your Manna is full again.'
+            controller.manna > 0 || seconds == null
+                ? 'Your Manna is back. Tap OK to keep playing.'
                 : 'Manna returns with time. '
                       'Next Manna in ${formatCountdown(seconds)}.',
             style: const TextStyle(color: Colors.white),

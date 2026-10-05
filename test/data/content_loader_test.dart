@@ -102,4 +102,19 @@ void main() {
       expect(gen.energyCost, loader.economy.generatorTapCost);
     }
   });
+
+  test('a generator can override the tap cost', () {
+    final generators = _read('generators') as List<dynamic>;
+    final first = Map<String, dynamic>.of(
+      generators.first as Map<String, dynamic>,
+    )..['energy_cost'] = 0;
+    final custom = ContentLoader()
+      ..loadFromJson(
+        chainsJson: _read('chains'),
+        generatorsJson: [first, ...generators.skip(1)],
+        economyJson: _read('economy'),
+        startingBoardJson: _read('starting_board'),
+      );
+    expect(custom.generators[first['id']]?.energyCost, 0);
+  });
 }

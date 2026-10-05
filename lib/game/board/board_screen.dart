@@ -44,6 +44,7 @@ class _BoardScreenState extends State<BoardScreen> {
     try {
       final loader = ContentLoader();
       await loader.load();
+      if (!mounted) return;
 
       // The opening board comes from content/starting_board.json.
       final start = loader.startingBoard;
@@ -88,6 +89,7 @@ class _BoardScreenState extends State<BoardScreen> {
         _loading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _error = e.toString();
         _loading = false;

@@ -177,4 +177,23 @@ void main() {
     });
     expect(_check(c).single, contains('placed more than once'));
   });
+
+  test('zero max Manna or regen time is reported', () {
+    final c = _valid();
+    final economy = c['economy'] as Map<String, dynamic>;
+    economy['manna_regen_seconds'] = 0;
+    final problems = _check(c);
+    expect(
+      problems.single,
+      contains('manna_regen_seconds: must be at least 1'),
+    );
+  });
+
+  test('generator energy_cost is optional but must be valid if present', () {
+    final c = _valid();
+    _first(c, 'generators').remove('energy_cost');
+    expect(_check(c), isEmpty);
+    _first(c, 'generators')['energy_cost'] = -1;
+    expect(_check(c).single, contains('energy_cost must be 0 or more'));
+  });
 }

@@ -151,6 +151,22 @@ void main() {
     });
   });
 
+  test(
+    'applyMannaRegen restarts the clock if the device clock goes backwards',
+    () {
+      final t0 = DateTime(2040, 1, 1, 12, 0, 0);
+      final earlier = t0.subtract(const Duration(hours: 3));
+      final r = applyMannaRegen(
+        config,
+        MannaState(manna: 5, lastRegen: t0),
+        earlier,
+      );
+      expect(r.manna, 5);
+      expect(r.lastRegen, earlier);
+      expect(secondsUntilNextManna(config, r, earlier), 120);
+    },
+  );
+
   group('secondsUntilNextManna', () {
     final t0 = DateTime(2040, 1, 1, 12, 0, 0);
 

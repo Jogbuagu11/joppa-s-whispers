@@ -85,7 +85,8 @@ MannaState applyMannaRegen(
   MannaState state,
   DateTime now,
 ) {
-  if (state.manna >= config.maxManna) {
+  // A full bar, or a device clock that moved backwards, restarts the clock.
+  if (state.manna >= config.maxManna || now.isBefore(state.lastRegen)) {
     return MannaState(manna: state.manna, lastRegen: now);
   }
   final gained = mannaRegenerated(config, state.manna, state.lastRegen, now);

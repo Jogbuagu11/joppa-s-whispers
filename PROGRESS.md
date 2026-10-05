@@ -167,7 +167,7 @@ Carried forward (not blocking):
 
 ## Milestone 6 — state (2026-10-05)
 
-DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 76 unit tests
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 81 unit tests
 pass, content validator OK, smoke / generator tap / out-of-Manna tests pass on both, and
 the bar and popup were seen on screen.
 
@@ -177,6 +177,13 @@ the bar and popup were seen on screen.
 - Tap cost now has one source: `generator_tap_cost` in economy.json. A generator may
   override it with its own `energy_cost` (none do today).
 - Drag handling moved to `board_game_drag.dart`; `board_game.dart` is back to ~213 lines.
+
+Carried forward from the code review (nothing blocking):
+- Move Manna state to a Riverpod provider outside `game/board` before Orders/Save need it.
+- `out_of_manna_test.dart` assumes the starting bar is not full and that the taps fit on
+  the board; rework if starting Manna changes a lot.
+- The Manna bar may overlap the top-right cell on tablet-shaped screens (not checked).
+- Theme colours are repeated in several files; collect them in `lib/app`.
 
 Not in this milestone:
 - Manna is not saved between app launches yet (Milestone 8), so it resets to the starting

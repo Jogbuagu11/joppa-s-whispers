@@ -63,4 +63,20 @@ void main() {
     expect(c.manna, 9);
     expect(c.secondsUntilNext, 30);
   });
+
+  testWidgets('start ticks once a second, only one timer, dispose stops it', (
+    tester,
+  ) async {
+    final c = make(10);
+    var notified = 0;
+    c.addListener(() => notified++);
+    c
+      ..start()
+      ..start();
+    await tester.pump(const Duration(seconds: 3));
+    expect(notified, 3);
+    c.dispose();
+    await tester.pump(const Duration(seconds: 3));
+    expect(notified, 3);
+  });
 }
