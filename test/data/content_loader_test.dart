@@ -20,6 +20,7 @@ void main() {
         charactersJson: _read('characters'),
         scenesJson: _read('scenes'),
         chaptersJson: _read('chapters'),
+        locationsJson: _read('locations'),
       );
   });
 
@@ -122,6 +123,7 @@ void main() {
         charactersJson: _read('characters'),
         scenesJson: _read('scenes'),
         chaptersJson: _read('chapters'),
+        locationsJson: _read('locations'),
       );
     expect(custom.generators[first['id']]?.energyCost, 0);
   });
@@ -156,6 +158,19 @@ void main() {
     expect(chapter.tasks.first.id, (rawTasks.first as Map)['id']);
     for (final task in chapter.tasks) {
       expect(loader.scenes.containsKey(task.sceneId), isTrue, reason: task.id);
+    }
+  });
+
+  test('locations are loaded and every chapter and task points at them', () {
+    for (final chapter in loader.chapters) {
+      final location = loader.locations[chapter.locationId];
+      expect(location, isNotNull, reason: chapter.id);
+      final areaIds = {for (final a in location?.areas ?? []) a.id};
+      for (final task in chapter.tasks) {
+        if (task.restoresArea case final area?) {
+          expect(areaIds.contains(area), isTrue, reason: task.id);
+        }
+      }
     }
   });
 }

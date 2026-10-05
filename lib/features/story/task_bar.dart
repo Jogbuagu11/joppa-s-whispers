@@ -6,7 +6,15 @@ const _gold = Color(0xFFD4802A);
 const _cream = Color(0xFFF3E6C8);
 
 class TaskBar extends StatelessWidget {
-  const TaskBar({super.key, required this.controller, required this.onDo});
+  const TaskBar({
+    super.key,
+    required this.controller,
+    required this.onDo,
+    required this.onOpenLocation,
+  });
+
+  /// Called when the player taps the button that shows the location.
+  final VoidCallback onOpenLocation;
 
   final StoryController controller;
 
@@ -24,7 +32,7 @@ class TaskBar extends StatelessWidget {
         return Container(
           key: const Key('task_bar'),
           margin: const EdgeInsets.fromLTRB(9, 0, 9, 6),
-          padding: const EdgeInsets.fromLTRB(10, 6, 6, 6),
+          padding: const EdgeInsets.fromLTRB(4, 6, 6, 6),
           decoration: BoxDecoration(
             color: const Color(0xFF2A1F08),
             borderRadius: BorderRadius.circular(10),
@@ -34,6 +42,15 @@ class TaskBar extends StatelessWidget {
           ),
           child: Row(
             children: [
+              IconButton(
+                key: const Key('location_button'),
+                onPressed: onOpenLocation,
+                tooltip: 'See what you have restored',
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                icon: const Icon(Icons.home_work_outlined, color: _gold),
+              ),
+              const SizedBox(width: 4),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

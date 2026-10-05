@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 10 — Tasks & Blessings (done; next is 11 — Restoration scenes)
+## Current milestone: 11 — Restoration scenes (done; next is 12 — Chapter 1 playable)
 
 ---
 
@@ -19,7 +19,7 @@
 | 8 | Save/load (local) | DONE (m8-working) |
 | 9 | Story scenes | DONE (m9-working) |
 | 10 | Tasks & Blessings | DONE (m10-working) |
-| 11 | Restoration scenes | Not started |
+| 11 | Restoration scenes | DONE (m11-working) |
 | 12 | Chapter 1 playable | Not started |
 | 13 | Esther's letters | Not started |
 | 14 | Accounts + cloud save | Not started |
@@ -365,6 +365,30 @@ Not in this milestone:
   (Milestone 12, "Chapter 1 playable").
 - Finishing the chapter just shows "Chapter complete"; no crown or chapter-end screen.
 - Blessings still live in the orders controller; a separate wallet is tidier.
+
+## Milestone 11 — state (2026-10-05)
+
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 216 unit tests
+pass, content validator OK, eight device tests pass on both (smoke, scene, tasks,
+restoration, generator tap, out-of-Manna, orders, save/load), and the location screen was
+seen on Android with the Doorway restored.
+
+- Location screen ("Esther's Bakehouse"): one card per area showing its before picture
+  until its task is done, then its after picture, with "Not yet" / "Restored" and a count
+  ("1 of 7 restored").
+- Opens from the building button on the task bar, and by itself after a task that
+  restores an area, so the player sees the change.
+- Art is looked up as `assets/locations/<image id>.png|webp|jpg` using the before/after
+  ids in `content/locations.json` (for example `loc_bakehouse_door_after.png`).
+
+Not in this milestone:
+- No location art exists yet. Each area shows a grey "under repair" tile before and a
+  warm sunlit tile after. Dropping the 14 pictures (7 areas × before/after) into
+  `assets/locations/` with the names above makes them appear with no code change.
+- The spec describes one full-screen location picture with areas swapped inside it; this
+  screen shows the areas as separate cards, which works without knowing where each area
+  sits in a larger picture. Revisit when the art exists.
+- "Back to the rooftop" and "See what you have restored" wording is in code.
 
 ## Decisions made for Jennifer (2026-10-05)
 

@@ -81,6 +81,14 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump(const Duration(seconds: 1));
 
+    // A task that restores part of the bakehouse then shows the bakehouse.
+    if (first['restores_area'] != null) {
+      expect(find.byKey(const Key('location_screen')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('location_continue')));
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pump(const Duration(seconds: 1));
+    }
+
     // Back on the board: paid for, counted, and the next task is up.
     expect(find.byKey(const Key('scene_screen')), findsNothing);
     expect(text('blessings_count'), '${earned - cost}');

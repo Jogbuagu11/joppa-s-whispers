@@ -38,6 +38,11 @@ class StoryController extends ChangeNotifier {
     return chapters.isEmpty ? null : chapters.last;
   }
 
+  /// Ids of every area restored so far, across all chapters.
+  Set<String> get restoredAreaIds => {
+    for (final c in chapters) ...restoredAreas(c, _completed),
+  };
+
   TaskModel? get next {
     final current = chapter;
     return current == null ? null : nextTask(current, _completed);

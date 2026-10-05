@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
+import 'package:whispers_of_joppa/features/restoration/location_screen.dart';
 import 'package:whispers_of_joppa/features/story/scene_screen.dart';
 import 'package:whispers_of_joppa/features/story/task_bar.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
@@ -85,9 +86,27 @@ class _BoardScreenState extends State<BoardScreen> {
           ),
         ),
       );
+      // A task that restores part of the location shows the result.
+      if (task.restoresArea != null && mounted) await _openLocation();
     } finally {
       _taskRunning = false;
     }
+  }
+
+  /// Shows the current chapter's location with what has been restored so far.
+  Future<void> _openLocation() async {
+    final session = _session;
+    final location = session?.locations[session.story.chapter?.locationId];
+    if (session == null || location == null || !mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => LocationScreen(
+          location: location,
+          restoredAreaIds: session.story.restoredAreaIds,
+          availableAssets: session.assetPaths,
+        ),
+      ),
+    );
   }
 
   Future<void> _init() async {
@@ -157,7 +176,11 @@ class _BoardScreenState extends State<BoardScreen> {
                 ],
               ),
             ),
-            TaskBar(controller: session.story, onDo: _doNextTask),
+            TaskBar(
+              controller: session.story,
+              onDo: _doNextTask,
+              onOpenLocation: _openLocation,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: OrdersBar(
