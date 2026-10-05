@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 5 — Content loading (done, waiting for Jennifer's approval before starting 6)
+## Current milestone: 6 — Energy (Manna) (done, waiting for Jennifer's approval before starting 7)
 
 ---
 
@@ -13,8 +13,8 @@
 | 2 | Drag & drop | DONE (m2-working) |
 | 3 | Merging | DONE (m3-working) |
 | 4 | Generators | DONE (m4-working) — approved by Jennifer 2026-10-05 |
-| 5 | Content loading | DONE (m5-working) — awaiting approval |
-| 6 | Energy (Manna) | Not started |
+| 5 | Content loading | DONE (m5-working) — approved by Jennifer 2026-10-05 |
+| 6 | Energy (Manna) | DONE (m6-working) — awaiting approval |
 | 7 | Orders | Not started |
 | 8 | Save/load (local) | Not started |
 | 9 | Story scenes | Not started |
@@ -154,9 +154,7 @@ Carried forward (not blocking):
 - The validator covers the 4 content files the game loads today (chains, generators,
   economy, starting_board). The other 8 are still empty; add checks as each is used.
 - The validator is not run when the app loads content; wire it in before server content (M15).
-- `board_game.dart` is 282 lines; split drag handling and starting placement out before 300.
 - Starter-item placement on the board has no unit test of its own (covered by device tests).
-- Energy cost exists in both `generators.json` and `economy.json`; pick one in Milestone 6.
 - Generators always start at level 1; add a level to `starting_board.json` when needed.
 - TECH_SPEC "Pinned versions" table is still empty (versions are listed above in this file).
 - `supabase/.temp/cli-latest` is tracked in git; fruit art is JPEG, spec asks for PNG.
@@ -166,6 +164,26 @@ Carried forward (not blocking):
 - A new player starts with **10 Manna**. The GDD gives the maximum (100) but no starting amount.
 - The three starter tiles are test scaffolding, to be replaced by the Chapter 1 tutorial (M12).
 - New content formats: `starting_board.json`, `placeholder_color`, `order_talents_per_tier`.
+
+## Milestone 6 — state (2026-10-05)
+
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 76 unit tests
+pass, content validator OK, smoke / generator tap / out-of-Manna tests pass on both, and
+the bar and popup were seen on screen.
+
+- Manna bar (count, progress bar, "+1 in m:ss" countdown) replaces the plain counter.
+- Manna regenerates +1 every `manna_regen_seconds` up to `max_manna` (both from economy.json).
+- Tapping a generator with too little Manna shows an "Out of Manna" popup; nothing is spent.
+- Tap cost now has one source: `generator_tap_cost` in economy.json. A generator may
+  override it with its own `energy_cost` (none do today).
+- Drag handling moved to `board_game_drag.dart`; `board_game.dart` is back to ~213 lines.
+
+Not in this milestone:
+- Manna is not saved between app launches yet (Milestone 8), so it resets to the starting
+  amount each time the app is opened.
+- The popup has no "refill with Pearls" or "watch an ad" buttons yet (Milestones 16 and 18).
+- The popup and bar wording is written in code, not in content; move it if a strings
+  file is introduced.
 
 ## Website (2026-10-05)
 
@@ -185,8 +203,8 @@ beside the game with its history kept. A backup of the original is in the GitHub
 ## Waiting on Jennifer
 
 - In Vercel: Project → Settings → Build and Deployment → Root Directory → `web`, then redeploy.
-- Approve Milestone 5 so Milestone 6 (Energy / Manna) can start.
-- Approve adding the `image` package so the asset pipeline can be built (or defer it).
+- Approve Milestone 6 so Milestone 7 (Orders) can start.
+- Decide how item art should be prepared (see the art review in the Milestone 6 report).
 - Confirm the assumptions above (starting Manna; test AdMob ID on iOS; minimum iOS 15).
 
 Note: Android Studio is not installed on this Mac. Android is built with the command-line

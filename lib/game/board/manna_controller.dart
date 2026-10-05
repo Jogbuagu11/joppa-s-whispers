@@ -1,0 +1,55 @@
+// Holds the player's Manna and regenerates it over time.
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:whispers_of_joppa/domain/economy.dart';
+
+class MannaController extends ChangeNotifier {
+  final EconomyConfig config;
+  final DateTime Function() _now;
+  MannaState _state;
+  Timer? _timer;
+
+  MannaController({
+    required this.config,
+    required int startingManna,
+    DateTime Function()? clock,
+  }) : _now = clock ?? DateTime.now,
+       _state = MannaState(
+         manna: startingManna,
+         lastRegen: (clock ?? DateTime.now)(),
+       );
+
+  int get manna => _state.manna;
+  int get maxManna => config.maxManna;
+
+  /// Seconds until the next Manna, or null when the bar is full.
+  int? get secondsUntilNext => secondsUntilNextManna(config, _state, _now());
+
+  /// Starts the once-a-second tick that drives regen and the countdown.
+  void start() {
+    _timer ??= Timer.periodic(const Duration(seconds: 1), (_) => tick());
+  }
+
+  /// Applies any regen that is due and refreshes listeners.
+  void tick() {
+    _state = applyMannaRegen(config, _state, _now());
+    notifyListeners();
+  }
+
+  /// Sets Manna after a spend. The regen clock starts now if the bar was full.
+  void setAfterSpend(int manna) {
+    final wasFull = _state.manna >= config.maxManna;
+    _state = MannaState(
+      manna: manna,
+      lastRegen: wasFull ? _now() : _state.lastRegen,
+    );
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+}

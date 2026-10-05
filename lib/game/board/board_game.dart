@@ -9,6 +9,9 @@ import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/game/board/cell_component.dart';
 import 'package:whispers_of_joppa/game/board/generator_component.dart';
 import 'package:whispers_of_joppa/game/board/item_component.dart';
+import 'package:whispers_of_joppa/game/board/manna_controller.dart';
+
+part 'board_game_drag.dart';
 
 final _log = Logger('BoardGame');
 
@@ -32,9 +35,11 @@ class BoardGame extends FlameGame with DragCallbacks {
   /// chain_id -> ARGB colour for placeholder tiles (from content).
   final Map<String, int> chainPlaceholderColors;
 
-  // Manna exposed to Flutter layer via ValueNotifier.
-  final ValueNotifier<int> mannaNotifier;
-  int _manna;
+  /// Owns the Manna count and its regen; shared with the Manna bar.
+  final MannaController manna;
+
+  /// Called when a generator is tapped without enough Manna.
+  final VoidCallback onOutOfManna;
 
   // 2D array of cell visuals [col][row]
   late List<List<CellComponent>> _cells;
@@ -59,9 +64,9 @@ class BoardGame extends FlameGame with DragCallbacks {
     required this.generatorPlacements,
     required this.startingItems,
     required this.chainPlaceholderColors,
-    required int initialManna,
-  }) : _manna = initialManna,
-       mannaNotifier = ValueNotifier<int>(initialManna);
+    required this.manna,
+    required this.onOutOfManna,
+  });
 
   @override
   Color backgroundColor() => const Color(0xFF1A1205);
@@ -156,12 +161,13 @@ class BoardGame extends FlameGame with DragCallbacks {
 
     final result = resolveGeneratorTap(
       gen: gen,
-      manna: _manna,
+      manna: manna.manna,
       hasFreeCell: _hasSpaceForItem(),
       levels: generatorLevels[genId],
       chains: chainData,
     );
     final item = itemCatalog[result.itemId];
+    if (result.refusal == GeneratorTapRefusal.notEnoughManna) onOutOfManna();
     if (!result.spawned || item == null) {
       _log.info(
         'Generator $genId did not spawn: ${result.refusal ?? 'item ${result.itemId} not in catalog'}',
@@ -169,10 +175,9 @@ class BoardGame extends FlameGame with DragCallbacks {
       return;
     }
 
-    _manna = result.mannaAfter;
-    mannaNotifier.value = _manna;
+    manna.setAfterSpend(result.mannaAfter);
     placeItem(item);
-    _log.fine('Generator $genId spawned ${item.itemId}, manna=$_manna');
+    _log.fine('Generator $genId spawned ${item.itemId}, manna=${manna.manna}');
   }
 
   bool _hasSpaceForItem() {
@@ -186,97 +191,23 @@ class BoardGame extends FlameGame with DragCallbacks {
     return false;
   }
 
-  // --- Drag handling ---
+  // --- Drag handling (logic lives in board_game_drag.dart) ---
 
   @override
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
-    for (int c = 0; c < cols; c++) {
-      for (int r = 0; r < rows; r++) {
-        final cell = _cells[c][r];
-        final hasItem = _board[c][r] != null;
-        final isGenCell = _generatorCellSet.contains((c, r));
-        if (hasItem && !isGenCell && cell.containsPoint(event.canvasPosition)) {
-          final lifted = cell.liftItem();
-          if (lifted == null) return;
-          _dragOriginCell = cell;
-          _dragging = lifted;
-          add(lifted);
-          lifted.position =
-              event.canvasPosition - Vector2(_cellSize / 2, _cellSize / 2);
-          return;
-        }
-      }
-    }
+    _dragStart(event);
   }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
-    _dragging?.position += event.localDelta;
+    _dragUpdate(event);
   }
 
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
-    final dragging = _dragging;
-    final origin = _dragOriginCell;
-    if (dragging == null || origin == null) return;
-
-    CellComponent? target;
-    for (int c = 0; c < cols; c++) {
-      for (int r = 0; r < rows; r++) {
-        if (!_generatorCellSet.contains((c, r)) &&
-            _cells[c][r].containsPoint(dragging.center)) {
-          target = _cells[c][r];
-          break;
-        }
-      }
-      if (target != null) break;
-    }
-
-    final originItem = dragging.item;
-
-    if (target == null || target == origin) {
-      _snapBack(dragging, origin, originItem);
-      return;
-    }
-
-    final targetItem = _board[target.col][target.row];
-
-    if (targetItem == null) {
-      _board[origin.col][origin.row] = null;
-      _board[target.col][target.row] = originItem;
-      dragging.removeFromParent();
-      target.setItem(originItem, _colorFor(originItem));
-    } else {
-      final result = canMerge(originItem, targetItem, chainData);
-      if (result == MergeResult.success) {
-        final mergedId = mergedItemId(originItem, chainData);
-        final merged = itemCatalog[mergedId];
-        if (merged != null) {
-          _board[origin.col][origin.row] = null;
-          _board[target.col][target.row] = merged;
-          dragging.removeFromParent();
-          target.setItem(merged, _colorFor(merged));
-          _log.fine('Merged ${originItem.itemId} -> ${merged.itemId}');
-        } else {
-          _snapBack(dragging, origin, originItem);
-        }
-      } else {
-        _snapBack(dragging, origin, originItem);
-      }
-    }
-
-    _dragging = null;
-    _dragOriginCell = null;
-  }
-
-  void _snapBack(ItemComponent dragging, CellComponent origin, ItemModel item) {
-    dragging.removeFromParent();
-    origin.setItem(item, _colorFor(item));
-    _board[origin.col][origin.row] = item;
-    _dragging = null;
-    _dragOriginCell = null;
+    _dragEnd(event);
   }
 }

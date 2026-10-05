@@ -3,7 +3,6 @@
     "id": "gen_pantry",
     "name": "Grandma's Pantry",
     "chain_id": "bakery",
-    "energy_cost": 1,
     "unlock_chapter": 1,
     "levels": [
       { "level": 1, "odds": { "1": 1.0 } },
@@ -17,7 +16,6 @@
     "id": "gen_tree",
     "name": "Tree of Life",
     "chain_id": "fruit",
-    "energy_cost": 1,
     "unlock_chapter": 1,
     "levels": [
       { "level": 1, "odds": { "1": 1.0 } },
@@ -31,7 +29,6 @@
     "id": "gen_chest",
     "name": "Elder's Chest",
     "chain_id": "church",
-    "energy_cost": 1,
     "unlock_chapter": 2,
     "levels": [
       { "level": 1, "odds": { "1": 1.0 } },
@@ -45,7 +42,6 @@
     "id": "gen_armor",
     "name": "Armor Rack",
     "chain_id": "armor",
-    "energy_cost": 1,
     "unlock_chapter": 3,
     "levels": [
       { "level": 1, "odds": { "1": 1.0 } },
@@ -59,7 +55,6 @@
     "id": "gen_loom",
     "name": "Loom",
     "chain_id": "loom",
-    "energy_cost": 1,
     "unlock_chapter": 4,
     "levels": [
       { "level": 1, "odds": { "1": 1.0 } },
@@ -73,7 +68,6 @@
     "id": "gen_press",
     "name": "Olive Press",
     "chain_id": "oil",
-    "energy_cost": 1,
     "unlock_chapter": 5,
     "levels": [
       { "level": 1, "odds": { "1": 1.0 } },
@@ -87,7 +81,6 @@
     "id": "gen_scribe",
     "name": "Scribe's Desk",
     "chain_id": "word",
-    "energy_cost": 1,
     "unlock_chapter": 6,
     "levels": [
       { "level": 1, "odds": { "1": 1.0 } },

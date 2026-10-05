@@ -101,4 +101,96 @@ void main() {
       );
     });
   });
+
+  group('applyMannaRegen', () {
+    final t0 = DateTime(2040, 1, 1, 12, 0, 0);
+    MannaState at(int manna) => MannaState(manna: manna, lastRegen: t0);
+
+    test('nothing is added before a full interval', () {
+      final r = applyMannaRegen(
+        config,
+        at(5),
+        t0.add(const Duration(seconds: 119)),
+      );
+      expect(r.manna, 5);
+      expect(r.lastRegen, t0);
+    });
+
+    test('one interval adds 1 and keeps the leftover time', () {
+      final r = applyMannaRegen(
+        config,
+        at(5),
+        t0.add(const Duration(seconds: 150)),
+      );
+      expect(r.manna, 6);
+      expect(r.lastRegen, t0.add(const Duration(seconds: 120)));
+    });
+
+    test('a long absence adds several', () {
+      final r = applyMannaRegen(
+        config,
+        at(5),
+        t0.add(const Duration(minutes: 21)),
+      );
+      expect(r.manna, 15);
+      expect(r.lastRegen, t0.add(const Duration(minutes: 20)));
+    });
+
+    test('never goes past the maximum, and the clock resets when full', () {
+      final now = t0.add(const Duration(days: 2));
+      final r = applyMannaRegen(config, at(95), now);
+      expect(r.manna, 100);
+      expect(r.lastRegen, now);
+    });
+
+    test('a full bar gains nothing and keeps its clock current', () {
+      final now = t0.add(const Duration(hours: 1));
+      final r = applyMannaRegen(config, at(100), now);
+      expect(r.manna, 100);
+      expect(r.lastRegen, now);
+    });
+  });
+
+  group('secondsUntilNextManna', () {
+    final t0 = DateTime(2040, 1, 1, 12, 0, 0);
+
+    test('counts down from the regen interval', () {
+      final state = MannaState(manna: 5, lastRegen: t0);
+      expect(secondsUntilNextManna(config, state, t0), 120);
+      expect(
+        secondsUntilNextManna(
+          config,
+          state,
+          t0.add(const Duration(seconds: 45)),
+        ),
+        75,
+      );
+    });
+
+    test('never goes below zero', () {
+      final state = MannaState(manna: 5, lastRegen: t0);
+      expect(
+        secondsUntilNextManna(
+          config,
+          state,
+          t0.add(const Duration(seconds: 500)),
+        ),
+        0,
+      );
+    });
+
+    test('is null when the bar is full', () {
+      final state = MannaState(manna: 100, lastRegen: t0);
+      expect(secondsUntilNextManna(config, state, t0), isNull);
+    });
+  });
+
+  group('formatCountdown', () {
+    test('shows minutes and two-digit seconds', () {
+      expect(formatCountdown(120), '2:00');
+      expect(formatCountdown(65), '1:05');
+      expect(formatCountdown(9), '0:09');
+      expect(formatCountdown(0), '0:00');
+    });
+  });
 }

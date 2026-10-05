@@ -69,3 +69,50 @@ int mannaRegenerated(
     config.maxManna - currentManna,
   );
 }
+
+/// Manna and the moment its regen clock last ticked.
+class MannaState {
+  final int manna;
+  final DateTime lastRegen;
+
+  const MannaState({required this.manna, required this.lastRegen});
+}
+
+/// Adds any Manna earned between [state.lastRegen] and [now].
+/// Time left over towards the next Manna is kept; a full bar resets the clock.
+MannaState applyMannaRegen(
+  EconomyConfig config,
+  MannaState state,
+  DateTime now,
+) {
+  if (state.manna >= config.maxManna) {
+    return MannaState(manna: state.manna, lastRegen: now);
+  }
+  final gained = mannaRegenerated(config, state.manna, state.lastRegen, now);
+  final manna = state.manna + gained;
+  if (manna >= config.maxManna) return MannaState(manna: manna, lastRegen: now);
+  return MannaState(
+    manna: manna,
+    lastRegen: state.lastRegen.add(
+      Duration(seconds: gained * config.mannaRegenSeconds),
+    ),
+  );
+}
+
+/// Seconds until the next Manna arrives, or null when the bar is full.
+int? secondsUntilNextManna(
+  EconomyConfig config,
+  MannaState state,
+  DateTime now,
+) {
+  if (state.manna >= config.maxManna) return null;
+  final elapsed = now.difference(state.lastRegen).inSeconds;
+  return (config.mannaRegenSeconds - elapsed).clamp(
+    0,
+    config.mannaRegenSeconds,
+  );
+}
+
+/// Formats a countdown as m:ss (for example 1:05).
+String formatCountdown(int seconds) =>
+    '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';

@@ -126,7 +126,7 @@ Set<String> _checkGenerators(
       problems.add('Generator $id: missing name');
     }
     final cost = gen['energy_cost'];
-    if (cost is! int || cost < 0) {
+    if (cost != null && (cost is! int || cost < 0)) {
       problems.add('Generator $id: energy_cost must be 0 or more');
     }
     final levels = (gen['levels'] as List<dynamic>)

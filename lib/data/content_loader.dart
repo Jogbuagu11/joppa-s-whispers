@@ -54,9 +54,9 @@ class ContentLoader {
     required Object? economyJson,
     required Object? startingBoardJson,
   }) {
+    economy = EconomyConfig.fromJson(economyJson as Map<String, dynamic>);
     _parseChains(chainsJson as List<dynamic>);
     _parseGenerators(generatorsJson as List<dynamic>);
-    economy = EconomyConfig.fromJson(economyJson as Map<String, dynamic>);
     startingBoard = StartingBoard.fromJson(
       startingBoardJson as Map<String, dynamic>,
     );
@@ -122,7 +122,8 @@ class ContentLoader {
         generatorId: genId,
         chainId: gen['chain_id'] as String,
         level: 1,
-        energyCost: gen['energy_cost'] as int,
+        // Tap cost comes from economy.json unless this generator overrides it.
+        energyCost: gen['energy_cost'] as int? ?? economy.generatorTapCost,
         name: gen['name'] as String,
       );
     }

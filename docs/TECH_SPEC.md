@@ -93,7 +93,6 @@ IDs are lowercase snake_case and never change once shipped.
     "id": "gen_pantry",
     "name": "Grandma's Pantry",
     "chain_id": "bakery",
-    "energy_cost": 1,
     "levels": [
       { "level": 1, "odds": { "1": 1.0 } },
       { "level": 2, "odds": { "1": 0.9, "2": 0.1 } }
@@ -101,6 +100,9 @@ IDs are lowercase snake_case and never change once shipped.
   }
 ]
 ```
+
+A generator tap costs `generator_tap_cost` from `economy.json`. A generator may add
+`"energy_cost": <number>` to override that for itself (for example an event generator).
 
 ### `content/starting_board.json`
 The board a brand-new player sees. Columns count 0–6 from the left, rows 0–8 from the top.

@@ -96,4 +96,10 @@ void main() {
             as Map<String, dynamic>;
     expect(loader.items[firstTier['item_id']]?.sell, firstTier['sell']);
   });
+
+  test('generator tap cost comes from economy.json', () {
+    for (final gen in loader.generators.values) {
+      expect(gen.energyCost, loader.economy.generatorTapCost);
+    }
+  });
 }

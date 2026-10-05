@@ -2,6 +2,8 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
+import 'package:whispers_of_joppa/game/board/manna_bar.dart';
+import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
 /// The main game board screen — hosts the Flame merge board.
 class BoardScreen extends StatefulWidget {
@@ -13,6 +15,8 @@ class BoardScreen extends StatefulWidget {
 
 class _BoardScreenState extends State<BoardScreen> {
   BoardGame? _game;
+  MannaController? _manna;
+  bool _popupOpen = false;
   bool _loading = true;
   String? _error;
 
@@ -20,6 +24,20 @@ class _BoardScreenState extends State<BoardScreen> {
   void initState() {
     super.initState();
     _init();
+  }
+
+  @override
+  void dispose() {
+    _manna?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _showOutOfManna() async {
+    final manna = _manna;
+    if (manna == null || _popupOpen || !mounted) return;
+    _popupOpen = true;
+    await showOutOfMannaPopup(context, manna);
+    _popupOpen = false;
   }
 
   Future<void> _init() async {
@@ -48,6 +66,12 @@ class _BoardScreenState extends State<BoardScreen> {
         startingItems.add((item: item, col: i.col, row: i.row));
       }
 
+      final manna = MannaController(
+        config: loader.economy,
+        startingManna: start.manna,
+      )..start();
+      _manna = manna;
+
       final game = BoardGame(
         itemCatalog: loader.items,
         chainData: loader.chains,
@@ -55,7 +79,8 @@ class _BoardScreenState extends State<BoardScreen> {
         generatorPlacements: generatorPlacements,
         startingItems: startingItems,
         chainPlaceholderColors: loader.chainPlaceholderColors,
-        initialManna: start.manna,
+        manna: manna,
+        onOutOfManna: _showOutOfManna,
       );
 
       setState(() {
@@ -73,6 +98,7 @@ class _BoardScreenState extends State<BoardScreen> {
   @override
   Widget build(BuildContext context) {
     final game = _game;
+    final manna = _manna;
     final error = _error;
     final Widget body;
     if (error != null) {
@@ -83,7 +109,7 @@ class _BoardScreenState extends State<BoardScreen> {
           style: const TextStyle(color: Colors.red),
         ),
       );
-    } else if (_loading || game == null) {
+    } else if (_loading || game == null || manna == null) {
       body = const Center(
         child: CircularProgressIndicator(color: Color(0xFFD4802A)),
       );
@@ -91,7 +117,14 @@ class _BoardScreenState extends State<BoardScreen> {
       body = Stack(
         children: [
           GameWidget(game: game),
-          _MannaOverlay(game: game),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: SafeArea(
+              minimum: const EdgeInsets.all(16),
+              child: MannaBar(controller: manna),
+            ),
+          ),
         ],
       );
     }
@@ -99,45 +132,6 @@ class _BoardScreenState extends State<BoardScreen> {
       key: const Key('board_screen'),
       backgroundColor: const Color(0xFF1A1205),
       body: body,
-    );
-  }
-}
-
-/// Simple manna counter overlay — replaced by full bar in Milestone 6.
-class _MannaOverlay extends StatelessWidget {
-  const _MannaOverlay({required this.game});
-
-  final BoardGame game;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: 0,
-      right: 0,
-      child: SafeArea(
-        minimum: const EdgeInsets.all(16),
-        child: ValueListenableBuilder<int>(
-          valueListenable: game.mannaNotifier,
-          builder: (ctx, manna, _) {
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1A1205).withValues(alpha: 0.85),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFD4802A)),
-              ),
-              child: Text(
-                'Manna: $manna',
-                style: const TextStyle(
-                  color: Color(0xFFD4802A),
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            );
-          },
-        ),
-      ),
     );
   }
 }

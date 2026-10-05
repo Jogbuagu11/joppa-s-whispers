@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flame/game.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -11,9 +12,7 @@ import 'package:whispers_of_joppa/main.dart' as app;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('tapping a generator spends 1 Manna', (
-    WidgetTester tester,
-  ) async {
+  testWidgets('tapping a generator spends Manna', (WidgetTester tester) async {
     app.main();
     final board = find.byType(GameWidget<BoardGame>);
     for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {
@@ -30,7 +29,14 @@ void main() {
         (start['generators'] as List<dynamic>).first as Map<String, dynamic>;
     final genCol = generator['col'] as int;
     final genRow = generator['row'] as int;
-    expect(find.text('Manna: $manna'), findsOneWidget);
+    final economy =
+        jsonDecode(await rootBundle.loadString('content/economy.json'))
+            as Map<String, dynamic>;
+    final max = economy['max_manna'] as int;
+    final cost = economy['generator_tap_cost'] as int;
+    String countText() =>
+        tester.widget<Text>(find.byKey(const Key('manna_count'))).data ?? '';
+    expect(countText(), '$manna/$max');
 
     // Work out where that generator is drawn.
     final rect = tester.getRect(board);
@@ -46,11 +52,11 @@ void main() {
 
     await tester.tapAt(generatorCentre);
     await tester.pump(const Duration(milliseconds: 500));
-    expect(find.text('Manna: ${manna - 1}'), findsOneWidget);
+    expect(countText(), '${manna - cost}/$max');
 
     // An empty cell is not a generator: tapping it must not spend Manna.
     await tester.tapAt(Offset(left + 5.5 * cell, top + 4.5 * cell));
     await tester.pump(const Duration(milliseconds: 500));
-    expect(find.text('Manna: ${manna - 1}'), findsOneWidget);
+    expect(countText(), '${manna - cost}/$max');
   });
 }
