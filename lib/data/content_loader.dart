@@ -6,6 +6,7 @@ import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
+import 'package:whispers_of_joppa/domain/orders.dart';
 
 final _log = Logger('ContentLoader');
 
@@ -25,6 +26,12 @@ class ContentLoader {
   /// generator_id -> GeneratorModel (default level 1)
   final Map<String, GeneratorModel> generators = {};
 
+  /// Every order in content, in the order players meet them.
+  final List<OrderModel> orders = [];
+
+  /// character_id -> display name
+  final Map<String, String> characterNames = {};
+
   late EconomyConfig economy;
   late StartingBoard startingBoard;
 
@@ -39,6 +46,8 @@ class ContentLoader {
         generatorsJson: await _loadJson('content/generators.json'),
         economyJson: await _loadJson('content/economy.json'),
         startingBoardJson: await _loadJson('content/starting_board.json'),
+        ordersJson: await _loadJson('content/orders.json'),
+        charactersJson: await _loadJson('content/characters.json'),
       );
     } catch (e, stack) {
       _log.severe('Failed to load content', e, stack);
@@ -53,6 +62,8 @@ class ContentLoader {
     required Object? generatorsJson,
     required Object? economyJson,
     required Object? startingBoardJson,
+    required Object? ordersJson,
+    required Object? charactersJson,
   }) {
     economy = EconomyConfig.fromJson(economyJson as Map<String, dynamic>);
     _parseChains(chainsJson as List<dynamic>);
@@ -60,6 +71,13 @@ class ContentLoader {
     startingBoard = StartingBoard.fromJson(
       startingBoardJson as Map<String, dynamic>,
     );
+    for (final o in ordersJson as List<dynamic>) {
+      orders.add(OrderModel.fromJson(o as Map<String, dynamic>));
+    }
+    for (final c in charactersJson as List<dynamic>) {
+      final character = c as Map<String, dynamic>;
+      characterNames[character['id'] as String] = character['name'] as String;
+    }
     _loaded = true;
     _log.info(
       'Content loaded: ${items.length} items, ${generators.length} generators',

@@ -1,6 +1,8 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
+import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
+import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
@@ -20,6 +22,8 @@ class BoardScreen extends StatefulWidget {
 class _BoardScreenState extends State<BoardScreen> {
   BoardGame? _game;
   MannaController? _manna;
+  OrdersController? _orders;
+  Map<String, String> _characterNames = const {};
   bool _popupOpen = false;
   bool _loading = true;
   String? _error;
@@ -32,6 +36,7 @@ class _BoardScreenState extends State<BoardScreen> {
 
   @override
   void dispose() {
+    _orders?.dispose();
     _manna?.dispose();
     super.dispose();
   }
@@ -88,6 +93,13 @@ class _BoardScreenState extends State<BoardScreen> {
         onOutOfManna: _showOutOfManna,
       );
 
+      _orders = OrdersController(
+        config: loader.economy,
+        board: game,
+        orders: loader.orders,
+      );
+      _characterNames = loader.characterNames;
+
       await game.loadArt();
       if (!mounted) return;
 
@@ -108,6 +120,7 @@ class _BoardScreenState extends State<BoardScreen> {
   Widget build(BuildContext context) {
     final game = _game;
     final manna = _manna;
+    final orders = _orders;
     final error = _error;
     final Widget body;
     if (error != null) {
@@ -118,23 +131,37 @@ class _BoardScreenState extends State<BoardScreen> {
           style: const TextStyle(color: Colors.red),
         ),
       );
-    } else if (_loading || game == null || manna == null) {
+    } else if (_loading || game == null || manna == null || orders == null) {
       body = const Center(
         child: CircularProgressIndicator(color: Color(0xFFD4802A)),
       );
     } else {
-      body = Stack(
-        children: [
-          GameWidget(game: game),
-          Positioned(
-            top: 0,
-            right: 0,
-            child: SafeArea(
-              minimum: const EdgeInsets.all(16),
-              child: MannaBar(controller: manna),
+      body = SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  WalletChips(controller: orders),
+                  MannaBar(controller: manna),
+                ],
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: OrdersBar(
+                controller: orders,
+                items: game.itemCatalog,
+                characterNames: _characterNames,
+                placeholderColors: game.chainPlaceholderColors,
+              ),
+            ),
+            Expanded(child: GameWidget(game: game)),
+          ],
+        ),
       );
     }
     return Scaffold(

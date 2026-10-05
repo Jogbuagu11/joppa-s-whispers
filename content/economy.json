@@ -3,6 +3,7 @@
   "manna_regen_seconds": 120,
   "generator_tap_cost": 1,
   "order_talents_per_tier": 5,
+  "order_slots": 3,
   "manna_refill_base_pearls": 10,
   "basket_slot_base_pearls": 10,
   "order_skip_cooldown_seconds": 1800,

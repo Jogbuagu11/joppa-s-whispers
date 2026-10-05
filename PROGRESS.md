@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 6 — Energy (Manna) (done, waiting for Jennifer's approval before starting 7)
+## Current milestone: 7 — Orders (done; next is 8 — Save/load)
 
 ---
 
@@ -15,7 +15,7 @@
 | 4 | Generators | DONE (m4-working) — approved by Jennifer 2026-10-05 |
 | 5 | Content loading | DONE (m5-working) — approved by Jennifer 2026-10-05 |
 | 6 | Energy (Manna) | DONE (m6-working) |
-| 7 | Orders | Not started |
+| 7 | Orders | DONE (m7-working) |
 | 8 | Save/load (local) | Not started |
 | 9 | Story scenes | Not started |
 | 10 | Tasks & Blessings | Not started |
@@ -191,6 +191,38 @@ Not in this milestone:
 - The popup has no "refill with Pearls" or "watch an ad" buttons yet (Milestones 16 and 18).
 - The popup and bar wording is written in code, not in content; move it if a strings
   file is introduced.
+
+## Milestone 7 — state (2026-10-05)
+
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 113 unit tests
+pass, content validator OK, four device tests pass on both (smoke, generator tap,
+out-of-Manna, orders), and the order cards were seen on screen.
+
+- Up to 3 order cards (`order_slots` in economy.json) above the board: who is asking, what
+  they say, the items wanted with how many you have, the reward, Deliver and Skip.
+- Deliver is only active when the board holds every item; it removes them, pays Talents
+  and Blessings, and the next order takes the card.
+- Skip swaps an order for the next one, once per `order_skip_cooldown_seconds` (30 min).
+- 12 Chapter 1 orders and 17 characters written by the content-writer agent into
+  `content/orders.json` and `content/characters.json`; both are checked by the validator
+  (talents must equal 5 × item tiers, text ≤ 140 characters, items unlocked, and so on).
+- Talents and Blessings counters top-left.
+
+Content notes for Jennifer's reviewer (flagged "REVIEW:" by the content writer):
+- ch1_o_003: "That takes more love than fear" alludes to 1 John 4:18 without quoting it.
+- ch1_o_003/006/009/011 use the plain words love, joy, peace, patience (no "Fruit of the Spirit").
+- ch1_o_006: "Papa says I'm his joy" plays on the child's name and the Joy item.
+- ch1_o_012: "the widows' table" means care for widows, not communion.
+- Two spiritual orders are Naomi speaking to herself (the story bible gives her Love and
+  Patience in Chapter 1). Elder Amos appears in the last order before his story entrance.
+
+Not in this milestone:
+- Portraits on cards (a coloured initial for now; character art names need fixing first).
+- The story moment after a spiritual order (`scene_id`; Milestone 9).
+- Jar of Clay rewards; doubling a reward with an ad (Milestone 18).
+- Talents, Blessings and order progress are not saved between launches (Milestone 8).
+- When all 12 orders are delivered the cards simply run out (more come with Chapter 1, M12).
+- Manna, orders and wallet are plain ChangeNotifier controllers, not Riverpod providers yet.
 
 ## Decisions made for Jennifer (2026-10-05)
 

@@ -8,12 +8,14 @@ import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
+import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
 import 'package:whispers_of_joppa/game/board/cell_component.dart';
 import 'package:whispers_of_joppa/game/board/generator_component.dart';
 import 'package:whispers_of_joppa/game/board/item_component.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
 part 'board_game_drag.dart';
+part 'board_game_generators.dart';
 
 final _log = Logger('BoardGame');
 
@@ -24,7 +26,7 @@ typedef GeneratorPlacement = ({GeneratorModel gen, int col, int row});
 typedef ItemPlacement = ({ItemModel item, int col, int row});
 
 /// The Flame game for the merge board.
-class BoardGame extends FlameGame with DragCallbacks {
+class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   static const int cols = BoardState.cols;
   static const int rows = BoardState.rows;
 
@@ -55,6 +57,43 @@ class BoardGame extends FlameGame with DragCallbacks {
     cols,
     (_) => List.generate(rows, (_) => null),
   );
+
+  final ValueNotifier<int> _boardVersion = ValueNotifier<int>(0);
+
+  @override
+  Listenable get boardChanged => _boardVersion;
+
+  /// Call after any change to which items are on the board. Listeners are
+  /// told just afterwards, never in the middle of drawing the screen (the
+  /// board is first filled while Flutter is still building it).
+  void _boardTouched() => Future<void>.microtask(() => _boardVersion.value++);
+
+  @override
+  Map<String, int> itemCounts() {
+    final counts = <String, int>{};
+    for (final column in _board) {
+      for (final item in column) {
+        if (item != null) counts[item.itemId] = (counts[item.itemId] ?? 0) + 1;
+      }
+    }
+    return counts;
+  }
+
+  @override
+  void removeItems(Map<String, int> counts) {
+    final left = Map<String, int>.of(counts);
+    for (int c = 0; c < cols; c++) {
+      for (int r = 0; r < rows; r++) {
+        final id = _board[c][r]?.itemId;
+        final want = left[id] ?? 0;
+        if (id == null || want <= 0) continue;
+        left[id] = want - 1;
+        _board[c][r] = null;
+        _cells[c][r].clearItem();
+      }
+    }
+    _boardTouched();
+  }
 
   // item_id -> loaded picture, for items whose art file exists.
   final Map<String, ui.Image> _art = {};
@@ -95,6 +134,7 @@ class BoardGame extends FlameGame with DragCallbacks {
         _art[start.item.itemId],
       );
     }
+    _boardTouched();
   }
 
   /// Loads the picture for every item that names one. An item whose picture
@@ -163,62 +203,6 @@ class BoardGame extends FlameGame with DragCallbacks {
     final maxW = size.x / cols;
     final maxH = size.y / rows;
     return (maxW < maxH ? maxW : maxH) - 2;
-  }
-
-  /// Places an item in the first empty non-generator cell.
-  void placeItem(ItemModel item) {
-    for (int c = 0; c < cols; c++) {
-      for (int r = 0; r < rows; r++) {
-        if (_board[c][r] == null && !_generatorCellSet.contains((c, r))) {
-          _board[c][r] = item;
-          _cells[c][r].setItem(item, _colorFor(item), _art[item.itemId]);
-          return;
-        }
-      }
-    }
-    _log.warning('No empty cell to place item ${item.itemId}');
-  }
-
-  void _onGeneratorTapped(String genId) {
-    final placement = generatorPlacements
-        .where((p) => p.gen.generatorId == genId)
-        .firstOrNull;
-    if (placement == null) return;
-
-    final gen = placement.gen;
-
-    // Collect any Manna that is already due before deciding.
-    manna.tick();
-    final result = resolveGeneratorTap(
-      gen: gen,
-      manna: manna.manna,
-      hasFreeCell: _hasSpaceForItem(),
-      levels: generatorLevels[genId],
-      chains: chainData,
-    );
-    final item = itemCatalog[result.itemId];
-    if (result.refusal == GeneratorTapRefusal.notEnoughManna) onOutOfManna();
-    if (!result.spawned || item == null) {
-      _log.info(
-        'Generator $genId did not spawn: ${result.refusal ?? 'item ${result.itemId} not in catalog'}',
-      );
-      return;
-    }
-
-    manna.setAfterSpend(result.mannaAfter);
-    placeItem(item);
-    _log.fine('Generator $genId spawned ${item.itemId}, manna=${manna.manna}');
-  }
-
-  bool _hasSpaceForItem() {
-    for (int c = 0; c < cols; c++) {
-      for (int r = 0; r < rows; r++) {
-        if (_board[c][r] == null && !_generatorCellSet.contains((c, r))) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   // --- Drag handling (logic lives in board_game_drag.dart) ---

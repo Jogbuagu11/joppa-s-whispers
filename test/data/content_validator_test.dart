@@ -11,6 +11,7 @@ Map<String, Object?> _valid() => {
   'chains': [
     {
       'id': 'bakery',
+      'unlock_chapter': 1,
       'generator_id': 'gen_pantry',
       'placeholder_color': '#D4802A',
       'tiers': [
@@ -38,6 +39,24 @@ Map<String, Object?> _valid() => {
     },
   ],
   'economy': <String, Object?>{for (final key in requiredEconomyKeys) key: 100},
+  'characters': [
+    {'id': 'silas', 'name': 'Silas'},
+  ],
+  'orders': [
+    {
+      'id': 'ch1_o_001',
+      'chapter': 1,
+      'character_id': 'silas',
+      'kind': 'literal',
+      'items': [
+        {'item_id': 'bakery_02', 'count': 2},
+      ],
+      // The fixture economy sets every value, including talents per tier, to 100.
+      'rewards': {'talents': 400, 'blessings': 1},
+      'text': 'Two sacks of flour, little loaf?',
+      'scene_id': null,
+    },
+  ],
   'board': {
     'manna': 10,
     'generators': [
@@ -54,6 +73,8 @@ List<String> _check(Map<String, Object?> c) => validateContent(
   generatorsJson: c['generators'],
   economyJson: c['economy'],
   startingBoardJson: c['board'],
+  ordersJson: c['orders'],
+  charactersJson: c['characters'],
 );
 
 Map<String, dynamic> _first(Map<String, Object?> c, String key) =>
@@ -66,6 +87,8 @@ void main() {
       generatorsJson: _read('generators'),
       economyJson: _read('economy'),
       startingBoardJson: _read('starting_board'),
+      ordersJson: _read('orders'),
+      charactersJson: _read('characters'),
     );
     expect(problems, isEmpty);
   });
@@ -115,7 +138,7 @@ void main() {
     final c = _valid();
     final tiers = _first(c, 'chains')['tiers'] as List<dynamic>;
     (tiers[1] as Map<String, dynamic>)['tier'] = 3;
-    expect(_check(c).single, contains('tiers must count'));
+    expect(_check(c), contains(contains('tiers must count')));
   });
 
   test('a bad placeholder colour is reported', () {
@@ -195,5 +218,65 @@ void main() {
     expect(_check(c), isEmpty);
     _first(c, 'generators')['energy_cost'] = -1;
     expect(_check(c).single, contains('energy_cost must be 0 or more'));
+  });
+
+  group('orders', () {
+    Map<String, dynamic> order(Map<String, Object?> c) => _first(c, 'orders');
+
+    test('wrong talents are reported with the right amount', () {
+      final c = _valid();
+      (order(c)['rewards'] as Map<String, dynamic>)['talents'] = 40;
+      expect(_check(c).single, contains('talents should be 400'));
+    });
+
+    test('unknown character and unknown item are reported', () {
+      final c = _valid();
+      order(c)['character_id'] = 'nobody';
+      (order(c)['items'] as List<dynamic>).add({
+        'item_id': 'bakery_99',
+        'count': 1,
+      });
+      final problems = _check(c);
+      expect(problems, contains(contains('unknown character "nobody"')));
+      expect(problems, contains(contains('unknown item "bakery_99"')));
+    });
+
+    test('text that is too long, bad kind and bad blessings are reported', () {
+      final c = _valid();
+      order(c)['text'] = 'x' * 141;
+      order(c)['kind'] = 'other';
+      (order(c)['rewards'] as Map<String, dynamic>)['blessings'] = 4;
+      final problems = _check(c);
+      expect(problems, contains(contains('over 140 characters')));
+      expect(problems, contains(contains('kind must be')));
+      expect(problems, contains(contains('blessings must be')));
+    });
+
+    test('an item from a chain not yet unlocked is reported', () {
+      final c = _valid();
+      _first(c, 'chains')['unlock_chapter'] = 2;
+      expect(_check(c).single, contains('not unlocked until chapter 2'));
+    });
+
+    test(
+      'duplicate order ids, zero counts and too many items are reported',
+      () {
+        final c = _valid();
+        final orders = c['orders'] as List<dynamic>;
+        orders.add(Map<String, dynamic>.of(order(c)));
+        (order(c)['items'] as List<dynamic>).first['count'] = 0;
+        final problems = _check(c);
+        expect(problems, contains(contains('used more than once')));
+        expect(problems, contains(contains('must be 1 or more')));
+      },
+    );
+
+    test('duplicate or nameless characters are reported', () {
+      final c = _valid();
+      (c['characters'] as List<dynamic>).add({'id': 'silas', 'name': ' '});
+      final problems = _check(c);
+      expect(problems, contains(contains('Character id "silas" is used more')));
+      expect(problems, contains(contains('missing name')));
+    });
   });
 }

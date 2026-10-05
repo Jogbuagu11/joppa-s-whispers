@@ -53,6 +53,12 @@ class CellComponent extends PositionComponent {
     _item = comp;
   }
 
+  /// Empties this cell.
+  void clearItem() {
+    _item?.removeFromParent();
+    _item = null;
+  }
+
   /// Removes the item from this cell for dragging, returning the component.
   ItemComponent? liftItem() {
     final comp = _item;

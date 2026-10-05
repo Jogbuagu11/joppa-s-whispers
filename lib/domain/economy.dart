@@ -7,6 +7,7 @@ class EconomyConfig {
   final int mannaRegenSeconds;
   final int generatorTapCost;
   final int orderTalentsPerTier;
+  final int orderSlots;
   final int mannaRefillBasePearls;
   final int basketSlotBasePearls;
   final int orderSkipCooldownSeconds;
@@ -19,6 +20,7 @@ class EconomyConfig {
     required this.mannaRegenSeconds,
     required this.generatorTapCost,
     required this.orderTalentsPerTier,
+    required this.orderSlots,
     required this.mannaRefillBasePearls,
     required this.basketSlotBasePearls,
     required this.orderSkipCooldownSeconds,
@@ -32,6 +34,7 @@ class EconomyConfig {
     mannaRegenSeconds: json['manna_regen_seconds'] as int,
     generatorTapCost: json['generator_tap_cost'] as int,
     orderTalentsPerTier: json['order_talents_per_tier'] as int,
+    orderSlots: json['order_slots'] as int,
     mannaRefillBasePearls: json['manna_refill_base_pearls'] as int,
     basketSlotBasePearls: json['basket_slot_base_pearls'] as int,
     orderSkipCooldownSeconds: json['order_skip_cooldown_seconds'] as int,

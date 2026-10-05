@@ -14,6 +14,8 @@ void main() {
     generatorsJson: _read('generators'),
     economyJson: _read('economy'),
     startingBoardJson: _read('starting_board'),
+    ordersJson: _read('orders'),
+    charactersJson: _read('characters'),
   );
   if (problems.isEmpty) {
     stdout.writeln('Content OK');

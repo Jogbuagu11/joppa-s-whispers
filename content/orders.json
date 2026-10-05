@@ -1,1 +1,144 @@
-[]
+[
+  {
+    "id": "ch1_o_001",
+    "chapter": 1,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [{ "item_id": "bakery_04", "count": 1 }],
+    "rewards": { "talents": 20, "blessings": 1 },
+    "text": "Little loaf! One flatbread, warm, like Esther made. Now, that reminds me of the year the fish... no. Bread first.",
+    "scene_id": null
+  },
+  {
+    "id": "ch1_o_002",
+    "chapter": 1,
+    "character_id": "joy",
+    "kind": "literal",
+    "items": [{ "item_id": "bakery_03", "count": 1 }],
+    "rewards": { "talents": 15, "blessings": 1 },
+    "text": "No honey cake yet? Then a lump of dough to squish! Papa says ask nicely. I'm asking nicely!",
+    "scene_id": null
+  },
+  {
+    "id": "ch1_o_003",
+    "chapter": 1,
+    "character_id": "naomi",
+    "kind": "spiritual",
+    "items": [{ "item_id": "fruit_01", "count": 1 }],
+    "rewards": { "talents": 5, "blessings": 1 },
+    "text": "Hm. Savta says open the shutters. That takes more love than fear. Start small, Naomi.",
+    "scene_id": null
+  },
+  {
+    "id": "ch1_o_004",
+    "chapter": 1,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [
+      { "item_id": "bakery_01", "count": 2 },
+      { "item_id": "bakery_02", "count": 1 }
+    ],
+    "rewards": { "talents": 20, "blessings": 1 },
+    "text": "Two barley sheaves and a scoop of flour, little loaf. The crew's porridge pot is as empty as my nets.",
+    "scene_id": null
+  },
+  {
+    "id": "ch1_o_005",
+    "chapter": 1,
+    "character_id": "zilpah",
+    "kind": "literal",
+    "items": [
+      { "item_id": "bakery_04", "count": 1 },
+      { "item_id": "bakery_02", "count": 1 }
+    ],
+    "rewards": { "talents": 30, "blessings": 1 },
+    "text": "One flatbread and a little flour, dear. So brave of you to bake here. I'm only saying what people are saying.",
+    "scene_id": null
+  },
+  {
+    "id": "ch1_o_006",
+    "chapter": 1,
+    "character_id": "joy",
+    "kind": "spiritual",
+    "items": [
+      { "item_id": "fruit_02", "count": 1 },
+      { "item_id": "fruit_01", "count": 1 }
+    ],
+    "rewards": { "talents": 15, "blessings": 1 },
+    "text": "Papa says I'm his joy, but he never laughs now. I love him lots. Why isn't that enough, Naomi?",
+    "scene_id": null
+  },
+  {
+    "id": "ch1_o_007",
+    "chapter": 1,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [{ "item_id": "bakery_04", "count": 2 }],
+    "rewards": { "talents": 40, "blessings": 2 },
+    "text": "Two flatbreads for the night crew, little loaf? I told the whole dock you bake like Esther.",
+    "scene_id": null
+  },
+  {
+    "id": "ch1_o_008",
+    "chapter": 1,
+    "character_id": "demas",
+    "kind": "literal",
+    "items": [
+      { "item_id": "bakery_05", "count": 1 },
+      { "item_id": "bakery_04", "count": 1 }
+    ],
+    "rewards": { "talents": 45, "blessings": 2 },
+    "text": "Gather close, baker, gather close! A loaf and a flatbread for a teller of tales. Talking is hungry work.",
+    "scene_id": null
+  },
+  {
+    "id": "ch1_o_009",
+    "chapter": 1,
+    "character_id": "caleb",
+    "kind": "spiritual",
+    "items": [{ "item_id": "fruit_03", "count": 1 }],
+    "rewards": { "talents": 15, "blessings": 2 },
+    "text": "Shutters will hold now. No payment. ...Sea's loud tonight. A little peace would do me good.",
+    "scene_id": null
+  },
+  {
+    "id": "ch1_o_010",
+    "chapter": 1,
+    "character_id": "caleb",
+    "kind": "literal",
+    "items": [
+      { "item_id": "bakery_05", "count": 1 },
+      { "item_id": "bakery_04", "count": 1 },
+      { "item_id": "bakery_03", "count": 1 }
+    ],
+    "rewards": { "talents": 60, "blessings": 2 },
+    "text": "A loaf for supper, a flatbread for the yard, dough for Joy to shape. I'll pay. The shutters were a gift.",
+    "scene_id": null
+  },
+  {
+    "id": "ch1_o_011",
+    "chapter": 1,
+    "character_id": "naomi",
+    "kind": "spiritual",
+    "items": [
+      { "item_id": "fruit_04", "count": 1 },
+      { "item_id": "fruit_03", "count": 1 }
+    ],
+    "rewards": { "talents": 35, "blessings": 2 },
+    "text": "Hm. Zilpah is back with sweet questions about Caesarea. Patience, Naomi. And peace enough not to bite.",
+    "scene_id": null
+  },
+  {
+    "id": "ch1_o_012",
+    "chapter": 1,
+    "character_id": "amos",
+    "kind": "literal",
+    "items": [
+      { "item_id": "bakery_05", "count": 2 },
+      { "item_id": "bakery_04", "count": 2 }
+    ],
+    "rewards": { "talents": 90, "blessings": 3 },
+    "text": "Well now. Two loaves and two flatbreads for the widows' table, child. I forget much, but never them.",
+    "scene_id": null
+  }
+]

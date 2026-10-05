@@ -1,5 +1,6 @@
 // Checks content/*.json for mistakes before the game uses it.
 // Pure Dart (no Flutter imports) so tool/validate_content.dart can run it.
+import 'package:whispers_of_joppa/data/order_validator.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 
 final _idPattern = RegExp(r'^[a-z][a-z0-9_]*$');
@@ -9,7 +10,7 @@ final _itemAssetPattern = RegExp(
 final _colorPattern = RegExp(r'^#[0-9a-fA-F]{6}$');
 
 /// Economy values the game divides by, so they can never be 0.
-const _mustBePositive = {'max_manna', 'manna_regen_seconds'};
+const _mustBePositive = {'max_manna', 'manna_regen_seconds', 'order_slots'};
 
 /// Every key the game reads from content/economy.json.
 const requiredEconomyKeys = [
@@ -17,6 +18,7 @@ const requiredEconomyKeys = [
   'manna_regen_seconds',
   'generator_tap_cost',
   'order_talents_per_tier',
+  'order_slots',
   'manna_refill_base_pearls',
   'basket_slot_base_pearls',
   'order_skip_cooldown_seconds',
@@ -32,6 +34,8 @@ List<String> validateContent({
   required Object? generatorsJson,
   required Object? economyJson,
   required Object? startingBoardJson,
+  required Object? ordersJson,
+  required Object? charactersJson,
 }) {
   final problems = <String>[];
   try {
@@ -47,6 +51,14 @@ List<String> validateContent({
       }
     }
     _checkEconomy(economyJson as Map<String, dynamic>, problems);
+    checkOrdersAndCharacters(
+      orders: (ordersJson as List<dynamic>).cast<Map<String, dynamic>>(),
+      characters: (charactersJson as List<dynamic>)
+          .cast<Map<String, dynamic>>(),
+      chains: chains,
+      economy: economyJson,
+      problems: problems,
+    );
     _checkStartingBoard(
       startingBoardJson as Map<String, dynamic>,
       generatorIds: generatorIds,

@@ -8,6 +8,7 @@ void main() {
     mannaRegenSeconds: 120,
     generatorTapCost: 1,
     orderTalentsPerTier: 5,
+    orderSlots: 3,
     mannaRefillBasePearls: 10,
     basketSlotBasePearls: 10,
     orderSkipCooldownSeconds: 1800,
