@@ -71,6 +71,25 @@ void main() {
     });
   });
 
+  test('an item listed twice is added up', () {
+    const twice = OrderModel(
+      id: 'o',
+      chapter: 1,
+      characterId: 'silas',
+      kind: 'literal',
+      items: [
+        OrderItem(itemId: 'bakery_01', count: 1),
+        OrderItem(itemId: 'bakery_01', count: 2),
+      ],
+      talents: 15,
+      blessings: 1,
+      text: '',
+    );
+    expect(orderItemTotals(twice), {'bakery_01': 3});
+    expect(canFillOrder(twice, {'bakery_01': 2}), isFalse);
+    expect(canFillOrder(twice, {'bakery_01': 3}), isTrue);
+  });
+
   group('order book', () {
     final ids = ['a', 'b', 'c', 'd', 'e'];
 

@@ -58,8 +58,6 @@ void main() {
     expect(ready, isNotEmpty, reason: 'starting board should fill one order');
     final order = ready.first;
     final id = order['id'] as String;
-    final wanted =
-        (order['items'] as List<dynamic>).first as Map<String, dynamic>;
     final rewards = order['rewards'] as Map<String, dynamic>;
 
     // An order the board cannot fill has a disabled Deliver button.
@@ -71,7 +69,40 @@ void main() {
       expect(button.onPressed, isNull);
     }
 
+    final game = tester.widget<GameWidget<BoardGame>>(board).game;
+    final before = game?.itemCounts() ?? {};
+    expect(before, onBoard, reason: 'board starts with the content items');
+
+    // Pick up one of the wanted items and hold it while delivering: the
+    // delivery must still take it, and letting go must not bring it back.
+    final wantedId =
+        ((order['items'] as List<dynamic>).first
+                as Map<String, dynamic>)['item_id']
+            as String;
+    final held =
+        (start['items'] as List<dynamic>).firstWhere(
+              (i) => (i as Map<String, dynamic>)['item_id'] == wantedId,
+            )
+            as Map<String, dynamic>;
+    final rect = tester.getRect(board);
+    final byWidth = rect.width / BoardGame.cols;
+    final byHeight = rect.height / BoardGame.rows;
+    final cell = (byWidth < byHeight ? byWidth : byHeight) - 2;
+    final heldCentre = Offset(
+      rect.left +
+          (rect.width - BoardGame.cols * cell) / 2 +
+          ((held['col'] as int) + 0.5) * cell,
+      rect.top +
+          (rect.height - BoardGame.rows * cell) / 2 +
+          ((held['row'] as int) + 0.5) * cell,
+    );
+    final finger = await tester.startGesture(heldCentre);
+    await finger.moveBy(Offset(cell * 2, 0));
+    await tester.pump(const Duration(milliseconds: 200));
+
     await tester.tap(find.byKey(Key('order_deliver_$id')));
+    await tester.pump(const Duration(milliseconds: 300));
+    await finger.up();
     await tester.pump(const Duration(milliseconds: 500));
 
     // Rewards are paid, the card is replaced by the next order in line.
@@ -85,30 +116,18 @@ void main() {
       );
     }
 
-    // The delivered items left the board: another order wanting the same item
-    // now shows fewer in hand than before.
-    final sameItem = orders
-        .skip(slots)
-        .take(1)
-        .where(
-          (o) => (o['items'] as List<dynamic>).any(
-            (i) => (i as Map<String, dynamic>)['item_id'] == wanted['item_id'],
-          ),
-        );
-    for (final next in sameItem) {
-      final left = (onBoard[wanted['item_id']] ?? 0) - (wanted['count'] as int);
-      final need =
-          ((next['items'] as List<dynamic>).firstWhere(
-                    (i) =>
-                        (i as Map<String, dynamic>)['item_id'] ==
-                        wanted['item_id'],
-                  )
-                  as Map<String, dynamic>)['count']
-              as int;
-      expect(
-        text('order_have_${next['id']}_${wanted['item_id']}'),
-        '${left.clamp(0, need)}/$need',
-      );
+    // The delivered items, and only those, left the board.
+    final expected = Map<String, int>.of(onBoard);
+    for (final i in order['items'] as List<dynamic>) {
+      final item = i as Map<String, dynamic>;
+      final itemId = item['item_id'] as String;
+      final left = (expected[itemId] ?? 0) - (item['count'] as int);
+      if (left > 0) {
+        expected[itemId] = left;
+      } else {
+        expected.remove(itemId);
+      }
     }
+    expect(game?.itemCounts(), expected);
   });
 }

@@ -58,7 +58,18 @@ class OrderModel {
 /// Whether the board holds everything [order] asks for.
 /// [itemCounts] maps item_id -> how many are on the board.
 bool canFillOrder(OrderModel order, Map<String, int> itemCounts) =>
-    order.items.every((i) => (itemCounts[i.itemId] ?? 0) >= i.count);
+    orderItemTotals(
+      order,
+    ).entries.every((e) => (itemCounts[e.key] ?? 0) >= e.value);
+
+/// item_id -> total wanted, adding up an item that is listed more than once.
+Map<String, int> orderItemTotals(OrderModel order) {
+  final totals = <String, int>{};
+  for (final i in order.items) {
+    totals[i.itemId] = (totals[i.itemId] ?? 0) + i.count;
+  }
+  return totals;
+}
 
 /// Which orders are showing, which are waiting, and when one was last skipped.
 class OrderBook {

@@ -1,19 +1,8 @@
 // Holds the visible orders and the player's Talents and Blessings.
 import 'package:flutter/foundation.dart';
+import 'package:whispers_of_joppa/app/board_inventory.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
-
-/// What the orders need from the board, so this file does not depend on Flame.
-abstract class BoardInventory {
-  /// item_id -> how many are on the board right now.
-  Map<String, int> itemCounts();
-
-  /// Takes the given number of each item off the board.
-  void removeItems(Map<String, int> counts);
-
-  /// Fires whenever the items on the board change.
-  Listenable get boardChanged;
-}
 
 class OrdersController extends ChangeNotifier {
   final EconomyConfig config;
@@ -52,12 +41,12 @@ class OrdersController extends ChangeNotifier {
   bool deliver(String orderId) {
     final order = _orders[orderId];
     if (order == null || !_book.active.contains(orderId)) return false;
-    if (!canDeliver(order)) return false;
+    // The board refuses, changing nothing, if it does not hold the items.
+    if (!board.removeItems(orderItemTotals(order))) return false;
     _talents += order.talents;
     _blessings += order.blessings;
     _book = completeOrder(_book, orderId);
-    // Removing items fires boardChanged, which refreshes listeners.
-    board.removeItems({for (final i in order.items) i.itemId: i.count});
+    notifyListeners();
     return true;
   }
 

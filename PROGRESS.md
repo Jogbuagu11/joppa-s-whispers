@@ -194,7 +194,7 @@ Not in this milestone:
 
 ## Milestone 7 — state (2026-10-05)
 
-DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 113 unit tests
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 138 unit tests
 pass, content validator OK, four device tests pass on both (smoke, generator tap,
 out-of-Manna, orders), and the order cards were seen on screen.
 
@@ -215,6 +215,15 @@ Content notes for Jennifer's reviewer (flagged "REVIEW:" by the content writer):
 - ch1_o_012: "the widows' table" means care for widows, not communion.
 - Two spiritual orders are Naomi speaking to herself (the story bible gives her Love and
   Patience in Chapter 1). Elder Amos appears in the last order before his story entrance.
+
+Carried forward from the code review (its two blocking findings are fixed):
+- The Skip button does not reappear by itself when the 30 minutes are up (it does on the
+  next board change), and there is no countdown shown for it.
+- Story order: the bible gives Naomi a Kindness order in Chapter 1 that is not written yet,
+  and some orders are visible before their character's story entrance. Sort out when the
+  tutorial gates orders in Milestone 12.
+- "1–3 items" is read as 1–3 different items; an order may ask for 2 of each.
+- The 140-character limit, 1–3 items and 1–3 blessings rules live in the validator code.
 
 Not in this milestone:
 - Portraits on cards (a coloured initial for now; character art names need fixing first).

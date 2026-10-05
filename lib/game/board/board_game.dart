@@ -8,7 +8,8 @@ import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
-import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
+import 'package:whispers_of_joppa/app/board_inventory.dart';
+import 'package:whispers_of_joppa/domain/board_grid.dart';
 import 'package:whispers_of_joppa/game/board/cell_component.dart';
 import 'package:whispers_of_joppa/game/board/generator_component.dart';
 import 'package:whispers_of_joppa/game/board/item_component.dart';
@@ -69,30 +70,28 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   void _boardTouched() => Future<void>.microtask(() => _boardVersion.value++);
 
   @override
-  Map<String, int> itemCounts() {
-    final counts = <String, int>{};
-    for (final column in _board) {
-      for (final item in column) {
-        if (item != null) counts[item.itemId] = (counts[item.itemId] ?? 0) + 1;
-      }
-    }
-    return counts;
-  }
+  Map<String, int> itemCounts() => countItems(_board);
 
   @override
-  void removeItems(Map<String, int> counts) {
-    final left = Map<String, int>.of(counts);
-    for (int c = 0; c < cols; c++) {
-      for (int r = 0; r < rows; r++) {
-        final id = _board[c][r]?.itemId;
-        final want = left[id] ?? 0;
-        if (id == null || want <= 0) continue;
-        left[id] = want - 1;
-        _board[c][r] = null;
-        _cells[c][r].clearItem();
-      }
+  bool removeItems(Map<String, int> counts) {
+    // An item being dragged is put back first, so it cannot be delivered and
+    // then dropped back onto the board.
+    final dragging = _dragging;
+    final origin = _dragOriginCell;
+    if (dragging != null && origin != null) {
+      _snapBack(dragging, origin, dragging.item);
+    }
+    final cells = cellsToRemove(_board, counts);
+    if (cells == null) {
+      _log.warning('Board does not hold $counts; nothing removed');
+      return false;
+    }
+    for (final cell in cells) {
+      _board[cell.col][cell.row] = null;
+      _cells[cell.col][cell.row].clearItem();
     }
     _boardTouched();
+    return true;
   }
 
   // item_id -> loaded picture, for items whose art file exists.

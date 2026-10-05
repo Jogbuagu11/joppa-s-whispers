@@ -271,6 +271,17 @@ void main() {
       },
     );
 
+    test('an item listed twice and more than 3 items are reported', () {
+      final c = _valid();
+      final items = order(c)['items'] as List<dynamic>;
+      for (var i = 0; i < 3; i++) {
+        items.add({'item_id': 'bakery_02', 'count': 1});
+      }
+      final problems = _check(c);
+      expect(problems, contains(contains('is listed twice')));
+      expect(problems, contains(contains('1 to 3 different items')));
+    });
+
     test('duplicate or nameless characters are reported', () {
       final c = _valid();
       (c['characters'] as List<dynamic>).add({'id': 'silas', 'name': ' '});
