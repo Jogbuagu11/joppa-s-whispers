@@ -2,8 +2,10 @@
 // Values are loaded from .env at build time via --dart-define.
 // For local dev, values are hardcoded below (anon key is safe in app).
 class AppConfig {
-  static const String supabaseUrl =
-      String.fromEnvironment('SUPABASE_URL', defaultValue: 'https://sincvubcsnqzjefzsifq.supabase.co');
+  static const String supabaseUrl = String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: 'https://sincvubcsnqzjefzsifq.supabase.co',
+  );
 
   static const String supabaseAnonKey = String.fromEnvironment(
     'SUPABASE_ANON_KEY',

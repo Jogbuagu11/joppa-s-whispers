@@ -38,7 +38,8 @@ class BoardGame extends FlameGame with DragCallbacks {
 
   // Board data: item placed in each cell (null = empty).
   final List<List<ItemModel?>> _board = List.generate(
-    cols, (_) => List.generate(rows, (_) => null),
+    cols,
+    (_) => List.generate(rows, (_) => null),
   );
 
   // Items handed to placeItem before the board was built; placed in onLoad.
@@ -54,8 +55,8 @@ class BoardGame extends FlameGame with DragCallbacks {
     required this.generatorLevels,
     required this.generatorPlacements,
     int initialManna = 10,
-  })  : _manna = initialManna,
-        mannaNotifier = ValueNotifier<int>(initialManna);
+  }) : _manna = initialManna,
+       mannaNotifier = ValueNotifier<int>(initialManna);
 
   @override
   Color backgroundColor() => const Color(0xFF1A1205);
@@ -142,43 +143,25 @@ class BoardGame extends FlameGame with DragCallbacks {
 
     final gen = placement.gen;
 
-    if (_manna < gen.energyCost) {
-      _log.info('Not enough manna to tap ${gen.generatorId} (have $_manna, need ${gen.energyCost})');
-      return;
-    }
-
-    if (!_hasSpaceForItem()) {
-      _log.info('Board full — cannot spawn from ${gen.generatorId}');
-      return;
-    }
-
-    final levels = generatorLevels[genId];
-    if (levels == null || levels.isEmpty) {
-      _log.warning('No level data for generator $genId');
-      return;
-    }
-    // Use the generator's current level; fall back to level 1.
-    final levelData = levels.firstWhere(
-      (l) => l.level == gen.level,
-      orElse: () => levels.first,
+    final result = resolveGeneratorTap(
+      gen: gen,
+      manna: _manna,
+      hasFreeCell: _hasSpaceForItem(),
+      levels: generatorLevels[genId],
+      chains: chainData,
     );
-
-    final tier = spawnTier(levelData);
-    final itemId = resolveSpawnedItemId(gen.chainId, tier, chainData);
-    if (itemId == null) {
-      _log.warning('No item for chain=${gen.chainId} tier=$tier');
-      return;
-    }
-    final item = itemCatalog[itemId];
-    if (item == null) {
-      _log.warning('Item $itemId not in catalog');
+    final item = itemCatalog[result.itemId];
+    if (!result.spawned || item == null) {
+      _log.info(
+        'Generator $genId did not spawn: ${result.refusal ?? 'item ${result.itemId} not in catalog'}',
+      );
       return;
     }
 
-    _manna -= gen.energyCost;
+    _manna = result.mannaAfter;
     mannaNotifier.value = _manna;
     placeItem(item);
-    _log.fine('Generator $genId spawned $itemId (tier $tier), manna=$_manna');
+    _log.fine('Generator $genId spawned ${item.itemId}, manna=$_manna');
   }
 
   bool _hasSpaceForItem() {
@@ -203,13 +186,13 @@ class BoardGame extends FlameGame with DragCallbacks {
         final hasItem = _board[c][r] != null;
         final isGenCell = _generatorCellSet.contains((c, r));
         if (hasItem && !isGenCell && cell.containsPoint(event.canvasPosition)) {
+          final lifted = cell.liftItem();
+          if (lifted == null) return;
           _dragOriginCell = cell;
-          _dragging = cell.liftItem();
-          if (_dragging != null) {
-            add(_dragging!);
-            _dragging!.position =
-                event.canvasPosition - Vector2(_cellSize / 2, _cellSize / 2);
-          }
+          _dragging = lifted;
+          add(lifted);
+          lifted.position =
+              event.canvasPosition - Vector2(_cellSize / 2, _cellSize / 2);
           return;
         }
       }
@@ -219,16 +202,15 @@ class BoardGame extends FlameGame with DragCallbacks {
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
-    if (_dragging != null) {
-      _dragging!.position += event.localDelta;
-    }
+    _dragging?.position += event.localDelta;
   }
 
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
     final dragging = _dragging;
-    if (dragging == null) return;
+    final origin = _dragOriginCell;
+    if (dragging == null || origin == null) return;
 
     CellComponent? target;
     for (int c = 0; c < cols; c++) {
@@ -242,7 +224,6 @@ class BoardGame extends FlameGame with DragCallbacks {
       if (target != null) break;
     }
 
-    final origin = _dragOriginCell!;
     final originItem = dragging.item;
 
     if (target == null || target == origin) {
@@ -280,11 +261,7 @@ class BoardGame extends FlameGame with DragCallbacks {
     _dragOriginCell = null;
   }
 
-  void _snapBack(
-    ItemComponent dragging,
-    CellComponent origin,
-    ItemModel item,
-  ) {
+  void _snapBack(ItemComponent dragging, CellComponent origin, ItemModel item) {
     dragging.removeFromParent();
     origin.setItem(item, this);
     _board[origin.col][origin.row] = item;

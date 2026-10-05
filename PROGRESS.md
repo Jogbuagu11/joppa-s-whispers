@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 4 — Generators
+## Current milestone: 4 — Generators (done, waiting for Jennifer's approval before starting 5)
 
 ---
 
@@ -12,7 +12,7 @@
 | 1 | Empty board | DONE (m1-working) |
 | 2 | Drag & drop | DONE (m2-working) |
 | 3 | Merging | DONE (m3-working) |
-| 4 | Generators | IN PROGRESS |
+| 4 | Generators | DONE (m4-working) — awaiting approval |
 | 5 | Content loading | Partially done (ContentLoader built) |
 | 6 | Energy (Manna) | Not started |
 | 7 | Orders | Not started |
@@ -93,9 +93,22 @@ history, no `assets/` folder, and no root `CLAUDE.md`.
 
 ## Milestone 4 — state (2026-10-05)
 
-Verified on the iOS Simulator (iPhone 17, iOS 26.5): analyze clean, 30 unit tests pass,
-smoke test passes, generator tap test passes, board seen on screen.
-**Not yet verified on Android** — so the milestone is not done and not tagged.
+DONE. Verified on the iOS Simulator (iPhone 17, iOS 26.5) AND the Android Emulator
+(Pixel 9, API 36): analyze clean, 41 unit tests pass, smoke test passes, generator tap
+test passes, board seen on screen on both, generator taps seen spawning items on Android.
+Code review run; its two blocking findings are fixed (no unexplained `!`; generator-tap
+rules moved into tested `resolveGeneratorTap` in `lib/domain/generator.dart`).
+
+Carried forward from the code review (not blocking):
+- Starting Manna (10), generator placements and starter items are set in
+  `board_screen.dart` as temporary setup → move to content in Milestones 5/6.
+- `generator_tap_test.dart` checks the Manna count only and assumes the current layout;
+  rework when placements come from content (M5).
+- Energy cost exists in both `generators.json` and `economy.json`; pick one before M6.
+- Generators are looked up by ID; needs a per-tile ID before generators can merge.
+- `board_game.dart` is 271 lines; split drag handling out before it reaches 300.
+- `supabase/.temp/cli-latest` is tracked in git and should be ignored.
+- Fruit item art is JPEG (~500 KB each); TECH_SPEC asks for 256×256 transparent PNG.
 
 Fixed while getting it running:
 - `content/generators.json`: level 4 and 5 odds added up to more than 100%, so tier-3
@@ -119,7 +132,8 @@ Fixed while getting it running:
 
 ## Waiting on Jennifer
 
-- **Android Studio**: the installed copy is the Intel version and cannot start on this
-  Mac. Delete it, download the **Mac with Apple chip** version from
-  developer.android.com/studio, run the setup wizard with default choices, and create a
-  recent Pixel emulator in Device Manager. Tell me "emulator ready" when done.
+- Approve Milestone 4 so Milestone 5 (Content loading) can start.
+- Confirm the two assumptions above (test AdMob ID on iOS; minimum iOS 15).
+
+Note: Android Studio is not installed on this Mac. Android is built with the command-line
+tools, a Temurin 21 JDK in `~/development/jdk`, and an emulator named `Pixel_Joppa`.

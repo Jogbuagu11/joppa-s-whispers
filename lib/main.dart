@@ -11,7 +11,9 @@ void main() async {
   // Set up the logger — no print() anywhere else in the app.
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord record) {
-    debugPrint('[${record.level.name}] ${record.loggerName}: ${record.message}');
+    debugPrint(
+      '[${record.level.name}] ${record.loggerName}: ${record.message}',
+    );
   });
 
   await Supabase.initialize(

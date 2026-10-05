@@ -8,20 +8,29 @@ void main() {
       chainId: 'bakery',
       maxTier: 8,
       itemTiers: {
-        'bakery_01': 1, 'bakery_02': 2, 'bakery_03': 3, 'bakery_04': 4,
-        'bakery_05': 5, 'bakery_06': 6, 'bakery_07': 7, 'bakery_08': 8,
+        'bakery_01': 1,
+        'bakery_02': 2,
+        'bakery_03': 3,
+        'bakery_04': 4,
+        'bakery_05': 5,
+        'bakery_06': 6,
+        'bakery_07': 7,
+        'bakery_08': 8,
       },
       tierToItemId: {
-        'bakery_2': 'bakery_02', 'bakery_3': 'bakery_03',
-        'bakery_4': 'bakery_04', 'bakery_5': 'bakery_05',
-        'bakery_6': 'bakery_06', 'bakery_7': 'bakery_07',
+        'bakery_2': 'bakery_02',
+        'bakery_3': 'bakery_03',
+        'bakery_4': 'bakery_04',
+        'bakery_5': 'bakery_05',
+        'bakery_6': 'bakery_06',
+        'bakery_7': 'bakery_07',
         'bakery_8': 'bakery_08',
       },
     ),
   };
 
-  ItemModel item(String id, int tier) => ItemModel(
-        itemId: id, chainId: 'bakery', tier: tier, name: '', asset: '');
+  ItemModel item(String id, int tier) =>
+      ItemModel(itemId: id, chainId: 'bakery', tier: tier, name: '', asset: '');
 
   group('canMerge', () {
     test('identical items succeed', () {

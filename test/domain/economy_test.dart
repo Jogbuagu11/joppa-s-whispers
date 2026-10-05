@@ -49,20 +49,42 @@ void main() {
     });
 
     test('120 seconds = 1 manna', () {
-      expect(mannaRegenerated(config, 50, base, base.add(const Duration(seconds: 120))), 1);
+      expect(
+        mannaRegenerated(
+          config,
+          50,
+          base,
+          base.add(const Duration(seconds: 120)),
+        ),
+        1,
+      );
     });
 
     test('600 seconds = 5 manna', () {
-      expect(mannaRegenerated(config, 50, base, base.add(const Duration(seconds: 600))), 5);
+      expect(
+        mannaRegenerated(
+          config,
+          50,
+          base,
+          base.add(const Duration(seconds: 600)),
+        ),
+        5,
+      );
     });
 
     test('does not exceed cap', () {
       // Already at 99, only 1 more possible even if lots of time passed.
-      expect(mannaRegenerated(config, 99, base, base.add(const Duration(hours: 5))), 1);
+      expect(
+        mannaRegenerated(config, 99, base, base.add(const Duration(hours: 5))),
+        1,
+      );
     });
 
     test('full manna regenerates nothing', () {
-      expect(mannaRegenerated(config, 100, base, base.add(const Duration(hours: 5))), 0);
+      expect(
+        mannaRegenerated(config, 100, base, base.add(const Duration(hours: 5))),
+        0,
+      );
     });
   });
 }

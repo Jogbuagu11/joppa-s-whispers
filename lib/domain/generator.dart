@@ -42,5 +42,62 @@ String? resolveSpawnedItemId(
   String chainId,
   int tier,
   Map<String, ChainTierData> chains,
-) =>
-    chains[chainId]?.tierToItemId['${chainId}_$tier'];
+) => chains[chainId]?.tierToItemId['${chainId}_$tier'];
+
+/// Why a generator tap produced nothing.
+enum GeneratorTapRefusal { notEnoughManna, boardFull, noLevelData, noItem }
+
+/// Outcome of tapping a generator: either an item to spawn or a refusal.
+class GeneratorTapResult {
+  final String? itemId;
+  final int? tier;
+  final int mannaAfter;
+  final GeneratorTapRefusal? refusal;
+
+  const GeneratorTapResult.spawn({
+    required String this.itemId,
+    required int this.tier,
+    required this.mannaAfter,
+  }) : refusal = null;
+
+  const GeneratorTapResult.refused(
+    GeneratorTapRefusal this.refusal, {
+    required this.mannaAfter,
+  }) : itemId = null,
+       tier = null;
+
+  bool get spawned => refusal == null;
+}
+
+/// Decides what happens when a generator is tapped. Manna is only spent
+/// when an item is actually spawned.
+GeneratorTapResult resolveGeneratorTap({
+  required GeneratorModel gen,
+  required int manna,
+  required bool hasFreeCell,
+  required List<GeneratorLevelData>? levels,
+  required Map<String, ChainTierData> chains,
+  Random? random,
+}) {
+  GeneratorTapResult refuse(GeneratorTapRefusal why) =>
+      GeneratorTapResult.refused(why, mannaAfter: manna);
+
+  if (manna < gen.energyCost) return refuse(GeneratorTapRefusal.notEnoughManna);
+  if (!hasFreeCell) return refuse(GeneratorTapRefusal.boardFull);
+  if (levels == null || levels.isEmpty) {
+    return refuse(GeneratorTapRefusal.noLevelData);
+  }
+  // Use the generator's current level; fall back to the first level listed.
+  final levelData = levels.firstWhere(
+    (l) => l.level == gen.level,
+    orElse: () => levels.first,
+  );
+  final tier = spawnTier(levelData, random: random);
+  final itemId = resolveSpawnedItemId(gen.chainId, tier, chains);
+  if (itemId == null) return refuse(GeneratorTapRefusal.noItem);
+  return GeneratorTapResult.spawn(
+    itemId: itemId,
+    tier: tier,
+    mannaAfter: manna - gen.energyCost,
+  );
+}

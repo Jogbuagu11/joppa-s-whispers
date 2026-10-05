@@ -7,12 +7,12 @@ import 'package:whispers_of_joppa/domain/models.dart';
 // Palette: one distinct color per chain.
 const _chainColors = <String, Color>{
   'bakery': Color(0xFFD4802A),
-  'fruit':  Color(0xFF5DAD52),
+  'fruit': Color(0xFF5DAD52),
   'church': Color(0xFF6B8FCF),
-  'armor':  Color(0xFFB44A4A),
-  'loom':   Color(0xFF9B68B0),
-  'oil':    Color(0xFFCFB83A),
-  'word':   Color(0xFF4AACAB),
+  'armor': Color(0xFFB44A4A),
+  'loom': Color(0xFF9B68B0),
+  'oil': Color(0xFFCFB83A),
+  'word': Color(0xFF4AACAB),
 };
 
 class ItemComponent extends PositionComponent {
@@ -45,9 +45,6 @@ class ItemComponent extends PositionComponent {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    tp.paint(
-      canvas,
-      Offset((size.x - tp.width) / 2, (size.y - tp.height) / 2),
-    );
+    tp.paint(canvas, Offset((size.x - tp.width) / 2, (size.y - tp.height) / 2));
   }
 }

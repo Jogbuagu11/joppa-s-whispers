@@ -36,7 +36,9 @@ class ContentLoader {
       await _loadGenerators();
       await _loadEconomy();
       _loaded = true;
-      _log.info('Content loaded: ${items.length} items, ${generators.length} generators');
+      _log.info(
+        'Content loaded: ${items.length} items, ${generators.length} generators',
+      );
     } catch (e, stack) {
       _log.severe('Failed to load content', e, stack);
       rethrow;
@@ -62,8 +64,11 @@ class ContentLoader {
         final name = t['name'] as String;
         final asset = t['asset'] as String? ?? '';
         items[itemId] = ItemModel(
-          itemId: itemId, chainId: chainId,
-          tier: tier, name: name, asset: asset,
+          itemId: itemId,
+          chainId: chainId,
+          tier: tier,
+          name: name,
+          asset: asset,
         );
         itemTiers[itemId] = tier;
         tierToItemId['${chainId}_$tier'] = itemId;

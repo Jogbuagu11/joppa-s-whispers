@@ -2,11 +2,11 @@
 
 /// A single item on the board or in the basket.
 class ItemModel {
-  final String itemId;  // e.g. "bakery_03"
+  final String itemId; // e.g. "bakery_03"
   final String chainId; // e.g. "bakery"
   final int tier;
   final String name;
-  final String asset;   // asset path, may be empty (uses placeholder)
+  final String asset; // asset path, may be empty (uses placeholder)
 
   const ItemModel({
     required this.itemId,
@@ -24,7 +24,12 @@ class BoardCell {
   ItemModel? item;
   bool locked; // locked = rubble not yet cleared
 
-  BoardCell({required this.col, required this.row, this.item, this.locked = false});
+  BoardCell({
+    required this.col,
+    required this.row,
+    this.item,
+    this.locked = false,
+  });
 
   bool get isEmpty => item == null && !locked;
 }

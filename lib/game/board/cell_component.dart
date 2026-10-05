@@ -20,10 +20,7 @@ class CellComponent extends PositionComponent {
     required this.row,
     required this.cellSize,
     required Vector2 position,
-  }) : super(
-          position: position,
-          size: Vector2.all(cellSize),
-        );
+  }) : super(position: position, size: Vector2.all(cellSize));
 
   @override
   void render(Canvas canvas) {

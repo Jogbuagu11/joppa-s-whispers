@@ -25,17 +25,17 @@ class EconomyConfig {
   });
 
   factory EconomyConfig.fromJson(Map<String, dynamic> json) => EconomyConfig(
-        maxManna: json['max_manna'] as int,
-        mannaRegenSeconds: json['manna_regen_seconds'] as int,
-        generatorTapCost: json['generator_tap_cost'] as int,
-        mannaRefillBasePearls: json['manna_refill_base_pearls'] as int,
-        basketSlotBasePearls: json['basket_slot_base_pearls'] as int,
-        orderSkipCooldownSeconds: json['order_skip_cooldown_seconds'] as int,
-        rewardedAdMannaBonus: json['rewarded_ad_manna_bonus'] as int,
-        rewardedAdMannaDailyCap: json['rewarded_ad_manna_daily_cap'] as int,
-        rewardedAdDoubleRewardDailyCap:
-            json['rewarded_ad_double_reward_daily_cap'] as int,
-      );
+    maxManna: json['max_manna'] as int,
+    mannaRegenSeconds: json['manna_regen_seconds'] as int,
+    generatorTapCost: json['generator_tap_cost'] as int,
+    mannaRefillBasePearls: json['manna_refill_base_pearls'] as int,
+    basketSlotBasePearls: json['basket_slot_base_pearls'] as int,
+    orderSkipCooldownSeconds: json['order_skip_cooldown_seconds'] as int,
+    rewardedAdMannaBonus: json['rewarded_ad_manna_bonus'] as int,
+    rewardedAdMannaDailyCap: json['rewarded_ad_manna_daily_cap'] as int,
+    rewardedAdDoubleRewardDailyCap:
+        json['rewarded_ad_double_reward_daily_cap'] as int,
+  );
 }
 
 /// Sell value for an item of a given tier.
@@ -60,6 +60,8 @@ int mannaRegenerated(
 ) {
   if (currentManna >= config.maxManna) return 0;
   final elapsed = now.difference(lastRegenTime).inSeconds;
-  return (elapsed ~/ config.mannaRegenSeconds)
-      .clamp(0, config.maxManna - currentManna);
+  return (elapsed ~/ config.mannaRegenSeconds).clamp(
+    0,
+    config.maxManna - currentManna,
+  );
 }

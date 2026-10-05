@@ -29,8 +29,11 @@ class _BoardScreenState extends State<BoardScreen> {
 
       // Chapter 1 generators: Grandma's Pantry and Tree of Life.
       // Placed at bottom row (row 8), cols 2 and 4.
-      final genPantry = loader.generators['gen_pantry']!;
-      final genTree = loader.generators['gen_tree']!;
+      final genPantry = loader.generators['gen_pantry'];
+      final genTree = loader.generators['gen_tree'];
+      if (genPantry == null || genTree == null) {
+        throw StateError('Chapter 1 generators missing from generators.json');
+      }
 
       final game = BoardGame(
         itemCatalog: loader.items,
@@ -44,9 +47,10 @@ class _BoardScreenState extends State<BoardScreen> {
       );
 
       // Starter items for testing (removed once Chapter 1 tutorial is built).
-      game.placeItem(loader.items['bakery_01']!);
-      game.placeItem(loader.items['bakery_01']!);
-      game.placeItem(loader.items['fruit_01']!);
+      for (final id in ['bakery_01', 'bakery_01', 'fruit_01']) {
+        final item = loader.items[id];
+        if (item != null) game.placeItem(item);
+      }
 
       setState(() {
         _game = game;
@@ -62,27 +66,33 @@ class _BoardScreenState extends State<BoardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final game = _game;
+    final error = _error;
+    final Widget body;
+    if (error != null) {
+      body = Center(
+        child: Text(
+          error,
+          key: const Key('board_error'),
+          style: const TextStyle(color: Colors.red),
+        ),
+      );
+    } else if (_loading || game == null) {
+      body = const Center(
+        child: CircularProgressIndicator(color: Color(0xFFD4802A)),
+      );
+    } else {
+      body = Stack(
+        children: [
+          GameWidget(game: game),
+          _MannaOverlay(game: game),
+        ],
+      );
+    }
     return Scaffold(
       key: const Key('board_screen'),
       backgroundColor: const Color(0xFF1A1205),
-      body: _loading
-          ? const Center(
-              child: CircularProgressIndicator(color: Color(0xFFD4802A)),
-            )
-          : _error != null
-          ? Center(
-              child: Text(
-                _error!,
-                key: const Key('board_error'),
-                style: const TextStyle(color: Colors.red),
-              ),
-            )
-          : Stack(
-              children: [
-                GameWidget(game: _game!),
-                _MannaOverlay(game: _game!),
-              ],
-            ),
+      body: body,
     );
   }
 }
