@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
+import 'package:whispers_of_joppa/domain/scenes.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/main.dart' as app;
 
@@ -51,23 +52,40 @@ void main() {
       return image is AssetImage ? image.assetName : null;
     }
 
-    final portraitsSeen = <String?>{};
+    // Which portrait files exist, so the test knows what should be shown.
+    final assets = (await AssetManifest.loadFromAssetBundle(
+      rootBundle,
+    )).listAssets().toSet();
+
+    final portraitsBySpeaker = <String, Set<String>>{};
     for (int i = 0; i < lines.length; i++) {
+      final speaker = lines[i]['speaker'] as String;
+      final expression = lines[i]['expression'] as String;
       // Each line shows the right speaker name and words.
-      expect(text('scene_speaker'), names[lines[i]['speaker']]);
+      expect(text('scene_speaker'), names[speaker]);
       expect(text('scene_text'), lines[i]['text']);
-      final shown = portrait();
-      portraitsSeen.add(shown);
-      // A portrait, when shown, belongs to the speaker.
-      if (shown != null) {
-        expect(shown, contains('char_${lines[i]['speaker']}_'));
+      // And exactly the portrait for that speaker and expression: the
+      // expression's own picture when it exists, otherwise their neutral one.
+      final expected = portraitAssetFor(speaker, expression, assets);
+      expect(portrait(), expected, reason: 'line ${i + 1}');
+      if (assets.contains(
+        'assets/characters/char_${speaker}_$expression.jpg',
+      )) {
+        expect(expected, contains('char_${speaker}_$expression'));
+      }
+      if (expected != null) {
+        portraitsBySpeaker.putIfAbsent(speaker, () => {}).add(expected);
       }
       // Tap anywhere to move on.
       await tester.tapAt(tester.getCenter(sceneScreen));
       await tester.pump(const Duration(milliseconds: 400));
     }
-    // More than one picture was used, so portraits really swap.
-    expect(portraitsSeen.whereType<String>().length, greaterThan(1));
+    // At least one character changed expression during the scene.
+    expect(
+      portraitsBySpeaker.values.any((shown) => shown.length > 1),
+      isTrue,
+      reason: 'the opening scene should show an expression change',
+    );
 
     // After the last line the scene closes and the board is there.
     await tester.pump(const Duration(seconds: 1));

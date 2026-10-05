@@ -1,19 +1,92 @@
 [
-  { "id": "naomi", "name": "Naomi", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "esther", "name": "Grandma Esther", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "caleb", "name": "Caleb", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "joy", "name": "Joy", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "zilpah", "name": "Zilpah", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "amos", "name": "Elder Amos", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "marcus", "name": "Marcus", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "demas", "name": "Demas", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "silas", "name": "Silas", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "hannah", "name": "Hannah", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "jael", "name": "Jael", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "lucius", "name": "Lucius", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "tabitha", "name": "Tabitha", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "peter", "name": "Peter", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "simon", "name": "Simon the Tanner", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "tobiah", "name": "Tobiah", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] },
-  { "id": "dockworker", "name": "Dock Worker", "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"] }
+  {
+    "id": "naomi",
+    "name": "Naomi",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "esther",
+    "name": "Grandma Esther",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "caleb",
+    "name": "Caleb",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "joy",
+    "name": "Joy",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "zilpah",
+    "name": "Zilpah",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "amos",
+    "name": "Elder Amos",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "marcus",
+    "name": "Marcus",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "demas",
+    "name": "Demas",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "silas",
+    "name": "Silas",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "hannah",
+    "name": "Hannah",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "jael",
+    "name": "Jael",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "lucius",
+    "name": "Lucius",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "tabitha",
+    "name": "Tabitha",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "peter",
+    "name": "Peter",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "simon",
+    "name": "Simon the Tanner",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "tobiah",
+    "name": "Tobiah",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "dockworker",
+    "name": "Dock Worker",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "dockworker2",
+    "name": "Dock Worker",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  }
 ]

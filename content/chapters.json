@@ -1,1 +1,120 @@
-[]
+[
+  {
+    "id": "ch1",
+    "number": 1,
+    "title": "Homecoming",
+    "location_id": "bakehouse",
+    "unlocks_chains": ["bakery", "fruit"],
+    "crown_id": null,
+    "tasks": [
+      {
+        "id": "ch1_t_01",
+        "beat": 2,
+        "title": "Clear the doorway",
+        "cost_blessings": 1,
+        "scene_id": "ch1_s_02",
+        "restores_area": "bakehouse_door",
+        "letter_id": null
+      },
+      {
+        "id": "ch1_t_02",
+        "beat": 3,
+        "title": "Climb to Esther's rooftop",
+        "cost_blessings": 1,
+        "scene_id": "ch1_s_03a",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch1_t_03",
+        "beat": 3,
+        "title": "Search the oven niche",
+        "cost_blessings": 1,
+        "scene_id": "ch1_s_03b",
+        "restores_area": null,
+        "letter_id": "letter_01"
+      },
+      {
+        "id": "ch1_t_04",
+        "beat": 4,
+        "title": "Scrub the kneading table",
+        "cost_blessings": 1,
+        "scene_id": "ch1_s_04",
+        "restores_area": "bakehouse_table",
+        "letter_id": null
+      },
+      {
+        "id": "ch1_t_05",
+        "beat": 5,
+        "title": "Relight the oven",
+        "cost_blessings": 1,
+        "scene_id": "ch1_s_05",
+        "restores_area": "bakehouse_oven",
+        "letter_id": null
+      },
+      {
+        "id": "ch1_t_06",
+        "beat": 6,
+        "title": "Set out the bread counter",
+        "cost_blessings": 2,
+        "scene_id": "ch1_s_06",
+        "restores_area": "bakehouse_counter",
+        "letter_id": null
+      },
+      {
+        "id": "ch1_t_07",
+        "beat": 7,
+        "title": "Take bread to the market",
+        "cost_blessings": 2,
+        "scene_id": "ch1_s_07",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch1_t_08",
+        "beat": 8,
+        "title": "See to the broken shutters",
+        "cost_blessings": 2,
+        "scene_id": "ch1_s_08",
+        "restores_area": "bakehouse_shutters",
+        "letter_id": null
+      },
+      {
+        "id": "ch1_t_09",
+        "beat": 9,
+        "title": "Bake for the harbor, free",
+        "cost_blessings": 2,
+        "scene_id": "ch1_s_09a",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch1_t_10",
+        "beat": 9,
+        "title": "Reset the loose brick",
+        "cost_blessings": 2,
+        "scene_id": "ch1_s_09b",
+        "restores_area": "bakehouse_wall",
+        "letter_id": "letter_02"
+      },
+      {
+        "id": "ch1_t_11",
+        "beat": 10,
+        "title": "Stock the bread shelves",
+        "cost_blessings": 2,
+        "scene_id": "ch1_s_10",
+        "restores_area": "bakehouse_shelves",
+        "letter_id": null
+      },
+      {
+        "id": "ch1_t_12",
+        "beat": 11,
+        "title": "Bank the evening fire",
+        "cost_blessings": 2,
+        "scene_id": "ch1_s_11",
+        "restores_area": null,
+        "letter_id": null
+      }
+    ]
+  }
+]

@@ -13,7 +13,8 @@ Map<String, dynamic> _scene() => {
   'id': 'ch1_s_01',
   'background': 'loc_harbor_dusk',
   'lines': [
-    {'speaker': 'silas', 'expression': 'happy', 'text': 'Little loaf.'},
+    for (final text in ['Little loaf.', 'You came.', 'Sit.', 'Eat.'])
+      {'speaker': 'silas', 'expression': 'happy', 'text': text},
   ],
 };
 
@@ -51,9 +52,13 @@ void main() {
     expect(_check([s]).single, contains('over 140 characters'));
   });
 
-  test('a scene with no lines is reported', () {
-    final s = _scene()..['lines'] = <dynamic>[];
-    expect(_check([s]).single, contains('has no lines'));
+  test('too few or too many lines are reported', () {
+    final none = _scene()..['lines'] = <dynamic>[];
+    expect(_check([none]).single, contains('has 0 lines'));
+    final many = _scene();
+    final lines = many['lines'] as List<dynamic>;
+    many['lines'] = [for (int i = 0; i < 4; i++) ...lines];
+    expect(_check([many]).single, contains('has 16 lines'));
   });
 
   test('bad ids, duplicate ids and bad backgrounds are reported', () {

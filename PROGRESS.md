@@ -276,7 +276,7 @@ Not in this milestone:
 
 ## Milestone 9 — state (2026-10-05)
 
-DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 176 unit tests
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 180 unit tests
 pass, content validator OK, six device tests pass on both (smoke, scene, generator tap,
 out-of-Manna, orders, save/load), and the opening scene was seen on screen on both.
 
@@ -301,10 +301,21 @@ Content notes for Jennifer's reviewer (flagged "REVIEW:" by the content writer):
 - ch1_s_03a: an invented saying for Esther ("Small things joined make bigger things").
 - ch1_s_11: Amos neither confirms nor denies theft, so he does not lie.
 
+- ch1_s_06: Naomi says "Patience, Naomi. And peace enough not to bite." — ordinary words,
+  not naming the Fruit of the Spirit chain.
+
+Carried forward from the code review (its blocking finding, an over-long test file, is fixed):
+- Scene backgrounds are looked up as `assets/locations/bg_<background id>.png|webp|jpg`.
+- "Opening scene only on a new game" is covered by reading the code, not by a test.
+- Android back / iOS swipe dismiss a scene the same as Skip; Milestone 10 must tell
+  "finished" from "dismissed" if finishing a scene has consequences.
+- Portrait file naming is written in two places (`asset_names.dart`, `scenes.dart`).
+- In ch1_s_07 several lines share the single Dock Worker speaker.
+
 Not in this milestone:
 - Only the opening scene plays so far. The other 12 scenes are triggered by story tasks
   (Milestone 10) and spiritual orders.
-- No location art: scenes use a warm dusk wash until `assets/locations/<background>.jpg`
+- No location art: scenes use a warm dusk wash until `assets/locations/bg_<background>.png`
   files exist (5 backgrounds are named: harbor dusk, bakehouse outside and inside,
   rooftop night, market).
 - No portrait for the Dock Worker, Simon or Tobiah (no art); they show name and words only.

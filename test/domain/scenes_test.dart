@@ -75,4 +75,13 @@ void main() {
       expect(portraitAssetFor('dockworker', 'neutral', available), isNull);
     });
   });
+
+  test('backgroundAssetFor finds bg_<id> in any allowed format', () {
+    const available = {'assets/locations/bg_loc_market.webp'};
+    expect(
+      backgroundAssetFor('loc_market', available),
+      'assets/locations/bg_loc_market.webp',
+    );
+    expect(backgroundAssetFor('loc_well', available), isNull);
+  });
 }

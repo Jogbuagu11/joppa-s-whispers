@@ -30,10 +30,19 @@ class SceneScreen extends StatefulWidget {
 class _SceneScreenState extends State<SceneScreen> {
   late ScenePosition _position = ScenePosition(widget.scene);
 
+  bool _closing = false;
+
+  /// Leaves the scene once only, however many taps arrive in the same moment.
+  void _close() {
+    if (_closing) return;
+    _closing = true;
+    Navigator.of(context).pop();
+  }
+
   void _advance() {
     final next = _position.next();
     if (next == null) {
-      Navigator.of(context).pop();
+      _close();
     } else {
       setState(() => _position = next);
     }
@@ -46,7 +55,10 @@ class _SceneScreenState extends State<SceneScreen> {
     final portrait = line == null
         ? null
         : portraitAssetFor(speaker, line.expression, widget.availableAssets);
-    final background = 'assets/locations/${widget.scene.background}.jpg';
+    final background = backgroundAssetFor(
+      widget.scene.background,
+      widget.availableAssets,
+    );
 
     return Scaffold(
       key: const Key('scene_screen'),
@@ -58,7 +70,7 @@ class _SceneScreenState extends State<SceneScreen> {
           fit: StackFit.expand,
           children: [
             // Location art when it exists; a warm dusk wash until then.
-            if (widget.availableAssets.contains(background))
+            if (background != null)
               Image.asset(background, fit: BoxFit.cover)
             else
               const DecoratedBox(
@@ -77,7 +89,7 @@ class _SceneScreenState extends State<SceneScreen> {
                     alignment: Alignment.topRight,
                     child: TextButton(
                       key: const Key('scene_skip'),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: _close,
                       child: const Text(
                         'Skip',
                         style: TextStyle(color: _cream),

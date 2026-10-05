@@ -4,7 +4,7 @@
     "background": "loc_harbor_dusk",
     "lines": [
       { "speaker": "dockworker", "expression": "neutral", "text": "That's the widow they sent away from Caesarea." },
-      { "speaker": "dockworker", "expression": "neutral", "text": "Esther's girl? Coming home with one bundle and no husband." },
+      { "speaker": "dockworker2", "expression": "neutral", "text": "Esther's girl? Coming home with one bundle and no husband." },
       { "speaker": "dockworker", "expression": "neutral", "text": "Keep your voice down. She's looking this way." },
       { "speaker": "naomi", "expression": "thinking", "text": "Hm. One foot on the dock and Joppa already knows me. Fast town." },
       { "speaker": "silas", "expression": "happy", "text": "Little loaf. You came." },

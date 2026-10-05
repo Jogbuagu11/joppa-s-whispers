@@ -130,4 +130,16 @@ void main() {
       expect(File(item.asset).existsSync(), isTrue, reason: item.asset);
     }
   });
+
+  test('scenes and the opening scene are loaded from content', () {
+    final raw = _read('scenes') as List<dynamic>;
+    expect(loader.scenes.length, raw.length);
+    final first = raw.first as Map<String, dynamic>;
+    final scene = loader.scenes[first['id']];
+    expect(scene?.background, first['background']);
+    expect(scene?.lines.length, (first['lines'] as List).length);
+    final opening = loader.startingBoard.openingScene;
+    expect(opening, (_read('starting_board') as Map)['opening_scene']);
+    expect(loader.scenes.containsKey(opening), isTrue);
+  });
 }

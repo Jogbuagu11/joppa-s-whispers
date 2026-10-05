@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "letter_01",
+    "chapter": 1,
+    "title": "The oven niche",
+    "body": "My Naomi. If you are reading this, you came home, and I am already Home. Don't cry on the dough — it makes it salty. I know what they said about you in Caesarea. I never believed a word. Fear will tell you to hide in this kitchen. Don't.\n\"There is no fear in love; but perfect love casteth out fear.\" (1 John 4:18)\nOpen the shutters.\n— your Savta",
+    "reference": "1 John 4:18 (KJV)"
+  },
+  {
+    "id": "letter_02",
+    "chapter": 1,
+    "title": "Behind the loose brick",
+    "body": "Every morning for fifty years I lit that oven in the dark, not knowing if anyone would buy a single loaf. Someone always came.\n\"It is of the LORD's mercies that we are not consumed, because his compassions fail not. They are new every morning: great is thy faithfulness.\" (Lamentations 3:22–23)\nThe well remembers everything, little one. Go and listen.\n— your Savta",
+    "reference": "Lamentations 3:22–23 (KJV)"
+  }
+]

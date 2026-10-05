@@ -69,10 +69,15 @@ class _BoardScreenState extends State<BoardScreen> {
       }
       setState(() => _session = session);
       final opening = session.openingScene;
-      if (opening != null && widget.playOpeningScene) {
+      if (opening != null &&
+          opening.lines.isNotEmpty &&
+          widget.playOpeningScene) {
         await Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => SceneScreen(
+          // No slide-in: the story is the first thing a new player sees, not
+          // a glimpse of the board followed by the story.
+          PageRouteBuilder<void>(
+            transitionDuration: Duration.zero,
+            pageBuilder: (_, _, _) => SceneScreen(
               scene: opening,
               characterNames: session.characterNames,
               availableAssets: session.assetPaths,

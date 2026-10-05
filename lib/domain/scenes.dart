@@ -71,3 +71,13 @@ String? portraitAssetFor(
   }
   return null;
 }
+
+/// The background picture for a scene, named `bg_<background id>` in
+/// assets/locations/ (TECH_SPEC section 10), or null if there is none yet.
+String? backgroundAssetFor(String background, Set<String> availableAssets) {
+  for (final ext in const ['png', 'webp', 'jpg']) {
+    final path = 'assets/locations/bg_$background.$ext';
+    if (availableAssets.contains(path)) return path;
+  }
+  return null;
+}

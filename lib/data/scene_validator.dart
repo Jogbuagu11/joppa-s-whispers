@@ -4,6 +4,10 @@ final _sceneId = RegExp(r'^[a-z][a-z0-9_]*$');
 final _background = RegExp(r'^loc_[a-z0-9_]+$');
 const _maxTextLength = 140;
 
+// Story bible section 7: scenes run 4 to 12 lines.
+const _minLines = 4;
+const _maxLines = 12;
+
 /// Adds a plain-English line to [problems] for every mistake found.
 void checkScenes({
   required List<Map<String, dynamic>> scenes,
@@ -34,7 +38,11 @@ void checkScenes({
     }
     final lines = (scene['lines'] as List<dynamic>)
         .cast<Map<String, dynamic>>();
-    if (lines.isEmpty) problems.add('Scene $id: has no lines');
+    if (lines.length < _minLines || lines.length > _maxLines) {
+      problems.add(
+        'Scene $id: has ${lines.length} lines; scenes run $_minLines to $_maxLines',
+      );
+    }
     for (var i = 0; i < lines.length; i++) {
       final line = lines[i];
       final where = 'Scene $id line ${i + 1}';

@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "id": "bakehouse",
+    "name": "Esther's Bakehouse",
+    "areas": [
+      { "id": "bakehouse_door", "name": "Doorway", "before": "loc_bakehouse_door_before", "after": "loc_bakehouse_door_after" },
+      { "id": "bakehouse_table", "name": "Kneading table", "before": "loc_bakehouse_table_before", "after": "loc_bakehouse_table_after" },
+      { "id": "bakehouse_oven", "name": "Oven", "before": "loc_bakehouse_oven_before", "after": "loc_bakehouse_oven_after" },
+      { "id": "bakehouse_counter", "name": "Bread counter", "before": "loc_bakehouse_counter_before", "after": "loc_bakehouse_counter_after" },
+      { "id": "bakehouse_shutters", "name": "Shutters", "before": "loc_bakehouse_shutters_before", "after": "loc_bakehouse_shutters_after" },
+      { "id": "bakehouse_wall", "name": "Oven wall", "before": "loc_bakehouse_wall_before", "after": "loc_bakehouse_wall_after" },
+      { "id": "bakehouse_shelves", "name": "Bread shelves", "before": "loc_bakehouse_shelves_before", "after": "loc_bakehouse_shelves_after" }
+    ]
+  }
+]
