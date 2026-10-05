@@ -90,3 +90,62 @@ class BoardState {
     return null;
   }
 }
+
+/// Where a generator sits when a new game begins.
+class StartingGenerator {
+  final String generatorId;
+  final int col;
+  final int row;
+
+  const StartingGenerator({
+    required this.generatorId,
+    required this.col,
+    required this.row,
+  });
+}
+
+/// An item already on the board when a new game begins.
+class StartingItem {
+  final String itemId;
+  final int col;
+  final int row;
+
+  const StartingItem({
+    required this.itemId,
+    required this.col,
+    required this.row,
+  });
+}
+
+/// The board a brand-new player sees, from content/starting_board.json.
+class StartingBoard {
+  final int manna;
+  final List<StartingGenerator> generators;
+  final List<StartingItem> items;
+
+  const StartingBoard({
+    required this.manna,
+    required this.generators,
+    required this.items,
+  });
+
+  factory StartingBoard.fromJson(Map<String, dynamic> json) => StartingBoard(
+    manna: json['manna'] as int,
+    generators: [
+      for (final g in json['generators'] as List<dynamic>)
+        StartingGenerator(
+          generatorId: (g as Map<String, dynamic>)['generator_id'] as String,
+          col: g['col'] as int,
+          row: g['row'] as int,
+        ),
+    ],
+    items: [
+      for (final i in json['items'] as List<dynamic>)
+        StartingItem(
+          itemId: (i as Map<String, dynamic>)['item_id'] as String,
+          col: i['col'] as int,
+          row: i['row'] as int,
+        ),
+    ],
+  );
+}

@@ -1,0 +1,12 @@
+{
+  "manna": 10,
+  "generators": [
+    { "generator_id": "gen_pantry", "col": 2, "row": 8 },
+    { "generator_id": "gen_tree", "col": 4, "row": 8 }
+  ],
+  "items": [
+    { "item_id": "bakery_01", "col": 0, "row": 0 },
+    { "item_id": "bakery_01", "col": 0, "row": 1 },
+    { "item_id": "fruit_01", "col": 0, "row": 2 }
+  ]
+}

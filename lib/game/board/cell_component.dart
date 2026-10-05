@@ -1,6 +1,5 @@
 // A single cell on the board grid.
 import 'package:flame/components.dart';
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/game/board/item_component.dart';
@@ -39,10 +38,11 @@ class CellComponent extends PositionComponent {
   }
 
   /// Places (or replaces) an item in this cell.
-  void setItem(ItemModel item, FlameGame game) {
+  void setItem(ItemModel item, Color color) {
     _item?.removeFromParent();
     final comp = ItemComponent(
       item: item,
+      color: color,
       size: Vector2.all(cellSize - 8),
       position: Vector2(4, 4),
     );

@@ -27,30 +27,36 @@ class _BoardScreenState extends State<BoardScreen> {
       final loader = ContentLoader();
       await loader.load();
 
-      // Chapter 1 generators: Grandma's Pantry and Tree of Life.
-      // Placed at bottom row (row 8), cols 2 and 4.
-      final genPantry = loader.generators['gen_pantry'];
-      final genTree = loader.generators['gen_tree'];
-      if (genPantry == null || genTree == null) {
-        throw StateError('Chapter 1 generators missing from generators.json');
+      // The opening board comes from content/starting_board.json.
+      final start = loader.startingBoard;
+      final generatorPlacements = <GeneratorPlacement>[];
+      for (final g in start.generators) {
+        final gen = loader.generators[g.generatorId];
+        if (gen == null) {
+          throw StateError(
+            'Unknown generator in starting board: ${g.generatorId}',
+          );
+        }
+        generatorPlacements.add((gen: gen, col: g.col, row: g.row));
+      }
+      final startingItems = <ItemPlacement>[];
+      for (final i in start.items) {
+        final item = loader.items[i.itemId];
+        if (item == null) {
+          throw StateError('Unknown item in starting board: ${i.itemId}');
+        }
+        startingItems.add((item: item, col: i.col, row: i.row));
       }
 
       final game = BoardGame(
         itemCatalog: loader.items,
         chainData: loader.chains,
         generatorLevels: loader.generatorLevels,
-        generatorPlacements: [
-          (gen: genPantry, col: 2, row: 8),
-          (gen: genTree, col: 4, row: 8),
-        ],
-        initialManna: 10,
+        generatorPlacements: generatorPlacements,
+        startingItems: startingItems,
+        chainPlaceholderColors: loader.chainPlaceholderColors,
+        initialManna: start.manna,
       );
-
-      // Starter items for testing (removed once Chapter 1 tutorial is built).
-      for (final id in ['bakery_01', 'bakery_01', 'fruit_01']) {
-        final item = loader.items[id];
-        if (item != null) game.placeItem(item);
-      }
 
       setState(() {
         _game = game;

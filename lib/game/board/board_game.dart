@@ -15,6 +15,9 @@ final _log = Logger('BoardGame');
 /// A generator placement — which cell on the board it sits in.
 typedef GeneratorPlacement = ({GeneratorModel gen, int col, int row});
 
+/// An item that starts on the board, and the cell it starts in.
+typedef ItemPlacement = ({ItemModel item, int col, int row});
+
 /// The Flame game for the merge board.
 class BoardGame extends FlameGame with DragCallbacks {
   static const int cols = BoardState.cols;
@@ -24,6 +27,10 @@ class BoardGame extends FlameGame with DragCallbacks {
   final Map<String, ChainTierData> chainData;
   final Map<String, List<GeneratorLevelData>> generatorLevels;
   final List<GeneratorPlacement> generatorPlacements;
+  final List<ItemPlacement> startingItems;
+
+  /// chain_id -> ARGB colour for placeholder tiles (from content).
+  final Map<String, int> chainPlaceholderColors;
 
   // Manna exposed to Flutter layer via ValueNotifier.
   final ValueNotifier<int> mannaNotifier;
@@ -42,10 +49,6 @@ class BoardGame extends FlameGame with DragCallbacks {
     (_) => List.generate(rows, (_) => null),
   );
 
-  // Items handed to placeItem before the board was built; placed in onLoad.
-  final List<ItemModel> _pendingItems = [];
-  bool _boardBuilt = false;
-
   // Set of (col, row) positions occupied by generators.
   final Set<(int, int)> _generatorCellSet = {};
 
@@ -54,7 +57,9 @@ class BoardGame extends FlameGame with DragCallbacks {
     required this.chainData,
     required this.generatorLevels,
     required this.generatorPlacements,
-    int initialManna = 10,
+    required this.startingItems,
+    required this.chainPlaceholderColors,
+    required int initialManna,
   }) : _manna = initialManna,
        mannaNotifier = ValueNotifier<int>(initialManna);
 
@@ -65,11 +70,17 @@ class BoardGame extends FlameGame with DragCallbacks {
   Future<void> onLoad() async {
     _buildCells();
     _buildGenerators();
-    _boardBuilt = true;
-    for (final item in _pendingItems) {
-      placeItem(item);
+    for (final start in startingItems) {
+      final free =
+          _board[start.col][start.row] == null &&
+          !_generatorCellSet.contains((start.col, start.row));
+      if (!free) {
+        _log.warning('Starting cell ${start.col},${start.row} is taken');
+        continue;
+      }
+      _board[start.col][start.row] = start.item;
+      _cells[start.col][start.row].setItem(start.item, _colorFor(start.item));
     }
-    _pendingItems.clear();
   }
 
   void _buildCells() {
@@ -111,23 +122,23 @@ class BoardGame extends FlameGame with DragCallbacks {
     }
   }
 
+  // Grey is the fallback when a chain has no placeholder colour in content.
+  Color _colorFor(ItemModel item) =>
+      Color(chainPlaceholderColors[item.chainId] ?? 0xFF888888);
+
   double get _cellSize {
     final maxW = size.x / cols;
     final maxH = size.y / rows;
     return (maxW < maxH ? maxW : maxH) - 2;
   }
 
-  /// Called by BoardScreen to place an item in the first empty non-generator cell.
+  /// Places an item in the first empty non-generator cell.
   void placeItem(ItemModel item) {
-    if (!_boardBuilt) {
-      _pendingItems.add(item);
-      return;
-    }
     for (int c = 0; c < cols; c++) {
       for (int r = 0; r < rows; r++) {
         if (_board[c][r] == null && !_generatorCellSet.contains((c, r))) {
           _board[c][r] = item;
-          _cells[c][r].setItem(item, this);
+          _cells[c][r].setItem(item, _colorFor(item));
           return;
         }
       }
@@ -237,7 +248,7 @@ class BoardGame extends FlameGame with DragCallbacks {
       _board[origin.col][origin.row] = null;
       _board[target.col][target.row] = originItem;
       dragging.removeFromParent();
-      target.setItem(originItem, this);
+      target.setItem(originItem, _colorFor(originItem));
     } else {
       final result = canMerge(originItem, targetItem, chainData);
       if (result == MergeResult.success) {
@@ -247,7 +258,7 @@ class BoardGame extends FlameGame with DragCallbacks {
           _board[origin.col][origin.row] = null;
           _board[target.col][target.row] = merged;
           dragging.removeFromParent();
-          target.setItem(merged, this);
+          target.setItem(merged, _colorFor(merged));
           _log.fine('Merged ${originItem.itemId} -> ${merged.itemId}');
         } else {
           _snapBack(dragging, origin, originItem);
@@ -263,7 +274,7 @@ class BoardGame extends FlameGame with DragCallbacks {
 
   void _snapBack(ItemComponent dragging, CellComponent origin, ItemModel item) {
     dragging.removeFromParent();
-    origin.setItem(item, this);
+    origin.setItem(item, _colorFor(item));
     _board[origin.col][origin.row] = item;
     _dragging = null;
     _dragOriginCell = null;
