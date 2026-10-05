@@ -22,6 +22,7 @@ const requiredEconomyKeys = [
   'generator_tap_cost',
   'order_talents_per_tier',
   'order_slots',
+  'tutorial_free_taps',
   'manna_refill_base_pearls',
   'basket_slot_base_pearls',
   'order_skip_cooldown_seconds',

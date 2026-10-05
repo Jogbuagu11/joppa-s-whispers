@@ -53,7 +53,12 @@ class OrdersController extends ChangeNotifier {
 
   bool canDeliver(OrderModel order) => canFillOrder(order, board.itemCounts());
 
-  bool get canSkip => canSkipOrder(config, _book, _now());
+  /// When set and returning false, orders cannot be skipped (the tutorial
+  /// turns skipping off so its orders stay on screen).
+  bool Function()? skipAllowed;
+
+  bool get canSkip =>
+      (skipAllowed?.call() ?? true) && canSkipOrder(config, _book, _now());
 
   /// Takes the items off the board, pays the rewards and shows the next order.
   /// Returns false, changing nothing, if the board does not have the items.
@@ -82,6 +87,7 @@ class OrdersController extends ChangeNotifier {
 
   /// Swaps an order for the next one, if skipping is allowed right now.
   void skip(String orderId) {
+    if (!canSkip) return;
     _book = skipOrder(config, _book, orderId, _now());
     notifyListeners();
   }

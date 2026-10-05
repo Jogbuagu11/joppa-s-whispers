@@ -5,7 +5,6 @@ import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
 import 'package:whispers_of_joppa/features/restoration/location_screen.dart';
 import 'package:whispers_of_joppa/features/story/scene_screen.dart';
-import 'package:whispers_of_joppa/domain/progression.dart';
 import 'package:whispers_of_joppa/features/story/chapter_ending.dart';
 import 'package:whispers_of_joppa/features/story/task_bar.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_banner.dart';
@@ -101,16 +100,19 @@ class _BoardScreenState extends State<BoardScreen> {
       final area = task.restoresArea;
       if (area != null) await _showLocation(locationId, justRestored: area);
       // The chapter's last task ends with its closing message.
-      final ending = session.endings[chapter?.id];
-      if (chapter != null &&
-          ending != null &&
-          isChapterComplete(chapter, session.story.completedTasks.toSet()) &&
-          mounted) {
-        await showChapterEnding(context, ending);
-      }
+      await _showPendingEnding();
     } finally {
       _taskRunning = false;
     }
+  }
+
+  /// Shows the closing message of a finished chapter, once.
+  Future<void> _showPendingEnding() async {
+    final session = _session;
+    final ending = session?.pendingEnding;
+    if (session == null || ending == null || !mounted) return;
+    session.markEndingSeen(ending.chapterId);
+    await showChapterEnding(context, ending);
   }
 
   /// The location button: shows the current chapter's location.
@@ -174,6 +176,8 @@ class _BoardScreenState extends State<BoardScreen> {
           ),
         );
       }
+      // A chapter finished earlier whose closing message was never seen.
+      await _showPendingEnding();
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e.toString());

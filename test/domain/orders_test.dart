@@ -9,6 +9,7 @@ void main() {
     generatorTapCost: 1,
     orderTalentsPerTier: 5,
     orderSlots: 3,
+    tutorialFreeTaps: 12,
     mannaRefillBasePearls: 10,
     basketSlotBasePearls: 10,
     orderSkipCooldownSeconds: 1800,

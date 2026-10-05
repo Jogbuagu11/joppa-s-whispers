@@ -48,6 +48,12 @@ void main() {
       rect.top + (rect.height - BoardGame.rows * cell) / 2 + (row + 0.5) * cell,
     );
 
+    // While the tutorial runs, orders cannot be skipped away.
+    expect(
+      find.byWidgetPredicate((w) => w.key.toString().contains('order_skip_')),
+      findsNothing,
+    );
+
     // Step 1: the first hint asks for a merge.
     expect(steps[0]['done_when'], {'type': 'merge'});
     expect(find.byKey(const Key('tutorial_banner')), findsOneWidget);

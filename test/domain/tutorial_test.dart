@@ -152,4 +152,25 @@ void main() {
       expect(next(-3), 0);
     });
   });
+
+  group('tutorialTapIsFree', () {
+    bool free(int index, int used) => tutorialTapIsFree(
+      index < steps.length ? steps[index] : null,
+      freeTapsUsed: used,
+      freeTapsAllowed: 3,
+    );
+
+    test('free on a free_manna step while taps remain', () {
+      expect(free(0, 0), isTrue);
+      expect(free(2, 2), isTrue);
+    });
+    test('no longer free once the allowance is used up', () {
+      expect(free(0, 3), isFalse);
+      expect(free(2, 99), isFalse);
+    });
+    test('never free on other steps or after the tutorial', () {
+      expect(free(3, 0), isFalse);
+      expect(free(6, 0), isFalse);
+    });
+  });
 }

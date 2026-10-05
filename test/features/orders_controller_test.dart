@@ -49,6 +49,7 @@ void main() {
     generatorTapCost: 1,
     orderTalentsPerTier: 5,
     orderSlots: 2,
+    tutorialFreeTaps: 12,
     mannaRefillBasePearls: 10,
     basketSlotBasePearls: 10,
     orderSkipCooldownSeconds: 1800,
@@ -176,5 +177,14 @@ void main() {
     expect(delivered, isEmpty);
     controller.deliver('a');
     expect(delivered, ['a']);
+  });
+
+  test('skipping can be switched off', () {
+    controller.skipAllowed = () => false;
+    expect(controller.canSkip, isFalse);
+    controller.skip('a');
+    expect([for (final o in controller.activeOrders) o.id], ['a', 'b']);
+    controller.skipAllowed = () => true;
+    expect(controller.canSkip, isTrue);
   });
 }

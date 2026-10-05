@@ -10,14 +10,21 @@ class TutorialController extends ChangeNotifier {
   final Set<String> Function() completedOrders;
   final Set<String> Function() completedTasks;
 
+  /// How many free generator taps the tutorial gives in total.
+  final int freeTapsAllowed;
+
   int _index;
+  int _freeTapsUsed;
 
   TutorialController({
     required this.steps,
     required this.completedOrders,
     required this.completedTasks,
+    required this.freeTapsAllowed,
     int startIndex = 0,
-  }) : _index = nextTutorialIndex(
+    int freeTapsAlreadyUsed = 0,
+  }) : _freeTapsUsed = freeTapsAlreadyUsed,
+       _index = nextTutorialIndex(
          steps,
          startIndex,
          completedOrders: completedOrders(),
@@ -32,8 +39,22 @@ class TutorialController extends ChangeNotifier {
 
   bool get isOver => current == null;
 
-  /// Generator taps cost nothing while an early tutorial step is showing.
-  bool get freeManna => current?.freeManna ?? false;
+  /// Free taps used so far (written to the save file).
+  int get freeTapsUsed => _freeTapsUsed;
+
+  /// Generator taps cost nothing on the early tutorial steps, up to a fixed
+  /// number of taps in total.
+  bool get freeManna => tutorialTapIsFree(
+    current,
+    freeTapsUsed: _freeTapsUsed,
+    freeTapsAllowed: freeTapsAllowed,
+  );
+
+  /// Call after a generator tap that cost nothing.
+  void noteFreeTap() {
+    _freeTapsUsed++;
+    notifyListeners();
+  }
 
   /// Tell the tutorial what the player just did.
   void handle(TutorialEvent event) {

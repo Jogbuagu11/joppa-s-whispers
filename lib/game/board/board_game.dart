@@ -49,7 +49,10 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
 
   /// Called after two items merge, and after a generator spawns an item.
   VoidCallback? onMerge;
-  VoidCallback? onGeneratorSpawn;
+
+  /// Called after a generator spawns an item; [wasFree] is true when the tap
+  /// cost nothing.
+  void Function({required bool wasFree})? onGeneratorSpawn;
 
   /// When this returns true, generator taps cost nothing (tutorial).
   bool Function()? freeGeneratorTaps;

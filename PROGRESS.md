@@ -397,7 +397,7 @@ Not in this milestone:
 
 ## Milestone 12 — state (2026-10-05)
 
-DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 248 unit tests
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 263 unit tests
 pass, content validator OK, nine device tests pass on both (smoke, scene, tutorial, tasks,
 restoration, generator tap, out-of-Manna, orders, save/load), and the first tutorial hint
 was seen on screen.
@@ -420,7 +420,12 @@ From first launch a new player now gets:
 Decisions:
 - The tutorial guides rather than forces: the player can do other things, and nothing can
   get stuck. The GDD says "forced merge"; a locked-down version can be added later.
-- Free Manna covers only the first three hints, so it cannot be used to play free forever.
+- Free generator taps are given only on the first three hints and only 12 in total
+  (`tutorial_free_taps` in economy.json; a flatbread needs 8). After that taps cost Manna
+  even if the player never finishes the tutorial.
+- Orders cannot be skipped until the tutorial is over, so its orders stay on screen.
+- A chapter's closing message is shown once; if the app closes before it appears, it is
+  shown at the next launch.
 - Chapter 1 needs about 162 generator taps in all; with 100 Manna to start and 1 back
   every 2 minutes, a player finishes it over a couple of sessions.
 
@@ -431,6 +436,15 @@ Content notes for Jennifer's reviewer (flagged "REVIEW:" by the content writer):
   earned by works; wording follows the GDD's currency name.
 - Scene order: the tutorial happens on the rooftop board before task 1's scene, which ends
   with Silas inviting Naomi up to the roof.
+
+Carried forward from the code review (its blocking finding, unlimited free Manna, is fixed):
+- The tutorial device test covers the first two hints (merge, generator tap, free tap).
+  The later hints are covered by unit tests of the rules and controller, not on a device.
+- The tutorial position is saved as a step number; save the step id before tutorial
+  content can change after launch (Milestone 15).
+- Android back closes the chapter-ending message like its button does.
+- The playthrough test proves Blessings and board space; it does not model Manna.
+- `content_validator.dart` is close to 300 lines; split before adding to it.
 
 Not in this milestone:
 - No device test plays the entire chapter by hand gestures (the rules-level playthrough

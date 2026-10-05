@@ -28,11 +28,13 @@ const _steps = [
 void main() {
   late Set<String> orders;
 
-  TutorialController make({int start = 0}) => TutorialController(
+  TutorialController make({int start = 0, int used = 0}) => TutorialController(
     steps: _steps,
     completedOrders: () => orders,
     completedTasks: () => const {},
+    freeTapsAllowed: 2,
     startIndex: start,
+    freeTapsAlreadyUsed: used,
   );
 
   setUp(() => orders = {});
@@ -83,5 +85,24 @@ void main() {
 
   test('a save from after the tutorial stays finished', () {
     expect(make(start: 99).isOver, isTrue);
+  });
+
+  test('free taps run out even if the player never leaves the first step', () {
+    final c = make();
+    var notified = 0;
+    c.addListener(() => notified++);
+    expect(c.freeManna, isTrue);
+    c.noteFreeTap();
+    expect(c.freeManna, isTrue);
+    c.noteFreeTap();
+    expect(c.freeManna, isFalse);
+    expect(c.freeTapsUsed, 2);
+    expect(c.current?.id, 'merge');
+    expect(notified, 2);
+  });
+
+  test('free taps already used are restored from the save', () {
+    expect(make(used: 2).freeManna, isFalse);
+    expect(make(used: 1).freeManna, isTrue);
   });
 }

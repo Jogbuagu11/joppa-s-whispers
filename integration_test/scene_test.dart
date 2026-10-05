@@ -76,9 +76,18 @@ void main() {
       if (expected != null) {
         portraitsBySpeaker.putIfAbsent(speaker, () => {}).add(expected);
       }
-      // Tap anywhere to move on.
+      // Tap anywhere to move on, then wait for the old portrait to finish
+      // fading out (a slow device can take longer than the fade itself).
       await tester.tapAt(tester.getCenter(sceneScreen));
       await tester.pump(const Duration(milliseconds: 400));
+      for (
+        int wait = 0;
+        wait < 30 &&
+            find.byKey(const Key('scene_portrait')).evaluate().length > 1;
+        wait++
+      ) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
     }
     // At least one character changed expression during the scene.
     expect(

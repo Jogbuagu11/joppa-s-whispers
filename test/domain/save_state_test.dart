@@ -19,6 +19,8 @@ SaveState _sample() => SaveState(
   completedOrders: const ['ch1_o_001'],
   completedTasks: const ['ch1_t_01'],
   tutorialStep: 2,
+  tutorialFreeTapsUsed: 5,
+  endingsSeen: const ['ch1'],
   lastOrderSkip: DateTime.utc(2040, 1, 1, 12),
 );
 
@@ -54,6 +56,8 @@ void main() {
     expect(back.completedOrders, ['ch1_o_001']);
     expect(back.completedTasks, ['ch1_t_01']);
     expect(back.tutorialStep, 2);
+    expect(back.tutorialFreeTapsUsed, 5);
+    expect(back.endingsSeen, ['ch1']);
     expect(back.lastOrderSkip, DateTime.utc(2040, 1, 1, 12));
   });
 
@@ -119,6 +123,15 @@ void main() {
   test('a current save missing its task progress is rejected', () {
     final json = _sample().toJson()..remove('completed_tasks');
     expect(() => SaveState.fromJson(json), throwsFormatException);
+  });
+
+  test('a version 4 save from before free-tap counting still loads', () {
+    final json = _sample().toJson()
+      ..remove('tutorial_free_taps_used')
+      ..remove('endings_seen');
+    final back = SaveState.fromJson(json);
+    expect(back.tutorialFreeTapsUsed, 0);
+    expect(back.endingsSeen, isEmpty);
   });
 
   test('a wrongly typed order list is rejected, not crashed on later', () {

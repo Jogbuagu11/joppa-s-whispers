@@ -72,6 +72,12 @@ class SaveState {
 
   /// Which tutorial hint is showing; [tutorialFinished] once it is over.
   final int tutorialStep;
+
+  /// Free generator taps the tutorial has already given.
+  final int tutorialFreeTapsUsed;
+
+  /// Chapters whose closing message has been shown.
+  final List<String> endingsSeen;
   final DateTime? lastOrderSkip;
 
   const SaveState({
@@ -86,6 +92,8 @@ class SaveState {
     required this.completedOrders,
     required this.completedTasks,
     required this.tutorialStep,
+    this.tutorialFreeTapsUsed = 0,
+    this.endingsSeen = const [],
     required this.lastOrderSkip,
   });
 
@@ -102,6 +110,8 @@ class SaveState {
     'completed_orders': completedOrders,
     'completed_tasks': completedTasks,
     'tutorial_step': tutorialStep,
+    'tutorial_free_taps_used': tutorialFreeTapsUsed,
+    'endings_seen': endingsSeen,
     'last_order_skip': lastOrderSkip?.toUtc().toIso8601String(),
   };
 
@@ -135,6 +145,11 @@ class SaveState {
           json['completed_tasks'] as List<dynamic>,
         ),
         tutorialStep: json['tutorial_step'] as int,
+        // Added within version 4; absent in the earliest version 4 saves.
+        tutorialFreeTapsUsed: json['tutorial_free_taps_used'] as int? ?? 0,
+        endingsSeen: List<String>.from(
+          json['endings_seen'] as List<dynamic>? ?? const [],
+        ),
         lastOrderSkip: skip == null ? null : DateTime.parse(skip),
       );
     } on TypeError catch (e) {
@@ -227,6 +242,10 @@ SaveState sanitizeSave(
         if (taskIds.contains(id)) id,
     ],
     tutorialStep: save.tutorialStep < 0 ? 0 : save.tutorialStep,
+    tutorialFreeTapsUsed: save.tutorialFreeTapsUsed < 0
+        ? 0
+        : save.tutorialFreeTapsUsed,
+    endingsSeen: save.endingsSeen.toSet().toList(),
     lastOrderSkip: save.lastOrderSkip,
   );
 }

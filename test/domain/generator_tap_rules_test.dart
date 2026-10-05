@@ -87,6 +87,20 @@ void main() {
       expect(r.mannaAfter, 0);
     });
 
+    test('a free tap is still refused on a full board', () {
+      final r = resolveGeneratorTap(
+        gen: gen(),
+        manna: 5,
+        hasFreeCell: false,
+        levels: levels,
+        chains: chains,
+        random: _FixedRandom(0),
+        costOverride: 0,
+      );
+      expect(r.refusal, GeneratorTapRefusal.boardFull);
+      expect(r.mannaAfter, 5);
+    });
+
     test('not enough Manna: refused, nothing spent', () {
       final r = tap(manna: 0);
       expect(r.refusal, GeneratorTapRefusal.notEnoughManna);

@@ -119,3 +119,12 @@ int advanceTutorial(
     completedTasks: completedTasks,
   );
 }
+
+/// Whether generator taps are free right now: only on a step marked
+/// free_manna, and only until [freeTapsAllowed] free taps have been used, so
+/// lingering on an early step can never give unlimited free Manna.
+bool tutorialTapIsFree(
+  TutorialStep? step, {
+  required int freeTapsUsed,
+  required int freeTapsAllowed,
+}) => step != null && step.freeManna && freeTapsUsed < freeTapsAllowed;

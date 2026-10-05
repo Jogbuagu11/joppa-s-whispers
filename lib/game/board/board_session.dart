@@ -1,5 +1,6 @@
 // Puts a play session together: loads content, restores the save (or starts
 // a new game), and creates the board, Manna, orders and the auto-saver.
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/app/game_saver.dart';
@@ -16,6 +17,7 @@ import 'package:whispers_of_joppa/features/story/story_controller.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
+import 'package:whispers_of_joppa/game/board/new_game.dart';
 
 final _log = Logger('BoardSession');
 
@@ -28,6 +30,12 @@ class BoardSession {
 
   /// chapter_id -> the message shown when that chapter is finished.
   final Map<String, ChapterEnding> endings;
+
+  /// Chapters whose closing message the player has already seen.
+  final Set<String> endingsSeen;
+
+  /// Fires when [endingsSeen] changes, so it gets saved.
+  final ValueNotifier<int> endingsChanged;
 
   /// scene_id -> scene, for the scenes that tasks play.
   final Map<String, SceneModel> scenes;
@@ -50,6 +58,8 @@ class BoardSession {
     required this.story,
     required this.tutorial,
     required this.endings,
+    required this.endingsSeen,
+    required this.endingsChanged,
     required this.scenes,
     required this.locations,
     required this.saver,
@@ -68,7 +78,7 @@ class BoardSession {
     await loader.load();
 
     final loaded = await saveRepository.load();
-    final fresh = _newGame(loader, startingMannaOverride);
+    final fresh = newGameState(loader, startingMannaOverride);
     final save = loaded == null
         ? fresh
         : sanitizeSave(
@@ -145,18 +155,27 @@ class BoardSession {
       completedTasks: save.completedTasks,
     );
 
+    final endingsSeen = {...save.endingsSeen};
+    final endingsChanged = ValueNotifier<int>(0);
+
     final tutorial = TutorialController(
       steps: loader.tutorial,
       completedOrders: () => orders.completedOrders.toSet(),
       completedTasks: () => story.completedTasks.toSet(),
+      freeTapsAllowed: loader.economy.tutorialFreeTaps,
       startIndex: playTutorial ? save.tutorialStep : tutorialFinished,
+      freeTapsAlreadyUsed: save.tutorialFreeTapsUsed,
     );
     game
       ..freeGeneratorTaps = (() => tutorial.freeManna)
       ..onMerge = (() =>
           tutorial.handle(const TutorialEvent(TutorialTrigger.merge)))
-      ..onGeneratorSpawn = (() =>
-          tutorial.handle(const TutorialEvent(TutorialTrigger.generatorTap)));
+      ..onGeneratorSpawn = ({required bool wasFree}) {
+        if (wasFree) tutorial.noteFreeTap();
+        tutorial.handle(const TutorialEvent(TutorialTrigger.generatorTap));
+      };
+    // The tutorial's orders must stay on screen until it is over.
+    orders.skipAllowed = () => tutorial.isOver;
     orders.onDelivered = (id) =>
         tutorial.handle(TutorialEvent(TutorialTrigger.orderDelivered, id));
     story.onTaskDone = (id) =>
@@ -178,11 +197,13 @@ class BoardSession {
         completedOrders: orders.completedOrders,
         completedTasks: story.completedTasks,
         tutorialStep: tutorial.isOver ? tutorialFinished : tutorial.index,
+        tutorialFreeTapsUsed: tutorial.freeTapsUsed,
+        endingsSeen: endingsSeen.toList(),
         lastOrderSkip: orders.book.lastSkip,
       ),
       // Manna spends always come with a board change, so the per-second Manna
       // tick does not need to trigger a write.
-      triggers: [game.boardChanged, orders, story, tutorial],
+      triggers: [game.boardChanged, orders, story, tutorial, endingsChanged],
     )..start();
 
     return BoardSession._(
@@ -192,6 +213,8 @@ class BoardSession {
       story: story,
       tutorial: tutorial,
       endings: loader.endings,
+      endingsSeen: endingsSeen,
+      endingsChanged: endingsChanged,
       scenes: loader.scenes,
       locations: loader.locations,
       saver: saver,
@@ -205,44 +228,24 @@ class BoardSession {
     );
   }
 
-  /// A brand-new game, laid out from content/starting_board.json.
-  static SaveState _newGame(ContentLoader loader, int? mannaOverride) {
-    final start = loader.startingBoard;
-    for (final g in start.generators) {
-      if (!loader.generators.containsKey(g.generatorId)) {
-        _log.severe('Starting board names unknown generator ${g.generatorId}');
+  /// The closing message for a finished chapter the player has not seen yet,
+  /// or null. Covers the case where the app closed before it was shown.
+  ChapterEnding? get pendingEnding {
+    final done = story.completedTasks.toSet();
+    for (final chapter in story.chapters) {
+      final ending = endings[chapter.id];
+      if (ending != null &&
+          isChapterComplete(chapter, done) &&
+          !endingsSeen.contains(chapter.id)) {
+        return ending;
       }
     }
-    for (final i in start.items) {
-      if (!loader.items.containsKey(i.itemId)) {
-        _log.severe('Starting board names unknown item ${i.itemId}');
-      }
-    }
-    return SaveState(
-      items: [
-        for (final i in start.items)
-          SavedItem(itemId: i.itemId, col: i.col, row: i.row),
-      ],
-      generators: [
-        for (final g in start.generators)
-          SavedGenerator(
-            generatorId: g.generatorId,
-            level: loader.generators[g.generatorId]?.level ?? 1,
-            col: g.col,
-            row: g.row,
-          ),
-      ],
-      manna: mannaOverride ?? start.manna,
-      mannaLastRegen: DateTime.now(),
-      talents: 0,
-      blessings: 0,
-      activeOrders: const [],
-      pendingOrders: const [],
-      completedOrders: const [],
-      completedTasks: const [],
-      tutorialStep: 0,
-      lastOrderSkip: null,
-    );
+    return null;
+  }
+
+  /// Records that a chapter's closing message has been shown.
+  void markEndingSeen(String chapterId) {
+    if (endingsSeen.add(chapterId)) endingsChanged.value++;
   }
 
   /// Writes any unsaved change and stops the timers.
