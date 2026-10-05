@@ -61,6 +61,7 @@ extension _BoardDrag on BoardGame {
         _colorFor(originItem),
         _art[originItem.itemId],
       );
+      _boardTouched();
     } else {
       final result = canMerge(originItem, targetItem, chainData);
       if (result == MergeResult.success) {

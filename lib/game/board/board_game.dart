@@ -8,6 +8,7 @@ import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
+import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/app/board_inventory.dart';
 import 'package:whispers_of_joppa/domain/board_grid.dart';
 import 'package:whispers_of_joppa/game/board/cell_component.dart';
@@ -68,6 +69,25 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   /// told just afterwards, never in the middle of drawing the screen (the
   /// board is first filled while Flutter is still building it).
   void _boardTouched() => Future<void>.microtask(() => _boardVersion.value++);
+
+  /// Every item on the board with its cell (written to the save file).
+  List<SavedItem> snapshotItems() => [
+    for (int c = 0; c < cols; c++)
+      for (int r = 0; r < rows; r++)
+        if (_board[c][r] case final item?)
+          SavedItem(itemId: item.itemId, col: c, row: r),
+  ];
+
+  /// Every generator with its level and cell (written to the save file).
+  List<SavedGenerator> snapshotGenerators() => [
+    for (final p in generatorPlacements)
+      SavedGenerator(
+        generatorId: p.gen.generatorId,
+        level: p.gen.level,
+        col: p.col,
+        row: p.row,
+      ),
+  ];
 
   @override
   Map<String, int> itemCounts() => countItems(_board);

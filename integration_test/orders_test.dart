@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
+import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/main.dart' as app;
 
 Future<dynamic> _content(String name) async =>
@@ -18,6 +19,8 @@ void main() {
   testWidgets('delivering an order removes items and pays rewards', (
     tester,
   ) async {
+    // Start from a new game, whatever an earlier run left on the device.
+    await SaveRepository().clear();
     app.main();
     final board = find.byType(GameWidget<BoardGame>);
     for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {

@@ -1,15 +1,20 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:whispers_of_joppa/data/content_loader.dart';
+import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
-import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
-import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
-import 'package:whispers_of_joppa/game/board/manna_controller.dart';
+import 'package:whispers_of_joppa/game/board/board_session.dart';
 
 /// The main game board screen — hosts the Flame merge board.
 class BoardScreen extends StatefulWidget {
-  const BoardScreen({super.key, this.startingMannaOverride});
+  const BoardScreen({
+    super.key,
+    this.startingMannaOverride,
+    this.saveRepository,
+  });
+
+  /// Where the game is saved. Tests pass their own; the app uses the default.
+  final SaveRepository? saveRepository;
 
   /// Lets a test begin with a chosen amount of Manna instead of the amount
   /// in content/starting_board.json. Never set in the real app.
@@ -20,12 +25,8 @@ class BoardScreen extends StatefulWidget {
 }
 
 class _BoardScreenState extends State<BoardScreen> {
-  BoardGame? _game;
-  MannaController? _manna;
-  OrdersController? _orders;
-  Map<String, String> _characterNames = const {};
+  BoardSession? _session;
   bool _popupOpen = false;
-  bool _loading = true;
   String? _error;
 
   @override
@@ -36,13 +37,13 @@ class _BoardScreenState extends State<BoardScreen> {
 
   @override
   void dispose() {
-    _orders?.dispose();
-    _manna?.dispose();
+    // Saves any unsaved change, then stops the timers.
+    _session?.dispose();
     super.dispose();
   }
 
   Future<void> _showOutOfManna() async {
-    final manna = _manna;
+    final manna = _session?.manna;
     if (manna == null || _popupOpen || !mounted) return;
     _popupOpen = true;
     await showOutOfMannaPopup(context, manna);
@@ -51,76 +52,25 @@ class _BoardScreenState extends State<BoardScreen> {
 
   Future<void> _init() async {
     try {
-      final loader = ContentLoader();
-      await loader.load();
-      if (!mounted) return;
-
-      // The opening board comes from content/starting_board.json.
-      final start = loader.startingBoard;
-      final generatorPlacements = <GeneratorPlacement>[];
-      for (final g in start.generators) {
-        final gen = loader.generators[g.generatorId];
-        if (gen == null) {
-          throw StateError(
-            'Unknown generator in starting board: ${g.generatorId}',
-          );
-        }
-        generatorPlacements.add((gen: gen, col: g.col, row: g.row));
-      }
-      final startingItems = <ItemPlacement>[];
-      for (final i in start.items) {
-        final item = loader.items[i.itemId];
-        if (item == null) {
-          throw StateError('Unknown item in starting board: ${i.itemId}');
-        }
-        startingItems.add((item: item, col: i.col, row: i.row));
-      }
-
-      final manna = MannaController(
-        config: loader.economy,
-        startingManna: widget.startingMannaOverride ?? start.manna,
-      )..start();
-      _manna = manna;
-
-      final game = BoardGame(
-        itemCatalog: loader.items,
-        chainData: loader.chains,
-        generatorLevels: loader.generatorLevels,
-        generatorPlacements: generatorPlacements,
-        startingItems: startingItems,
-        chainPlaceholderColors: loader.chainPlaceholderColors,
-        manna: manna,
+      final session = await BoardSession.create(
+        saveRepository: widget.saveRepository ?? SaveRepository(),
         onOutOfManna: _showOutOfManna,
+        startingMannaOverride: widget.startingMannaOverride,
       );
-
-      _orders = OrdersController(
-        config: loader.economy,
-        board: game,
-        orders: loader.orders,
-      );
-      _characterNames = loader.characterNames;
-
-      await game.loadArt();
-      if (!mounted) return;
-
-      setState(() {
-        _game = game;
-        _loading = false;
-      });
+      if (!mounted) {
+        await session.dispose();
+        return;
+      }
+      setState(() => _session = session);
     } catch (e) {
       if (!mounted) return;
-      setState(() {
-        _error = e.toString();
-        _loading = false;
-      });
+      setState(() => _error = e.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final game = _game;
-    final manna = _manna;
-    final orders = _orders;
+    final session = _session;
     final error = _error;
     final Widget body;
     if (error != null) {
@@ -131,7 +81,7 @@ class _BoardScreenState extends State<BoardScreen> {
           style: const TextStyle(color: Colors.red),
         ),
       );
-    } else if (_loading || game == null || manna == null || orders == null) {
+    } else if (session == null) {
       body = const Center(
         child: CircularProgressIndicator(color: Color(0xFFD4802A)),
       );
@@ -145,21 +95,21 @@ class _BoardScreenState extends State<BoardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  WalletChips(controller: orders),
-                  MannaBar(controller: manna),
+                  WalletChips(controller: session.orders),
+                  MannaBar(controller: session.manna),
                 ],
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: OrdersBar(
-                controller: orders,
-                items: game.itemCatalog,
-                characterNames: _characterNames,
-                placeholderColors: game.chainPlaceholderColors,
+                controller: session.orders,
+                items: session.game.itemCatalog,
+                characterNames: session.characterNames,
+                placeholderColors: session.game.chainPlaceholderColors,
               ),
             ),
-            Expanded(child: GameWidget(game: game)),
+            Expanded(child: GameWidget(game: session.game)),
           ],
         ),
       );

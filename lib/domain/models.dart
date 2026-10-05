@@ -51,6 +51,15 @@ class GeneratorModel {
     required this.energyCost,
     required this.name,
   });
+
+  /// The same generator at another level.
+  GeneratorModel atLevel(int newLevel) => GeneratorModel(
+    generatorId: generatorId,
+    chainId: chainId,
+    level: newLevel,
+    energyCost: energyCost,
+    name: name,
+  );
 }
 
 /// The full board state (7 cols × 9 rows = 63 cells).

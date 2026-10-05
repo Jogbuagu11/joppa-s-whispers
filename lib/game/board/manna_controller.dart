@@ -13,12 +13,16 @@ class MannaController extends ChangeNotifier {
   MannaController({
     required this.config,
     required int startingManna,
+    DateTime? lastRegen,
     DateTime Function()? clock,
   }) : _now = clock ?? DateTime.now,
        _state = MannaState(
          manna: startingManna,
-         lastRegen: (clock ?? DateTime.now)(),
+         lastRegen: lastRegen ?? (clock ?? DateTime.now)(),
        );
+
+  /// When the regen clock last ticked (written to the save file).
+  DateTime get lastRegen => _state.lastRegen;
 
   int get manna => _state.manna;
   int get maxManna => config.maxManna;

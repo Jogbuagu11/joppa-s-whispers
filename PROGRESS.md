@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 7 — Orders (done; next is 8 — Save/load)
+## Current milestone: 8 — Save/load (local) (done; next is 9 — Story scenes)
 
 ---
 
@@ -16,7 +16,7 @@
 | 5 | Content loading | DONE (m5-working) — approved by Jennifer 2026-10-05 |
 | 6 | Energy (Manna) | DONE (m6-working) |
 | 7 | Orders | DONE (m7-working) |
-| 8 | Save/load (local) | Not started |
+| 8 | Save/load (local) | DONE (m8-working) |
 | 9 | Story scenes | Not started |
 | 10 | Tasks & Blessings | Not started |
 | 11 | Restoration scenes | Not started |
@@ -232,6 +232,33 @@ Not in this milestone:
 - Talents, Blessings and order progress are not saved between launches (Milestone 8).
 - When all 12 orders are delivered the cards simply run out (more come with Chapter 1, M12).
 - Manna, orders and wallet are plain ChangeNotifier controllers, not Riverpod providers yet.
+
+## Milestone 8 — state (2026-10-05)
+
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 144 unit tests
+pass, five device tests pass on both (smoke, generator tap, out-of-Manna, orders,
+save/load), and on Android the app was force-closed and reopened with the board, Manna,
+Talents, Blessings and order cards exactly as left.
+
+- `save.json` in the app documents folder holds: every item and generator with its cell,
+  Manna and its regen clock, Talents, Blessings, the order cards and queue, and a
+  `save_version`.
+- Written 2 seconds after any change (one write per burst) and at once when the app goes
+  to the background. Written to a temporary file and swapped in, so a crash mid-write
+  cannot damage the save.
+- Manna that regenerated while the app was closed is added on reopening.
+- A damaged save is set aside as `save.corrupt.json` and a new game starts; a save from a
+  newer app version is not loaded. Anything in a save that the content no longer knows
+  (an item, generator or order) is dropped instead of crashing.
+- `migrateSave` is where future format changes go; the format is at version 1.
+- `BoardSession` now assembles the game (content + save + board + Manna + orders + saver).
+
+Not in this milestone:
+- Basket, chapter/task progress, discovered items, letters, crowns and settings are not in
+  the save yet because those features do not exist yet; add each with its milestone and
+  bump `save_version` when the format changes.
+- Cloud save (Milestone 14).
+- No "start over" button; clearing the app's data starts a new game.
 
 ## Decisions made for Jennifer (2026-10-05)
 

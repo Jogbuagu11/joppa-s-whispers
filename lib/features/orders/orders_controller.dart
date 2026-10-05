@@ -10,19 +10,29 @@ class OrdersController extends ChangeNotifier {
   final Map<String, OrderModel> _orders;
   final DateTime Function() _now;
   OrderBook _book;
-  int _talents = 0;
-  int _blessings = 0;
+  int _talents;
+  int _blessings;
 
   OrdersController({
     required this.config,
     required this.board,
     required List<OrderModel> orders,
+    OrderBook? savedBook,
+    int startingTalents = 0,
+    int startingBlessings = 0,
     DateTime Function()? clock,
   }) : _orders = {for (final o in orders) o.id: o},
        _now = clock ?? DateTime.now,
-       _book = startOrders([for (final o in orders) o.id], config.orderSlots) {
+       _talents = startingTalents,
+       _blessings = startingBlessings,
+       _book =
+           savedBook ??
+           startOrders([for (final o in orders) o.id], config.orderSlots) {
     board.boardChanged.addListener(notifyListeners);
   }
+
+  /// Which orders are showing and waiting (written to the save file).
+  OrderBook get book => _book;
 
   int get talents => _talents;
   int get blessings => _blessings;
