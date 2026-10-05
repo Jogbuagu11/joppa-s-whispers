@@ -61,6 +61,7 @@ tool/             # scripts: process_assets.dart, validate_content.dart
 test/             # unit tests (mirror lib/domain and lib/data)
 integration_test/ # smoke_test.dart + flow tests
 admin/            # web admin panel (Milestone 20)
+web/              # marketing website (Lovable / TanStack Start + Vite), deployed by Vercel with Root Directory = web
 ```
 Rule: `domain/` has zero Flutter or Flame imports, so all game rules are testable without a phone.
 

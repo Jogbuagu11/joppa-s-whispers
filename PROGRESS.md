@@ -167,8 +167,24 @@ Carried forward (not blocking):
 - The three starter tiles are test scaffolding, to be replaced by the Chapter 1 tutorial (M12).
 - New content formats: `starting_board.json`, `placeholder_color`, `order_talents_per_tier`.
 
+## Website (2026-10-05)
+
+The marketing website (built in Lovable, deployed by Vercel) originally lived at the top of
+this GitHub repo. It was overwritten on 2026-10-04 when the game was force-pushed over it.
+Recovered in full (104 files, 14 versions) and, at Jennifer's choice, placed in `web/`
+beside the game with its history kept. A backup of the original is in the GitHub branch
+`website-original` — do not delete it.
+
+- `web/` is not part of the Flutter app and is not covered by the game's milestones or checks.
+- It builds locally with `bun install && bun run build` (bun is in `~/development/bun`).
+- It uses its own Supabase project (Lovable's), separate from the game's.
+- Vercel must have **Root Directory = web** or every deploy fails with "vite: command not found".
+- Lovable expects the site at the top of the repo, so Lovable sync is probably broken now.
+- Never force-push this repo again.
+
 ## Waiting on Jennifer
 
+- In Vercel: Project → Settings → Build and Deployment → Root Directory → `web`, then redeploy.
 - Approve Milestone 5 so Milestone 6 (Energy / Manna) can start.
 - Approve adding the `image` package so the asset pipeline can be built (or defer it).
 - Confirm the assumptions above (starting Manna; test AdMob ID on iOS; minimum iOS 15).
