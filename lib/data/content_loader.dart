@@ -86,6 +86,7 @@ class ContentLoader {
           tier: tier,
           name: t['name'] as String,
           asset: t['asset'] as String? ?? '',
+          sell: t['sell'] as int,
         );
         itemTiers[itemId] = tier;
         tierToItemId['${chainId}_$tier'] = itemId;

@@ -1,10 +1,12 @@
 // Economy rules — pure Dart, fully unit tested.
+import 'package:whispers_of_joppa/domain/models.dart';
 
 /// All economy parameters loaded from content/economy.json.
 class EconomyConfig {
   final int maxManna;
   final int mannaRegenSeconds;
   final int generatorTapCost;
+  final int orderTalentsPerTier;
   final int mannaRefillBasePearls;
   final int basketSlotBasePearls;
   final int orderSkipCooldownSeconds;
@@ -16,6 +18,7 @@ class EconomyConfig {
     required this.maxManna,
     required this.mannaRegenSeconds,
     required this.generatorTapCost,
+    required this.orderTalentsPerTier,
     required this.mannaRefillBasePearls,
     required this.basketSlotBasePearls,
     required this.orderSkipCooldownSeconds,
@@ -28,6 +31,7 @@ class EconomyConfig {
     maxManna: json['max_manna'] as int,
     mannaRegenSeconds: json['manna_regen_seconds'] as int,
     generatorTapCost: json['generator_tap_cost'] as int,
+    orderTalentsPerTier: json['order_talents_per_tier'] as int,
     mannaRefillBasePearls: json['manna_refill_base_pearls'] as int,
     basketSlotBasePearls: json['basket_slot_base_pearls'] as int,
     orderSkipCooldownSeconds: json['order_skip_cooldown_seconds'] as int,
@@ -38,12 +42,12 @@ class EconomyConfig {
   );
 }
 
-/// Sell value for an item of a given tier.
-int sellValue(int tier) => tier * 2;
+/// Talents earned for selling an item (set per item in content/chains.json).
+int sellValue(ItemModel item) => item.sell;
 
-/// Order reward in talents (sum of item tiers × 5).
-int orderRewardTalents(List<int> itemTiers) =>
-    itemTiers.fold(0, (sum, t) => sum + t) * 5;
+/// Order reward in talents: sum of item tiers × the multiplier from content.
+int orderRewardTalents(EconomyConfig config, List<int> itemTiers) =>
+    itemTiers.fold(0, (sum, t) => sum + t) * config.orderTalentsPerTier;
 
 /// Pearl cost for the Nth Manna refill today (0-indexed refill count).
 int mannaRefillCost(EconomyConfig config, int refillsToday) {

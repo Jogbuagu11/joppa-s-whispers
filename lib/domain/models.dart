@@ -7,6 +7,7 @@ class ItemModel {
   final int tier;
   final String name;
   final String asset; // asset path, may be empty (uses placeholder)
+  final int sell; // Talents earned when sold
 
   const ItemModel({
     required this.itemId,
@@ -14,6 +15,7 @@ class ItemModel {
     required this.tier,
     required this.name,
     required this.asset,
+    this.sell = 0,
   });
 }
 

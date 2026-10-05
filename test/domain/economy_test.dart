@@ -1,11 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
+import 'package:whispers_of_joppa/domain/models.dart';
 
 void main() {
   const config = EconomyConfig(
     maxManna: 100,
     mannaRegenSeconds: 120,
     generatorTapCost: 1,
+    orderTalentsPerTier: 5,
     mannaRefillBasePearls: 10,
     basketSlotBasePearls: 10,
     orderSkipCooldownSeconds: 1800,
@@ -15,17 +17,29 @@ void main() {
   );
 
   group('sellValue', () {
-    test('tier 1 = 2 talents', () => expect(sellValue(1), 2));
-    test('tier 4 = 8 talents', () => expect(sellValue(4), 8));
-    test('tier 8 = 16 talents', () => expect(sellValue(8), 16));
+    ItemModel item(int sell) => ItemModel(
+      itemId: 'bakery_01',
+      chainId: 'bakery',
+      tier: 1,
+      name: '',
+      asset: '',
+      sell: sell,
+    );
+    test('uses the sell value from content', () {
+      expect(sellValue(item(2)), 2);
+      expect(sellValue(item(16)), 16);
+    });
   });
 
   group('orderRewardTalents', () {
     test('two tier-4 items = 40 talents', () {
-      expect(orderRewardTalents([4, 4]), 40);
+      expect(orderRewardTalents(config, [4, 4]), 40);
     });
     test('one tier-2 item = 10 talents', () {
-      expect(orderRewardTalents([2]), 10);
+      expect(orderRewardTalents(config, [2]), 10);
+    });
+    test('no items = 0 talents', () {
+      expect(orderRewardTalents(config, []), 0);
     });
   });
 

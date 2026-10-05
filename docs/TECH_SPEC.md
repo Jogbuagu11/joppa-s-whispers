@@ -101,6 +101,20 @@ IDs are lowercase snake_case and never change once shipped.
 ]
 ```
 
+### `content/starting_board.json`
+The board a brand-new player sees. Columns count 0–6 from the left, rows 0–8 from the top.
+```json
+{
+  "manna": 10,
+  "generators": [{ "generator_id": "gen_pantry", "col": 2, "row": 8 }],
+  "items": [{ "item_id": "bakery_01", "col": 0, "row": 0 }]
+}
+```
+
+### Placeholder colours
+Each chain in `chains.json` also has `"placeholder_color": "#RRGGBB"`, the colour of its
+tiles until real art is in place. Each tier's `"sell"` is the Talents earned for selling it.
+
 ### `content/orders.json`
 ```json
 [

@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 4 — Generators (done, waiting for Jennifer's approval before starting 5)
+## Current milestone: 5 — Content loading (done, waiting for Jennifer's approval before starting 6)
 
 ---
 
@@ -12,8 +12,8 @@
 | 1 | Empty board | DONE (m1-working) |
 | 2 | Drag & drop | DONE (m2-working) |
 | 3 | Merging | DONE (m3-working) |
-| 4 | Generators | DONE (m4-working) — awaiting approval |
-| 5 | Content loading | Partially done (ContentLoader built) |
+| 4 | Generators | DONE (m4-working) — approved by Jennifer 2026-10-05 |
+| 5 | Content loading | DONE (m5-working) — awaiting approval |
 | 6 | Energy (Manna) | Not started |
 | 7 | Orders | Not started |
 | 8 | Save/load (local) | Not started |
@@ -130,10 +130,49 @@ Fixed while getting it running:
   ID at Milestone 18.
 - Minimum iOS version is now 15.0.
 
+## Milestone 5 — state (2026-10-05)
+
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 62 unit tests
+pass, content validator reports "Content OK", smoke test and generator tap test pass on
+both, board seen on screen on both. Code review run; its three blocking findings are fixed.
+
+What moved out of code and into content:
+- Starting Manna, generator positions and starter tiles → `content/starting_board.json`.
+- Placeholder tile colours → `placeholder_color` in `content/chains.json`.
+- Item sell values now read from `sell` in `chains.json`; the order reward multiplier is
+  `order_talents_per_tier` in `content/economy.json`.
+- New content checker: `lib/data/content_validator.dart`, run by
+  `dart run tool/validate_content.dart` and by the unit tests.
+- TECH_SPEC section 3 now documents the two new formats.
+
+Resolved from the Milestone 4 carry-forward list: starting Manna/placements/starter items
+in content; `generator_tap_test.dart` reads the layout from content.
+
+Carried forward (not blocking):
+- `tool/process_assets.dart` (asset pipeline) is NOT built: it needs an image-processing
+  package, and new packages need Jennifer's approval. Real item art is not shown yet.
+- The validator covers the 4 content files the game loads today (chains, generators,
+  economy, starting_board). The other 8 are still empty; add checks as each is used.
+- The validator is not run when the app loads content; wire it in before server content (M15).
+- `board_game.dart` is 282 lines; split drag handling and starting placement out before 300.
+- Starter-item placement on the board has no unit test of its own (covered by device tests).
+- Energy cost exists in both `generators.json` and `economy.json`; pick one in Milestone 6.
+- Generators always start at level 1; add a level to `starting_board.json` when needed.
+- TECH_SPEC "Pinned versions" table is still empty (versions are listed above in this file).
+- `supabase/.temp/cli-latest` is tracked in git; fruit art is JPEG, spec asks for PNG.
+
+## Assumptions to confirm (added in Milestone 5)
+
+- A new player starts with **10 Manna**. The GDD gives the maximum (100) but no starting amount.
+- The three starter tiles are test scaffolding, to be replaced by the Chapter 1 tutorial (M12).
+- New content formats: `starting_board.json`, `placeholder_color`, `order_talents_per_tier`.
+
 ## Waiting on Jennifer
 
-- Approve Milestone 4 so Milestone 5 (Content loading) can start.
-- Confirm the two assumptions above (test AdMob ID on iOS; minimum iOS 15).
+- Approve Milestone 5 so Milestone 6 (Energy / Manna) can start.
+- Approve adding the `image` package so the asset pipeline can be built (or defer it).
+- Confirm the assumptions above (starting Manna; test AdMob ID on iOS; minimum iOS 15).
 
 Note: Android Studio is not installed on this Mac. Android is built with the command-line
 tools, a Temurin 21 JDK in `~/development/jdk`, and an emulator named `Pixel_Joppa`.
+GitHub sign-in on this Mac is through the GitHub CLI in `~/development/gh`.

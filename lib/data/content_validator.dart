@@ -5,6 +5,20 @@ import 'package:whispers_of_joppa/domain/models.dart';
 final _idPattern = RegExp(r'^[a-z][a-z0-9_]*$');
 final _colorPattern = RegExp(r'^#[0-9a-fA-F]{6}$');
 
+/// Every key the game reads from content/economy.json.
+const requiredEconomyKeys = [
+  'max_manna',
+  'manna_regen_seconds',
+  'generator_tap_cost',
+  'order_talents_per_tier',
+  'manna_refill_base_pearls',
+  'basket_slot_base_pearls',
+  'order_skip_cooldown_seconds',
+  'rewarded_ad_manna_bonus',
+  'rewarded_ad_manna_daily_cap',
+  'rewarded_ad_double_reward_daily_cap',
+];
+
 /// Returns a list of plain-English problems. An empty list means the content
 /// is valid.
 List<String> validateContent({
@@ -39,7 +53,10 @@ List<String> validateContent({
       problems: problems,
     );
   } on TypeError catch (e) {
-    problems.add('Content has the wrong shape (missing or mistyped field): $e');
+    problems.add(
+      'Content has the wrong shape: a field is missing or is the wrong kind '
+      'of value (details: $e)',
+    );
   }
   return problems;
 }
@@ -80,6 +97,10 @@ Map<String, int> _checkChains(
       if (name is! String || name.trim().isEmpty) {
         problems.add('Chain $id tier ${i + 1}: missing name');
       }
+      final sell = tier['sell'];
+      if (sell is! int || sell < 0) {
+        problems.add('Chain $id tier ${i + 1}: sell must be a whole number');
+      }
     }
     if (id is String) maxTier[id] = tiers.length;
   }
@@ -99,6 +120,10 @@ Set<String> _checkGenerators(
     final chainMax = maxTierByChain[gen['chain_id']];
     if (chainMax == null) {
       problems.add('Generator $id: unknown chain "${gen['chain_id']}"');
+    }
+    final name = gen['name'];
+    if (name is! String || name.trim().isEmpty) {
+      problems.add('Generator $id: missing name');
     }
     final cost = gen['energy_cost'];
     if (cost is! int || cost < 0) {
@@ -134,10 +159,13 @@ Set<String> _checkGenerators(
 }
 
 void _checkEconomy(Map<String, dynamic> economy, List<String> problems) {
+  for (final key in requiredEconomyKeys) {
+    if (!economy.containsKey(key)) problems.add('Economy $key is missing');
+  }
   for (final entry in economy.entries) {
     final value = entry.value;
-    if (value is! num || value < 0) {
-      problems.add('Economy ${entry.key}: must be a number, 0 or more');
+    if (value is! int || value < 0) {
+      problems.add('Economy ${entry.key}: must be a whole number, 0 or more');
     }
   }
 }
@@ -155,6 +183,7 @@ void _checkStartingBoard(
     problems.add('Starting board: manna must be between 0 and max_manna');
   }
   final taken = <(int, int)>{};
+  final placed = <String>{};
   void checkCell(String what, Map<String, dynamic> entry) {
     final col = entry['col'];
     final row = entry['row'];
@@ -177,6 +206,8 @@ void _checkStartingBoard(
     final id = g['generator_id'];
     if (!generatorIds.contains(id)) {
       problems.add('Starting board: unknown generator "$id"');
+    } else if (!placed.add(id as String)) {
+      problems.add('Starting board: generator "$id" is placed more than once');
     }
     checkCell('generator $id', g);
   }

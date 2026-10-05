@@ -20,7 +20,7 @@ void main() {
   });
 
   test('loads every chain, item and generator from content', () {
-    final chains = _read('chains')! as List<dynamic>;
+    final chains = _read('chains') as List<dynamic>;
     final itemCount = chains.fold<int>(
       0,
       (n, c) => n + ((c as Map<String, dynamic>)['tiers'] as List).length,
@@ -30,7 +30,7 @@ void main() {
     expect(loader.items.length, itemCount);
     expect(
       loader.generators.length,
-      (_read('generators')! as List<dynamic>).length,
+      (_read('generators') as List<dynamic>).length,
     );
   });
 
@@ -69,5 +69,31 @@ void main() {
     expect(parseHexColor('D4802A'), isNull);
     expect(parseHexColor('#12'), isNull);
     expect(parseHexColor(null), isNull);
+  });
+
+  test('starting board values are parsed from content', () {
+    final raw = _read('starting_board') as Map<String, dynamic>;
+    final rawGen =
+        (raw['generators'] as List<dynamic>).first as Map<String, dynamic>;
+    final rawItem =
+        (raw['items'] as List<dynamic>).first as Map<String, dynamic>;
+    final start = loader.startingBoard;
+    expect(start.manna, raw['manna']);
+    expect(start.generators.length, (raw['generators'] as List).length);
+    expect(start.generators.first.generatorId, rawGen['generator_id']);
+    expect(start.generators.first.col, rawGen['col']);
+    expect(start.generators.first.row, rawGen['row']);
+    expect(start.items.length, (raw['items'] as List).length);
+    expect(start.items.first.itemId, rawItem['item_id']);
+    expect(start.items.first.col, rawItem['col']);
+    expect(start.items.first.row, rawItem['row']);
+  });
+
+  test('items carry the sell value from content', () {
+    final chains = _read('chains') as List<dynamic>;
+    final firstTier =
+        ((chains.first as Map<String, dynamic>)['tiers'] as List<dynamic>).first
+            as Map<String, dynamic>;
+    expect(loader.items[firstTier['item_id']]?.sell, firstTier['sell']);
   });
 }
