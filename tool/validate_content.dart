@@ -17,6 +17,9 @@ void main() {
     ordersJson: _read('orders'),
     charactersJson: _read('characters'),
     scenesJson: _read('scenes'),
+    chaptersJson: _read('chapters'),
+    locationsJson: _read('locations'),
+    lettersJson: _read('letters'),
   );
   if (problems.isEmpty) {
     stdout.writeln('Content OK');

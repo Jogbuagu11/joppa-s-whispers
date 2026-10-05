@@ -19,6 +19,7 @@ void main() {
         ordersJson: _read('orders'),
         charactersJson: _read('characters'),
         scenesJson: _read('scenes'),
+        chaptersJson: _read('chapters'),
       );
   });
 
@@ -120,6 +121,7 @@ void main() {
         ordersJson: _read('orders'),
         charactersJson: _read('characters'),
         scenesJson: _read('scenes'),
+        chaptersJson: _read('chapters'),
       );
     expect(custom.generators[first['id']]?.energyCost, 0);
   });
@@ -141,5 +143,19 @@ void main() {
     final opening = loader.startingBoard.openingScene;
     expect(opening, (_read('starting_board') as Map)['opening_scene']);
     expect(loader.scenes.containsKey(opening), isTrue);
+  });
+
+  test('chapters and their tasks are loaded in story order', () {
+    final raw =
+        (_read('chapters') as List<dynamic>).first as Map<String, dynamic>;
+    final chapter = loader.chapters.first;
+    expect(chapter.id, raw['id']);
+    expect(chapter.title, raw['title']);
+    final rawTasks = raw['tasks'] as List<dynamic>;
+    expect(chapter.tasks.length, rawTasks.length);
+    expect(chapter.tasks.first.id, (rawTasks.first as Map)['id']);
+    for (final task in chapter.tasks) {
+      expect(loader.scenes.containsKey(task.sceneId), isTrue, reason: task.id);
+    }
   });
 }

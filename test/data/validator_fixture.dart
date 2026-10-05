@@ -41,6 +41,38 @@ Map<String, Object?> validContent() => {
       'expressions': ['neutral', 'happy'],
     },
   ],
+  'locations': [
+    {
+      'id': 'bakehouse',
+      'name': 'Bakehouse',
+      'areas': [
+        {'id': 'bakehouse_door', 'name': 'Door', 'before': 'b', 'after': 'a'},
+      ],
+    },
+  ],
+  'letters': [
+    {'id': 'letter_01', 'title': 'T', 'body': 'B', 'reference': 'R'},
+  ],
+  'chapters': [
+    {
+      'id': 'ch1',
+      'number': 1,
+      'title': 'Homecoming',
+      'location_id': 'bakehouse',
+      'unlocks_chains': ['bakery'],
+      'tasks': [
+        {
+          'id': 'ch1_t_01',
+          'beat': 2,
+          'title': 'Clear the doorway',
+          'cost_blessings': 1,
+          'scene_id': 'ch1_s_01',
+          'restores_area': 'bakehouse_door',
+          'letter_id': 'letter_01',
+        },
+      ],
+    },
+  ],
   'scenes': [
     {
       'id': 'ch1_s_01',
@@ -85,6 +117,9 @@ List<String> checkContent(Map<String, Object?> c) => validateContent(
   ordersJson: c['orders'],
   charactersJson: c['characters'],
   scenesJson: c['scenes'],
+  chaptersJson: c['chapters'],
+  locationsJson: c['locations'],
+  lettersJson: c['letters'],
 );
 
 Map<String, dynamic> firstOf(Map<String, Object?> c, String key) =>

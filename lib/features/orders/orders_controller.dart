@@ -67,6 +67,15 @@ class OrdersController extends ChangeNotifier {
     return true;
   }
 
+  /// Takes Blessings for a story task. Returns false, taking nothing, if the
+  /// player does not have enough.
+  bool spendBlessings(int amount) {
+    if (amount < 0 || amount > _blessings) return false;
+    _blessings -= amount;
+    notifyListeners();
+    return true;
+  }
+
   /// Swaps an order for the next one, if skipping is allowed right now.
   void skip(String orderId) {
     _book = skipOrder(config, _book, orderId, _now());

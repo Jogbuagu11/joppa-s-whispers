@@ -20,6 +20,7 @@ void main() {
     activeOrders: const ['a'],
     pendingOrders: const ['b'],
     completedOrders: const [],
+    completedTasks: const [],
     lastOrderSkip: null,
   );
 

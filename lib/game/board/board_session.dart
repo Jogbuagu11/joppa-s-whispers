@@ -9,6 +9,7 @@ import 'package:whispers_of_joppa/domain/orders.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';
 import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
+import 'package:whispers_of_joppa/features/story/story_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
@@ -18,6 +19,10 @@ class BoardSession {
   final BoardGame game;
   final MannaController manna;
   final OrdersController orders;
+  final StoryController story;
+
+  /// scene_id -> scene, for the scenes that tasks play.
+  final Map<String, SceneModel> scenes;
   final GameSaver saver;
   final Map<String, String> characterNames;
 
@@ -31,6 +36,8 @@ class BoardSession {
     required this.game,
     required this.manna,
     required this.orders,
+    required this.story,
+    required this.scenes,
     required this.saver,
     required this.characterNames,
     required this.openingScene,
@@ -54,6 +61,10 @@ class BoardSession {
             itemIds: loader.items.keys.toSet(),
             generatorIds: loader.generators.keys.toSet(),
             orderIds: {for (final o in loader.orders) o.id},
+            taskIds: {
+              for (final c in loader.chapters)
+                for (final t in c.tasks) t.id,
+            },
             cols: BoardGame.cols,
             rows: BoardGame.rows,
             maxManna: loader.economy.maxManna,
@@ -111,6 +122,14 @@ class BoardSession {
       startingBlessings: save.blessings,
     );
 
+    final story = StoryController(
+      chapters: loader.chapters,
+      blessings: () => orders.blessings,
+      spendBlessings: orders.spendBlessings,
+      wallet: orders,
+      completedTasks: save.completedTasks,
+    );
+
     await game.loadArt();
 
     final saver = GameSaver(
@@ -125,17 +144,20 @@ class BoardSession {
         activeOrders: orders.book.active,
         pendingOrders: orders.book.pending,
         completedOrders: orders.completedOrders,
+        completedTasks: story.completedTasks,
         lastOrderSkip: orders.book.lastSkip,
       ),
       // Manna spends always come with a board change, so the per-second Manna
       // tick does not need to trigger a write.
-      triggers: [game.boardChanged, orders],
+      triggers: [game.boardChanged, orders, story],
     )..start();
 
     return BoardSession._(
       game: game,
       manna: manna,
       orders: orders,
+      story: story,
+      scenes: loader.scenes,
       saver: saver,
       characterNames: loader.characterNames,
       openingScene: loaded == null
@@ -181,6 +203,7 @@ class BoardSession {
       activeOrders: const [],
       pendingOrders: const [],
       completedOrders: const [],
+      completedTasks: const [],
       lastOrderSkip: null,
     );
   }
@@ -188,6 +211,7 @@ class BoardSession {
   /// Writes any unsaved change and stops the timers.
   Future<void> dispose() async {
     await saver.dispose();
+    story.dispose();
     orders.dispose();
     manna.dispose();
   }

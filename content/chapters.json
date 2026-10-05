@@ -56,7 +56,7 @@
         "id": "ch1_t_06",
         "beat": 6,
         "title": "Set out the bread counter",
-        "cost_blessings": 2,
+        "cost_blessings": 1,
         "scene_id": "ch1_s_06",
         "restores_area": "bakehouse_counter",
         "letter_id": null

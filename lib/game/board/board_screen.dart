@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
 import 'package:whispers_of_joppa/features/story/scene_screen.dart';
+import 'package:whispers_of_joppa/features/story/task_bar.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
 
@@ -54,6 +55,24 @@ class _BoardScreenState extends State<BoardScreen> {
     _popupOpen = true;
     await showOutOfMannaPopup(context, manna);
     _popupOpen = false;
+  }
+
+  /// Pays for the next story task, then plays its scene.
+  Future<void> _doNextTask() async {
+    final session = _session;
+    if (session == null) return;
+    final task = session.story.doNext();
+    final scene = session.scenes[task?.sceneId];
+    if (scene == null || scene.lines.isEmpty || !mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => SceneScreen(
+          scene: scene,
+          characterNames: session.characterNames,
+          availableAssets: session.assetPaths,
+        ),
+      ),
+    );
   }
 
   Future<void> _init() async {
@@ -123,6 +142,7 @@ class _BoardScreenState extends State<BoardScreen> {
                 ],
               ),
             ),
+            TaskBar(controller: session.story, onDo: _doNextTask),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: OrdersBar(

@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 9 — Story scenes (done; next is 10 — Tasks & Blessings)
+## Current milestone: 10 — Tasks & Blessings (done; next is 11 — Restoration scenes)
 
 ---
 
@@ -18,7 +18,7 @@
 | 7 | Orders | DONE (m7-working) |
 | 8 | Save/load (local) | DONE (m8-working) |
 | 9 | Story scenes | DONE (m9-working) |
-| 10 | Tasks & Blessings | Not started |
+| 10 | Tasks & Blessings | DONE (m10-working) |
 | 11 | Restoration scenes | Not started |
 | 12 | Chapter 1 playable | Not started |
 | 13 | Esther's letters | Not started |
@@ -322,6 +322,37 @@ Not in this milestone:
 - Portraits are opaque white-background pictures, so they are shown in a framed card.
 - Quitting during the opening scene replays it next launch (nothing is saved until the
   first change on the board).
+
+## Milestone 10 — state (2026-10-05)
+
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 208 unit tests
+pass, content validator OK, seven device tests pass on both (smoke, scene, tasks,
+generator tap, out-of-Manna, orders, save/load), and the task bar was seen on screen.
+
+- Task bar above the orders: chapter name and progress (0/12), the next task's title, and
+  a button showing its cost in Blessings. The button is active only when affordable.
+- Doing a task spends the Blessings, marks it done, plays its scene, and the next task
+  appears. Tasks are done strictly in story order.
+- Chapter 1 has 12 tasks (`content/chapters.json`), costing 18 Blessings in total; the 12
+  orders pay 19. The validator refuses a chapter whose tasks cost more than its orders pay.
+- Task progress is saved (save format version 3; older saves are upgraded).
+- `content/locations.json` (7 bakehouse areas) and `content/letters.json` (Esther's two
+  Chapter 1 letters) are written and validated, ready for Milestones 11 and 13.
+
+Decisions:
+- Blessings are spent when the task button is tapped, before its scene plays, so skipping
+  or backing out of a scene never loses or duplicates anything.
+- One task (ch1_t_06) was lowered from 2 to 1 Blessing so the chapter has 1 to spare.
+- `crown_id` for Chapter 1 is null: the story bible awards the Imperishable crown after
+  Chapter 2 (the GDD says "Ch. 1–2").
+
+Not in this milestone:
+- Restored areas are recorded but not shown yet (Milestone 11); letters found are recorded
+  but there is no keepsake book yet (Milestone 13).
+- 12 tasks, not the GDD's 30–40 per chapter: more tasks need more orders and scenes
+  (Milestone 12, "Chapter 1 playable").
+- Finishing the chapter just shows "Chapter complete"; no crown or chapter-end screen.
+- Blessings still live in the orders controller; a separate wallet is tidier.
 
 ## Decisions made for Jennifer (2026-10-05)
 

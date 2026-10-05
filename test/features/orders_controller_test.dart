@@ -155,4 +155,17 @@ void main() {
     controller.deliver('a');
     expect(controller.completedOrders, ['a']);
   });
+
+  test('spendBlessings takes Blessings only when there are enough', () {
+    controller.deliver('a');
+    expect(controller.blessings, 1);
+    expect(controller.spendBlessings(2), isFalse);
+    expect(controller.blessings, 1);
+    expect(controller.spendBlessings(-1), isFalse);
+    var notified = 0;
+    controller.addListener(() => notified++);
+    expect(controller.spendBlessings(1), isTrue);
+    expect(controller.blessings, 0);
+    expect(notified, 1);
+  });
 }

@@ -2,7 +2,7 @@
 
 /// The save format this build writes. Raise it, and add a step to
 /// [migrateSave], whenever the format changes. Never break an existing save.
-const currentSaveVersion = 2;
+const currentSaveVersion = 3;
 
 /// An item and the cell it sits in.
 class SavedItem {
@@ -63,6 +63,9 @@ class SaveState {
 
   /// Orders already delivered, so they are never handed out again.
   final List<String> completedOrders;
+
+  /// Story tasks already done.
+  final List<String> completedTasks;
   final DateTime? lastOrderSkip;
 
   const SaveState({
@@ -75,6 +78,7 @@ class SaveState {
     required this.activeOrders,
     required this.pendingOrders,
     required this.completedOrders,
+    required this.completedTasks,
     required this.lastOrderSkip,
   });
 
@@ -89,6 +93,7 @@ class SaveState {
     'active_orders': activeOrders,
     'pending_orders': pendingOrders,
     'completed_orders': completedOrders,
+    'completed_tasks': completedTasks,
     'last_order_skip': lastOrderSkip?.toUtc().toIso8601String(),
   };
 
@@ -118,6 +123,9 @@ class SaveState {
         completedOrders: List<String>.from(
           json['completed_orders'] as List<dynamic>,
         ),
+        completedTasks: List<String>.from(
+          json['completed_tasks'] as List<dynamic>,
+        ),
         lastOrderSkip: skip == null ? null : DateTime.parse(skip),
       );
     } on TypeError catch (e) {
@@ -145,6 +153,11 @@ Map<String, dynamic> migrateSave(Map<String, dynamic> raw) {
     json['completed_orders'] = <String>[];
     json['save_version'] = 2;
   }
+  if (json['save_version'] == 2) {
+    // Version 3 adds story-task progress, which starts empty.
+    json['completed_tasks'] = <String>[];
+    json['save_version'] = 3;
+  }
   // The next format change goes here, as another one-version step.
   return json;
 }
@@ -157,6 +170,7 @@ SaveState sanitizeSave(
   required Set<String> itemIds,
   required Set<String> generatorIds,
   required Set<String> orderIds,
+  required Set<String> taskIds,
   required int cols,
   required int rows,
   required int maxManna,
@@ -193,6 +207,10 @@ SaveState sanitizeSave(
     activeOrders: active,
     pendingOrders: pending,
     completedOrders: completed,
+    completedTasks: [
+      for (final id in save.completedTasks.toSet())
+        if (taskIds.contains(id)) id,
+    ],
     lastOrderSkip: save.lastOrderSkip,
   );
 }

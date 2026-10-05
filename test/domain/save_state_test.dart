@@ -17,6 +17,7 @@ SaveState _sample() => SaveState(
   activeOrders: const ['ch1_o_004', 'ch1_o_002'],
   pendingOrders: const ['ch1_o_005'],
   completedOrders: const ['ch1_o_001'],
+  completedTasks: const ['ch1_t_01'],
   lastOrderSkip: DateTime.utc(2040, 1, 1, 12),
 );
 
@@ -25,6 +26,7 @@ SaveState _clean(SaveState s, {int maxManna = 100}) => sanitizeSave(
   itemIds: {'bakery_01', 'fruit_02'},
   generatorIds: {'gen_pantry'},
   orderIds: {'ch1_o_001', 'ch1_o_004', 'ch1_o_002', 'ch1_o_005'},
+  taskIds: {'ch1_t_01'},
   cols: 7,
   rows: 9,
   maxManna: maxManna,
@@ -49,6 +51,7 @@ void main() {
     expect(back.activeOrders, ['ch1_o_004', 'ch1_o_002']);
     expect(back.pendingOrders, ['ch1_o_005']);
     expect(back.completedOrders, ['ch1_o_001']);
+    expect(back.completedTasks, ['ch1_t_01']);
     expect(back.lastOrderSkip, DateTime.utc(2040, 1, 1, 12));
   });
 
@@ -69,12 +72,21 @@ void main() {
     test('a version 1 save gains an empty delivered list', () {
       final v1 = _sample().toJson()
         ..['save_version'] = 1
-        ..remove('completed_orders');
+        ..remove('completed_orders')
+        ..remove('completed_tasks');
       final migrated = migrateSave(v1);
       expect(migrated['save_version'], currentSaveVersion);
       expect(migrated['completed_orders'], isEmpty);
       expect(SaveState.fromJson(v1).completedOrders, isEmpty);
       expect(SaveState.fromJson(v1).manna, 42);
+    });
+    test('a version 2 save gains empty task progress', () {
+      final v2 = _sample().toJson()
+        ..['save_version'] = 2
+        ..remove('completed_tasks');
+      expect(migrateSave(v2)['save_version'], currentSaveVersion);
+      expect(SaveState.fromJson(v2).completedTasks, isEmpty);
+      expect(SaveState.fromJson(v2).completedOrders, ['ch1_o_001']);
     });
     test('rejects a save with no version', () {
       final json = _sample().toJson()..remove('save_version');
@@ -139,6 +151,7 @@ void main() {
         itemIds: {'bakery_01'},
         generatorIds: {},
         orderIds: {'ch1_o_002'},
+        taskIds: {'ch1_t_01'},
         cols: 7,
         rows: 9,
         maxManna: 100,
@@ -167,6 +180,7 @@ void main() {
           activeOrders: base.activeOrders,
           pendingOrders: base.pendingOrders,
           completedOrders: const [],
+          completedTasks: const [],
           lastOrderSkip: base.lastOrderSkip,
         ),
       );
@@ -174,6 +188,26 @@ void main() {
       expect(s.items.length, 1);
       expect(s.items.single.col, 1);
       expect(s.items.single.itemId, 'bakery_01');
+    });
+
+    test('unknown and repeated task ids are dropped', () {
+      final base = _sample();
+      final s = _clean(
+        SaveState(
+          items: base.items,
+          generators: base.generators,
+          manna: base.manna,
+          mannaLastRegen: base.mannaLastRegen,
+          talents: base.talents,
+          blessings: base.blessings,
+          activeOrders: base.activeOrders,
+          pendingOrders: base.pendingOrders,
+          completedOrders: base.completedOrders,
+          completedTasks: const ['ch1_t_01', 'ch1_t_01', 'gone'],
+          lastOrderSkip: null,
+        ),
+      );
+      expect(s.completedTasks, ['ch1_t_01']);
     });
 
     test('numbers are kept within sensible limits', () {
@@ -189,6 +223,7 @@ void main() {
           activeOrders: const ['ch1_o_004', 'ch1_o_004'],
           pendingOrders: const ['ch1_o_004', 'ch1_o_005'],
           completedOrders: const [],
+          completedTasks: const [],
           lastOrderSkip: null,
         ),
       );

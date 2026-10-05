@@ -1,5 +1,6 @@
 // Checks content/*.json for mistakes before the game uses it.
 // Pure Dart (no Flutter imports) so tool/validate_content.dart can run it.
+import 'package:whispers_of_joppa/data/chapter_validator.dart';
 import 'package:whispers_of_joppa/data/order_validator.dart';
 import 'package:whispers_of_joppa/data/scene_validator.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
@@ -38,6 +39,9 @@ List<String> validateContent({
   required Object? ordersJson,
   required Object? charactersJson,
   required Object? scenesJson,
+  required Object? chaptersJson,
+  required Object? locationsJson,
+  required Object? lettersJson,
 }) {
   final problems = <String>[];
   try {
@@ -67,6 +71,15 @@ List<String> validateContent({
       problems: problems,
     );
     checkScenes(scenes: scenes, characters: characters, problems: problems);
+    checkChapters(
+      chapters: (chaptersJson as List<dynamic>).cast<Map<String, dynamic>>(),
+      locations: (locationsJson as List<dynamic>).cast<Map<String, dynamic>>(),
+      letters: (lettersJson as List<dynamic>).cast<Map<String, dynamic>>(),
+      sceneIds: {for (final s in scenes) s['id'] as String},
+      chainIds: {for (final c in chains) c['id'] as String},
+      orders: ordersJson.cast<Map<String, dynamic>>(),
+      problems: problems,
+    );
     final opening = startingBoardJson['opening_scene'];
     if (opening != null && !scenes.any((s) => s['id'] == opening)) {
       problems.add('Starting board: unknown opening scene "$opening"');
