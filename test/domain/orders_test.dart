@@ -152,4 +152,67 @@ void main() {
       expect(skipCooldownRemaining(config, book, earlier), 0);
     });
   });
+
+  group('reconcileOrderBook', () {
+    final all = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+    test('an up-to-date book is unchanged', () {
+      final book = reconcileOrderBook(
+        saved: OrderBook(
+          active: ['b', 'c', 'd'],
+          pending: ['e', 'f'],
+          lastSkip: t0,
+        ),
+        completed: {'a'},
+        allOrderIds: all,
+        slots: 3,
+      );
+      expect(book.active, ['b', 'c', 'd']);
+      expect(book.pending, ['e', 'f']);
+      expect(book.lastSkip, t0);
+    });
+
+    test('orders added to content later join the back of the line', () {
+      final book = reconcileOrderBook(
+        saved: const OrderBook(active: ['b', 'c', 'd'], pending: []),
+        completed: {'a'},
+        allOrderIds: all,
+        slots: 3,
+      );
+      expect(book.pending, ['e', 'f']);
+    });
+
+    test('a removed order frees its card and the card is refilled', () {
+      final book = reconcileOrderBook(
+        saved: const OrderBook(active: ['zzz', 'c', 'd'], pending: ['e']),
+        completed: {'a', 'b'},
+        allOrderIds: all,
+        slots: 3,
+      );
+      expect(book.active, ['c', 'd', 'e']);
+      expect(book.pending, ['f']);
+    });
+
+    test('delivered orders never come back', () {
+      final book = reconcileOrderBook(
+        saved: const OrderBook(active: ['a', 'f'], pending: ['b']),
+        completed: {'a', 'b', 'c', 'd', 'e'},
+        allOrderIds: all,
+        slots: 3,
+      );
+      expect(book.active, ['f']);
+      expect(book.pending, isEmpty);
+    });
+
+    test('an empty book with orders left is filled again', () {
+      final book = reconcileOrderBook(
+        saved: const OrderBook(active: [], pending: []),
+        completed: {'a'},
+        allOrderIds: all,
+        slots: 3,
+      );
+      expect(book.active, ['b', 'c', 'd']);
+      expect(book.pending, ['e', 'f']);
+    });
+  });
 }

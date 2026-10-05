@@ -1,5 +1,6 @@
 // One order card: who is asking, what they want, the reward and the buttons.
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/data/asset_names.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
 
@@ -51,12 +52,30 @@ class OrderCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 10,
-                backgroundColor: _gold,
-                child: Text(
-                  characterName.isEmpty ? '?' : characterName[0],
-                  style: const TextStyle(fontSize: 11, color: Colors.black),
+              ClipOval(
+                child: SizedBox(
+                  width: 26,
+                  height: 26,
+                  child: Image.asset(
+                    'assets/characters/'
+                    '${portraitBaseName(order.characterId, 'neutral')}.jpg',
+                    fit: BoxFit.cover,
+                    // Portraits are tall; show the face, not the feet.
+                    alignment: const Alignment(0, -0.85),
+                    // A character with no portrait yet shows their initial.
+                    errorBuilder: (context, error, stack) => ColoredBox(
+                      color: _gold,
+                      child: Center(
+                        child: Text(
+                          characterName.isEmpty ? '?' : characterName[0],
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: 4),

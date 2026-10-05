@@ -16,6 +16,7 @@ SaveState _sample() => SaveState(
   blessings: 3,
   activeOrders: const ['ch1_o_004', 'ch1_o_002'],
   pendingOrders: const ['ch1_o_005'],
+  completedOrders: const ['ch1_o_001'],
   lastOrderSkip: DateTime.utc(2040, 1, 1, 12),
 );
 
@@ -23,7 +24,7 @@ SaveState _clean(SaveState s, {int maxManna = 100}) => sanitizeSave(
   s,
   itemIds: {'bakery_01', 'fruit_02'},
   generatorIds: {'gen_pantry'},
-  orderIds: {'ch1_o_004', 'ch1_o_002', 'ch1_o_005'},
+  orderIds: {'ch1_o_001', 'ch1_o_004', 'ch1_o_002', 'ch1_o_005'},
   cols: 7,
   rows: 9,
   maxManna: maxManna,
@@ -47,6 +48,7 @@ void main() {
     expect(back.blessings, 3);
     expect(back.activeOrders, ['ch1_o_004', 'ch1_o_002']);
     expect(back.pendingOrders, ['ch1_o_005']);
+    expect(back.completedOrders, ['ch1_o_001']);
     expect(back.lastOrderSkip, DateTime.utc(2040, 1, 1, 12));
   });
 
@@ -64,6 +66,16 @@ void main() {
       final json = _sample().toJson();
       expect(migrateSave(json), json);
     });
+    test('a version 1 save gains an empty delivered list', () {
+      final v1 = _sample().toJson()
+        ..['save_version'] = 1
+        ..remove('completed_orders');
+      final migrated = migrateSave(v1);
+      expect(migrated['save_version'], currentSaveVersion);
+      expect(migrated['completed_orders'], isEmpty);
+      expect(SaveState.fromJson(v1).completedOrders, isEmpty);
+      expect(SaveState.fromJson(v1).manna, 42);
+    });
     test('rejects a save with no version', () {
       final json = _sample().toJson()..remove('save_version');
       expect(() => migrateSave(json), throwsFormatException);
@@ -78,6 +90,37 @@ void main() {
   test('a save with a missing field is rejected, not crashed on', () {
     final json = _sample().toJson()..remove('manna');
     expect(() => SaveState.fromJson(json), throwsFormatException);
+  });
+
+  test('a wrongly typed order list is rejected, not crashed on later', () {
+    final json = _sample().toJson()..['active_orders'] = [1, 2];
+    expect(() => SaveState.fromJson(json), throwsFormatException);
+  });
+
+  group('withMissingGenerators', () {
+    const tree = SavedGenerator(
+      generatorId: 'gen_tree',
+      level: 1,
+      col: 4,
+      row: 8,
+    );
+    test('a lost generator is put back in its starting cell', () {
+      final all = withMissingGenerators(_sample(), [tree]);
+      expect([for (final g in all) g.generatorId], ['gen_pantry', 'gen_tree']);
+    });
+    test('a generator the save already has is not added twice', () {
+      final all = withMissingGenerators(_sample(), _sample().generators);
+      expect(all.length, 1);
+    });
+    test('it is left out if something now sits in its cell', () {
+      const blocked = SavedGenerator(
+        generatorId: 'gen_tree',
+        level: 1,
+        col: 3,
+        row: 4,
+      );
+      expect(withMissingGenerators(_sample(), [blocked]).length, 1);
+    });
   });
 
   group('sanitizeSave', () {
@@ -123,6 +166,7 @@ void main() {
           blessings: base.blessings,
           activeOrders: base.activeOrders,
           pendingOrders: base.pendingOrders,
+          completedOrders: const [],
           lastOrderSkip: base.lastOrderSkip,
         ),
       );
@@ -144,6 +188,7 @@ void main() {
           blessings: -1,
           activeOrders: const ['ch1_o_004', 'ch1_o_004'],
           pendingOrders: const ['ch1_o_004', 'ch1_o_005'],
+          completedOrders: const [],
           lastOrderSkip: null,
         ),
       );
@@ -152,6 +197,7 @@ void main() {
       expect(s.blessings, 0);
       expect(s.activeOrders, ['ch1_o_004']);
       expect(s.pendingOrders, ['ch1_o_005']);
+      expect(s.completedOrders, isEmpty);
     });
   });
 }

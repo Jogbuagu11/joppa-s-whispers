@@ -2,7 +2,7 @@
 
 /// The save format this build writes. Raise it, and add a step to
 /// [migrateSave], whenever the format changes. Never break an existing save.
-const currentSaveVersion = 1;
+const currentSaveVersion = 2;
 
 /// An item and the cell it sits in.
 class SavedItem {
@@ -60,6 +60,9 @@ class SaveState {
   final int blessings;
   final List<String> activeOrders;
   final List<String> pendingOrders;
+
+  /// Orders already delivered, so they are never handed out again.
+  final List<String> completedOrders;
   final DateTime? lastOrderSkip;
 
   const SaveState({
@@ -71,6 +74,7 @@ class SaveState {
     required this.blessings,
     required this.activeOrders,
     required this.pendingOrders,
+    required this.completedOrders,
     required this.lastOrderSkip,
   });
 
@@ -84,6 +88,7 @@ class SaveState {
     'blessings': blessings,
     'active_orders': activeOrders,
     'pending_orders': pendingOrders,
+    'completed_orders': completedOrders,
     'last_order_skip': lastOrderSkip?.toUtc().toIso8601String(),
   };
 
@@ -106,8 +111,13 @@ class SaveState {
         mannaLastRegen: DateTime.parse(json['manna_last_regen'] as String),
         talents: json['talents'] as int,
         blessings: json['blessings'] as int,
-        activeOrders: (json['active_orders'] as List<dynamic>).cast<String>(),
-        pendingOrders: (json['pending_orders'] as List<dynamic>).cast<String>(),
+        activeOrders: List<String>.from(json['active_orders'] as List<dynamic>),
+        pendingOrders: List<String>.from(
+          json['pending_orders'] as List<dynamic>,
+        ),
+        completedOrders: List<String>.from(
+          json['completed_orders'] as List<dynamic>,
+        ),
         lastOrderSkip: skip == null ? null : DateTime.parse(skip),
       );
     } on TypeError catch (e) {
@@ -129,8 +139,13 @@ Map<String, dynamic> migrateSave(Map<String, dynamic> raw) {
     );
   }
   final json = Map<String, dynamic>.of(raw);
-  // Future format changes go here, for example:
-  // if (json['save_version'] == 1) { ...change fields...; json['save_version'] = 2; }
+  if (json['save_version'] == 1) {
+    // Version 2 remembers which orders were delivered. Version 1 did not
+    // record that, so it starts as none.
+    json['completed_orders'] = <String>[];
+    json['save_version'] = 2;
+  }
+  // The next format change goes here, as another one-version step.
   return json;
 }
 
@@ -163,6 +178,8 @@ SaveState sanitizeSave(
     for (final id in ids)
       if (orderIds.contains(id) && seenOrders.add(id)) id,
   ];
+  // Delivered first, so a delivered order can never also be showing or waiting.
+  final completed = known(save.completedOrders);
   final active = known(save.activeOrders);
   final pending = known(save.pendingOrders);
 
@@ -175,6 +192,27 @@ SaveState sanitizeSave(
     blessings: save.blessings < 0 ? 0 : save.blessings,
     activeOrders: active,
     pendingOrders: pending,
+    completedOrders: completed,
     lastOrderSkip: save.lastOrderSkip,
   );
+}
+
+/// Puts back any generator from the starting board that [save] has lost (for
+/// example after its id changed in content), so the player can always spawn
+/// items. A missing generator goes to its starting cell, or is left out if an
+/// item now sits there.
+List<SavedGenerator> withMissingGenerators(
+  SaveState save,
+  List<SavedGenerator> startingGenerators,
+) {
+  final have = {for (final g in save.generators) g.generatorId};
+  final taken = {
+    for (final g in save.generators) (g.col, g.row),
+    for (final i in save.items) (i.col, i.row),
+  };
+  return [
+    ...save.generators,
+    for (final g in startingGenerators)
+      if (!have.contains(g.generatorId) && taken.add((g.col, g.row))) g,
+  ];
 }

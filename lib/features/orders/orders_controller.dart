@@ -10,6 +10,7 @@ class OrdersController extends ChangeNotifier {
   final Map<String, OrderModel> _orders;
   final DateTime Function() _now;
   OrderBook _book;
+  final Set<String> _completed;
   int _talents;
   int _blessings;
 
@@ -18,11 +19,13 @@ class OrdersController extends ChangeNotifier {
     required this.board,
     required List<OrderModel> orders,
     OrderBook? savedBook,
+    Iterable<String> completedOrders = const [],
     int startingTalents = 0,
     int startingBlessings = 0,
     DateTime Function()? clock,
   }) : _orders = {for (final o in orders) o.id: o},
        _now = clock ?? DateTime.now,
+       _completed = {...completedOrders},
        _talents = startingTalents,
        _blessings = startingBlessings,
        _book =
@@ -33,6 +36,9 @@ class OrdersController extends ChangeNotifier {
 
   /// Which orders are showing and waiting (written to the save file).
   OrderBook get book => _book;
+
+  /// Ids of delivered orders (written to the save file).
+  List<String> get completedOrders => _completed.toList();
 
   int get talents => _talents;
   int get blessings => _blessings;
@@ -55,6 +61,7 @@ class OrdersController extends ChangeNotifier {
     if (!board.removeItems(orderItemTotals(order))) return false;
     _talents += order.talents;
     _blessings += order.blessings;
+    _completed.add(orderId);
     _book = completeOrder(_book, orderId);
     notifyListeners();
     return true;

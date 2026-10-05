@@ -1,7 +1,6 @@
 // Writes the save file shortly after anything changes, and when the app is
 // sent to the background.
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
@@ -23,8 +22,12 @@ class GameSaver with WidgetsBindingObserver {
   /// becomes one write.
   final Duration delay;
 
+  /// The longest a change may wait, even if changes keep coming.
+  final Duration maxWait;
+
   Timer? _timer;
   bool _dirty = false;
+  DateTime? _deadline;
   Future<void> _writing = Future<void>.value();
 
   GameSaver({
@@ -32,6 +35,7 @@ class GameSaver with WidgetsBindingObserver {
     required this.snapshot,
     required this.triggers,
     this.delay = const Duration(seconds: 2),
+    this.maxWait = const Duration(seconds: 10),
   });
 
   void start() {
@@ -43,8 +47,11 @@ class GameSaver with WidgetsBindingObserver {
 
   void _changed() {
     _dirty = true;
+    final now = DateTime.now();
+    final deadline = _deadline ??= now.add(maxWait);
+    final untilDeadline = deadline.difference(now);
     _timer?.cancel();
-    _timer = Timer(delay, flush);
+    _timer = Timer(untilDeadline < delay ? untilDeadline : delay, flush);
   }
 
   /// Writes now if anything changed since the last write.
@@ -52,13 +59,17 @@ class GameSaver with WidgetsBindingObserver {
     _timer?.cancel();
     if (!_dirty) return _writing;
     _dirty = false;
+    _deadline = null;
     final state = snapshot();
     // Writes are queued one after another so they can never overlap.
     return _writing = _writing.then((_) async {
       try {
         await repository.save(state);
-      } on FileSystemException catch (e, stack) {
+      } on Object catch (e, stack) {
+        // Whatever went wrong, keep saving: mark the state unsaved so the
+        // next change or background event tries again.
         _log.severe('Could not write the save file', e, stack);
+        _dirty = true;
       }
     });
   }

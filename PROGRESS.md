@@ -235,7 +235,7 @@ Not in this milestone:
 
 ## Milestone 8 — state (2026-10-05)
 
-DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 144 unit tests
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 163 unit tests
 pass, five device tests pass on both (smoke, generator tap, out-of-Manna, orders,
 save/load), and on Android the app was force-closed and reopened with the board, Manna,
 Talents, Blessings and order cards exactly as left.
@@ -250,8 +250,22 @@ Talents, Blessings and order cards exactly as left.
 - A damaged save is set aside as `save.corrupt.json` and a new game starts; a save from a
   newer app version is not loaded. Anything in a save that the content no longer knows
   (an item, generator or order) is dropped instead of crashing.
-- `migrateSave` is where future format changes go; the format is at version 1.
+- `migrateSave` is where format changes go. The format is at version 2 (version 2 added
+  the list of delivered orders; version 1 saves are upgraded on load).
+- Orders added to content later join the queue of an existing save; a card left empty by
+  a removed order is refilled; a generator lost from a save is put back from the starting
+  board. A burst of changes is written within 10 seconds at most.
+- A save that cannot be read is kept as `save.corrupt.<time>.json`.
 - `BoardSession` now assembles the game (content + save + board + Manna + orders + saver).
+
+Carried forward from the code review (its blocking finding, missing restore tests, is fixed):
+- After an unreadable save, the new game overwrites `save.json` about 2 seconds later
+  (the bad file is kept aside first). Consider asking the player instead.
+- Manna is capped at the maximum on load; revisit if bought/ad Manna may exceed 100 (M18).
+- The clock can be set forward for free Manna; use server time once accounts exist (M14).
+- Leaving the board screen does not wait for the last write; matters once there are
+  several screens (Milestone 9 onwards).
+- The true force-close check was done by hand on Android only.
 
 Not in this milestone:
 - Basket, chapter/task progress, discovered items, letters, crowns and settings are not in
@@ -276,8 +290,12 @@ recorded here instead of asked.
   Added dev package `image 4.10.1`. Not built: atlas packing, margin trimming
   (pointless for opaque art), and character/generator/location art handling.
 - 39 of 53 items have art. Missing: all of Word (8) and Oil (6). No generator art yet.
-- Character art (76 files) is untouched in `assets/characters/`; names need fixing
-  (`suprised`, `mad`, `nuetral`, doubled endings) before Milestone 9 uses it.
+- Character portraits processed by the pipeline: names fixed (`suprised`→`surprised`,
+  `mad`→`angry`, `nuetral`→`neutral`, `naiomi`→`naomi`, doubled endings), shrunk to
+  512 px wide (29 MB → 5.5 MB), 75 files in `assets/characters/`. Raw originals are in
+  `assets_incoming/characters/`. Demas had two different neutral pictures; the first was
+  kept. Still missing: Naomi happy, Esther happy, Amos sad, Demas happy, and everything
+  but neutral for Marcus. Order cards now show the character's portrait.
 
 ## Website (2026-10-05)
 

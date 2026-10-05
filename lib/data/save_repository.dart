@@ -29,7 +29,9 @@ class SaveRepository {
     } on Object catch (e, stack) {
       _log.severe('Save file could not be read; starting fresh', e, stack);
       try {
-        await file.copy((await _file('save.corrupt.json')).path);
+        // Timestamped so an earlier bad save is never overwritten.
+        final stamp = DateTime.now().millisecondsSinceEpoch;
+        await file.copy((await _file('save.corrupt.$stamp.json')).path);
       } on FileSystemException catch (copyError) {
         _log.warning('Could not keep a copy of the bad save: $copyError');
       }

@@ -132,3 +132,30 @@ OrderBook skipOrder(
   pending.add(orderId);
   return OrderBook(active: active, pending: pending, lastSkip: now);
 }
+
+/// Brings a saved order book in line with today's content: orders that no
+/// longer exist are dropped, orders added since the save join the back of the
+/// line, and empty cards are refilled, so cards can never run dry while
+/// orders remain. [allOrderIds] is every order in content, in story order.
+OrderBook reconcileOrderBook({
+  required OrderBook saved,
+  required Set<String> completed,
+  required List<String> allOrderIds,
+  required int slots,
+}) {
+  final known = allOrderIds.toSet();
+  final seen = <String>{...completed};
+  List<String> keep(List<String> ids) => [
+    for (final id in ids)
+      if (known.contains(id) && seen.add(id)) id,
+  ];
+  final active = keep(saved.active);
+  final pending = keep(saved.pending);
+  for (final id in allOrderIds) {
+    if (seen.add(id)) pending.add(id);
+  }
+  while (active.length < slots && pending.isNotEmpty) {
+    active.add(pending.removeAt(0));
+  }
+  return OrderBook(active: active, pending: pending, lastSkip: saved.lastSkip);
+}

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
@@ -18,6 +19,7 @@ void main() {
     blessings: 1,
     activeOrders: const ['a'],
     pendingOrders: const ['b'],
+    completedOrders: const [],
     lastOrderSkip: null,
   );
 
@@ -47,19 +49,24 @@ void main() {
     expect(names, ['save.json']);
   });
 
+  List<String> corruptCopies() => [
+    for (final f in dir.listSync())
+      if (f.uri.pathSegments.last.startsWith('save.corrupt.'))
+        f.uri.pathSegments.last,
+  ];
+
   test('a damaged save is set aside and the game starts fresh', () async {
     File('${dir.path}/save.json').writeAsStringSync('{ this is not json');
     expect(await repo.load(), isNull);
-    expect(File('${dir.path}/save.corrupt.json').existsSync(), isTrue);
+    expect(corruptCopies().length, 1);
     expect(File('${dir.path}/save.json').existsSync(), isTrue);
   });
 
-  test('a save from a newer app is not loaded', () async {
+  test('a save from a newer app is not loaded and is kept aside', () async {
     final json = sample.toJson()..['save_version'] = currentSaveVersion + 5;
-    File('${dir.path}/save.json').writeAsStringSync(
-      json.toString(), // not valid JSON either way: must not crash
-    );
+    File('${dir.path}/save.json').writeAsStringSync(jsonEncode(json));
     expect(await repo.load(), isNull);
+    expect(corruptCopies().length, 1);
   });
 
   test('clear removes the save', () async {

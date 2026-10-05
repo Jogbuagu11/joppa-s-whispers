@@ -14,6 +14,7 @@ SaveState _state(int manna) => SaveState(
   blessings: 0,
   activeOrders: const [],
   pendingOrders: const [],
+  completedOrders: const [],
   lastOrderSkip: null,
 );
 
@@ -99,4 +100,25 @@ void main() {
     await wait(200);
     expect((await repo.load())?.manna, 88);
   });
+
+  test(
+    'changes that never pause are still written by the maximum wait',
+    () async {
+      await saver.dispose();
+      saver = GameSaver(
+        repository: repo,
+        snapshot: () => _state(manna),
+        triggers: [trigger],
+        delay: const Duration(milliseconds: 80),
+        maxWait: const Duration(milliseconds: 200),
+      )..start();
+      // A change every 30 ms would postpone an 80 ms delay forever.
+      for (int i = 0; i < 14; i++) {
+        manna = 30 + i;
+        trigger.value++;
+        await wait(30);
+      }
+      expect(await repo.load(), isNotNull);
+    },
+  );
 }

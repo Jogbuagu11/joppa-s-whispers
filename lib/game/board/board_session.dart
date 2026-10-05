@@ -37,8 +37,9 @@ class BoardSession {
     await loader.load();
 
     final loaded = await saveRepository.load();
+    final fresh = _newGame(loader, startingMannaOverride);
     final save = loaded == null
-        ? _newGame(loader, startingMannaOverride)
+        ? fresh
         : sanitizeSave(
             loaded,
             itemIds: loader.items.keys.toSet(),
@@ -65,7 +66,8 @@ class BoardSession {
       chainData: loader.chains,
       generatorLevels: loader.generatorLevels,
       generatorPlacements: [
-        for (final g in save.generators)
+        // A saved game that lost a generator gets it back from the start board.
+        for (final g in withMissingGenerators(save, fresh.generators))
           if (loader.generators[g.generatorId] case final gen?)
             (gen: gen.atLevel(g.level), col: g.col, row: g.row),
       ],
@@ -85,11 +87,17 @@ class BoardSession {
       orders: loader.orders,
       savedBook: loaded == null
           ? null
-          : OrderBook(
-              active: save.activeOrders,
-              pending: save.pendingOrders,
-              lastSkip: save.lastOrderSkip,
+          : reconcileOrderBook(
+              saved: OrderBook(
+                active: save.activeOrders,
+                pending: save.pendingOrders,
+                lastSkip: save.lastOrderSkip,
+              ),
+              completed: save.completedOrders.toSet(),
+              allOrderIds: [for (final o in loader.orders) o.id],
+              slots: loader.economy.orderSlots,
             ),
+      completedOrders: save.completedOrders,
       startingTalents: save.talents,
       startingBlessings: save.blessings,
     );
@@ -107,6 +115,7 @@ class BoardSession {
         blessings: orders.blessings,
         activeOrders: orders.book.active,
         pendingOrders: orders.book.pending,
+        completedOrders: orders.completedOrders,
         lastOrderSkip: orders.book.lastSkip,
       ),
       // Manna spends always come with a board change, so the per-second Manna
@@ -126,6 +135,16 @@ class BoardSession {
   /// A brand-new game, laid out from content/starting_board.json.
   static SaveState _newGame(ContentLoader loader, int? mannaOverride) {
     final start = loader.startingBoard;
+    for (final g in start.generators) {
+      if (!loader.generators.containsKey(g.generatorId)) {
+        _log.severe('Starting board names unknown generator ${g.generatorId}');
+      }
+    }
+    for (final i in start.items) {
+      if (!loader.items.containsKey(i.itemId)) {
+        _log.severe('Starting board names unknown item ${i.itemId}');
+      }
+    }
     return SaveState(
       items: [
         for (final i in start.items)
@@ -146,6 +165,7 @@ class BoardSession {
       blessings: 0,
       activeOrders: const [],
       pendingOrders: const [],
+      completedOrders: const [],
       lastOrderSkip: null,
     );
   }

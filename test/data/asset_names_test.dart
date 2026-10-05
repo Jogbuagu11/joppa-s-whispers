@@ -39,4 +39,44 @@ void main() {
       isEmpty,
     );
   });
+
+  group('characterAssetBaseName', () {
+    test('accepts a clean name', () {
+      expect(
+        characterAssetBaseName('char_naomi_happy.png'),
+        'char_naomi_happy',
+      );
+    });
+    test('fixes known misspellings and odd endings', () {
+      expect(
+        characterAssetBaseName('char_amos_suprised.jpeg'),
+        'char_amos_surprised',
+      );
+      expect(
+        characterAssetBaseName('char_amos_mad.png.jpeg'),
+        'char_amos_angry',
+      );
+      expect(
+        characterAssetBaseName('char_silas_nuetral.png.jpeg'),
+        'char_silas_neutral',
+      );
+      expect(
+        characterAssetBaseName('char_naiomi_neutral.png.jpeg'),
+        'char_naomi_neutral',
+      );
+      expect(
+        characterAssetBaseName('char_tabitha_happy..jpeg'),
+        'char_tabitha_happy',
+      );
+    });
+    test('rejects unknown expressions and other files', () {
+      expect(characterAssetBaseName('char_naomi_winking.png'), isNull);
+      expect(characterAssetBaseName('item_bakery_01.png'), isNull);
+      expect(characterAssetBaseName('naomi_happy.png'), isNull);
+    });
+  });
+
+  test('portraitBaseName builds the expected file name', () {
+    expect(portraitBaseName('silas', 'happy'), 'char_silas_happy');
+  });
 }

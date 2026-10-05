@@ -37,3 +37,43 @@ List<String> itemsMissingArt(
   }
   return missing;
 }
+
+final _characterName = RegExp(r'^char_([a-z]+)_([a-z]+)$');
+
+/// Common misspellings in raw art names -> the spelling the game uses.
+const _expressionFixes = {
+  'suprised': 'surprised',
+  'mad': 'angry',
+  'nuetral': 'neutral',
+};
+const _characterFixes = {'naiomi': 'naomi'};
+
+/// The six expressions every character portrait set may contain.
+const portraitExpressions = {
+  'neutral',
+  'happy',
+  'sad',
+  'angry',
+  'surprised',
+  'thinking',
+};
+
+/// Turns a raw portrait file name into `char_<id>_<expression>`, fixing known
+/// misspellings and ignoring extra endings. Returns null if the name does not
+/// follow the pattern or the expression is not one the game knows.
+String? characterAssetBaseName(String fileName) {
+  final dot = fileName.indexOf('.');
+  final base = (dot < 0 ? fileName : fileName.substring(0, dot)).toLowerCase();
+  final match = _characterName.firstMatch(base);
+  if (match == null) return null;
+  final rawId = match.group(1) ?? '';
+  final rawExpression = match.group(2) ?? '';
+  final id = _characterFixes[rawId] ?? rawId;
+  final expression = _expressionFixes[rawExpression] ?? rawExpression;
+  if (!portraitExpressions.contains(expression)) return null;
+  return 'char_${id}_$expression';
+}
+
+/// The portrait file for a character's expression, e.g. char_naomi_happy.
+String portraitBaseName(String characterId, String expression) =>
+    'char_${characterId}_$expression';

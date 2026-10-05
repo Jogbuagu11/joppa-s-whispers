@@ -90,6 +90,17 @@ void main() {
         e.widget.key.toString(),
     ];
     expect(itemsBefore.length, greaterThan(3));
+    // The move, the delivery and the new order card all really happened.
+    expect(
+      itemsBefore,
+      contains('${first['item_id']}@${BoardGame.cols - 1},0'),
+    );
+    expect(talentsBefore, isNot('0'));
+    expect(blessingsBefore, isNot('0'));
+    final generatorsBefore = [
+      for (final g in game.snapshotGenerators())
+        '${g.generatorId}@${g.col},${g.row}:${g.level}',
+    ];
     expect(mannaBefore, isNot(startsWith('${start['manna']}/')));
 
     // Wait past the 2-second save delay, then close the screen.
@@ -104,6 +115,10 @@ void main() {
       for (final i in game.snapshotItems()) '${i.itemId}@${i.col},${i.row}',
     ]..sort();
     expect(itemsAfter, itemsBefore);
+    expect([
+      for (final g in game.snapshotGenerators())
+        '${g.generatorId}@${g.col},${g.row}:${g.level}',
+    ], generatorsBefore);
     expect(text(tester, 'manna_count'), mannaBefore);
     expect(text(tester, 'talents_count'), talentsBefore);
     expect(text(tester, 'blessings_count'), blessingsBefore);

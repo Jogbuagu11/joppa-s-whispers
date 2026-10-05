@@ -265,4 +265,20 @@ void main() {
       expect(r.mannaAfter, 10);
     });
   });
+
+  test('GeneratorModel.atLevel changes only the level', () {
+    const gen = GeneratorModel(
+      generatorId: 'gen_pantry',
+      chainId: 'bakery',
+      level: 1,
+      energyCost: 1,
+      name: 'Pantry',
+    );
+    final up = gen.atLevel(3);
+    expect(up.level, 3);
+    expect(up.generatorId, 'gen_pantry');
+    expect(up.chainId, 'bakery');
+    expect(up.energyCost, 1);
+    expect(up.name, 'Pantry');
+  });
 }

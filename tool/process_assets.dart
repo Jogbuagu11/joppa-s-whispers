@@ -55,6 +55,8 @@ void main() {
     }
   }
 
+  _processCharacters(skipped);
+
   final available = <String>{};
   for (final f in outDir.listSync().whereType<File>()) {
     final base = itemAssetBaseName(f.uri.pathSegments.last);
@@ -77,4 +79,50 @@ void main() {
         ? 'Every item has art.'
         : '${missing.length} item(s) still have no art: ${missing.join(', ')}',
   );
+}
+
+const _portraitWidth = 512;
+
+/// Shrinks raw portraits from assets_incoming/characters/ into
+/// assets/characters/, fixing misspelled names on the way.
+void _processCharacters(List<String> skipped) {
+  final incoming = Directory('assets_incoming/characters');
+  if (!incoming.existsSync()) return;
+  final outDir = Directory('assets/characters')..createSync(recursive: true);
+  final files = incoming.listSync().whereType<File>().toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
+  final done = <String>{};
+  var written = 0;
+  for (final file in files) {
+    final name = file.uri.pathSegments.last;
+    if (name.startsWith('.')) continue;
+    final base = characterAssetBaseName(name);
+    if (base == null) {
+      skipped.add('$name (name is not char_<id>_<expression>)');
+      continue;
+    }
+    if (!done.add(base)) {
+      skipped.add('$name (a second picture for $base; the first one was kept)');
+      continue;
+    }
+    final image = img.decodeImage(file.readAsBytesSync());
+    if (image == null) {
+      skipped.add('$name (not a picture this tool can read)');
+      continue;
+    }
+    final small = img.copyResize(
+      image,
+      width: _portraitWidth,
+      interpolation: img.Interpolation.average,
+    );
+    if (image.hasAlpha) {
+      File('${outDir.path}/$base.png').writeAsBytesSync(img.encodePng(small));
+    } else {
+      File(
+        '${outDir.path}/$base.jpg',
+      ).writeAsBytesSync(img.encodeJpg(small, quality: 88));
+    }
+    written++;
+  }
+  stdout.writeln('Processed $written portrait(s) into ${outDir.path}.');
 }

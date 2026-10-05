@@ -131,4 +131,28 @@ void main() {
     board.add('bakery_02');
     expect(notified, 0);
   });
+
+  test('restores a saved book, wallet and delivered list', () {
+    final restored = OrdersController(
+      config: config,
+      board: board,
+      orders: orders,
+      savedBook: const OrderBook(active: ['c'], pending: []),
+      completedOrders: const ['a', 'b'],
+      startingTalents: 20,
+      startingBlessings: 2,
+      clock: () => now,
+    );
+    expect([for (final o in restored.activeOrders) o.id], ['c']);
+    expect(restored.talents, 20);
+    expect(restored.blessings, 2);
+    expect(restored.completedOrders, ['a', 'b']);
+    expect(restored.book.active, ['c']);
+  });
+
+  test('a delivered order is recorded as completed', () {
+    expect(controller.completedOrders, isEmpty);
+    controller.deliver('a');
+    expect(controller.completedOrders, ['a']);
+  });
 }

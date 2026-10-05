@@ -65,6 +65,20 @@ void main() {
     expect(c.secondsUntilNext, 30);
   });
 
+  test('restoring with an old regen clock collects the Manna earned away', () {
+    final c = MannaController(
+      config: config,
+      startingManna: 10,
+      lastRegen: t0.subtract(const Duration(minutes: 21)),
+      clock: () => now,
+    );
+    expect(c.manna, 10);
+    c.tick();
+    expect(c.manna, 20);
+    expect(c.lastRegen, t0.subtract(const Duration(minutes: 1)));
+    expect(c.secondsUntilNext, 60);
+  });
+
   testWidgets('start ticks once a second, only one timer, dispose stops it', (
     tester,
   ) async {

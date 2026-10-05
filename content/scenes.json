@@ -1,1 +1,201 @@
-[]
+[
+  {
+    "id": "ch1_s_01",
+    "background": "loc_harbor_dusk",
+    "lines": [
+      { "speaker": "dockworker", "expression": "neutral", "text": "That's the widow they sent away from Caesarea." },
+      { "speaker": "dockworker", "expression": "neutral", "text": "Esther's girl? Coming home with one bundle and no husband." },
+      { "speaker": "dockworker", "expression": "neutral", "text": "Keep your voice down. She's looking this way." },
+      { "speaker": "naomi", "expression": "thinking", "text": "Hm. One foot on the dock and Joppa already knows me. Fast town." },
+      { "speaker": "silas", "expression": "happy", "text": "Little loaf. You came." },
+      { "speaker": "naomi", "expression": "sad", "text": "Silas. You're the only one on this dock who's said my name... well. Nearly my name." },
+      { "speaker": "silas", "expression": "neutral", "text": "Jonah sailed from this very dock, you know. Every runaway in Israel does. Now, that reminds me—" },
+      { "speaker": "naomi", "expression": "neutral", "text": "I'm not running, Silas. I've run out of places. Take me to Savta's bakehouse." },
+      { "speaker": "silas", "expression": "sad", "text": "Ah. About the bakehouse, little loaf... best you see it for yourself." }
+    ]
+  },
+  {
+    "id": "ch1_s_02",
+    "background": "loc_bakehouse_outside",
+    "lines": [
+      { "speaker": "naomi", "expression": "surprised", "text": "Boards on the door. Weeds in the step. Savta would have chased those weeds with a broom." },
+      { "speaker": "silas", "expression": "sad", "text": "Three months shut. Nobody had the heart to open it. Or the nerve. It was always hers." },
+      { "speaker": "naomi", "expression": "thinking", "text": "Hm. Then I'll start with the doorway. A baker who can't reach her own oven isn't much of a baker." },
+      { "speaker": "silas", "expression": "happy", "text": "That's Esther's chin you've got. Now, that reminds me of the year the fish swam backward—" },
+      { "speaker": "naomi", "expression": "neutral", "text": "Silas. Hold this board." },
+      { "speaker": "silas", "expression": "neutral", "text": "Holding. It was a cold year, mind you. The fish were as confused as anyone." },
+      { "speaker": "naomi", "expression": "sad", "text": "There. The door opens. It still smells like her in here. Barley and smoke." },
+      { "speaker": "silas", "expression": "thinking", "text": "Come up to the roof before the light goes. She left something there she wanted you to see." }
+    ]
+  },
+  {
+    "id": "ch1_s_03a",
+    "background": "loc_rooftop_night",
+    "lines": [
+      { "speaker": "silas", "expression": "neutral", "text": "Here. Esther's prayer corner. Every morning before the oven, she sat right on that mat." },
+      { "speaker": "naomi", "expression": "thinking", "text": "It's her kitchen in miniature. Barley sheaves, jars, a little tray... all laid out in rows." },
+      { "speaker": "silas", "expression": "happy", "text": "She'd set two sheaves together and say, 'Small things joined make bigger things, Silas.'" },
+      { "speaker": "naomi", "expression": "neutral", "text": "And you'd say?" },
+      { "speaker": "silas", "expression": "neutral", "text": "I'd say, 'Is there bread yet?' Forty years. She never once threw the tray at me." },
+      { "speaker": "naomi", "expression": "sad", "text": "She prayed here for me. Didn't she. Even after what Caesarea said." },
+      { "speaker": "silas", "expression": "thinking", "text": "Every dawn, by name. And she told me: 'When my girl comes, tell her to look in the oven niche.'" },
+      { "speaker": "naomi", "expression": "surprised", "text": "The oven niche? Silas, what did she leave in there?" }
+    ]
+  },
+  {
+    "id": "ch1_s_03b",
+    "background": "loc_bakehouse_inside",
+    "lines": [
+      { "speaker": "naomi", "expression": "surprised", "text": "A potsherd, tucked behind the ash. That's Savta's hand. She wrote to me." },
+      { "speaker": "esther", "expression": "neutral", "text": "My Naomi. If you are reading this, you came home, and I am already Home." },
+      { "speaker": "esther", "expression": "neutral", "text": "Don't cry on the dough — it makes it salty." },
+      { "speaker": "esther", "expression": "neutral", "text": "I know what they said about you in Caesarea. I never believed a word." },
+      { "speaker": "esther", "expression": "thinking", "text": "Fear will tell you to hide in this kitchen. Don't." },
+      { "speaker": "esther", "expression": "neutral", "text": "\"There is no fear in love; but perfect love casteth out fear.\" (1 John 4:18)" },
+      { "speaker": "esther", "expression": "neutral", "text": "Open the shutters. — your Savta" },
+      { "speaker": "naomi", "expression": "sad", "text": "Too late, Savta. I'm already crying on things." },
+      { "speaker": "naomi", "expression": "thinking", "text": "Open the shutters. Hm. That takes more love than fear. Start small, Naomi." }
+    ]
+  },
+  {
+    "id": "ch1_s_04",
+    "background": "loc_bakehouse_inside",
+    "lines": [
+      { "speaker": "naomi", "expression": "surprised", "text": "There's a small person under my kneading table. Small persons usually knock." },
+      { "speaker": "joy", "expression": "happy", "text": "I'm Joy! I came in the back. The boards are loose. Are you the bread lady?" },
+      { "speaker": "naomi", "expression": "neutral", "text": "I'm Naomi. Though lately I'd answer to Mara." },
+      { "speaker": "joy", "expression": "thinking", "text": "Is it true you were sent away? Why? Were you bad?" },
+      { "speaker": "naomi", "expression": "neutral", "text": "Hm." },
+      { "speaker": "joy", "expression": "neutral", "text": "That's what Papa says when he doesn't want to answer. The ladies at the well said lots more." },
+      { "speaker": "naomi", "expression": "thinking", "text": "I'm sure they did. What do you want, Joy-who-came-in-the-back?" },
+      { "speaker": "joy", "expression": "happy", "text": "Honey cake! Esther always saved me the corner piece." },
+      { "speaker": "naomi", "expression": "sad", "text": "No honey yet. No fire yet, either. But come back when the oven's lit, and we'll see." },
+      { "speaker": "joy", "expression": "happy", "text": "I'll come back every day! I'm very good at coming back." }
+    ]
+  },
+  {
+    "id": "ch1_s_05",
+    "background": "loc_bakehouse_inside",
+    "lines": [
+      { "speaker": "naomi", "expression": "thinking", "text": "Catch, you stubborn thing. Fifty years you lit for her. Light once for me." },
+      { "speaker": "naomi", "expression": "surprised", "text": "There! It's caught. Her oven still draws." },
+      { "speaker": "silas", "expression": "happy", "text": "Smoke from Esther's chimney! Half the dock stopped hauling nets to stare." },
+      { "speaker": "naomi", "expression": "neutral", "text": "Flatbread for the crews, Silas. Warm. Take it before I lose my nerve." },
+      { "speaker": "silas", "expression": "happy", "text": "Mm. Oh, little loaf. That's her bread. That's her bread exactly." },
+      { "speaker": "naomi", "expression": "sad", "text": "It's a little thick at the edge." },
+      { "speaker": "silas", "expression": "happy", "text": "I've told the whole dock you bake like Esther. Twice. Some of them three times." },
+      { "speaker": "naomi", "expression": "surprised", "text": "You told them before you tasted it?" },
+      { "speaker": "silas", "expression": "neutral", "text": "A fisherman knows what's in the net before he pulls it. Mostly. There was one year—" },
+      { "speaker": "naomi", "expression": "thinking", "text": "Hm. If the whole dock knows, so does the well. I wonder who knocks first." }
+    ]
+  },
+  {
+    "id": "ch1_s_06",
+    "background": "loc_bakehouse_inside",
+    "lines": [
+      { "speaker": "zilpah", "expression": "happy", "text": "So it's true! Esther's girl, home at last. And so thin, dear. Grief does suit some women." },
+      { "speaker": "naomi", "expression": "neutral", "text": "Zilpah. What can I bake for you?" },
+      { "speaker": "zilpah", "expression": "neutral", "text": "A flatbread and a little flour. So brave of you to bake here, where everyone remembers you." },
+      { "speaker": "zilpah", "expression": "thinking", "text": "Caesarea must have been grand. All those fine Roman houses. Did you see inside many?" },
+      { "speaker": "naomi", "expression": "neutral", "text": "Hm." },
+      { "speaker": "zilpah", "expression": "happy", "text": "Oh, I don't ask for myself. I'm only saying what people are saying, dear." },
+      { "speaker": "naomi", "expression": "angry", "text": "People say a great deal for folk who weren't there." },
+      { "speaker": "naomi", "expression": "thinking", "text": "Patience, Naomi. And peace enough not to bite." },
+      { "speaker": "naomi", "expression": "neutral", "text": "Your bread, Zilpah. Still warm. That's a lovely shawl. Whoever made it had kind hands." },
+      { "speaker": "zilpah", "expression": "surprised", "text": "It... yes. Well. I'll tell them at the well you were civil. They'll be so surprised." }
+    ]
+  },
+  {
+    "id": "ch1_s_07",
+    "background": "loc_market",
+    "lines": [
+      { "speaker": "demas", "expression": "neutral", "text": "Gather close, friends, gather close! News from up the coast, fresh as this morning's catch." },
+      { "speaker": "demas", "expression": "thinking", "text": "A tale of a widow from Caesarea. Young. Clever with her hands. And with Roman friends." },
+      { "speaker": "dockworker", "expression": "neutral", "text": "Roman friends? What sort of friends?" },
+      { "speaker": "demas", "expression": "neutral", "text": "Ah, who can say? I only tell what the road tells me. Her husband's own mother sent her away." },
+      { "speaker": "dockworker", "expression": "neutral", "text": "And now there's a widow from Caesarea baking our bread." },
+      { "speaker": "demas", "expression": "surprised", "text": "Did I name a name? I named no name! A teller of tales only tells. You do the adding up." },
+      { "speaker": "naomi", "expression": "sad", "text": "My basket was empty by noon yesterday. Today nobody has stopped. Not one." },
+      { "speaker": "joy", "expression": "sad", "text": "The fish-seller said her mama won't let her buy your bread now. That's silly. It's good bread." },
+      { "speaker": "naomi", "expression": "thinking", "text": "It's the same bread it was yesterday, Joy. Only the story changed." }
+    ]
+  },
+  {
+    "id": "ch1_s_08",
+    "background": "loc_bakehouse_outside",
+    "lines": [
+      { "speaker": "naomi", "expression": "surprised", "text": "There's a man on my wall with a mallet. I didn't hire a man with a mallet." },
+      { "speaker": "joy", "expression": "happy", "text": "That's Papa! I told him your shutters hang like broken wings. He builds boats. Shutters are easy." },
+      { "speaker": "caleb", "expression": "neutral", "text": "Hinge pins were rusted through. They'll hold now." },
+      { "speaker": "naomi", "expression": "neutral", "text": "Thank you. What do I owe you? I can't pay much this week. You may have heard why." },
+      { "speaker": "caleb", "expression": "neutral", "text": "Nothing owed. I don't listen at the market." },
+      { "speaker": "naomi", "expression": "thinking", "text": "Hm. Everyone in Joppa wants something from me. A story, mostly. And you want nothing." },
+      { "speaker": "caleb", "expression": "thinking", "text": "Lower latch sticks. Lift, then push." },
+      { "speaker": "joy", "expression": "sad", "text": "Papa doesn't talk much. Not since Mama died. She died in the sea." },
+      { "speaker": "joy", "expression": "thinking", "text": "People say things about that too. Papa says we don't answer. Is that why you say 'Hm'?" },
+      { "speaker": "naomi", "expression": "sad", "text": "...Yes, little one. I think it might be." }
+    ]
+  },
+  {
+    "id": "ch1_s_09a",
+    "background": "loc_harbor_dusk",
+    "lines": [
+      { "speaker": "silas", "expression": "surprised", "text": "Little loaf? That's a full basket. I thought nobody was buying." },
+      { "speaker": "naomi", "expression": "neutral", "text": "Nobody is. So nobody's paying. The night crews still have to eat, Silas." },
+      { "speaker": "dockworker", "expression": "neutral", "text": "We heard about you. I've no coin for a Caesarea widow's bread." },
+      { "speaker": "naomi", "expression": "neutral", "text": "Good, because it isn't for sale. It's warm, and the wind is cold. Take two." },
+      { "speaker": "dockworker", "expression": "neutral", "text": "...Why would you feed men who talk about you?" },
+      { "speaker": "naomi", "expression": "thinking", "text": "My grandmother fed this dock for fifty years. I doubt she liked all of you either." },
+      { "speaker": "silas", "expression": "happy", "text": "Ha! She did not. She told me so weekly. Eat, lads, eat!" },
+      { "speaker": "naomi", "expression": "sad", "text": "One basket doesn't change a story, Silas. I know that." },
+      { "speaker": "silas", "expression": "thinking", "text": "No. But a man chews slower than he talks. Gives him time to think. Go home, rest." }
+    ]
+  },
+  {
+    "id": "ch1_s_09b",
+    "background": "loc_bakehouse_inside",
+    "lines": [
+      { "speaker": "naomi", "expression": "surprised", "text": "That brick by the oven moved. It never moved when I was a girl. Something's behind it." },
+      { "speaker": "naomi", "expression": "sad", "text": "Another shard. She knew I'd lean on this wall when I was tired." },
+      { "speaker": "esther", "expression": "neutral", "text": "Every morning for fifty years I lit that oven in the dark, not knowing if anyone would buy a single loaf." },
+      { "speaker": "esther", "expression": "neutral", "text": "Someone always came." },
+      { "speaker": "esther", "expression": "neutral", "text": "\"It is of the LORD's mercies that we are not consumed, because his compassions fail not.\" (Lamentations 3:22)" },
+      { "speaker": "esther", "expression": "neutral", "text": "\"They are new every morning: great is thy faithfulness.\" (Lamentations 3:23)" },
+      { "speaker": "esther", "expression": "thinking", "text": "The well remembers everything, little one. Go and listen. — your Savta" },
+      { "speaker": "naomi", "expression": "thinking", "text": "Someone always came. Hm. Then I light it again tomorrow, in the dark." },
+      { "speaker": "naomi", "expression": "neutral", "text": "But the well? What does the well remember that she couldn't tell me herself?" }
+    ]
+  },
+  {
+    "id": "ch1_s_10",
+    "background": "loc_bakehouse_inside",
+    "lines": [
+      { "speaker": "joy", "expression": "happy", "text": "The shutters are open! All of them! You can smell the bread from the boatyard!" },
+      { "speaker": "naomi", "expression": "neutral", "text": "New shelf, swept floor, clean ash. Savta would still find a crumb somewhere." },
+      { "speaker": "dockworker", "expression": "neutral", "text": "Two loaves. My crew says the free bread was better than what we pay for elsewhere." },
+      { "speaker": "naomi", "expression": "surprised", "text": "You're... buying? With the whole street watching?" },
+      { "speaker": "dockworker", "expression": "neutral", "text": "Let them watch. A man can't eat a story." },
+      { "speaker": "silas", "expression": "happy", "text": "Three customers before noon! I counted. Well, two and a goat. But the goat looked interested." },
+      { "speaker": "caleb", "expression": "neutral", "text": "A loaf for supper. And I'll pay for this one. The shutters were a gift." },
+      { "speaker": "naomi", "expression": "thinking", "text": "Hm. Then the honey cake is a gift too. For your daughter. She's waited longer than anyone." },
+      { "speaker": "joy", "expression": "surprised", "text": "The corner piece?!" },
+      { "speaker": "caleb", "expression": "neutral", "text": "...Thank you, Naomi." }
+    ]
+  },
+  {
+    "id": "ch1_s_11",
+    "background": "loc_bakehouse_inside",
+    "lines": [
+      { "speaker": "naomi", "expression": "neutral", "text": "Last loaves out, Joy. Then we bank the fire. A good day. I'd forgotten what those feel like." },
+      { "speaker": "joy", "expression": "surprised", "text": "Naomi, someone's at the door. It's Elder Amos. He looks all white, like flour." },
+      { "speaker": "naomi", "expression": "surprised", "text": "Elder? Sit, sit. You're shaking. Here's the bread for the widows' table, it's all ready—" },
+      { "speaker": "amos", "expression": "neutral", "text": "Well now. Well now, child. Keep the bread. I don't know that they'll take it from my hands." },
+      { "speaker": "naomi", "expression": "thinking", "text": "Take it from... Amos, what's happened?" },
+      { "speaker": "amos", "expression": "thinking", "text": "The widows' fund. Every coin the believers gathered. The chest is empty." },
+      { "speaker": "naomi", "expression": "surprised", "text": "Empty? Stolen? Who would rob widows?" },
+      { "speaker": "amos", "expression": "surprised", "text": "That is what the whole well is asking. And they have already settled on a name." },
+      { "speaker": "naomi", "expression": "sad", "text": "Whose name, Elder?" },
+      { "speaker": "amos", "expression": "neutral", "text": "Mine." }
+    ]
+  }
+]
