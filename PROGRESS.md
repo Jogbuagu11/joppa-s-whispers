@@ -81,7 +81,45 @@
 - The Firebase service account JSON in the project root (`whispers-of-joppa-firebase-adminsdk-fbsvc-e2d2604c8c.json`) is excluded from git and will be stored as a Supabase Edge Function secret at Milestone 19.
 - `flutterfire configure` will be run at Milestone 19 to generate proper Firebase config files.
 
+## Machine move (2026-10-04)
+
+The project folder was copied to a new Mac (user `mini`) with no build tools, no git
+history, no `assets/` folder, and no root `CLAUDE.md`.
+
+- Restored from the GitHub backup: `assets/` (121 files), `CLAUDE.md`, iOS Google client plist.
+- Flutter 3.44.0 (same version as before) installed at `~/development/flutter`.
+- `.claude/settings.json` hook no longer points at the old Mac's folder.
+- Git history re-attached from GitHub (2026-10-05); `m0-working`…`m3-working` tags recreated locally (not pushed).
+
+## Milestone 4 — state (2026-10-05)
+
+Verified on the iOS Simulator (iPhone 17, iOS 26.5): analyze clean, 30 unit tests pass,
+smoke test passes, generator tap test passes, board seen on screen.
+**Not yet verified on Android** — so the milestone is not done and not tagged.
+
+Fixed while getting it running:
+- `content/generators.json`: level 4 and 5 odds added up to more than 100%, so tier-3
+  items could never spawn. Now match GDD section 5 (L4: 70/25/5, L5: 60/30/10).
+- Board showed a red error at launch (starter items placed before the board was built).
+  Items are now queued until the board is ready.
+- Smoke test passed even with that error on screen, and hung once the board really ran.
+  It now also requires the board itself to be visible with no error.
+- New `integration_test/generator_tap_test.dart`: tapping a generator spends 1 Manna.
+- Manna counter sat under the status bar; generator names spilled out of their tiles.
+- iOS project: bundle ID was `com.whispersofjoppa.whispersOfJoppa`, now
+  `com.whispersofjoppa.game` (confirmed by Jennifer); minimum iOS raised 13 → 15
+  (required by Firebase); `build/` excluded from analysis.
+
+## Assumptions to confirm (added 2026-10-05)
+
+- iOS `Info.plist` uses Google's public **test** AdMob app ID (same approach as Android)
+  because the ads library closes the app at launch without one. Replace with the real
+  ID at Milestone 18.
+- Minimum iOS version is now 15.0.
+
 ## Waiting on Jennifer
 
-- **Xcode setup**: Open Xcode, accept the license, install iOS Simulator runtime (needed for iOS Simulator testing). Tell me "Xcode ready" when done.
-- **Android emulator**: Confirm an Android emulator (recent Pixel) is created in Android Studio Device Manager (from SETUP_CHECKLIST Phase 1). Tell me "emulator ready" when done.
+- **Android Studio**: the installed copy is the Intel version and cannot start on this
+  Mac. Delete it, download the **Mac with Apple chip** version from
+  developer.android.com/studio, run the setup wizard with default choices, and create a
+  recent Pixel emulator in Device Manager. Tell me "emulator ready" when done.

@@ -1,5 +1,6 @@
 // Generator spawn logic — pure Dart, fully unit tested.
 import 'dart:math';
+import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 
 /// Generator level data loaded from content/generators.json.
@@ -34,3 +35,12 @@ bool boardHasSpace(BoardState state) => state.firstEmpty() != null;
 /// Whether the player has enough manna to tap a generator.
 bool canAffordGenerator(BoardState state, GeneratorModel gen) =>
     state.manna >= gen.energyCost;
+
+/// Returns the item_id that should be spawned for the given chain and tier.
+/// Returns null if the chain or tier is not found in the catalog.
+String? resolveSpawnedItemId(
+  String chainId,
+  int tier,
+  Map<String, ChainTierData> chains,
+) =>
+    chains[chainId]?.tierToItemId['${chainId}_$tier'];

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
+import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 
 // Deterministic mock random that always returns a fixed value.
@@ -60,6 +61,37 @@ void main() {
 
     test('full board has no space', () {
       expect(boardHasSpace(makeState(true)), isFalse);
+    });
+  });
+
+  group('resolveSpawnedItemId', () {
+    final chains = {
+      'bakery': ChainTierData(
+        chainId: 'bakery',
+        maxTier: 3,
+        itemTiers: {'bakery_01': 1, 'bakery_02': 2, 'bakery_03': 3},
+        tierToItemId: {
+          'bakery_1': 'bakery_01',
+          'bakery_2': 'bakery_02',
+          'bakery_3': 'bakery_03',
+        },
+      ),
+    };
+
+    test('tier 1 resolves to bakery_01', () {
+      expect(resolveSpawnedItemId('bakery', 1, chains), 'bakery_01');
+    });
+
+    test('tier 3 resolves to bakery_03', () {
+      expect(resolveSpawnedItemId('bakery', 3, chains), 'bakery_03');
+    });
+
+    test('unknown chain returns null', () {
+      expect(resolveSpawnedItemId('nonexistent', 1, chains), isNull);
+    });
+
+    test('tier beyond max returns null', () {
+      expect(resolveSpawnedItemId('bakery', 99, chains), isNull);
     });
   });
 

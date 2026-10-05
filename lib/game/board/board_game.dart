@@ -3,12 +3,17 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/game/board/cell_component.dart';
+import 'package:whispers_of_joppa/game/board/generator_component.dart';
 import 'package:whispers_of_joppa/game/board/item_component.dart';
 
 final _log = Logger('BoardGame');
+
+/// A generator placement — which cell on the board it sits in.
+typedef GeneratorPlacement = ({GeneratorModel gen, int col, int row});
 
 /// The Flame game for the merge board.
 class BoardGame extends FlameGame with DragCallbacks {
@@ -17,6 +22,12 @@ class BoardGame extends FlameGame with DragCallbacks {
 
   final Map<String, ItemModel> itemCatalog;
   final Map<String, ChainTierData> chainData;
+  final Map<String, List<GeneratorLevelData>> generatorLevels;
+  final List<GeneratorPlacement> generatorPlacements;
+
+  // Manna exposed to Flutter layer via ValueNotifier.
+  final ValueNotifier<int> mannaNotifier;
+  int _manna;
 
   // 2D array of cell visuals [col][row]
   late List<List<CellComponent>> _cells;
@@ -30,7 +41,21 @@ class BoardGame extends FlameGame with DragCallbacks {
     cols, (_) => List.generate(rows, (_) => null),
   );
 
-  BoardGame({required this.itemCatalog, required this.chainData});
+  // Items handed to placeItem before the board was built; placed in onLoad.
+  final List<ItemModel> _pendingItems = [];
+  bool _boardBuilt = false;
+
+  // Set of (col, row) positions occupied by generators.
+  final Set<(int, int)> _generatorCellSet = {};
+
+  BoardGame({
+    required this.itemCatalog,
+    required this.chainData,
+    required this.generatorLevels,
+    required this.generatorPlacements,
+    int initialManna = 10,
+  })  : _manna = initialManna,
+        mannaNotifier = ValueNotifier<int>(initialManna);
 
   @override
   Color backgroundColor() => const Color(0xFF1A1205);
@@ -38,6 +63,12 @@ class BoardGame extends FlameGame with DragCallbacks {
   @override
   Future<void> onLoad() async {
     _buildCells();
+    _buildGenerators();
+    _boardBuilt = true;
+    for (final item in _pendingItems) {
+      placeItem(item);
+    }
+    _pendingItems.clear();
   }
 
   void _buildCells() {
@@ -59,17 +90,41 @@ class BoardGame extends FlameGame with DragCallbacks {
     });
   }
 
+  void _buildGenerators() {
+    final cellSize = _cellSize;
+    final offsetX = (size.x - cols * cellSize) / 2;
+    final offsetY = (size.y - rows * cellSize) / 2;
+
+    for (final placement in generatorPlacements) {
+      _generatorCellSet.add((placement.col, placement.row));
+      final genComp = GeneratorComponent(
+        generator: placement.gen,
+        onTapped: _onGeneratorTapped,
+        position: Vector2(
+          offsetX + placement.col * cellSize,
+          offsetY + placement.row * cellSize,
+        ),
+        cellSize: cellSize,
+      );
+      add(genComp);
+    }
+  }
+
   double get _cellSize {
     final maxW = size.x / cols;
     final maxH = size.y / rows;
     return (maxW < maxH ? maxW : maxH) - 2;
   }
 
-  /// Called by BoardScreen to place an item in the first empty cell.
+  /// Called by BoardScreen to place an item in the first empty non-generator cell.
   void placeItem(ItemModel item) {
+    if (!_boardBuilt) {
+      _pendingItems.add(item);
+      return;
+    }
     for (int c = 0; c < cols; c++) {
       for (int r = 0; r < rows; r++) {
-        if (_board[c][r] == null) {
+        if (_board[c][r] == null && !_generatorCellSet.contains((c, r))) {
           _board[c][r] = item;
           _cells[c][r].setItem(item, this);
           return;
@@ -79,21 +134,81 @@ class BoardGame extends FlameGame with DragCallbacks {
     _log.warning('No empty cell to place item ${item.itemId}');
   }
 
+  void _onGeneratorTapped(String genId) {
+    final placement = generatorPlacements
+        .where((p) => p.gen.generatorId == genId)
+        .firstOrNull;
+    if (placement == null) return;
+
+    final gen = placement.gen;
+
+    if (_manna < gen.energyCost) {
+      _log.info('Not enough manna to tap ${gen.generatorId} (have $_manna, need ${gen.energyCost})');
+      return;
+    }
+
+    if (!_hasSpaceForItem()) {
+      _log.info('Board full — cannot spawn from ${gen.generatorId}');
+      return;
+    }
+
+    final levels = generatorLevels[genId];
+    if (levels == null || levels.isEmpty) {
+      _log.warning('No level data for generator $genId');
+      return;
+    }
+    // Use the generator's current level; fall back to level 1.
+    final levelData = levels.firstWhere(
+      (l) => l.level == gen.level,
+      orElse: () => levels.first,
+    );
+
+    final tier = spawnTier(levelData);
+    final itemId = resolveSpawnedItemId(gen.chainId, tier, chainData);
+    if (itemId == null) {
+      _log.warning('No item for chain=${gen.chainId} tier=$tier');
+      return;
+    }
+    final item = itemCatalog[itemId];
+    if (item == null) {
+      _log.warning('Item $itemId not in catalog');
+      return;
+    }
+
+    _manna -= gen.energyCost;
+    mannaNotifier.value = _manna;
+    placeItem(item);
+    _log.fine('Generator $genId spawned $itemId (tier $tier), manna=$_manna');
+  }
+
+  bool _hasSpaceForItem() {
+    for (int c = 0; c < cols; c++) {
+      for (int r = 0; r < rows; r++) {
+        if (_board[c][r] == null && !_generatorCellSet.contains((c, r))) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   // --- Drag handling ---
 
   @override
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
-    // Find item under the touch point.
     for (int c = 0; c < cols; c++) {
       for (int r = 0; r < rows; r++) {
         final cell = _cells[c][r];
-        if (_board[c][r] != null && cell.containsPoint(event.canvasPosition)) {
+        final hasItem = _board[c][r] != null;
+        final isGenCell = _generatorCellSet.contains((c, r));
+        if (hasItem && !isGenCell && cell.containsPoint(event.canvasPosition)) {
           _dragOriginCell = cell;
           _dragging = cell.liftItem();
           if (_dragging != null) {
             add(_dragging!);
-            _dragging!.position = event.canvasPosition - Vector2(_cellSize / 2, _cellSize / 2);
+            _dragging!.position =
+                event.canvasPosition - Vector2(_cellSize / 2, _cellSize / 2);
           }
           return;
         }
@@ -115,11 +230,11 @@ class BoardGame extends FlameGame with DragCallbacks {
     final dragging = _dragging;
     if (dragging == null) return;
 
-    // Find the target cell under the drag end point.
     CellComponent? target;
     for (int c = 0; c < cols; c++) {
       for (int r = 0; r < rows; r++) {
-        if (_cells[c][r].containsPoint(dragging.center)) {
+        if (!_generatorCellSet.contains((c, r)) &&
+            _cells[c][r].containsPoint(dragging.center)) {
           target = _cells[c][r];
           break;
         }
@@ -131,7 +246,6 @@ class BoardGame extends FlameGame with DragCallbacks {
     final originItem = dragging.item;
 
     if (target == null || target == origin) {
-      // No valid target — snap back.
       _snapBack(dragging, origin, originItem);
       return;
     }
@@ -139,13 +253,11 @@ class BoardGame extends FlameGame with DragCallbacks {
     final targetItem = _board[target.col][target.row];
 
     if (targetItem == null) {
-      // Move to empty cell.
       _board[origin.col][origin.row] = null;
       _board[target.col][target.row] = originItem;
       dragging.removeFromParent();
       target.setItem(originItem, this);
     } else {
-      // Try to merge.
       final result = canMerge(originItem, targetItem, chainData);
       if (result == MergeResult.success) {
         final mergedId = mergedItemId(originItem, chainData);
@@ -160,7 +272,6 @@ class BoardGame extends FlameGame with DragCallbacks {
           _snapBack(dragging, origin, originItem);
         }
       } else {
-        // Invalid drop — snap back.
         _snapBack(dragging, origin, originItem);
       }
     }
@@ -169,7 +280,11 @@ class BoardGame extends FlameGame with DragCallbacks {
     _dragOriginCell = null;
   }
 
-  void _snapBack(ItemComponent dragging, CellComponent origin, ItemModel item) {
+  void _snapBack(
+    ItemComponent dragging,
+    CellComponent origin,
+    ItemModel item,
+  ) {
     dragging.removeFromParent();
     origin.setItem(item, this);
     _board[origin.col][origin.row] = item;

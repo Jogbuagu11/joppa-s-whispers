@@ -4,7 +4,7 @@
       {
         "matcher": "Edit|Write|MultiEdit",
         "hooks": [
-          { "type": "command", "command": "cd /Users/jenniferogbuagu/Downloads/WhispersofJoppa && flutter analyze --no-pub || true" }
+          { "type": "command", "command": "cd \"$CLAUDE_PROJECT_DIR\" && flutter analyze --no-pub || true" }
         ]
       }
     ]
