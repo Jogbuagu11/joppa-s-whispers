@@ -1,11 +1,14 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
 import 'package:whispers_of_joppa/features/story/scene_screen.dart';
 import 'package:whispers_of_joppa/features/story/task_bar.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
+
+final _log = Logger('BoardScreen');
 
 /// The main game board screen — hosts the Flame merge board.
 class BoardScreen extends StatefulWidget {
@@ -34,6 +37,7 @@ class BoardScreen extends StatefulWidget {
 class _BoardScreenState extends State<BoardScreen> {
   BoardSession? _session;
   bool _popupOpen = false;
+  bool _taskRunning = false;
   String? _error;
 
   @override
@@ -57,22 +61,33 @@ class _BoardScreenState extends State<BoardScreen> {
     _popupOpen = false;
   }
 
-  /// Pays for the next story task, then plays its scene.
+  /// Pays for the next story task, then plays its scene. A second tap while
+  /// this is running is ignored, so one tap can never pay for two tasks.
   Future<void> _doNextTask() async {
     final session = _session;
-    if (session == null) return;
-    final task = session.story.doNext();
-    final scene = session.scenes[task?.sceneId];
-    if (scene == null || scene.lines.isEmpty || !mounted) return;
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => SceneScreen(
-          scene: scene,
-          characterNames: session.characterNames,
-          availableAssets: session.assetPaths,
+    if (session == null || _taskRunning) return;
+    _taskRunning = true;
+    try {
+      final task = session.story.doNext();
+      if (task == null) return;
+      final scene = session.scenes[task.sceneId];
+      if (scene == null || scene.lines.isEmpty) {
+        _log.warning('Task ${task.id} has no scene to play (${task.sceneId})');
+        return;
+      }
+      if (!mounted) return;
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => SceneScreen(
+            scene: scene,
+            characterNames: session.characterNames,
+            availableAssets: session.assetPaths,
+          ),
         ),
-      ),
-    );
+      );
+    } finally {
+      _taskRunning = false;
+    }
   }
 
   Future<void> _init() async {

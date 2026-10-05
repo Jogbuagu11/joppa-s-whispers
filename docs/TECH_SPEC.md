@@ -149,6 +149,7 @@ Spiritual orders set `"kind": "spiritual"` and a `scene_id` that plays on comple
       {
         "id": "ch1_t_01",
         "beat": 2,
+        "title": "Clear the doorway",
         "cost_blessings": 1,
         "scene_id": "ch1_s_02a",
         "restores_area": "bakehouse_door",
@@ -185,6 +186,7 @@ Spiritual orders set `"kind": "spiritual"` and a `scene_id` that plays on comple
 - Local save file: `save.json` in the app documents folder, written after every meaningful action (debounced 2 seconds) and on app pause.
 - Contents: board cells, basket, currencies, Manna and last-regen timestamp, chapter/task progress, discovered items, letters found, crowns, settings, save version.
 - `save_version` field + migration functions for every format change. Never break an existing save.
+- Current format: version 3. Version 2 added `completed_orders`; version 3 added `completed_tasks`. Migrations live in `migrateSave` in `lib/domain/save_state.dart`.
 - Cloud save (Milestone 14): same JSON stored in Supabase `saves` table. On conflict, keep the save with more progress and ask the player only if both have progressed.
 
 ## 5. Supabase

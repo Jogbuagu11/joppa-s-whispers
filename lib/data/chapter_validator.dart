@@ -56,6 +56,7 @@ void checkChapters({
   }
 
   final chapterIds = <String>{};
+  final chapterNumbers = <int>{};
   final taskIds = <String>{};
   final usedScenes = <String>{};
   final usedAreas = <String>{};
@@ -63,6 +64,18 @@ void checkChapters({
     final id = chapter['id'];
     checkId('Chapter', id, chapterIds);
     final number = chapter['number'];
+    if (number is! int || number < 1) {
+      problems.add('Chapter $id: number must be 1 or more');
+    } else if (!chapterNumbers.add(number)) {
+      problems.add('Chapter $id: number $number is used by another chapter');
+    }
+    final chapterTitle = chapter['title'];
+    if (chapterTitle is! String || chapterTitle.trim().isEmpty) {
+      problems.add('Chapter $id: missing title');
+    }
+    if ((chapter['tasks'] as List<dynamic>).isEmpty) {
+      problems.add('Chapter $id: has no tasks');
+    }
     final areas = areasByLocation[chapter['location_id']];
     if (areas == null) {
       problems.add('Chapter $id: unknown location "${chapter['location_id']}"');
@@ -83,6 +96,9 @@ void checkChapters({
         problems.add('Task $taskId: missing title');
       } else if (title.length > _maxTaskTitle) {
         problems.add('Task $taskId: title is over $_maxTaskTitle characters');
+      }
+      if (task['beat'] is! int) {
+        problems.add('Task $taskId: beat must be a whole number');
       }
       final taskCost = task['cost_blessings'];
       if (taskCost is! int || taskCost < 1) {

@@ -104,6 +104,11 @@ void main() {
     expect(() => SaveState.fromJson(json), throwsFormatException);
   });
 
+  test('a current save missing its task progress is rejected', () {
+    final json = _sample().toJson()..remove('completed_tasks');
+    expect(() => SaveState.fromJson(json), throwsFormatException);
+  });
+
   test('a wrongly typed order list is rejected, not crashed on later', () {
     final json = _sample().toJson()..['active_orders'] = [1, 2];
     expect(() => SaveState.fromJson(json), throwsFormatException);

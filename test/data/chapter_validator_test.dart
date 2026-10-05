@@ -69,4 +69,20 @@ void main() {
     expect(problems, contains(contains('missing after')));
     expect(problems, contains(contains('missing body')));
   });
+
+  test('bad chapter number, title, beat and empty task list are reported', () {
+    final c = validContent();
+    _task(c)['beat'] = 'two';
+    firstOf(c, 'chapters')
+      ..['number'] = 0
+      ..['title'] = ' ';
+    final problems = checkContent(c);
+    expect(problems, contains(contains('number must be 1 or more')));
+    expect(problems, contains(contains('missing title')));
+    expect(problems, contains(contains('beat must be a whole number')));
+
+    final d = validContent();
+    firstOf(d, 'chapters')['tasks'] = <Map<String, dynamic>>[];
+    expect(checkContent(d), contains(contains('has no tasks')));
+  });
 }

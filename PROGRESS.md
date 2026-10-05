@@ -325,7 +325,7 @@ Not in this milestone:
 
 ## Milestone 10 — state (2026-10-05)
 
-DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 208 unit tests
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 214 unit tests
 pass, content validator OK, seven device tests pass on both (smoke, scene, tasks,
 generator tap, out-of-Manna, orders, save/load), and the task bar was seen on screen.
 
@@ -345,6 +345,18 @@ Decisions:
 - One task (ch1_t_06) was lowered from 2 to 1 Blessing so the chapter has 1 to spare.
 - `crown_id` for Chapter 1 is null: the story bible awards the Imperishable crown after
   Chapter 2 (the GDD says "Ch. 1–2").
+
+Open question for Jennifer's reviewer:
+- The story bible contradicts itself on Letter 1: section 1 says Esther's letters quote only
+  the Hebrew Scriptures or sayings of Jesus, but Letter 1 quotes 1 John 4:18. The content
+  follows the letter as written. If it changes, `content/letters.json`, scene `ch1_s_03b`
+  and order `ch1_o_003` change together.
+
+Carried forward from the code review (nothing blocking):
+- The Blessings margin is 1 (orders pay 19, tasks cost 18): any change to Chapter 1 orders
+  or tasks must keep orders ≥ tasks (the validator enforces it).
+- Theme colours are repeated across several files; collect them in `lib/app`.
+- No widget test for the task bar's "Chapter complete" state (covered at controller level).
 
 Not in this milestone:
 - Restored areas are recorded but not shown yet (Milestone 11); letters found are recorded

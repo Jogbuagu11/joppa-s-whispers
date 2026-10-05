@@ -90,6 +90,23 @@ void main() {
       expect(taskButton().onPressed, isNull);
     }
 
+    // Close and reopen: the task stays done and the Blessings stay spent.
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: BoardScreen(key: Key('reopened'), playOpeningScene: false),
+      ),
+    );
+    for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    await tester.pump(const Duration(seconds: 1));
+    expect(text('task_progress'), contains('1/${tasks.length}'));
+    expect(text('task_title'), second['title']);
+    expect(text('blessings_count'), '${earned - cost}');
+
     await SaveRepository().clear();
   });
 }
