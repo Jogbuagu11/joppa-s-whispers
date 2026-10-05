@@ -9,8 +9,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 
-import 'helpers.dart';
-import 'package:whispers_of_joppa/main.dart' as app;
+import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
 Future<dynamic> _content(String name) async =>
     jsonDecode(await rootBundle.loadString('content/$name.json'));
@@ -23,8 +22,11 @@ void main() {
   ) async {
     // Start from a new game, whatever an earlier run left on the device.
     await SaveRepository().clear();
-    app.main();
-    await skipOpeningScene(tester);
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: BoardScreen(playOpeningScene: false, playTutorial: false),
+      ),
+    );
     final board = find.byType(GameWidget<BoardGame>);
     for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {
       await tester.pump(const Duration(milliseconds: 100));

@@ -93,3 +93,26 @@ List<String> lettersFound(ChapterModel chapter, Set<String> completedTaskIds) =>
       for (final task in chapter.tasks)
         if (completedTaskIds.contains(task.id)) ?task.letterId,
     ];
+
+/// The message shown when a chapter's last task is done, from
+/// content/endings.json.
+class ChapterEnding {
+  final String chapterId;
+  final String title;
+  final String body;
+  final String button;
+
+  const ChapterEnding({
+    required this.chapterId,
+    required this.title,
+    required this.body,
+    required this.button,
+  });
+
+  factory ChapterEnding.fromJson(Map<String, dynamic> json) => ChapterEnding(
+    chapterId: json['chapter_id'] as String,
+    title: json['title'] as String,
+    body: json['body'] as String,
+    button: json['button'] as String,
+  );
+}

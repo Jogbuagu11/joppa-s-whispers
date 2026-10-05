@@ -1,0 +1,8 @@
+[
+  { "id": "tut_merge",       "speaker": "silas", "text": "Go on, little loaf. Drag one barley sheaf onto the other and they'll join into flour, Esther's way.", "done_when": { "type": "merge" },                                   "free_manna": true },
+  { "id": "tut_generator",   "speaker": "silas", "text": "Tap Grandma's Pantry on the bottom row to bring out more. Free for now, mind you, same as my advice.", "done_when": { "type": "generator_tap" },                           "free_manna": true },
+  { "id": "tut_first_order", "speaker": "silas", "text": "I'd take a flatbread, warm. Keep joining matching things till you have one, then tap Deliver on my card.", "done_when": { "type": "order_delivered", "id": "ch1_o_001" },      "free_manna": true },
+  { "id": "tut_first_task",  "speaker": "naomi", "text": "Hm, a Blessing for one flatbread. Tap Go at the top to spend it and clear the bakehouse doorway.", "done_when": { "type": "task_done", "id": "ch1_t_01" },             "free_manna": false },
+  { "id": "tut_love",        "speaker": "naomi", "text": "That glowing fruit from the Tree of Life is Love. My own card wants it, of all things, so tap Deliver.", "done_when": { "type": "order_delivered", "id": "ch1_o_003" },      "free_manna": false },
+  { "id": "tut_handoff",     "speaker": "silas", "text": "On your own now, little loaf. Fill orders for Blessings; spend them to mend the bakehouse and unfold the story.", "done_when": { "type": "tap" },                                     "free_manna": false }
+]

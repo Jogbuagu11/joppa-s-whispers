@@ -33,6 +33,7 @@ extension _BoardGenerators on BoardGame {
       hasFreeCell: _hasSpaceForItem(),
       levels: generatorLevels[genId],
       chains: chainData,
+      costOverride: (freeGeneratorTaps?.call() ?? false) ? 0 : null,
     );
     final item = itemCatalog[result.itemId];
     if (result.refusal == GeneratorTapRefusal.notEnoughManna) onOutOfManna();
@@ -45,6 +46,7 @@ extension _BoardGenerators on BoardGame {
 
     manna.setAfterSpend(result.mannaAfter);
     placeItem(item);
+    onGeneratorSpawn?.call();
     _log.fine('Generator $genId spawned ${item.itemId}, manna=${manna.manna}');
   }
 

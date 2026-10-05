@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 11 — Restoration scenes (done; next is 12 — Chapter 1 playable)
+## Current milestone: 12 — Chapter 1 playable (done; next is 13 — Esther's letters)
 
 ---
 
@@ -20,7 +20,7 @@
 | 9 | Story scenes | DONE (m9-working) |
 | 10 | Tasks & Blessings | DONE (m10-working) |
 | 11 | Restoration scenes | DONE (m11-working) |
-| 12 | Chapter 1 playable | Not started |
+| 12 | Chapter 1 playable | DONE (m12-working) |
 | 13 | Esther's letters | Not started |
 | 14 | Accounts + cloud save | Not started |
 | 15 | Server-driven content | Not started |
@@ -394,6 +394,50 @@ Not in this milestone:
 - Location art may be `.jpg` as well as the spec's PNG/WebP (same as scene backgrounds).
 - A finished chapter's location cannot be revisited from the button once the next
   chapter starts (matters from Milestone 23).
+
+## Milestone 12 — state (2026-10-05)
+
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 248 unit tests
+pass, content validator OK, nine device tests pass on both (smoke, scene, tutorial, tasks,
+restoration, generator tap, out-of-Manna, orders, save/load), and the first tutorial hint
+was seen on screen.
+
+From first launch a new player now gets:
+1. The opening scene at the harbor.
+2. Six tutorial hints from Silas and Naomi above the board (`content/tutorial.json`):
+   merge two barley sheaves, tap Grandma's Pantry, make and deliver Silas's flatbread,
+   spend the first Blessing on the doorway, deliver Love, then a hand-off.
+   A hint goes away when the player does what it asks; hints for things already done are
+   skipped. Generator taps are free during the first three hints.
+3. 12 orders, 12 story tasks with their scenes, and the bakehouse restoring area by area.
+4. A closing message when the last task is done (`content/endings.json`).
+
+- A test plays the whole chapter with the real rules and content
+  (`test/data/chapter_playthrough_test.dart`): every order can be made with the generators
+  the player has, fits on the board, and the Blessings always cover the next task.
+- Tutorial progress is saved (save format version 4; older saves skip the tutorial).
+
+Decisions:
+- The tutorial guides rather than forces: the player can do other things, and nothing can
+  get stuck. The GDD says "forced merge"; a locked-down version can be added later.
+- Free Manna covers only the first three hints, so it cannot be used to play free forever.
+- Chapter 1 needs about 162 generator taps in all; with 100 Manna to start and 1 back
+  every 2 minutes, a player finishes it over a couple of sessions.
+
+Content notes for Jennifer's reviewer (flagged "REVIEW:" by the content writer):
+- tut_love has Naomi say "Tree of Life" and call the glowing fruit "Love" (never "Fruit of
+  the Spirit"). Confirm that is fine for a tutorial hint.
+- "A Blessing for one flatbread" / "Fill orders for Blessings" could read as blessings
+  earned by works; wording follows the GDD's currency name.
+- Scene order: the tutorial happens on the rooftop board before task 1's scene, which ends
+  with Silas inviting Naomi up to the roof.
+
+Not in this milestone:
+- No device test plays the entire chapter by hand gestures (the rules-level playthrough
+  test covers completability; device tests cover each step type).
+- No pointing hand or highlight on the thing to tap; hints are text only.
+- The GDD's 30–40 tasks per chapter, Kindness order, Jars of Clay and rubble cells are not built.
+- Analytics events `tutorial_step` / `tutorial_complete` come with Milestone 19.
 
 ## Decisions made for Jennifer (2026-10-05)
 

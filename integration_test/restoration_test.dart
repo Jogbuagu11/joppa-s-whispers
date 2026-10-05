@@ -21,7 +21,9 @@ void main() {
   ) async {
     await SaveRepository().clear();
     await tester.pumpWidget(
-      const MaterialApp(home: BoardScreen(playOpeningScene: false)),
+      const MaterialApp(
+        home: BoardScreen(playOpeningScene: false, playTutorial: false),
+      ),
     );
     final board = find.byType(GameWidget<BoardGame>);
     for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {

@@ -3,6 +3,7 @@
 import 'package:whispers_of_joppa/data/chapter_validator.dart';
 import 'package:whispers_of_joppa/data/order_validator.dart';
 import 'package:whispers_of_joppa/data/scene_validator.dart';
+import 'package:whispers_of_joppa/data/tutorial_validator.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 
 final _idPattern = RegExp(r'^[a-z][a-z0-9_]*$');
@@ -42,6 +43,8 @@ List<String> validateContent({
   required Object? chaptersJson,
   required Object? locationsJson,
   required Object? lettersJson,
+  required Object? tutorialJson,
+  required Object? endingsJson,
 }) {
   final problems = <String>[];
   try {
@@ -71,13 +74,30 @@ List<String> validateContent({
       problems: problems,
     );
     checkScenes(scenes: scenes, characters: characters, problems: problems);
+    final chapters = (chaptersJson as List<dynamic>)
+        .cast<Map<String, dynamic>>();
     checkChapters(
-      chapters: (chaptersJson as List<dynamic>).cast<Map<String, dynamic>>(),
+      chapters: chapters,
       locations: (locationsJson as List<dynamic>).cast<Map<String, dynamic>>(),
       letters: (lettersJson as List<dynamic>).cast<Map<String, dynamic>>(),
       sceneIds: {for (final s in scenes) s['id'] as String},
       chainIds: {for (final c in chains) c['id'] as String},
       orders: ordersJson.cast<Map<String, dynamic>>(),
+      problems: problems,
+    );
+    checkTutorialAndEndings(
+      tutorial: (tutorialJson as List<dynamic>).cast<Map<String, dynamic>>(),
+      endings: (endingsJson as List<dynamic>).cast<Map<String, dynamic>>(),
+      characterIds: {for (final c in characters) c['id'] as String},
+      orderIds: {
+        for (final o in ordersJson) (o as Map<String, dynamic>)['id'] as String,
+      },
+      taskIds: {
+        for (final c in chapters)
+          for (final t in c['tasks'] as List<dynamic>)
+            (t as Map<String, dynamic>)['id'] as String,
+      },
+      chapterIds: {for (final c in chapters) c['id'] as String},
       problems: problems,
     );
     final opening = startingBoardJson['opening_scene'];

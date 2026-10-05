@@ -10,6 +10,7 @@ import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
 import 'package:whispers_of_joppa/domain/progression.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';
+import 'package:whispers_of_joppa/domain/tutorial.dart';
 
 final _log = Logger('ContentLoader');
 
@@ -31,6 +32,12 @@ class ContentLoader {
 
   /// Every order in content, in the order players meet them.
   final List<OrderModel> orders = [];
+
+  /// The first-session tutorial hints, in order.
+  final List<TutorialStep> tutorial = [];
+
+  /// chapter_id -> the message shown when that chapter is finished.
+  final Map<String, ChapterEnding> endings = {};
 
   /// location_id -> location
   final Map<String, LocationModel> locations = {};
@@ -63,6 +70,8 @@ class ContentLoader {
         scenesJson: await _loadJson('content/scenes.json'),
         chaptersJson: await _loadJson('content/chapters.json'),
         locationsJson: await _loadJson('content/locations.json'),
+        tutorialJson: await _loadJson('content/tutorial.json'),
+        endingsJson: await _loadJson('content/endings.json'),
       );
     } catch (e, stack) {
       _log.severe('Failed to load content', e, stack);
@@ -82,6 +91,8 @@ class ContentLoader {
     required Object? scenesJson,
     required Object? chaptersJson,
     required Object? locationsJson,
+    required Object? tutorialJson,
+    required Object? endingsJson,
   }) {
     economy = EconomyConfig.fromJson(economyJson as Map<String, dynamic>);
     _parseChains(chainsJson as List<dynamic>);
@@ -107,6 +118,13 @@ class ContentLoader {
     for (final l in locationsJson as List<dynamic>) {
       final location = LocationModel.fromJson(l as Map<String, dynamic>);
       locations[location.id] = location;
+    }
+    for (final t in tutorialJson as List<dynamic>) {
+      tutorial.add(TutorialStep.fromJson(t as Map<String, dynamic>));
+    }
+    for (final e in endingsJson as List<dynamic>) {
+      final ending = ChapterEnding.fromJson(e as Map<String, dynamic>);
+      endings[ending.chapterId] = ending;
     }
     _loaded = true;
     _log.info(

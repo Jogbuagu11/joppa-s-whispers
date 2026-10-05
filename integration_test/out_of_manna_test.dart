@@ -22,6 +22,7 @@ void main() {
         home: BoardScreen(
           startingMannaOverride: manna,
           playOpeningScene: false,
+          playTutorial: false,
         ),
       ),
     );

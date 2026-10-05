@@ -21,6 +21,8 @@ void main() {
       chaptersJson: _read('chapters'),
       locationsJson: _read('locations'),
       lettersJson: _read('letters'),
+      tutorialJson: _read('tutorial'),
+      endingsJson: _read('endings'),
     );
     expect(problems, isEmpty);
   });

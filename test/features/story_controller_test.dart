@@ -146,4 +146,14 @@ void main() {
       ..doNext();
     expect(story.restoredAreaIds, {'ch1_area', 'ch2_area'});
   });
+
+  test('onTaskDone is called with the task id, only when a task is done', () {
+    final done = <String>[];
+    story.onTaskDone = done.add;
+    story.doNext();
+    expect(done, isEmpty);
+    blessings = 1;
+    story.doNext();
+    expect(done, ['ch1_t1']);
+  });
 }

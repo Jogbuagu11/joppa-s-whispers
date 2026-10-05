@@ -5,7 +5,10 @@ import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
 import 'package:whispers_of_joppa/features/restoration/location_screen.dart';
 import 'package:whispers_of_joppa/features/story/scene_screen.dart';
+import 'package:whispers_of_joppa/domain/progression.dart';
+import 'package:whispers_of_joppa/features/story/chapter_ending.dart';
 import 'package:whispers_of_joppa/features/story/task_bar.dart';
+import 'package:whispers_of_joppa/features/story/tutorial_banner.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
 
@@ -18,7 +21,12 @@ class BoardScreen extends StatefulWidget {
     this.startingMannaOverride,
     this.saveRepository,
     this.playOpeningScene = true,
+    this.playTutorial = true,
   });
+
+  /// Whether a new game shows the tutorial hints (with free early taps).
+  /// Tests that are about something else turn this off.
+  final bool playTutorial;
 
   /// Whether a new game begins with the opening story scene. Tests that are
   /// about the board turn this off.
@@ -71,7 +79,8 @@ class _BoardScreenState extends State<BoardScreen> {
     try {
       // The task's own chapter, read before doing it: finishing a chapter's
       // last task moves the story on to the next chapter.
-      final locationId = session.story.chapter?.locationId;
+      final chapter = session.story.chapter;
+      final locationId = chapter?.locationId;
       final task = session.story.doNext();
       if (task == null) return;
       final scene = session.scenes[task.sceneId];
@@ -91,6 +100,14 @@ class _BoardScreenState extends State<BoardScreen> {
       // A task that restores part of the location shows the change.
       final area = task.restoresArea;
       if (area != null) await _showLocation(locationId, justRestored: area);
+      // The chapter's last task ends with its closing message.
+      final ending = session.endings[chapter?.id];
+      if (chapter != null &&
+          ending != null &&
+          isChapterComplete(chapter, session.story.completedTasks.toSet()) &&
+          mounted) {
+        await showChapterEnding(context, ending);
+      }
     } finally {
       _taskRunning = false;
     }
@@ -133,6 +150,7 @@ class _BoardScreenState extends State<BoardScreen> {
         saveRepository: widget.saveRepository ?? SaveRepository(),
         onOutOfManna: _showOutOfManna,
         startingMannaOverride: widget.startingMannaOverride,
+        playTutorial: widget.playTutorial,
       );
       if (!mounted) {
         await session.dispose();
@@ -207,6 +225,11 @@ class _BoardScreenState extends State<BoardScreen> {
                 characterNames: session.characterNames,
                 placeholderColors: session.game.chainPlaceholderColors,
               ),
+            ),
+            TutorialBanner(
+              controller: session.tutorial,
+              characterNames: session.characterNames,
+              availableAssets: session.assetPaths,
             ),
             Expanded(child: GameWidget(game: session.game)),
           ],

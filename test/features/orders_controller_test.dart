@@ -168,4 +168,13 @@ void main() {
     expect(controller.blessings, 0);
     expect(notified, 1);
   });
+
+  test('onDelivered is called with the order id, only on success', () {
+    final delivered = <String>[];
+    controller.onDelivered = delivered.add;
+    controller.deliver('b');
+    expect(delivered, isEmpty);
+    controller.deliver('a');
+    expect(delivered, ['a']);
+  });
 }

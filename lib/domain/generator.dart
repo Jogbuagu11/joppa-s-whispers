@@ -78,11 +78,15 @@ GeneratorTapResult resolveGeneratorTap({
   required List<GeneratorLevelData>? levels,
   required Map<String, ChainTierData> chains,
   Random? random,
+
+  /// Replaces the generator's own tap cost (the tutorial makes taps free).
+  int? costOverride,
 }) {
+  final cost = costOverride ?? gen.energyCost;
   GeneratorTapResult refuse(GeneratorTapRefusal why) =>
       GeneratorTapResult.refused(why, mannaAfter: manna);
 
-  if (manna < gen.energyCost) return refuse(GeneratorTapRefusal.notEnoughManna);
+  if (manna < cost) return refuse(GeneratorTapRefusal.notEnoughManna);
   if (!hasFreeCell) return refuse(GeneratorTapRefusal.boardFull);
   if (levels == null || levels.isEmpty) {
     return refuse(GeneratorTapRefusal.noLevelData);
@@ -98,6 +102,6 @@ GeneratorTapResult resolveGeneratorTap({
   return GeneratorTapResult.spawn(
     itemId: itemId,
     tier: tier,
-    mannaAfter: manna - gen.energyCost,
+    mannaAfter: manna - cost,
   );
 }

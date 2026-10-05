@@ -7,10 +7,13 @@ import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
+import 'package:whispers_of_joppa/domain/progression.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';
+import 'package:whispers_of_joppa/domain/tutorial.dart';
 import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
 import 'package:whispers_of_joppa/features/story/story_controller.dart';
+import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
@@ -21,6 +24,10 @@ class BoardSession {
   final MannaController manna;
   final OrdersController orders;
   final StoryController story;
+  final TutorialController tutorial;
+
+  /// chapter_id -> the message shown when that chapter is finished.
+  final Map<String, ChapterEnding> endings;
 
   /// scene_id -> scene, for the scenes that tasks play.
   final Map<String, SceneModel> scenes;
@@ -41,6 +48,8 @@ class BoardSession {
     required this.manna,
     required this.orders,
     required this.story,
+    required this.tutorial,
+    required this.endings,
     required this.scenes,
     required this.locations,
     required this.saver,
@@ -53,6 +62,7 @@ class BoardSession {
     required SaveRepository saveRepository,
     required VoidCallback onOutOfManna,
     int? startingMannaOverride,
+    bool playTutorial = true,
   }) async {
     final loader = ContentLoader();
     await loader.load();
@@ -135,6 +145,23 @@ class BoardSession {
       completedTasks: save.completedTasks,
     );
 
+    final tutorial = TutorialController(
+      steps: loader.tutorial,
+      completedOrders: () => orders.completedOrders.toSet(),
+      completedTasks: () => story.completedTasks.toSet(),
+      startIndex: playTutorial ? save.tutorialStep : tutorialFinished,
+    );
+    game
+      ..freeGeneratorTaps = (() => tutorial.freeManna)
+      ..onMerge = (() =>
+          tutorial.handle(const TutorialEvent(TutorialTrigger.merge)))
+      ..onGeneratorSpawn = (() =>
+          tutorial.handle(const TutorialEvent(TutorialTrigger.generatorTap)));
+    orders.onDelivered = (id) =>
+        tutorial.handle(TutorialEvent(TutorialTrigger.orderDelivered, id));
+    story.onTaskDone = (id) =>
+        tutorial.handle(TutorialEvent(TutorialTrigger.taskDone, id));
+
     await game.loadArt();
 
     final saver = GameSaver(
@@ -150,11 +177,12 @@ class BoardSession {
         pendingOrders: orders.book.pending,
         completedOrders: orders.completedOrders,
         completedTasks: story.completedTasks,
+        tutorialStep: tutorial.isOver ? tutorialFinished : tutorial.index,
         lastOrderSkip: orders.book.lastSkip,
       ),
       // Manna spends always come with a board change, so the per-second Manna
       // tick does not need to trigger a write.
-      triggers: [game.boardChanged, orders, story],
+      triggers: [game.boardChanged, orders, story, tutorial],
     )..start();
 
     return BoardSession._(
@@ -162,6 +190,8 @@ class BoardSession {
       manna: manna,
       orders: orders,
       story: story,
+      tutorial: tutorial,
+      endings: loader.endings,
       scenes: loader.scenes,
       locations: loader.locations,
       saver: saver,
@@ -210,6 +240,7 @@ class BoardSession {
       pendingOrders: const [],
       completedOrders: const [],
       completedTasks: const [],
+      tutorialStep: 0,
       lastOrderSkip: null,
     );
   }
@@ -217,6 +248,7 @@ class BoardSession {
   /// Writes any unsaved change and stops the timers.
   Future<void> dispose() async {
     await saver.dispose();
+    tutorial.dispose();
     story.dispose();
     orders.dispose();
     manna.dispose();

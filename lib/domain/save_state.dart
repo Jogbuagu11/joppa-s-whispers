@@ -2,7 +2,10 @@
 
 /// The save format this build writes. Raise it, and add a step to
 /// [migrateSave], whenever the format changes. Never break an existing save.
-const currentSaveVersion = 3;
+const currentSaveVersion = 4;
+
+/// A tutorial position meaning "finished", whatever the number of steps.
+const tutorialFinished = 1 << 20;
 
 /// An item and the cell it sits in.
 class SavedItem {
@@ -66,6 +69,9 @@ class SaveState {
 
   /// Story tasks already done.
   final List<String> completedTasks;
+
+  /// Which tutorial hint is showing; [tutorialFinished] once it is over.
+  final int tutorialStep;
   final DateTime? lastOrderSkip;
 
   const SaveState({
@@ -79,6 +85,7 @@ class SaveState {
     required this.pendingOrders,
     required this.completedOrders,
     required this.completedTasks,
+    required this.tutorialStep,
     required this.lastOrderSkip,
   });
 
@@ -94,6 +101,7 @@ class SaveState {
     'pending_orders': pendingOrders,
     'completed_orders': completedOrders,
     'completed_tasks': completedTasks,
+    'tutorial_step': tutorialStep,
     'last_order_skip': lastOrderSkip?.toUtc().toIso8601String(),
   };
 
@@ -126,6 +134,7 @@ class SaveState {
         completedTasks: List<String>.from(
           json['completed_tasks'] as List<dynamic>,
         ),
+        tutorialStep: json['tutorial_step'] as int,
         lastOrderSkip: skip == null ? null : DateTime.parse(skip),
       );
     } on TypeError catch (e) {
@@ -157,6 +166,12 @@ Map<String, dynamic> migrateSave(Map<String, dynamic> raw) {
     // Version 3 adds story-task progress, which starts empty.
     json['completed_tasks'] = <String>[];
     json['save_version'] = 3;
+  }
+  if (json['save_version'] == 3) {
+    // Version 4 adds the tutorial. Anyone with an older save has already been
+    // playing, so the tutorial counts as finished for them.
+    json['tutorial_step'] = tutorialFinished;
+    json['save_version'] = 4;
   }
   // The next format change goes here, as another one-version step.
   return json;
@@ -211,6 +226,7 @@ SaveState sanitizeSave(
       for (final id in save.completedTasks.toSet())
         if (taskIds.contains(id)) id,
     ],
+    tutorialStep: save.tutorialStep < 0 ? 0 : save.tutorialStep,
     lastOrderSkip: save.lastOrderSkip,
   );
 }

@@ -11,6 +11,9 @@ class OrdersController extends ChangeNotifier {
   final DateTime Function() _now;
   OrderBook _book;
   final Set<String> _completed;
+
+  /// Called with the order id each time an order is delivered.
+  void Function(String orderId)? onDelivered;
   int _talents;
   int _blessings;
 
@@ -64,6 +67,7 @@ class OrdersController extends ChangeNotifier {
     _completed.add(orderId);
     _book = completeOrder(_book, orderId);
     notifyListeners();
+    onDelivered?.call(orderId);
     return true;
   }
 

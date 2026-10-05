@@ -94,4 +94,17 @@ void main() {
     expect(lettersFound(chapter, {'t1'}), isEmpty);
     expect(lettersFound(chapter, {'t1', 't2'}), ['letter_01']);
   });
+
+  test('ChapterEnding.fromJson reads every field', () {
+    final e = ChapterEnding.fromJson({
+      'chapter_id': 'ch1',
+      'title': 'Chapter 1 Complete',
+      'body': 'More soon.',
+      'button': 'Keep baking',
+    });
+    expect(e.chapterId, 'ch1');
+    expect(e.title, 'Chapter 1 Complete');
+    expect(e.body, 'More soon.');
+    expect(e.button, 'Keep baking');
+  });
 }

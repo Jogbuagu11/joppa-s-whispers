@@ -16,6 +16,7 @@ SaveState _state(int manna) => SaveState(
   pendingOrders: const [],
   completedOrders: const [],
   completedTasks: const [],
+  tutorialStep: 2,
   lastOrderSkip: null,
 );
 

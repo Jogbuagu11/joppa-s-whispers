@@ -17,7 +17,13 @@ void main() {
 
   Future<BoardGame> open(WidgetTester tester, Key key) async {
     await tester.pumpWidget(
-      MaterialApp(home: BoardScreen(key: key, playOpeningScene: false)),
+      MaterialApp(
+        home: BoardScreen(
+          key: key,
+          playOpeningScene: false,
+          playTutorial: false,
+        ),
+      ),
     );
     for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {
       await tester.pump(const Duration(milliseconds: 100));

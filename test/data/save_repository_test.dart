@@ -21,6 +21,7 @@ void main() {
     pendingOrders: const ['b'],
     completedOrders: const [],
     completedTasks: const [],
+    tutorialStep: 2,
     lastOrderSkip: null,
   );
 

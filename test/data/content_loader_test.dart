@@ -21,6 +21,8 @@ void main() {
         scenesJson: _read('scenes'),
         chaptersJson: _read('chapters'),
         locationsJson: _read('locations'),
+        tutorialJson: _read('tutorial'),
+        endingsJson: _read('endings'),
       );
   });
 
@@ -124,6 +126,8 @@ void main() {
         scenesJson: _read('scenes'),
         chaptersJson: _read('chapters'),
         locationsJson: _read('locations'),
+        tutorialJson: _read('tutorial'),
+        endingsJson: _read('endings'),
       );
     expect(custom.generators[first['id']]?.energyCost, 0);
   });
@@ -171,6 +175,16 @@ void main() {
           expect(areaIds.contains(area), isTrue, reason: task.id);
         }
       }
+    }
+  });
+
+  test('tutorial steps and chapter endings are loaded', () {
+    final raw = _read('tutorial') as List<dynamic>;
+    expect(loader.tutorial.length, raw.length);
+    expect(loader.tutorial.first.id, (raw.first as Map)['id']);
+    expect(loader.tutorial.first.text, (raw.first as Map)['text']);
+    for (final chapter in loader.chapters) {
+      expect(loader.endings[chapter.id]?.title, isNotEmpty, reason: chapter.id);
     }
   });
 }

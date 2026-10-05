@@ -18,6 +18,7 @@ SaveState _sample() => SaveState(
   pendingOrders: const ['ch1_o_005'],
   completedOrders: const ['ch1_o_001'],
   completedTasks: const ['ch1_t_01'],
+  tutorialStep: 2,
   lastOrderSkip: DateTime.utc(2040, 1, 1, 12),
 );
 
@@ -52,6 +53,7 @@ void main() {
     expect(back.pendingOrders, ['ch1_o_005']);
     expect(back.completedOrders, ['ch1_o_001']);
     expect(back.completedTasks, ['ch1_t_01']);
+    expect(back.tutorialStep, 2);
     expect(back.lastOrderSkip, DateTime.utc(2040, 1, 1, 12));
   });
 
@@ -73,7 +75,8 @@ void main() {
       final v1 = _sample().toJson()
         ..['save_version'] = 1
         ..remove('completed_orders')
-        ..remove('completed_tasks');
+        ..remove('completed_tasks')
+        ..remove('tutorial_step');
       final migrated = migrateSave(v1);
       expect(migrated['save_version'], currentSaveVersion);
       expect(migrated['completed_orders'], isEmpty);
@@ -83,10 +86,19 @@ void main() {
     test('a version 2 save gains empty task progress', () {
       final v2 = _sample().toJson()
         ..['save_version'] = 2
-        ..remove('completed_tasks');
+        ..remove('completed_tasks')
+        ..remove('tutorial_step');
       expect(migrateSave(v2)['save_version'], currentSaveVersion);
       expect(SaveState.fromJson(v2).completedTasks, isEmpty);
       expect(SaveState.fromJson(v2).completedOrders, ['ch1_o_001']);
+    });
+    test('a version 3 save counts the tutorial as finished', () {
+      final v3 = _sample().toJson()
+        ..['save_version'] = 3
+        ..remove('tutorial_step');
+      expect(migrateSave(v3)['save_version'], currentSaveVersion);
+      expect(SaveState.fromJson(v3).tutorialStep, tutorialFinished);
+      expect(SaveState.fromJson(v3).completedTasks, ['ch1_t_01']);
     });
     test('rejects a save with no version', () {
       final json = _sample().toJson()..remove('save_version');
@@ -186,6 +198,7 @@ void main() {
           pendingOrders: base.pendingOrders,
           completedOrders: const [],
           completedTasks: const [],
+          tutorialStep: 2,
           lastOrderSkip: base.lastOrderSkip,
         ),
       );
@@ -209,6 +222,7 @@ void main() {
           pendingOrders: base.pendingOrders,
           completedOrders: base.completedOrders,
           completedTasks: const ['ch1_t_01', 'ch1_t_01', 'gone'],
+          tutorialStep: 2,
           lastOrderSkip: null,
         ),
       );
@@ -229,6 +243,7 @@ void main() {
           pendingOrders: const ['ch1_o_004', 'ch1_o_005'],
           completedOrders: const [],
           completedTasks: const [],
+          tutorialStep: 2,
           lastOrderSkip: null,
         ),
       );

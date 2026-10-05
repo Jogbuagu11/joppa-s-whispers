@@ -47,6 +47,13 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   /// Called when a generator is tapped without enough Manna.
   final VoidCallback onOutOfManna;
 
+  /// Called after two items merge, and after a generator spawns an item.
+  VoidCallback? onMerge;
+  VoidCallback? onGeneratorSpawn;
+
+  /// When this returns true, generator taps cost nothing (tutorial).
+  bool Function()? freeGeneratorTaps;
+
   // 2D array of cell visuals [col][row]
   late List<List<CellComponent>> _cells;
 

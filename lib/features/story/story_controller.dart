@@ -16,6 +16,9 @@ class StoryController extends ChangeNotifier {
 
   final Set<String> _completed;
 
+  /// Called with the task id each time a task is done.
+  void Function(String taskId)? onTaskDone;
+
   StoryController({
     required this.chapters,
     required this.blessings,
@@ -65,6 +68,7 @@ class StoryController extends ChangeNotifier {
     if (task == null || !spendBlessings(task.costBlessings)) return null;
     _completed.add(task.id);
     notifyListeners();
+    onTaskDone?.call(task.id);
     return task;
   }
 
