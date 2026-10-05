@@ -1,4 +1,6 @@
 // The Flame game that runs the 7x9 merge board.
+import 'dart:ui' as ui;
+
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +56,9 @@ class BoardGame extends FlameGame with DragCallbacks {
     (_) => List.generate(rows, (_) => null),
   );
 
+  // item_id -> loaded picture, for items whose art file exists.
+  final Map<String, ui.Image> _art = {};
+
   // Set of (col, row) positions occupied by generators.
   final Set<(int, int)> _generatorCellSet = {};
 
@@ -84,7 +89,30 @@ class BoardGame extends FlameGame with DragCallbacks {
         continue;
       }
       _board[start.col][start.row] = start.item;
-      _cells[start.col][start.row].setItem(start.item, _colorFor(start.item));
+      _cells[start.col][start.row].setItem(
+        start.item,
+        _colorFor(start.item),
+        _art[start.item.itemId],
+      );
+    }
+  }
+
+  /// Loads the picture for every item that names one. An item whose picture
+  /// is missing or unreadable keeps its coloured placeholder. BoardScreen
+  /// calls this before showing the board so the first frame already has art.
+  Future<void> loadArt() async {
+    images.prefix = '';
+    await Future.wait([
+      for (final item in itemCatalog.values)
+        if (item.asset.isNotEmpty) _loadArtFor(item),
+    ]);
+  }
+
+  Future<void> _loadArtFor(ItemModel item) async {
+    try {
+      _art[item.itemId] = await images.load(item.asset);
+    } on Exception catch (e) {
+      _log.warning('No art for ${item.itemId} at ${item.asset}: $e');
     }
   }
 
@@ -143,7 +171,7 @@ class BoardGame extends FlameGame with DragCallbacks {
       for (int r = 0; r < rows; r++) {
         if (_board[c][r] == null && !_generatorCellSet.contains((c, r))) {
           _board[c][r] = item;
-          _cells[c][r].setItem(item, _colorFor(item));
+          _cells[c][r].setItem(item, _colorFor(item), _art[item.itemId]);
           return;
         }
       }

@@ -56,7 +56,11 @@ extension _BoardDrag on BoardGame {
       _board[origin.col][origin.row] = null;
       _board[target.col][target.row] = originItem;
       dragging.removeFromParent();
-      target.setItem(originItem, _colorFor(originItem));
+      target.setItem(
+        originItem,
+        _colorFor(originItem),
+        _art[originItem.itemId],
+      );
     } else {
       final result = canMerge(originItem, targetItem, chainData);
       if (result == MergeResult.success) {
@@ -66,7 +70,7 @@ extension _BoardDrag on BoardGame {
           _board[origin.col][origin.row] = null;
           _board[target.col][target.row] = merged;
           dragging.removeFromParent();
-          target.setItem(merged, _colorFor(merged));
+          target.setItem(merged, _colorFor(merged), _art[merged.itemId]);
           _log.fine('Merged ${originItem.itemId} -> ${merged.itemId}');
         } else {
           _snapBack(dragging, origin, originItem);
@@ -82,7 +86,7 @@ extension _BoardDrag on BoardGame {
 
   void _snapBack(ItemComponent dragging, CellComponent origin, ItemModel item) {
     dragging.removeFromParent();
-    origin.setItem(item, _colorFor(item));
+    origin.setItem(item, _colorFor(item), _art[item.itemId]);
     _board[origin.col][origin.row] = item;
     _dragging = null;
     _dragOriginCell = null;

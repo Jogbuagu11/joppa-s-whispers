@@ -117,4 +117,11 @@ void main() {
       );
     expect(custom.generators[first['id']]?.energyCost, 0);
   });
+
+  test('every art file named in content exists', () {
+    for (final item in loader.items.values) {
+      if (item.asset.isEmpty) continue;
+      expect(File(item.asset).existsSync(), isTrue, reason: item.asset);
+    }
+  });
 }

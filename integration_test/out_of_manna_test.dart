@@ -7,13 +7,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
-import 'package:whispers_of_joppa/main.dart' as app;
+import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('running out of Manna shows the popup', (tester) async {
-    app.main();
+    // Start almost empty so the test does not depend on the starting amount.
+    const manna = 3;
+    await tester.pumpWidget(
+      const MaterialApp(home: BoardScreen(startingMannaOverride: manna)),
+    );
     final board = find.byType(GameWidget<BoardGame>);
     for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {
       await tester.pump(const Duration(milliseconds: 100));
@@ -26,7 +30,6 @@ void main() {
     final economy =
         jsonDecode(await rootBundle.loadString('content/economy.json'))
             as Map<String, dynamic>;
-    final manna = start['manna'] as int;
     final max = economy['max_manna'] as int;
     final cost = economy['generator_tap_cost'] as int;
     final generator =

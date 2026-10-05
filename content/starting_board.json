@@ -1,5 +1,5 @@
 {
-  "manna": 10,
+  "manna": 100,
   "generators": [
     { "generator_id": "gen_pantry", "col": 2, "row": 8 },
     { "generator_id": "gen_tree", "col": 4, "row": 8 }

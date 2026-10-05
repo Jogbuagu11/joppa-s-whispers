@@ -14,7 +14,7 @@
 | 3 | Merging | DONE (m3-working) |
 | 4 | Generators | DONE (m4-working) — approved by Jennifer 2026-10-05 |
 | 5 | Content loading | DONE (m5-working) — approved by Jennifer 2026-10-05 |
-| 6 | Energy (Manna) | DONE (m6-working) — awaiting approval |
+| 6 | Energy (Manna) | DONE (m6-working) |
 | 7 | Orders | Not started |
 | 8 | Save/load (local) | Not started |
 | 9 | Story scenes | Not started |
@@ -192,6 +192,25 @@ Not in this milestone:
 - The popup and bar wording is written in code, not in content; move it if a strings
   file is introduced.
 
+## Decisions made for Jennifer (2026-10-05)
+
+Jennifer said: "you decide. you can continue on the milestones. dont ask permission".
+From here on, milestones proceed without waiting for approval and design choices are
+recorded here instead of asked.
+
+- **Starting Manna: 100** (a full bar), in `content/starting_board.json`.
+- **Item art shown as cards.** Her item art is opaque JPEG on light grey, so each item is
+  drawn as a rounded card filling its tile. If transparent PNGs are delivered later, the
+  pipeline keeps them as PNG and no code changes are needed.
+- **Art pipeline built** (`dart run tool/process_assets.dart`): raw art goes in
+  `assets_incoming/items/` (not uploaded to GitHub), is renamed, shrunk to 256 px and
+  written to `assets/items/` (19 MB → under 1 MB). It reports items with no art.
+  Added dev package `image 4.10.1`. Not built: atlas packing, margin trimming
+  (pointless for opaque art), and character/generator/location art handling.
+- 39 of 53 items have art. Missing: all of Word (8) and Oil (6). No generator art yet.
+- Character art (76 files) is untouched in `assets/characters/`; names need fixing
+  (`suprised`, `mad`, `nuetral`, doubled endings) before Milestone 9 uses it.
+
 ## Website (2026-10-05)
 
 The marketing website (built in Lovable, deployed by Vercel) originally lived at the top of
@@ -210,8 +229,6 @@ beside the game with its history kept. A backup of the original is in the GitHub
 ## Waiting on Jennifer
 
 - In Vercel: Project → Settings → Build and Deployment → Root Directory → `web`, then redeploy.
-- Approve Milestone 6 so Milestone 7 (Orders) can start.
-- Decide how item art should be prepared (see the art review in the Milestone 6 report).
 - Confirm the assumptions above (starting Manna; test AdMob ID on iOS; minimum iOS 15).
 
 Note: Android Studio is not installed on this Mac. Android is built with the command-line

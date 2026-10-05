@@ -7,7 +7,11 @@ import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
 /// The main game board screen — hosts the Flame merge board.
 class BoardScreen extends StatefulWidget {
-  const BoardScreen({super.key});
+  const BoardScreen({super.key, this.startingMannaOverride});
+
+  /// Lets a test begin with a chosen amount of Manna instead of the amount
+  /// in content/starting_board.json. Never set in the real app.
+  final int? startingMannaOverride;
 
   @override
   State<BoardScreen> createState() => _BoardScreenState();
@@ -69,7 +73,7 @@ class _BoardScreenState extends State<BoardScreen> {
 
       final manna = MannaController(
         config: loader.economy,
-        startingManna: start.manna,
+        startingManna: widget.startingMannaOverride ?? start.manna,
       )..start();
       _manna = manna;
 
@@ -83,6 +87,9 @@ class _BoardScreenState extends State<BoardScreen> {
         manna: manna,
         onOutOfManna: _showOutOfManna,
       );
+
+      await game.loadArt();
+      if (!mounted) return;
 
       setState(() {
         _game = game;

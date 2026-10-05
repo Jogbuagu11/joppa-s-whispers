@@ -3,6 +3,9 @@
 import 'package:whispers_of_joppa/domain/models.dart';
 
 final _idPattern = RegExp(r'^[a-z][a-z0-9_]*$');
+final _itemAssetPattern = RegExp(
+  r'^assets/items/item_[a-z]+_\d{2}\.(png|jpg)$',
+);
 final _colorPattern = RegExp(r'^#[0-9a-fA-F]{6}$');
 
 /// Economy values the game divides by, so they can never be 0.
@@ -99,6 +102,13 @@ Map<String, int> _checkChains(
       final name = tier['name'];
       if (name is! String || name.trim().isEmpty) {
         problems.add('Chain $id tier ${i + 1}: missing name');
+      }
+      final asset = tier['asset'];
+      if (asset != null &&
+          (asset is! String || !_itemAssetPattern.hasMatch(asset))) {
+        problems.add(
+          'Chain $id tier ${i + 1}: asset must be assets/items/item_…_NN.png or .jpg',
+        );
       }
       final sell = tier['sell'];
       if (sell is! int || sell < 0) {

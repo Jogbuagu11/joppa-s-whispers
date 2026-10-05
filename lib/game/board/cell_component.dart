@@ -1,4 +1,6 @@
 // A single cell on the board grid.
+import 'dart:ui' as ui;
+
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
@@ -38,11 +40,12 @@ class CellComponent extends PositionComponent {
   }
 
   /// Places (or replaces) an item in this cell.
-  void setItem(ItemModel item, Color color) {
+  void setItem(ItemModel item, Color color, ui.Image? art) {
     _item?.removeFromParent();
     final comp = ItemComponent(
       item: item,
       color: color,
+      art: art,
       size: Vector2.all(cellSize - 8),
       position: Vector2(4, 4),
     );
