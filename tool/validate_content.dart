@@ -16,6 +16,7 @@ void main() {
     startingBoardJson: _read('starting_board'),
     ordersJson: _read('orders'),
     charactersJson: _read('characters'),
+    scenesJson: _read('scenes'),
   );
   if (problems.isEmpty) {
     stdout.writeln('Content OK');

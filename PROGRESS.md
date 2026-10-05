@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 8 — Save/load (local) (done; next is 9 — Story scenes)
+## Current milestone: 9 — Story scenes (done; next is 10 — Tasks & Blessings)
 
 ---
 
@@ -17,7 +17,7 @@
 | 6 | Energy (Manna) | DONE (m6-working) |
 | 7 | Orders | DONE (m7-working) |
 | 8 | Save/load (local) | DONE (m8-working) |
-| 9 | Story scenes | Not started |
+| 9 | Story scenes | DONE (m9-working) |
 | 10 | Tasks & Blessings | Not started |
 | 11 | Restoration scenes | Not started |
 | 12 | Chapter 1 playable | Not started |
@@ -273,6 +273,44 @@ Not in this milestone:
   bump `save_version` when the format changes.
 - Cloud save (Milestone 14).
 - No "start over" button; clearing the app's data starts a new game.
+
+## Milestone 9 — state (2026-10-05)
+
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 176 unit tests
+pass, content validator OK, six device tests pass on both (smoke, scene, generator tap,
+out-of-Manna, orders, save/load), and the opening scene was seen on screen on both.
+
+- Scene screen: the speaker's portrait in a framed card, their name, the line in a speech
+  bubble, tap anywhere for the next line, Skip top-right. The portrait changes with each
+  line's speaker and expression (falls back to neutral, then to no picture).
+- 13 Chapter 1 scenes (121 lines) written by the content-writer agent into
+  `content/scenes.json`, one or two per story beat, ending on the Chapter 1 cliffhanger.
+- A brand-new game opens with the scene named by `opening_scene` in
+  `content/starting_board.json` (ch1_s_01), then shows the board.
+- The validator checks scenes: known speakers, expressions each character has, text ≤ 140
+  characters, `loc_` backgrounds, unique ids.
+
+Content notes for Jennifer's reviewer (flagged "REVIEW:" by the content writer):
+- ch1_s_03b quotes 1 John 4:18 (KJV) as the story bible's Letter 1 specifies, but the
+  bible's own period rule says Esther's letters quote only the Hebrew Scriptures or
+  sayings of Jesus (1 John was not written by AD 40). Kept as the bible says; needs a
+  decision. The same echo is in order ch1_o_003.
+- ch1_s_09b splits Lamentations 3:22–23 (KJV) over two bubbles, each with its own citation.
+- ch1_s_03b: "I am already Home" and Naomi speaking to Esther in grief (not prayer).
+- ch1_s_04: "I'd answer to Mara" alludes to Ruth 1:20 without quoting.
+- ch1_s_03a: an invented saying for Esther ("Small things joined make bigger things").
+- ch1_s_11: Amos neither confirms nor denies theft, so he does not lie.
+
+Not in this milestone:
+- Only the opening scene plays so far. The other 12 scenes are triggered by story tasks
+  (Milestone 10) and spiritual orders.
+- No location art: scenes use a warm dusk wash until `assets/locations/<background>.jpg`
+  files exist (5 backgrounds are named: harbor dusk, bakehouse outside and inside,
+  rooftop night, market).
+- No portrait for the Dock Worker, Simon or Tobiah (no art); they show name and words only.
+- Portraits are opaque white-background pictures, so they are shown in a framed card.
+- Quitting during the opening scene replays it next launch (nothing is saved until the
+  first change on the board).
 
 ## Decisions made for Jennifer (2026-10-05)
 

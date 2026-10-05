@@ -6,6 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
+
+import 'helpers.dart';
 import 'package:whispers_of_joppa/main.dart' as app;
 
 void main() {
@@ -15,6 +17,7 @@ void main() {
     // Start from a new game, whatever an earlier run left on the device.
     await SaveRepository().clear();
     app.main();
+    await skipOpeningScene(tester);
     // The Flame board redraws every frame, so pumpAndSettle would never finish.
     // Pump frames for up to 20 seconds until loading is done.
     for (int i = 0; i < 200; i++) {

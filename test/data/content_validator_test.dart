@@ -40,7 +40,20 @@ Map<String, Object?> _valid() => {
   ],
   'economy': <String, Object?>{for (final key in requiredEconomyKeys) key: 100},
   'characters': [
-    {'id': 'silas', 'name': 'Silas'},
+    {
+      'id': 'silas',
+      'name': 'Silas',
+      'expressions': ['neutral', 'happy'],
+    },
+  ],
+  'scenes': [
+    {
+      'id': 'ch1_s_01',
+      'background': 'loc_harbor_dusk',
+      'lines': [
+        {'speaker': 'silas', 'expression': 'happy', 'text': 'Little loaf.'},
+      ],
+    },
   ],
   'orders': [
     {
@@ -75,6 +88,7 @@ List<String> _check(Map<String, Object?> c) => validateContent(
   startingBoardJson: c['board'],
   ordersJson: c['orders'],
   charactersJson: c['characters'],
+  scenesJson: c['scenes'],
 );
 
 Map<String, dynamic> _first(Map<String, Object?> c, String key) =>
@@ -89,6 +103,7 @@ void main() {
       startingBoardJson: _read('starting_board'),
       ordersJson: _read('orders'),
       charactersJson: _read('characters'),
+      scenesJson: _read('scenes'),
     );
     expect(problems, isEmpty);
   });

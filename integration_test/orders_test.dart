@@ -8,6 +8,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
+
+import 'helpers.dart';
 import 'package:whispers_of_joppa/main.dart' as app;
 
 Future<dynamic> _content(String name) async =>
@@ -22,6 +24,7 @@ void main() {
     // Start from a new game, whatever an earlier run left on the device.
     await SaveRepository().clear();
     app.main();
+    await skipOpeningScene(tester);
     final board = find.byType(GameWidget<BoardGame>);
     for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {
       await tester.pump(const Duration(milliseconds: 100));

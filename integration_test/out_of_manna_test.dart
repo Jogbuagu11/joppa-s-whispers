@@ -18,7 +18,12 @@ void main() {
     const manna = 3;
     await SaveRepository().clear();
     await tester.pumpWidget(
-      const MaterialApp(home: BoardScreen(startingMannaOverride: manna)),
+      const MaterialApp(
+        home: BoardScreen(
+          startingMannaOverride: manna,
+          playOpeningScene: false,
+        ),
+      ),
     );
     final board = find.byType(GameWidget<BoardGame>);
     for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {

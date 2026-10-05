@@ -7,6 +7,7 @@ import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
+import 'package:whispers_of_joppa/domain/scenes.dart';
 
 final _log = Logger('ContentLoader');
 
@@ -29,6 +30,9 @@ class ContentLoader {
   /// Every order in content, in the order players meet them.
   final List<OrderModel> orders = [];
 
+  /// scene_id -> scene
+  final Map<String, SceneModel> scenes = {};
+
   /// character_id -> display name
   final Map<String, String> characterNames = {};
 
@@ -48,6 +52,7 @@ class ContentLoader {
         startingBoardJson: await _loadJson('content/starting_board.json'),
         ordersJson: await _loadJson('content/orders.json'),
         charactersJson: await _loadJson('content/characters.json'),
+        scenesJson: await _loadJson('content/scenes.json'),
       );
     } catch (e, stack) {
       _log.severe('Failed to load content', e, stack);
@@ -64,6 +69,7 @@ class ContentLoader {
     required Object? startingBoardJson,
     required Object? ordersJson,
     required Object? charactersJson,
+    required Object? scenesJson,
   }) {
     economy = EconomyConfig.fromJson(economyJson as Map<String, dynamic>);
     _parseChains(chainsJson as List<dynamic>);
@@ -77,6 +83,10 @@ class ContentLoader {
     for (final c in charactersJson as List<dynamic>) {
       final character = c as Map<String, dynamic>;
       characterNames[character['id'] as String] = character['name'] as String;
+    }
+    for (final s in scenesJson as List<dynamic>) {
+      final scene = SceneModel.fromJson(s as Map<String, dynamic>);
+      scenes[scene.id] = scene;
     }
     _loaded = true;
     _log.info(

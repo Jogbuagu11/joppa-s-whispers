@@ -1,12 +1,13 @@
 // Puts a play session together: loads content, restores the save (or starts
 // a new game), and creates the board, Manna, orders and the auto-saver.
-import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/app/game_saver.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
+import 'package:whispers_of_joppa/domain/scenes.dart';
 import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
@@ -20,12 +21,20 @@ class BoardSession {
   final GameSaver saver;
   final Map<String, String> characterNames;
 
+  /// The scene to play before the board on a brand-new game, if any.
+  final SceneModel? openingScene;
+
+  /// Every bundled asset path (used to find portraits and backgrounds).
+  final Set<String> assetPaths;
+
   BoardSession._({
     required this.game,
     required this.manna,
     required this.orders,
     required this.saver,
     required this.characterNames,
+    required this.openingScene,
+    required this.assetPaths,
   });
 
   static Future<BoardSession> create({
@@ -129,6 +138,12 @@ class BoardSession {
       orders: orders,
       saver: saver,
       characterNames: loader.characterNames,
+      openingScene: loaded == null
+          ? loader.scenes[loader.startingBoard.openingScene]
+          : null,
+      assetPaths: (await AssetManifest.loadFromAssetBundle(
+        rootBundle,
+      )).listAssets().toSet(),
     );
   }
 

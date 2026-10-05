@@ -1,6 +1,7 @@
 // Checks content/*.json for mistakes before the game uses it.
 // Pure Dart (no Flutter imports) so tool/validate_content.dart can run it.
 import 'package:whispers_of_joppa/data/order_validator.dart';
+import 'package:whispers_of_joppa/data/scene_validator.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 
 final _idPattern = RegExp(r'^[a-z][a-z0-9_]*$');
@@ -36,9 +37,13 @@ List<String> validateContent({
   required Object? startingBoardJson,
   required Object? ordersJson,
   required Object? charactersJson,
+  required Object? scenesJson,
 }) {
   final problems = <String>[];
   try {
+    if (startingBoardJson is! Map<String, dynamic>) {
+      throw TypeError();
+    }
     final chains = (chainsJson as List<dynamic>).cast<Map<String, dynamic>>();
     final generators = (generatorsJson as List<dynamic>)
         .cast<Map<String, dynamic>>();
@@ -51,16 +56,23 @@ List<String> validateContent({
       }
     }
     _checkEconomy(economyJson as Map<String, dynamic>, problems);
+    final characters = (charactersJson as List<dynamic>)
+        .cast<Map<String, dynamic>>();
+    final scenes = (scenesJson as List<dynamic>).cast<Map<String, dynamic>>();
     checkOrdersAndCharacters(
       orders: (ordersJson as List<dynamic>).cast<Map<String, dynamic>>(),
-      characters: (charactersJson as List<dynamic>)
-          .cast<Map<String, dynamic>>(),
+      characters: characters,
       chains: chains,
       economy: economyJson,
       problems: problems,
     );
+    checkScenes(scenes: scenes, characters: characters, problems: problems);
+    final opening = startingBoardJson['opening_scene'];
+    if (opening != null && !scenes.any((s) => s['id'] == opening)) {
+      problems.add('Starting board: unknown opening scene "$opening"');
+    }
     _checkStartingBoard(
-      startingBoardJson as Map<String, dynamic>,
+      startingBoardJson,
       generatorIds: generatorIds,
       itemIds: {
         for (final chain in chains)

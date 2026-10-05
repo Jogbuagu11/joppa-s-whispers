@@ -131,17 +131,22 @@ class StartingItem {
 /// The board a brand-new player sees, from content/starting_board.json.
 class StartingBoard {
   final int manna;
+
+  /// The scene a brand-new player sees before the board, if any.
+  final String? openingScene;
   final List<StartingGenerator> generators;
   final List<StartingItem> items;
 
   const StartingBoard({
     required this.manna,
+    this.openingScene,
     required this.generators,
     required this.items,
   });
 
   factory StartingBoard.fromJson(Map<String, dynamic> json) => StartingBoard(
     manna: json['manna'] as int,
+    openingScene: json['opening_scene'] as String?,
     generators: [
       for (final g in json['generators'] as List<dynamic>)
         StartingGenerator(

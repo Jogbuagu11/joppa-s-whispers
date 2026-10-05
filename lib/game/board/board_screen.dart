@@ -2,6 +2,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
+import 'package:whispers_of_joppa/features/story/scene_screen.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
 
@@ -11,7 +12,12 @@ class BoardScreen extends StatefulWidget {
     super.key,
     this.startingMannaOverride,
     this.saveRepository,
+    this.playOpeningScene = true,
   });
+
+  /// Whether a new game begins with the opening story scene. Tests that are
+  /// about the board turn this off.
+  final bool playOpeningScene;
 
   /// Where the game is saved. Tests pass their own; the app uses the default.
   final SaveRepository? saveRepository;
@@ -62,6 +68,18 @@ class _BoardScreenState extends State<BoardScreen> {
         return;
       }
       setState(() => _session = session);
+      final opening = session.openingScene;
+      if (opening != null && widget.playOpeningScene) {
+        await Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => SceneScreen(
+              scene: opening,
+              characterNames: session.characterNames,
+              availableAssets: session.assetPaths,
+            ),
+          ),
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e.toString());
