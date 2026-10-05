@@ -84,8 +84,10 @@ void main() {
     await tester.tap(find.byKey(const Key('scene_skip')));
     await settle();
 
-    // --- After: the location opens by itself, showing the change. ---
+    // --- After: the location opens by itself. The area starts in its old
+    // state and changes in front of the player. ---
     expect(find.byKey(const Key('location_screen')), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
     expect(text('location_progress'), '1 of ${areas.length} restored');
     expect(text('area_state_$areaId'), 'Restored');
     expect(

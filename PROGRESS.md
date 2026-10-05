@@ -368,14 +368,15 @@ Not in this milestone:
 
 ## Milestone 11 — state (2026-10-05)
 
-DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 216 unit tests
+DONE. Verified on the iOS Simulator and Android Emulator: analyze clean, 219 unit tests
 pass, content validator OK, eight device tests pass on both (smoke, scene, tasks,
 restoration, generator tap, out-of-Manna, orders, save/load), and the location screen was
 seen on Android with the Doorway restored.
 
 - Location screen ("Esther's Bakehouse"): one card per area showing its before picture
   until its task is done, then its after picture, with "Not yet" / "Restored" and a count
-  ("1 of 7 restored").
+  ("1 of 7 restored"). An area just restored is shown in its old state first and then
+  fades to the new one in front of the player.
 - Opens from the building button on the task bar, and by itself after a task that
   restores an area, so the player sees the change.
 - Art is looked up as `assets/locations/<image id>.png|webp|jpg` using the before/after
@@ -388,7 +389,11 @@ Not in this milestone:
 - The spec describes one full-screen location picture with areas swapped inside it; this
   screen shows the areas as separate cards, which works without knowing where each area
   sits in a larger picture. Revisit when the art exists.
-- "Back to the rooftop" and "See what you have restored" wording is in code.
+- Wording on this screen ("Restored", "Not yet", "N of M restored", "Back to the
+  rooftop", "See what you have restored") is in code.
+- Location art may be `.jpg` as well as the spec's PNG/WebP (same as scene backgrounds).
+- A finished chapter's location cannot be revisited from the button once the next
+  chapter starts (matters from Milestone 23).
 
 ## Decisions made for Jennifer (2026-10-05)
 

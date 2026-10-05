@@ -47,7 +47,7 @@ class TaskBar extends StatelessWidget {
                 onPressed: onOpenLocation,
                 tooltip: 'See what you have restored',
                 padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                 icon: const Icon(Icons.home_work_outlined, color: _gold),
               ),
               const SizedBox(width: 4),
@@ -59,6 +59,8 @@ class TaskBar extends StatelessWidget {
                       'Chapter ${chapter.number} · ${chapter.title}   '
                       '${controller.doneInChapter}/${chapter.tasks.length}',
                       key: const Key('task_progress'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: Color(0xFFBFA77A),
                         fontSize: 10,

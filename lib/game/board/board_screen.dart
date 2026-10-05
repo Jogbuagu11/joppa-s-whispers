@@ -69,41 +69,59 @@ class _BoardScreenState extends State<BoardScreen> {
     if (session == null || _taskRunning) return;
     _taskRunning = true;
     try {
+      // The task's own chapter, read before doing it: finishing a chapter's
+      // last task moves the story on to the next chapter.
+      final locationId = session.story.chapter?.locationId;
       final task = session.story.doNext();
       if (task == null) return;
       final scene = session.scenes[task.sceneId];
       if (scene == null || scene.lines.isEmpty) {
         _log.warning('Task ${task.id} has no scene to play (${task.sceneId})');
-        return;
-      }
-      if (!mounted) return;
-      await Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => SceneScreen(
-            scene: scene,
-            characterNames: session.characterNames,
-            availableAssets: session.assetPaths,
+      } else if (mounted) {
+        await Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => SceneScreen(
+              scene: scene,
+              characterNames: session.characterNames,
+              availableAssets: session.assetPaths,
+            ),
           ),
-        ),
-      );
-      // A task that restores part of the location shows the result.
-      if (task.restoresArea != null && mounted) await _openLocation();
+        );
+      }
+      // A task that restores part of the location shows the change.
+      final area = task.restoresArea;
+      if (area != null) await _showLocation(locationId, justRestored: area);
     } finally {
       _taskRunning = false;
     }
   }
 
-  /// Shows the current chapter's location with what has been restored so far.
+  /// The location button: shows the current chapter's location.
   Future<void> _openLocation() async {
+    if (_taskRunning) return;
+    _taskRunning = true;
+    try {
+      await _showLocation(_session?.story.chapter?.locationId);
+    } finally {
+      _taskRunning = false;
+    }
+  }
+
+  Future<void> _showLocation(String? locationId, {String? justRestored}) async {
     final session = _session;
-    final location = session?.locations[session.story.chapter?.locationId];
-    if (session == null || location == null || !mounted) return;
+    final location = session?.locations[locationId];
+    if (session == null || location == null) {
+      _log.warning('No location to show for "$locationId"');
+      return;
+    }
+    if (!mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => LocationScreen(
           location: location,
           restoredAreaIds: session.story.restoredAreaIds,
           availableAssets: session.assetPaths,
+          justRestoredAreaId: justRestored,
         ),
       ),
     );

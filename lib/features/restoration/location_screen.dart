@@ -6,13 +6,18 @@ const _gold = Color(0xFFD4802A);
 const _cream = Color(0xFFF3E6C8);
 const _ink = Color(0xFF1A1205);
 
-class LocationScreen extends StatelessWidget {
+class LocationScreen extends StatefulWidget {
   const LocationScreen({
     super.key,
     required this.location,
     required this.restoredAreaIds,
     required this.availableAssets,
+    this.justRestoredAreaId,
   });
+
+  /// An area restored a moment ago. It is shown in its old state first and
+  /// then changes in front of the player.
+  final String? justRestoredAreaId;
 
   final LocationModel location;
 
@@ -23,7 +28,30 @@ class LocationScreen extends StatelessWidget {
   final Set<String> availableAssets;
 
   @override
+  State<LocationScreen> createState() => _LocationScreenState();
+}
+
+class _LocationScreenState extends State<LocationScreen> {
+  // False until the just-restored area has been revealed.
+  late bool _revealed = widget.justRestoredAreaId == null;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!_revealed) {
+      Future<void>.delayed(const Duration(milliseconds: 600), () {
+        if (mounted) setState(() => _revealed = true);
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final location = widget.location;
+    final availableAssets = widget.availableAssets;
+    final restoredAreaIds = _revealed
+        ? widget.restoredAreaIds
+        : widget.restoredAreaIds.difference({widget.justRestoredAreaId});
     final done = location.restoredCount(restoredAreaIds);
     return Scaffold(
       key: const Key('location_screen'),
@@ -119,13 +147,20 @@ class _AreaCard extends StatelessWidget {
         children: [
           Expanded(
             child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 400),
-              // The key carries the image id, so tests (and the fade) can tell
-              // the before picture from the after picture.
-              child: KeyedSubtree(
+              duration: const Duration(milliseconds: 600),
+              // The key carries the image id: a new id means a new picture,
+              // which the switcher fades in over the old one.
+              child: SizedBox.expand(
                 key: ValueKey(imageId),
                 child: asset != null
-                    ? Image.asset(asset, fit: BoxFit.cover)
+                    ? Image.asset(
+                        asset,
+                        fit: BoxFit.cover,
+                        // Cards are small; never decode the full-size picture.
+                        cacheWidth: 600,
+                        errorBuilder: (context, error, stack) =>
+                            _Placeholder(restored: restored),
+                      )
                     : _Placeholder(restored: restored),
               ),
             ),
