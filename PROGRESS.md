@@ -718,6 +718,32 @@ Not in this milestone:
   question can lose unspent Pearls from the newer one; purchases themselves are never
   lost, because the server list re-delivers any transaction a save has not applied.
 
+## First Android bundle for Google Play (2026-10-05)
+
+Jennifer asked for a bundle to upload to Google Play ahead of Milestone 25.
+
+- Upload signing key created: `android/app/upload-keystore.jks`, alias
+  `upload`; passwords in `android/key.properties`. Both are gitignored and
+  exist ONLY on this Mac until Jennifer backs them up.
+- Upload key SHA-1 `22:6B:92:F5:44:C5:0D:A5:A2:5C:B4:3C:4A:0B:74:92:76:4E:F0:2D`
+  SHA-256 `CA:5D:32:47:2E:D9:82:18:BD:53:8C:87:59:99:B0:51:FF:F5:78:93:3D:D4:EA:37:61:B0:FD:59:F4:8E:6B:3B`.
+- `android/app/build.gradle.kts` signs release builds with that key (falls
+  back to the debug key when `key.properties` is absent).
+- The first release build crashed at launch: the code shrinker removed the
+  WorkManager database class the ads library needs. Fixed with
+  `android/app/proguard-rules.pro`. The release build was then installed on
+  the Android emulator and opened to the first story scene.
+- Bundle: `dist/whispers-of-joppa-1.0.0-1.aab` (version 1.0.0, build 1;
+  `dist/` is gitignored). Rebuild with `flutter build appbundle --release`.
+  Every later upload needs a higher build number in `pubspec.yaml`.
+- Good for Play **internal testing** only. Before a public release: real
+  AdMob app id (still Google's test id), a real app icon (still the Flutter
+  default), and the items under "Waiting on Jennifer".
+- After Play accepts it, Google shows an "app signing key" SHA-1 in Play
+  Console (Setup > App signing). Google sign-in on store-installed builds
+  needs an Android OAuth client with THAT SHA-1 (plus the upload one above
+  for builds installed directly).
+
 ## Decisions made for Jennifer (2026-10-05)
 
 Jennifer said: "you decide. you can continue on the milestones. dont ask permission".
