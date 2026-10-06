@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 19 — Firebase analytics + crash reporting (built; needs Jennifer to confirm in the Firebase console). Milestones 14, 16, 17 and 18 are also built and awaiting her real-device checks. Next to build: 20 — Notifications.
+## Current milestone: 20 — Notifications (built; needs a real-phone check and, for iPhone push, Jennifer's Apple push key). Milestones 14, 16, 17, 18 and 19 are also built and awaiting her checks. Next to build: 21 — Events system.
 
 ---
 
@@ -28,7 +28,7 @@
 | 17 | IAP: restore & refunds | BUILT — not tagged: functions deployed; needs store keys on the server and real purchase + refund tests by Jennifer |
 | 18 | Rewarded ads | BUILT — not tagged: a real (test) ad has not yet been watched on a phone |
 | 19 | Firebase: analytics + crash reporting | BUILT — not tagged: Jennifer has not yet confirmed events and a test crash in the Firebase console |
-| 20 | Notifications | Not started |
+| 20 | Notifications | BUILT — not tagged: no real notification has been seen on a phone; push needs Jennifer's Apple push key |
 | 21 | Events system | Not started |
 | 22 | Admin panel | Not started |
 | 23 | Chapters 2–6 | Not started |
@@ -69,6 +69,7 @@
 | firebase_analytics | 12.6.0 |
 | firebase_messaging | 16.7.0 |
 | flutter_local_notifications | 22.3.1 |
+| timezone | 0.11.1 |
 | path_provider | 2.1.6 |
 | sign_in_with_apple | 8.2.0 |
 | google_sign_in | 7.2.0 |
@@ -880,6 +881,65 @@ Review notes carried forward:
 - `account_screen.dart` (298 lines) and `purchase_coordinator.dart` (299) are at the
   size limit: split before adding to them.
 
+## Milestone 20 — state (2026-10-06)
+
+BUILT, NOT TAGGED. Analyze clean, 508 unit tests, fifteen device tests on the iOS
+Simulator and Android Emulator (the new one, `notifications_test`, uses a stand-in for the
+phone's notifications), and the real app launches on both with no permission prompt at
+start. **No real notification has been seen on a phone yet.**
+
+What is built:
+- The question: after Chapter 1 task 5 the game asks, in its own words, whether the
+  player would like notifications. Only a yes brings up the phone's own prompt (an iPhone
+  only allows that once). A no is remembered and never asked again; closing it with the
+  back button is not an answer, so it is asked again after the next task.
+- A bell button on the board opens three switches: gentle reminders, event news, new
+  chapters. Turning one on later asks the phone then. If the phone itself has
+  notifications off for the game, the screen says so.
+- Reminders scheduled on the phone as the player leaves, and cleared when they return:
+  "Manna is full" (only if Manna was at or below 20% on leaving) and one come-back
+  reminder after 3 days, never repeated within a week. Nothing is ever set for 9 pm–9 am
+  (the phone's own time): it waits until 9 am.
+- Push: the phone joins the `events` and `chapters` topics according to the switches,
+  and a signed-in player's push address and choices are stored in `device_tokens`.
+- All wording, the task to ask after, quiet hours and the numbers are in
+  `content/notifications.json` (written by the content-writer; validated). Content is now
+  version 5; the next server release must be 6 or higher and include this file.
+- Rules in `lib/domain/reminders.dart`; `lib/features/settings/notifications_controller.dart`
+  and `notification_settings_screen.dart`; the phone part in
+  `lib/services/device_notification_service.dart`.
+
+Decisions / assumptions to confirm:
+- Not in this milestone: the "daily clay jar" reminder (the jar does not exist yet);
+  SENDING pushes (events are Milestone 21, the admin panel 22 — `send-push` on the server
+  is still the first-draft version); opening a particular screen when a notification is
+  tapped (there is only the board so far).
+- A player already past task 5 (an existing save) is asked after their next task. A
+  player with no tasks left is never asked; the bell is always there.
+- `timezone 0.11.1` is now listed in pubspec (already installed as part of
+  flutter_local_notifications, at that version). Reminders are scheduled as exact moments,
+  so the phone's time-zone name is not needed.
+- Reminders may arrive a few minutes late on Android (no special alarm permission is
+  requested).
+
+Needed from Jennifer for iPhone push (SETUP_CHECKLIST Phase 6):
+- An APNs key uploaded to Firebase, her Apple Team for signing, and the Push
+  Notifications capability switched on for the app. Until then iPhones get the scheduled
+  reminders but no push. Android push works once pushes are being sent.
+
+Review notes carried forward:
+- The review caught reminders ignoring quiet hours in some time zones (times loaded from
+  a save are in UTC); fixed, with tests.
+- The board flow "ask after task 5" is covered by unit tests of the rule and the
+  controller, not by a device test that plays five tasks.
+- A phone left idle still shows its reminders while the player plays on a second phone.
+- A second account on the same phone leaves the first account's `device_tokens` row.
+- Android shows the app icon as the small notification icon (may look like a blank
+  square); a proper small icon and a keep-rule for it belong with the release build
+  (Milestone 25).
+- `ContentLoader.notifications` is parsed but the board reads the same data from the
+  content bundle (board_session.dart is at the 300-line limit); tidy when that file is split.
+
 ## First Android bundle for Google Play (2026-10-05)
 
 Jennifer asked for a bundle to upload to Google Play ahead of Milestone 25.
@@ -947,6 +1007,9 @@ beside the game with its history kept. A backup of the original is in the GitHub
 ## Waiting on Jennifer
 
 **To do next (added 2026-10-05, for 2026-10-06) — Google Play, after the first bundle upload:**
+- Milestone 20 check: on a phone, tap the bell, turn on "Gentle reminders", allow
+  notifications, use up your Manna, close the game and wait for the "Manna is full"
+  notification (it will not arrive between 9 pm and 9 am).
 - Milestone 19 check: open the Firebase console → Analytics → Realtime (or DebugView)
   while playing and confirm events arrive; then Crashlytics after a test crash.
 - Milestone 18 check: after the tutorial, run out of Manna, tap "Watch an ad" in the

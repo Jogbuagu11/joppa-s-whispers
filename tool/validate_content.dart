@@ -23,6 +23,7 @@ void main() {
     tutorialJson: _read('tutorial'),
     endingsJson: _read('endings'),
     productsJson: _read('products'),
+    notificationsJson: _read('notifications'),
   );
   if (problems.isEmpty) {
     stdout.writeln('Content OK');

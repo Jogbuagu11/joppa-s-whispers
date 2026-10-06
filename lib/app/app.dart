@@ -7,16 +7,20 @@ import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/data/cloud_save_store.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
+import 'package:whispers_of_joppa/data/notification_prefs_repository.dart';
 import 'package:whispers_of_joppa/data/supabase_remote_content.dart';
 import 'package:whispers_of_joppa/data/sync_base_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
+import 'package:whispers_of_joppa/features/settings/notifications_controller.dart';
 import 'package:whispers_of_joppa/services/ad_service.dart';
 import 'package:whispers_of_joppa/services/analytics_service.dart';
 import 'package:whispers_of_joppa/services/google_rewarded_ads.dart';
+import 'package:whispers_of_joppa/services/device_notification_service.dart';
 import 'package:whispers_of_joppa/services/in_app_purchase_store.dart';
 import 'package:whispers_of_joppa/services/purchase_backend.dart';
 import 'package:whispers_of_joppa/services/supabase_auth_service.dart';
+import 'package:whispers_of_joppa/services/supabase_device_tokens.dart';
 
 class WhispersApp extends ConsumerWidget {
   const WhispersApp({super.key});
@@ -44,6 +48,13 @@ class WhispersApp extends ConsumerWidget {
 
   // Optional rewarded ads (bonus Manna). Never shown unless asked for.
   static final AdService _ads = GoogleRewardedAds();
+
+  // Notifications: reminders on the phone, and push topics.
+  static final NotificationsController _notifications = NotificationsController(
+    service: DeviceNotificationService(pushAvailable: analytics != null),
+    repository: NotificationPrefsRepository(),
+    tokens: SupabaseDeviceTokens(Supabase.instance.client),
+  );
 
   // One account link for the life of the app.
   static final BoardCloud _cloud = _buildCloud();
@@ -83,6 +94,7 @@ class WhispersApp extends ConsumerWidget {
               shop: _shop,
               ads: _ads,
               analytics: analytics,
+              notifications: _notifications,
             )
           : const BoardScreen(),
     );

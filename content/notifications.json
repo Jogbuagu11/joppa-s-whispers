@@ -1,0 +1,32 @@
+{
+  "ask_after_task": "ch1_t_05",
+  "quiet_start_hour": 21,
+  "quiet_end_hour": 9,
+  "explainer": {
+    "title": "A word before you go on",
+    "body": "May we send a quiet note when your Manna is full, a rare gentle reminder, and news of new chapters and events? Never at night, never often. You can change this any time in Settings.",
+    "yes": "Yes, let me know",
+    "no": "Not now, thank you"
+  },
+  "manna_full": {
+    "low_percent": 20,
+    "title": "Your Manna is full again",
+    "body": "Esther's rooftop is quiet and ready, whenever you are."
+  },
+  "come_back": {
+    "after_days": 3,
+    "repeat_days": 7,
+    "title": "Word from the bakehouse",
+    "body": "Silas has a story half told, and Esther's rooftop is just as you left it. Come by whenever you like."
+  },
+  "settings": {
+    "title": "Notifications",
+    "reminders": "Gentle reminders",
+    "reminders_hint": "When your Manna is full, or a rare note after a few days away.",
+    "events": "Event news",
+    "events_hint": "When a new event begins, and a day before one you joined ends.",
+    "chapters": "New chapters",
+    "chapters_hint": "When the next part of Naomi's story is ready to play.",
+    "blocked": "Notifications for Whispers of Joppa are turned off on this phone. To get them, turn them on in your phone's Settings."
+  }
+}

@@ -11,7 +11,11 @@ import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/letters/letters_screen.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
+import 'package:whispers_of_joppa/domain/economy.dart';
+import 'package:whispers_of_joppa/domain/reminders.dart';
 import 'package:whispers_of_joppa/features/settings/account_screen.dart';
+import 'package:whispers_of_joppa/features/settings/notification_settings_screen.dart';
+import 'package:whispers_of_joppa/features/settings/notifications_controller.dart';
 import 'package:whispers_of_joppa/features/restoration/location_screen.dart';
 import 'package:whispers_of_joppa/features/story/scene_screen.dart';
 import 'package:whispers_of_joppa/features/shop/shop_screen.dart';
@@ -25,6 +29,7 @@ import 'package:whispers_of_joppa/services/ad_service.dart';
 import 'package:whispers_of_joppa/services/analytics_service.dart';
 
 part 'board_screen_actions.dart';
+part 'board_screen_notifications.dart';
 part 'board_screen_routes.dart';
 
 final _log = Logger('BoardScreen');
@@ -42,6 +47,7 @@ class BoardScreen extends StatefulWidget {
     this.shop,
     this.ads,
     this.analytics,
+    this.notifications,
   });
 
   /// The player's account and cloud save. Null (in tests, or if the backend
@@ -59,6 +65,9 @@ class BoardScreen extends StatefulWidget {
   /// Rewarded ads. Null (in tests, or where ads are not set up) means the
   /// "watch an ad" choice is never shown.
   final AdService? ads;
+
+  /// Notifications. Null (in tests) hides the bell and never asks.
+  final NotificationsController? notifications;
 
   /// Analytics and crash reports. Null (in tests) means nothing is sent.
   final Analytics? analytics;
@@ -83,7 +92,7 @@ class BoardScreen extends StatefulWidget {
 }
 
 class _BoardScreenState extends State<BoardScreen>
-    with _BoardState, _BoardRoutes, _BoardScreenActions {
+    with _BoardState, _BoardRoutes, _BoardNotifications, _BoardScreenActions {
   @override
   Widget build(BuildContext context) {
     final session = _session;
@@ -129,6 +138,17 @@ class _BoardScreenState extends State<BoardScreen>
                       tooltip: 'Account',
                       icon: const Icon(
                         Icons.person_outline,
+                        color: Color(0xFFD4802A),
+                      ),
+                    ),
+                  if (widget.notifications != null)
+                    IconButton(
+                      key: const Key('notifications_button'),
+                      onPressed: _openNotificationSettings,
+                      tooltip: _notificationContent?.settingsText['title'],
+                      visualDensity: VisualDensity.compact,
+                      icon: const Icon(
+                        Icons.notifications_none,
                         color: Color(0xFFD4802A),
                       ),
                     ),

@@ -21,6 +21,7 @@ const contentFileNames = [
   'tutorial',
   'endings',
   'products',
+  'notifications',
 ];
 
 class ContentBundle {
@@ -80,6 +81,7 @@ class ContentBundle {
       tutorialJson: files['tutorial'],
       endingsJson: files['endings'],
       productsJson: files['products'],
+      notificationsJson: files['notifications'],
     );
   }
 }

@@ -3,7 +3,7 @@
 // board_screen_routes.dart; the layout is in board_screen.dart.
 part of 'board_screen.dart';
 
-mixin _BoardScreenActions on _BoardRoutes {
+mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications {
   @override
   void initState() {
     super.initState();
@@ -64,6 +64,7 @@ mixin _BoardScreenActions on _BoardRoutes {
       if (area != null) await _showLocation(locationId, justRestored: area);
       // The chapter's last task ends with its closing message.
       await _showPendingEnding();
+      await _maybeAskAboutNotifications();
     } finally {
       _busy = false;
     }
@@ -162,6 +163,7 @@ mixin _BoardScreenActions on _BoardRoutes {
   /// Leaving the app sends the latest save on at once; coming back checks the
   /// account again, in case the game moved on from another phone meanwhile.
   void _onLifecycle(AppLifecycleState state) {
+    _notificationsOnLifecycle(state);
     final cloud = widget.cloud;
     final session = _session;
     if (state == AppLifecycleState.resumed) {
@@ -209,6 +211,12 @@ mixin _BoardScreenActions on _BoardRoutes {
       // Look for newer content in the background; it is used from next launch.
       unawaited(widget.content?.checkForUpdate(session.contentBundle));
       setState(() => _session = session);
+      // Back in the game: saved choices are read, old reminders cleared.
+      unawaited(
+        widget.notifications?.load().then(
+          (_) => widget.notifications?.onReturning(),
+        ),
+      );
       if (resuming) return;
       final opening = session.openingScene;
       if (opening != null &&

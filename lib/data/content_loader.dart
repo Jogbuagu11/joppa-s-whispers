@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/content_bundle.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
+import 'package:whispers_of_joppa/domain/reminders.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/letters.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
@@ -60,6 +61,9 @@ class ContentLoader {
   /// character_id -> display name
   final Map<String, String> characterNames = {};
 
+  /// Notification wording and timing; null only in tests that leave it out.
+  NotificationContent? notifications;
+
   late EconomyConfig economy;
   late StartingBoard startingBoard;
 
@@ -91,6 +95,7 @@ class ContentLoader {
         endingsJson: files['endings'],
         lettersJson: files['letters'],
         productsJson: files['products'],
+        notificationsJson: files['notifications'],
       );
       contentVersion = bundle.version;
     } catch (e, stack) {
@@ -115,7 +120,13 @@ class ContentLoader {
     required Object? endingsJson,
     required Object? lettersJson,
     required Object? productsJson,
+    Object? notificationsJson,
   }) {
+    notifications = notificationsJson == null
+        ? null
+        : NotificationContent.fromJson(
+            notificationsJson as Map<String, dynamic>,
+          );
     economy = EconomyConfig.fromJson(economyJson as Map<String, dynamic>);
     _parseChains(chainsJson as List<dynamic>);
     _parseGenerators(generatorsJson as List<dynamic>);
