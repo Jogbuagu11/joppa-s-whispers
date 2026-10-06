@@ -1229,7 +1229,10 @@ single files; splitting them per chapter would need a loader change.
   inside, tanner's rooftop, boatyard, storm at the harbour, upper room, boat shed at
   night, watchtower, feast table, rooftop by day.
 - App icon set on both platforms (source: `assets/ui/app_icon.png`).
-- Bundle `dist/whispers-of-joppa-1.0.0-2.aab` (build 2), also copied to Downloads. Signed
+- Bundle `dist/whispers-of-joppa-1.0.0-3.aab` (build 3, with Chapter 3) is the one in
+  Downloads for Jennifer; it replaced build 2 there (build 2 stays in `dist/`). Build 3
+  differs from build 2 only in content; the release launch check was done on build 2.
+- Bundle `dist/whispers-of-joppa-1.0.0-2.aab` (build 2). Signed
   with the same upload key. The release build was installed on the emulator and opened.
   Contains Chapter 2, events, notifications, ads (test units), analytics.
 - Still missing for Chapters 1–2: the 14 bakehouse before/after pictures; backgrounds
