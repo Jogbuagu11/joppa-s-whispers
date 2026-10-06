@@ -96,14 +96,14 @@
     "generator_id": "gen_scribe",
     "unlock_chapter": 6,
     "tiers": [
-      { "tier": 1, "item_id": "word_01", "name": "Reed pen",        "sell": 2 },
-      { "tier": 2, "item_id": "word_02", "name": "Ink pot",         "sell": 4 },
-      { "tier": 3, "item_id": "word_03", "name": "Papyrus",         "sell": 6 },
-      { "tier": 4, "item_id": "word_04", "name": "Scroll",          "sell": 8 },
-      { "tier": 5, "item_id": "word_05", "name": "Sealed scroll",   "sell": 10 },
-      { "tier": 6, "item_id": "word_06", "name": "Scroll jar",      "sell": 12 },
-      { "tier": 7, "item_id": "word_07", "name": "Apostle's letter","sell": 14 },
-      { "tier": 8, "item_id": "word_08", "name": "Isaiah scroll",   "sell": 16 }
+      { "tier": 1, "item_id": "word_01", "name": "Reed pen",        "sell": 2, "asset": "assets/items/item_word_01.jpg" },
+      { "tier": 2, "item_id": "word_02", "name": "Ink pot",         "sell": 4, "asset": "assets/items/item_word_02.jpg" },
+      { "tier": 3, "item_id": "word_03", "name": "Papyrus",         "sell": 6, "asset": "assets/items/item_word_03.jpg" },
+      { "tier": 4, "item_id": "word_04", "name": "Scroll",          "sell": 8, "asset": "assets/items/item_word_04.jpg" },
+      { "tier": 5, "item_id": "word_05", "name": "Sealed scroll",   "sell": 10, "asset": "assets/items/item_word_05.jpg" },
+      { "tier": 6, "item_id": "word_06", "name": "Scroll jar",      "sell": 12, "asset": "assets/items/item_word_06.jpg" },
+      { "tier": 7, "item_id": "word_07", "name": "Apostle's letter","sell": 14, "asset": "assets/items/item_word_07.jpg" },
+      { "tier": 8, "item_id": "word_08", "name": "Isaiah scroll",   "sell": 16, "asset": "assets/items/item_word_08.jpg" }
     ]
   },
   {
@@ -114,12 +114,12 @@
     "generator_id": "gen_press",
     "unlock_chapter": 5,
     "tiers": [
-      { "tier": 1, "item_id": "oil_01", "name": "Olive",           "sell": 2 },
-      { "tier": 2, "item_id": "oil_02", "name": "Olive branch",    "sell": 4 },
-      { "tier": 3, "item_id": "oil_03", "name": "Oil flask",       "sell": 6 },
-      { "tier": 4, "item_id": "oil_04", "name": "Anointing vial",  "sell": 8 },
-      { "tier": 5, "item_id": "oil_05", "name": "Alabaster jar",   "sell": 10 },
-      { "tier": 6, "item_id": "oil_06", "name": "Horn of oil",     "sell": 12 }
+      { "tier": 1, "item_id": "oil_01", "name": "Olive",           "sell": 2, "asset": "assets/items/item_oil_01.jpg" },
+      { "tier": 2, "item_id": "oil_02", "name": "Olive branch",    "sell": 4, "asset": "assets/items/item_oil_02.jpg" },
+      { "tier": 3, "item_id": "oil_03", "name": "Oil flask",       "sell": 6, "asset": "assets/items/item_oil_03.jpg" },
+      { "tier": 4, "item_id": "oil_04", "name": "Anointing vial",  "sell": 8, "asset": "assets/items/item_oil_04.jpg" },
+      { "tier": 5, "item_id": "oil_05", "name": "Alabaster jar",   "sell": 10, "asset": "assets/items/item_oil_05.jpg" },
+      { "tier": 6, "item_id": "oil_06", "name": "Horn of oil",     "sell": 12, "asset": "assets/items/item_oil_06.jpg" }
     ]
   }
 ]
