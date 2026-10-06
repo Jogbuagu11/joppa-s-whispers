@@ -21,6 +21,7 @@ SaveState _sample() => SaveState(
   tutorialStep: 2,
   tutorialFreeTapsUsed: 5,
   endingsSeen: const ['ch1'],
+  contentVersion: 3,
   lastOrderSkip: DateTime.utc(2040, 1, 1, 12),
 );
 
@@ -58,6 +59,7 @@ void main() {
     expect(back.tutorialStep, 2);
     expect(back.tutorialFreeTapsUsed, 5);
     expect(back.endingsSeen, ['ch1']);
+    expect(back.contentVersion, 3);
     expect(back.lastOrderSkip, DateTime.utc(2040, 1, 1, 12));
   });
 
@@ -128,10 +130,12 @@ void main() {
   test('a version 4 save from before free-tap counting still loads', () {
     final json = _sample().toJson()
       ..remove('tutorial_free_taps_used')
-      ..remove('endings_seen');
+      ..remove('endings_seen')
+      ..remove('content_version');
     final back = SaveState.fromJson(json);
     expect(back.tutorialFreeTapsUsed, 0);
     expect(back.endingsSeen, isEmpty);
+    expect(back.contentVersion, 0);
   });
 
   test('a wrongly typed order list is rejected, not crashed on later', () {

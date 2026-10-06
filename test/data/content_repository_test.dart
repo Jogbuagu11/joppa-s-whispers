@@ -2,25 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/data/content_bundle.dart';
-import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
 
-Object? _read(String name) =>
-    jsonDecode(File('content/$name.json').readAsStringSync());
-
-/// The real content shipped in the app, at the given version.
-ContentBundle _real({int version = 1, int format = 1}) => ContentBundle(
-  version: version,
-  format: format,
-  files: {for (final name in contentFileNames) name: _read(name)},
-);
-
-/// A bundle that parses but breaks a content rule.
-ContentBundle _broken(int version) {
-  final files = Map<String, Object?>.of(_real().files);
-  files['economy'] = {'max_manna': 0};
-  return ContentBundle(version: version, format: 1, files: files);
-}
+import '../support/content_fixtures.dart';
 
 class _FakeRemote implements RemoteContent {
   ({int version, String path})? release;
@@ -57,95 +41,12 @@ void main() {
     dir = Directory.systemTemp.createTempSync('joppa_content_test');
     remote = _FakeRemote();
     repo = ContentRepository(
-      loadBundled: () async => _real(),
+      loadBundled: () async => realContent(),
       remote: remote,
       directory: () async => dir,
     );
   });
   tearDown(() => dir.deleteSync(recursive: true));
-
-  group('ContentBundle', () {
-    test('the app\'s own content has no problems', () {
-      expect(_real().problems(), isEmpty);
-    });
-
-    test('survives being written and read back', () {
-      final back = ContentBundle.fromJson(
-        jsonDecode(jsonEncode(_real(version: 7).toJson()))
-            as Map<String, dynamic>,
-      );
-      expect(back.version, 7);
-      expect(back.format, 1);
-      expect(back.files.keys, containsAll(contentFileNames));
-      expect(back.problems(), isEmpty);
-    });
-
-    test('rejects something that is not a bundle', () {
-      expect(
-        () => ContentBundle.fromJson({'version': 'one'}),
-        throwsFormatException,
-      );
-    });
-
-    test(
-      'reports a missing file, a bad rule, a newer format, a bad version',
-      () {
-        final files = Map<String, Object?>.of(_real().files)..remove('orders');
-        expect(
-          ContentBundle(version: 2, format: 1, files: files).problems().single,
-          contains('"orders" is missing'),
-        );
-        expect(_broken(2).problems(), isNotEmpty);
-        expect(
-          _real(version: 2, format: 2).problems().single,
-          contains('needs a newer version of the app'),
-        );
-        expect(_real(version: 0).problems().single, contains('1 or more'));
-      },
-    );
-
-    test('a checked bundle loads into the game', () {
-      final loader = ContentLoader()..loadFromBundle(_real(version: 3));
-      expect(loader.isLoaded, isTrue);
-      expect(loader.contentVersion, 3);
-      expect(loader.items, isNotEmpty);
-    });
-  });
-
-  group('chooseContent', () {
-    test('uses the app\'s content when nothing was downloaded', () {
-      expect(chooseContent(bundled: _real(), cached: null).version, 1);
-    });
-    test('uses a newer, sound download', () {
-      expect(
-        chooseContent(bundled: _real(), cached: _real(version: 2)).version,
-        2,
-      );
-    });
-    test('ignores a download that is not newer than the app\'s', () {
-      expect(
-        chooseContent(
-          bundled: _real(version: 5),
-          cached: _real(version: 5),
-        ).version,
-        5,
-      );
-      expect(
-        chooseContent(
-          bundled: _real(version: 5),
-          cached: _real(version: 3),
-        ).version,
-        5,
-      );
-    });
-    test('ignores a newer download that has problems', () {
-      final bundled = _real();
-      expect(
-        identical(chooseContent(bundled: bundled, cached: _broken(2)), bundled),
-        isTrue,
-      );
-    });
-  });
 
   group('ContentRepository', () {
     test('with nothing downloaded, plays the app\'s content', () async {
@@ -153,7 +54,7 @@ void main() {
     });
 
     test('a newer release is downloaded for the next launch', () async {
-      remote.publish(_real(version: 2));
+      remote.publish(realContent(version: 2));
       final current = await repo.current();
       expect(await repo.checkForUpdate(current), ContentUpdate.downloaded);
       // This launch keeps what it started with...
@@ -163,7 +64,7 @@ void main() {
     });
 
     test('nothing newer on the server: nothing downloaded', () async {
-      remote.publish(_real(version: 1));
+      remote.publish(realContent(version: 1));
       expect(
         await repo.checkForUpdate(await repo.current()),
         ContentUpdate.none,
@@ -179,7 +80,7 @@ void main() {
     test(
       'a release that breaks the rules is rejected and never used',
       () async {
-        remote.publish(_broken(2));
+        remote.publish(brokenContent(2));
         expect(
           await repo.checkForUpdate(await repo.current()),
           ContentUpdate.rejected,
@@ -192,7 +93,7 @@ void main() {
     test(
       'a release whose file does not match its version is rejected',
       () async {
-        remote.publish(_real(version: 2), asVersion: 3);
+        remote.publish(realContent(version: 2), asVersion: 3);
         expect(
           await repo.checkForUpdate(await repo.current()),
           ContentUpdate.rejected,
@@ -201,7 +102,7 @@ void main() {
     );
 
     test('a release for a newer app is rejected', () async {
-      remote.publish(_real(version: 2, format: 2));
+      remote.publish(realContent(version: 2, format: 2));
       expect(
         await repo.checkForUpdate(await repo.current()),
         ContentUpdate.rejected,
@@ -230,16 +131,63 @@ void main() {
         expect((await repo.current()).version, 1);
         expect(cache().existsSync(), isFalse);
 
-        cache().writeAsStringSync(jsonEncode(_broken(2).toJson()));
+        cache().writeAsStringSync(jsonEncode(brokenContent(2).toJson()));
         expect((await repo.current()).version, 1);
         expect(cache().existsSync(), isFalse);
       },
     );
 
+    test(
+      'a release that passes the checks but will not load is rejected',
+      () async {
+        // The checks cannot foresee everything; the game must also really load it.
+        final picky = ContentRepository(
+          loadBundled: () async => realContent(),
+          remote: remote,
+          directory: () async => dir,
+          trialLoad: (bundle) {
+            if (bundle.version == 2) throw StateError('cannot load this');
+          },
+        );
+        remote.publish(realContent(version: 2));
+        expect(
+          await picky.checkForUpdate(await picky.current()),
+          ContentUpdate.rejected,
+        );
+        expect(cache().existsSync(), isFalse);
+      },
+    );
+
+    test(
+      'a saved download that no longer loads is dropped at launch',
+      () async {
+        // For example after an app update changed what the game can load.
+        cache().writeAsStringSync(jsonEncode(realContent(version: 2).toJson()));
+        final picky = ContentRepository(
+          loadBundled: () async => realContent(),
+          directory: () async => dir,
+          trialLoad: (bundle) {
+            if (bundle.version == 2) throw StateError('cannot load this');
+          },
+        );
+        expect((await picky.current()).version, 1);
+        expect(cache().existsSync(), isFalse);
+        // And it stays gone: the next launch is clean too.
+        expect((await picky.current()).version, 1);
+      },
+    );
+
+    test('discardDownloaded removes the saved download', () async {
+      cache().writeAsStringSync(jsonEncode(realContent(version: 2).toJson()));
+      await repo.discardDownloaded();
+      expect(cache().existsSync(), isFalse);
+      expect((await repo.current()).version, 1);
+    });
+
     test('an app update with newer content than the download wins', () async {
-      cache().writeAsStringSync(jsonEncode(_real(version: 2).toJson()));
+      cache().writeAsStringSync(jsonEncode(realContent(version: 2).toJson()));
       final newer = ContentRepository(
-        loadBundled: () async => _real(version: 3),
+        loadBundled: () async => realContent(version: 3),
         directory: () async => dir,
       );
       expect((await newer.current()).version, 3);
@@ -248,7 +196,7 @@ void main() {
 
     test('with no server configured, there is nothing to check', () async {
       final local = ContentRepository(
-        loadBundled: () async => _real(),
+        loadBundled: () async => realContent(),
         directory: () async => dir,
       );
       expect(

@@ -1,5 +1,6 @@
 // Packs content/ into one bundle file the server can hand out.
 // Run from the project folder: dart run tool/build_content_bundle.dart
+// (add --version=N to build it as release N).
 //
 // It refuses to build if the content has any problem. The file is written to
 // build/content/content_v<version>.json; uploading it to the `content` storage
@@ -12,10 +13,16 @@ import 'package:whispers_of_joppa/data/content_bundle.dart';
 Object? _read(String name) =>
     jsonDecode(File('content/$name.json').readAsStringSync());
 
-void main() {
+void main(List<String> args) {
   final manifest = _read('version') as Map<String, dynamic>;
+  // `--version=N` builds the bundle as release N without editing
+  // content/version.json (the version that ships inside the app).
+  final asked = [
+    for (final arg in args)
+      if (arg.startsWith('--version=')) int.tryParse(arg.substring(10)),
+  ];
   final bundle = ContentBundle(
-    version: manifest['version'] as int,
+    version: asked.firstOrNull ?? manifest['version'] as int,
     format: manifest['format'] as int,
     files: {for (final name in contentFileNames) name: _read(name)},
   );

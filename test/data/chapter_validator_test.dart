@@ -101,4 +101,13 @@ void main() {
       expect(checkContent(d).single, contains('is filed under chapter 2'));
     },
   );
+
+  test('a location with no name is reported', () {
+    final c = validContent();
+    firstOf(c, 'locations').remove('name');
+    expect(
+      checkContent(c).single,
+      contains('Location bakehouse: missing name'),
+    );
+  });
 }

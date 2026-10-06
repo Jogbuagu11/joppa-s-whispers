@@ -54,6 +54,10 @@ void checkOrdersAndCharacters({
     if (!characterIds.contains(order['character_id'])) {
       problems.add('Order $id: unknown character "${order['character_id']}"');
     }
+    final sceneId = order['scene_id'];
+    if (sceneId != null && sceneId is! String) {
+      problems.add('Order $id: scene_id must be text or left empty');
+    }
     final kind = order['kind'];
     if (kind != 'literal' && kind != 'spiritual') {
       problems.add('Order $id: kind must be literal or spiritual');

@@ -74,6 +74,12 @@ void main() {
     });
   });
 
+  test('a scene_id that is not text is reported', () {
+    final c = validContent();
+    firstOf(c, 'orders')['scene_id'] = 5;
+    expect(checkContent(c).single, contains('scene_id must be text'));
+  });
+
   test('an unknown opening scene is reported', () {
     final c = validContent();
     (c['board'] as Map<String, dynamic>)['opening_scene'] = 'ch9_s_99';

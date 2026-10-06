@@ -78,6 +78,11 @@ class SaveState {
 
   /// Chapters whose closing message has been shown.
   final List<String> endingsSeen;
+
+  /// The newest content version this game has been played with. A phone
+  /// running older content must not take over or upload this game, because
+  /// it would have to throw away the parts it does not know.
+  final int contentVersion;
   final DateTime? lastOrderSkip;
 
   const SaveState({
@@ -94,6 +99,7 @@ class SaveState {
     required this.tutorialStep,
     this.tutorialFreeTapsUsed = 0,
     this.endingsSeen = const [],
+    this.contentVersion = 0,
     required this.lastOrderSkip,
   });
 
@@ -112,6 +118,7 @@ class SaveState {
     'tutorial_step': tutorialStep,
     'tutorial_free_taps_used': tutorialFreeTapsUsed,
     'endings_seen': endingsSeen,
+    'content_version': contentVersion,
     'last_order_skip': lastOrderSkip?.toUtc().toIso8601String(),
   };
 
@@ -150,6 +157,7 @@ class SaveState {
         endingsSeen: List<String>.from(
           json['endings_seen'] as List<dynamic>? ?? const [],
         ),
+        contentVersion: json['content_version'] as int? ?? 0,
         lastOrderSkip: skip == null ? null : DateTime.parse(skip),
       );
     } on TypeError catch (e) {
@@ -246,6 +254,7 @@ SaveState sanitizeSave(
         ? 0
         : save.tutorialFreeTapsUsed,
     endingsSeen: save.endingsSeen.toSet().toList(),
+    contentVersion: save.contentVersion,
     lastOrderSkip: save.lastOrderSkip,
   );
 }

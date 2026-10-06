@@ -25,6 +25,13 @@ enum SyncResult {
 
   /// The account's save was made by a newer version of the app.
   needsNewerApp,
+
+  /// One of the two games was played with newer game content than this phone
+  /// is running. Restarting the app picks the newer content up.
+  needsNewerContent,
+
+  /// Another phone saved to the account while this one was deciding.
+  changedMeanwhile,
   failed,
 }
 
@@ -57,9 +64,14 @@ class CloudSync {
 
   /// Compares [local] with the cloud and uploads, hands back the cloud game
   /// to adopt, or asks the player.
+  ///
+  /// [contentVersion] is the game content this phone is running. A game made
+  /// with newer content is never taken over or sent from here, because this
+  /// phone would have to throw away the parts it does not know.
   Future<SyncOutcome> sync(
     SaveState local, {
     required ChooseSave choose,
+    int contentVersion = 1 << 30,
   }) async {
     final user = auth.user.value;
     if (user == null) return const SyncOutcome(SyncResult.signedOut);
@@ -71,6 +83,10 @@ class CloudSync {
         // The save exists but this build cannot read it.
         _log.warning('Cloud save cannot be read by this version: $e');
         return const SyncOutcome(SyncResult.needsNewerApp);
+      }
+      if (local.contentVersion > contentVersion ||
+          (cloud != null && cloud.state.contentVersion > contentVersion)) {
+        return const SyncOutcome(SyncResult.needsNewerContent);
       }
       final base = await bases.load(user.id);
       final action = decideSync(
@@ -94,7 +110,7 @@ class CloudSync {
         case SyncAction.download:
           return SyncOutcome(SyncResult.downloaded, cloud);
         case SyncAction.upload:
-          return _upload(user.id, local, SyncResult.uploaded);
+          return _replaceCloud(user.id, local, cloud, SyncResult.uploaded);
         case SyncAction.ask:
           final keepCloud = await choose(
             local: local,
@@ -104,7 +120,12 @@ class CloudSync {
           if (keepCloud == null) return const SyncOutcome(SyncResult.undecided);
           return keepCloud
               ? SyncOutcome(SyncResult.downloaded, cloud)
-              : _upload(user.id, local, SyncResult.keptLocalUploaded);
+              : _replaceCloud(
+                  user.id,
+                  local,
+                  cloud,
+                  SyncResult.keptLocalUploaded,
+                );
       }
     } on Exception catch (e, stack) {
       _log.warning('Cloud sync failed', e, stack);
@@ -152,6 +173,27 @@ class CloudSync {
       _log.warning('Cloud upload failed: $e');
       return false;
     }
+  }
+
+  /// Replaces the cloud game [seen] with [local], unless another phone has
+  /// saved since [seen] was fetched (the player may have taken minutes to
+  /// choose). In that case nothing is changed.
+  Future<SyncOutcome> _replaceCloud(
+    String userId,
+    SaveState local,
+    CloudSave seen,
+    SyncResult result,
+  ) async {
+    final updatedAt = await store.uploadIfUnchanged(
+      userId,
+      local,
+      seen.updatedAt,
+    );
+    if (updatedAt == null) {
+      return const SyncOutcome(SyncResult.changedMeanwhile);
+    }
+    await _remember(userId, updatedAt, local);
+    return SyncOutcome(result);
   }
 
   /// Forgets what this phone knows about its last sync (after an account is

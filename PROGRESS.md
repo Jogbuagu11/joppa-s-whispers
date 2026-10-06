@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 15 — Server-driven content (built). Milestones 14 and 15 both await a live check with Jennifer.
+## Current milestone: 16 — IAP: buy & deliver (next). Milestone 15 is done; Milestone 14 still awaits a real sign-in.
 
 ---
 
@@ -23,7 +23,7 @@
 | 12 | Chapter 1 playable | DONE (m12-working) |
 | 13 | Esther's letters | DONE (m13-working) |
 | 14 | Accounts + cloud save | BUILT — not tagged: real sign-in not yet verified |
-| 15 | Server-driven content | BUILT — not tagged: needs the database change applied and a first release |
+| 15 | Server-driven content | DONE (m15-working) — verified against the live server |
 | 16 | IAP: buy & deliver | Not started |
 | 17 | IAP: restore & refunds | Not started |
 | 18 | Rewarded ads | Not started |
@@ -559,10 +559,26 @@ Not in this milestone:
 
 ## Milestone 15 — state (2026-10-05)
 
-BUILT, NOT TAGGED. Analyze clean, 342 unit tests pass, eleven device tests pass on the iOS
-Simulator and Android Emulator, and the real app was launched on Android against the live
-backend: it logged "Using content v1" and the update check ran without error (there is no
-release on the server yet).
+DONE. Analyze clean, 351 unit tests pass, eleven device tests pass on the iOS Simulator and
+Android Emulator, and it was verified end to end against the live server on 2026-10-05:
+a test release (version 2, same content) was published; the real app on Android logged
+"Using content v1" then "Downloaded content v2 for next launch", and after a full close
+the next launch logged "Using content v2".
+
+Live server state:
+- Migration `20261005000001_content_public_read` is applied (guests can read releases).
+- Release 2 is published: file `content_v2.json` in the `content` bucket and a row in
+  `content_versions`. The app itself still ships version 1, so every install of this
+  build downloads version 2 once. The next real release must be version 3 or higher.
+
+Fixed after the code review (it found two serious problems):
+- Content that passes the checks but will not actually load can no longer lock a phone on
+  an error screen: downloads are test-loaded before being kept, and if downloaded content
+  ever fails at launch it is deleted and the app's own content is used.
+- Saves now record the content version they were played with. A phone running older
+  content refuses to take over or upload such a game (it would have to drop the parts it
+  does not know) and tells the player to restart the app instead.
+- The validator now checks two fields the loader needs (location name, order scene_id).
 
 What is built:
 - All content is treated as one bundle with a version (`content/version.json`, now 1).
@@ -581,11 +597,6 @@ To release new content (until the admin panel exists, Milestone 22):
 3. Upload the file to the Supabase `content` storage bucket.
 4. Add a row to `content_versions` with that version and the file's path.
 
-Needed before this works for real players:
-- **Apply `supabase/migrations/20261005000001_content_public_read.sql`** to the live
-  project. Today only signed-in players may read content releases, so guests (most
-  players) would silently stay on the app's own content. Content is public game data.
-- Publish a first test release and see a phone pick it up.
 
 Decisions:
 - New content applies from the next launch, not mid-game.
@@ -595,7 +606,13 @@ Decisions:
 Not in this milestone:
 - Downloading new art with a release.
 - Telling the player that new content is ready, or forcing a restart.
-- Rolling back a release from inside the app (remove the row on the server instead).
+- Recalling a release: phones that already downloaded it keep it, so publish a higher
+  version with the fix rather than deleting the row.
+- A release is not compared with the previous one: removing or renaming an order, task or
+  item id erases that progress for players. Never remove or rename shipped ids.
+- A rejected release is downloaded and checked again at every launch until replaced.
+- No size limit on a download; it is checked on the main thread at launch.
+- Anyone can read `content_versions.notes` and every file in the `content` bucket.
 
 ## Decisions made for Jennifer (2026-10-05)
 
@@ -638,11 +655,14 @@ beside the game with its history kept. A backup of the original is in the GitHub
 ## Waiting on Jennifer
 
 - Try real sign-in (see "Milestone 14 — state" for what each method needs).
-- Apply the new database change so guests can receive content updates (see "Milestone 15").
 - In Vercel: Project → Settings → Build and Deployment → Root Directory → `web`, then redeploy.
 - Decide the Letter 1 scripture question (1 John 4:18 vs the story bible's period rule).
 - Art still missing: Word and Oil item chains, all generators, bakehouse before/after
   pictures, scene backgrounds, and a few portraits (listed under "Decisions made").
+
+Note: the Supabase CLI is at `~/development/supabase/supabase`, signed in by Jennifer and
+linked to the Whispers of Joppa project only. Her account has seven other projects; never
+touch them.
 
 Note: Android Studio is not installed on this Mac. Android is built with the command-line
 tools, a Temurin 21 JDK in `~/development/jdk`, and an emulator named `Pixel_Joppa`.

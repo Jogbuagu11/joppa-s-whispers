@@ -1,6 +1,9 @@
 // Sign in, sync, sign out and delete the account.
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/services/auth_service.dart';
+
+final _log = Logger('AccountScreen');
 
 const _gold = Color(0xFFD4802A);
 const _cream = Color(0xFFF3E6C8);
@@ -55,6 +58,9 @@ class _AccountScreenState extends State<AccountScreen> {
         final synced = await widget.syncNow();
         if (synced.isNotEmpty) message = synced;
       }
+    } on Exception catch (e, stack) {
+      _log.warning('Account action failed', e, stack);
+      message = 'Something went wrong. Please try again.';
     } finally {
       if (mounted) {
         setState(() {

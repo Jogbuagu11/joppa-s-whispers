@@ -27,6 +27,10 @@ void checkChapters({
   final areaIds = <String>{};
   for (final location in locations) {
     checkId('Location', location['id'], locationIds);
+    final locationName = location['name'];
+    if (locationName is! String || locationName.trim().isEmpty) {
+      problems.add('Location ${location['id']}: missing name');
+    }
     final areas = <String>{};
     for (final a in location['areas'] as List<dynamic>) {
       final area = a as Map<String, dynamic>;

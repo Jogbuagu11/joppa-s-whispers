@@ -122,6 +122,7 @@ SaveState testSave({
   List<String> orders = const [],
   int talents = 0,
   int blessings = 0,
+  int contentVersion = 1,
 }) => SaveState(
   items: const [],
   generators: const [],
@@ -134,5 +135,6 @@ SaveState testSave({
   completedOrders: orders,
   completedTasks: tasks,
   tutorialStep: tutorialFinished,
+  contentVersion: contentVersion,
   lastOrderSkip: null,
 );

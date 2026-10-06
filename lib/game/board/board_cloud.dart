@@ -21,6 +21,10 @@ class BoardCloud {
   // ordinary saves may be sent on. Every send is still conditional: the cloud
   // refuses it if another phone has saved in the meantime.
   bool _inStep = false;
+
+  /// Set when the running game has lost parts to older content (see
+  /// BoardSession.downgraded): nothing is sent to the account in that state.
+  bool blockUploads = false;
   DateTime? _lastUpload;
   String? _userId;
 
@@ -49,12 +53,16 @@ class BoardCloud {
   /// Compares [local] with the cloud. Returns what happened in words, and the
   /// cloud save if this phone's game must be replaced by it (write it to the
   /// phone, then call [confirmAdopted]).
+  ///
+  /// [contentVersion] is the game content this phone is running.
   Future<({String message, CloudSave? adopt})> syncNow(
     BuildContext context,
-    SaveState local,
-  ) async {
+    SaveState local, {
+    required int contentVersion,
+  }) async {
     final outcome = await sync.sync(
       local,
+      contentVersion: contentVersion,
       choose:
           ({
             required SaveState local,
@@ -79,6 +87,8 @@ class BoardCloud {
       SyncResult.downloaded ||
       SyncResult.undecided ||
       SyncResult.needsNewerApp ||
+      SyncResult.needsNewerContent ||
+      SyncResult.changedMeanwhile ||
       SyncResult.failed ||
       SyncResult.signedOut => false,
     };
@@ -95,6 +105,11 @@ class BoardCloud {
         'Nothing was changed. Your account still holds a different game.',
       SyncResult.needsNewerApp =>
         'Your account has a game from a newer version. Please update the app.',
+      SyncResult.needsNewerContent =>
+        'Your game uses newer story content. Close the app fully and open '
+            'it again, then tap Sync now.',
+      SyncResult.changedMeanwhile =>
+        'Your account was just saved from another phone. Tap Sync now again.',
       SyncResult.failed =>
         'Could not reach your account. Check your connection and try again.',
     };
@@ -112,7 +127,7 @@ class BoardCloud {
   /// the phone and cloud are in step, and enough time has passed (or [force]
   /// is set, as when the app is being put away).
   Future<void> afterLocalSave(SaveState state, {bool force = false}) async {
-    if (!signedIn || !_inStep) return;
+    if (!signedIn || !_inStep || blockUploads) return;
     final last = _lastUpload;
     if (!force && last != null && _now().difference(last) < uploadEvery) return;
     _lastUpload = _now();

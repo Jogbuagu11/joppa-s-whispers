@@ -14,13 +14,13 @@ import 'package:whispers_of_joppa/domain/orders.dart';
 import 'package:whispers_of_joppa/domain/progression.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';
-import 'package:whispers_of_joppa/domain/tutorial.dart';
 import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
 import 'package:whispers_of_joppa/features/story/story_controller.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 import 'package:whispers_of_joppa/game/board/new_game.dart';
+import 'package:whispers_of_joppa/game/board/session_content.dart';
 import 'package:whispers_of_joppa/game/board/session_snapshot.dart';
 
 final _log = Logger('BoardSession');
@@ -46,6 +46,13 @@ class BoardSession {
 
   /// The content this session is playing, for the background update check.
   final ContentBundle contentBundle;
+
+  /// The content version written into saves (the newest this game has seen).
+  final int savedContentVersion;
+
+  /// True when this game was last played with newer content than is running
+  /// now, so parts of it are missing and it must not go to the account.
+  bool get downgraded => savedContentVersion > contentBundle.version;
 
   /// Esther's letters, for the keepsake book.
   final List<LetterModel> letters;
@@ -74,6 +81,7 @@ class BoardSession {
     required this.locations,
     required this.letters,
     required this.contentBundle,
+    required this.savedContentVersion,
     required this.saver,
     required this.characterNames,
     required this.openingScene,
@@ -90,8 +98,7 @@ class BoardSession {
     // Downloaded content if it is newer and sound, else the app's own.
     final repository =
         content ?? ContentRepository(loadBundled: loadBundledContent);
-    final bundle = await repository.current();
-    final loader = ContentLoader()..loadFromBundle(bundle);
+    final (:bundle, :loader) = await loadSessionContent(repository);
 
     final loaded = await saveRepository.load();
     final fresh = newGameState(loader, startingMannaOverride);
@@ -111,6 +118,17 @@ class BoardSession {
             maxManna: loader.economy.maxManna,
           );
     _log.info(loaded == null ? 'Starting a new game' : 'Restored saved game');
+    // A save last played with newer content than is running now has had the
+    // parts this content does not know removed. It must not be sent to the
+    // player's account in that state.
+    final savedContent = loaded?.contentVersion ?? 0;
+    final downgraded = savedContent > bundle.version;
+    if (downgraded) {
+      _log.warning(
+        'Save was made with content v$savedContent; running v${bundle.version}',
+      );
+    }
+    final contentVersion = downgraded ? savedContent : bundle.version;
 
     final manna = MannaController(
       config: loader.economy,
@@ -182,20 +200,7 @@ class BoardSession {
       startIndex: playTutorial ? save.tutorialStep : tutorialFinished,
       freeTapsAlreadyUsed: save.tutorialFreeTapsUsed,
     );
-    game
-      ..freeGeneratorTaps = (() => tutorial.freeManna)
-      ..onMerge = (() =>
-          tutorial.handle(const TutorialEvent(TutorialTrigger.merge)))
-      ..onGeneratorSpawn = ({required bool wasFree}) {
-        if (wasFree) tutorial.noteFreeTap();
-        tutorial.handle(const TutorialEvent(TutorialTrigger.generatorTap));
-      };
-    // The tutorial's orders must stay on screen until it is over.
-    orders.skipAllowed = () => tutorial.isOver;
-    orders.onDelivered = (id) =>
-        tutorial.handle(TutorialEvent(TutorialTrigger.orderDelivered, id));
-    story.onTaskDone = (id) =>
-        tutorial.handle(TutorialEvent(TutorialTrigger.taskDone, id));
+    wireTutorial(game: game, orders: orders, story: story, tutorial: tutorial);
 
     await game.loadArt();
 
@@ -208,6 +213,7 @@ class BoardSession {
         story: story,
         tutorial: tutorial,
         endingsSeen: endingsSeen,
+        contentVersion: contentVersion,
       ),
       // Manna spends always come with a board change, so the per-second Manna
       // tick does not need to trigger a write.
@@ -227,6 +233,7 @@ class BoardSession {
       locations: loader.locations,
       letters: loader.letters,
       contentBundle: bundle,
+      savedContentVersion: contentVersion,
       saver: saver,
       characterNames: loader.characterNames,
       openingScene: loaded == null
@@ -246,6 +253,7 @@ class BoardSession {
     story: story,
     tutorial: tutorial,
     endingsSeen: endingsSeen,
+    contentVersion: savedContentVersion,
   );
 
   /// The closing message for a finished chapter the player has not seen yet,

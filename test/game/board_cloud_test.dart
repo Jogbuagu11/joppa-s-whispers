@@ -55,7 +55,8 @@ void main() {
     );
     late ({String message, CloudSave? adopt}) result;
     await tester.runAsync(
-      () async => result = await cloud.syncNow(context, local),
+      () async =>
+          result = await cloud.syncNow(context, local, contentVersion: 1),
     );
     return result;
   }
@@ -192,4 +193,16 @@ void main() {
     expect(cloud.inStep, isFalse);
     expect(await tester.runAsync(() => cloud.sync.push(more)), isFalse);
   });
+
+  testWidgets(
+    'nothing is sent while the game is missing parts to older content',
+    (tester) async {
+      auth.signInAs('u1');
+      await sync(tester, played);
+      cloud.blockUploads = true;
+      now = now.add(const Duration(minutes: 5));
+      await tester.runAsync(() => cloud.afterLocalSave(more, force: true));
+      expect(store.saves['u1']?.state.completedTasks, ['t1']);
+    },
+  );
 }

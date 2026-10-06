@@ -204,6 +204,57 @@ void main() {
     expect(after.result, SyncResult.upToDate);
   });
 
+  test('a cloud game made with newer content is not taken over', () async {
+    auth.signInAs('u1');
+    store.seed('u1', testSave(tasks: ['t1', 't9'], contentVersion: 2));
+    final out = await sync.sync(testSave(), choose: choose, contentVersion: 1);
+    expect(out.result, SyncResult.needsNewerContent);
+    expect(out.cloud, isNull);
+    expect(store.uploads, 0);
+    // Once this phone runs the newer content, it is taken over normally.
+    final later = await sync.sync(
+      testSave(),
+      choose: choose,
+      contentVersion: 2,
+    );
+    expect(later.result, SyncResult.downloaded);
+  });
+
+  test(
+    'a local game that lost parts to older content is never uploaded',
+    () async {
+      auth.signInAs('u1');
+      await sync.sync(played, choose: choose, contentVersion: 2);
+      // The same game, now running on older content than it was saved with.
+      final stripped = testSave(tasks: ['t1'], contentVersion: 2);
+      final out = await sync.sync(stripped, choose: choose, contentVersion: 1);
+      expect(out.result, SyncResult.needsNewerContent);
+      expect(store.uploads, 1);
+    },
+  );
+
+  test(
+    'keeping this phone is refused if another phone saved while choosing',
+    () async {
+      auth.signInAs('u1');
+      store.seed('u1', further);
+      final newest = testSave(tasks: ['t1', 't2', 't3']);
+      // While the player reads the question, another phone uploads.
+      Future<bool?> slowChoice({
+        required SaveState local,
+        required SaveState cloud,
+        required bool cloudIsFurtherOn,
+      }) async {
+        store.seed('u1', newest);
+        return false;
+      }
+
+      final out = await sync.sync(played, choose: slowChoice);
+      expect(out.result, SyncResult.changedMeanwhile);
+      expect(store.saves['u1']?.state.completedTasks, ['t1', 't2', 't3']);
+    },
+  );
+
   test('forget clears the sync record', () async {
     auth.signInAs('u1');
     await sync.sync(played, choose: choose);

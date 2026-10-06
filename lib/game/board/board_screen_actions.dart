@@ -123,7 +123,11 @@ mixin _BoardScreenActions on State<BoardScreen> {
     _syncing = true;
     try {
       final before = saveFingerprint(session.snapshot());
-      final result = await cloud.syncNow(context, session.snapshot());
+      final result = await cloud.syncNow(
+        context,
+        session.snapshot(),
+        contentVersion: session.contentBundle.version,
+      );
       final adopt = result.adopt;
       if (adopt == null || !mounted) return result.message;
       // If the player kept playing while the account was being checked, do
@@ -172,7 +176,11 @@ mixin _BoardScreenActions on State<BoardScreen> {
     if (cloud == null || session == null || !cloud.signedIn) return;
     if (state == AppLifecycleState.paused) {
       unawaited(cloud.afterLocalSave(session.snapshot(), force: true));
-    } else if (state == AppLifecycleState.resumed && !_busy) {
+    } else if (state == AppLifecycleState.resumed &&
+        !_busy &&
+        !_popupOpen &&
+        // Nothing (a scene, a popup, the ending) is open over the board.
+        (ModalRoute.of(context)?.isCurrent ?? true)) {
       cloud.reset();
       unawaited(_syncWithAccount());
     }
@@ -232,6 +240,7 @@ mixin _BoardScreenActions on State<BoardScreen> {
         await session.dispose();
         return;
       }
+      widget.cloud?.blockUploads = session.downgraded;
       session.saver.onSaved = (state) => widget.cloud?.afterLocalSave(state);
       // Look for newer content in the background; it is used from next launch.
       unawaited(widget.content?.checkForUpdate(session.contentBundle));
