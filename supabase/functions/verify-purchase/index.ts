@@ -1,271 +1,307 @@
 // verify-purchase Edge Function
-// Verifies a purchase receipt with Apple or Google, grants items to the player.
-// NEVER trust the on-device result — only this function grants items.
+// Confirms a purchase with Apple or Google and records it for the player.
+// NEVER trust the phone: only this function decides a purchase is real, and
+// what it checks is what the STORE says, not what the app claims.
+//
+// The decisions live in rules.ts (tested by rules_test.ts). This file only
+// does the talking: to the caller, the stores and the database.
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import {
+  b64url,
+  checkAppleTransaction,
+  checkGooglePurchase,
+  decideGrant,
+  decodeJwsPayload,
+  PRODUCTS,
+  type Check,
+} from './rules.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const json = (body: unknown, status: number) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
+
 interface VerifyRequest {
   platform: 'ios' | 'android';
   product_id: string;
   transaction_id: string;
-  receipt_data: string; // base64 receipt (iOS) or purchase token (Android)
+  receipt_data: string; // Android: the purchase token. iOS: unused.
 }
 
-interface ProductGrant {
-  pearls?: number;
-  manna?: number;
-  generator_level?: number;
+/** What a store said, plus what is needed to finish the purchase there. */
+interface StoreResult {
+  check: Check;
+  raw: unknown;
+  consumedAtStore: boolean;
+  /** Tells the store the purchase is delivered (Google only). */
+  settle?: () => Promise<void>;
 }
-
-// Product catalog — must match products.json in the app.
-const PRODUCTS: Record<string, ProductGrant> = {
-  pearls_tier1: { pearls: 50 },
-  pearls_tier2: { pearls: 270 },
-  pearls_tier3: { pearls: 560 },
-  pearls_tier4: { pearls: 1200 },
-  pearls_tier5: { pearls: 3200 },
-  pearls_tier6: { pearls: 7000 },
-  starter_pack: { pearls: 100, manna: 100, generator_level: 2 },
-};
 
 serve(async (req: Request) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
-  }
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
 
   try {
-    // Authenticate the request — user must be signed in.
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
+    // The caller must be a signed-in player.
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
+    if (!authHeader) return json({ error: 'Unauthorized' }, 401);
     const { data: { user }, error: authError } = await supabase.auth.getUser(
       authHeader.replace('Bearer ', ''),
     );
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    if (authError || !user) return json({ error: 'Unauthorized' }, 401);
 
-    const body: VerifyRequest = await req.json();
+    const body = await req.json() as Partial<VerifyRequest>;
     const { platform, product_id, transaction_id, receipt_data } = body;
+    const product = typeof product_id === 'string' ? PRODUCTS[product_id] : undefined;
+    if (
+      (platform !== 'ios' && platform !== 'android') ||
+      !product || typeof product_id !== 'string' ||
+      typeof transaction_id !== 'string' || transaction_id.length === 0
+    ) {
+      return json({ success: false, error: 'Bad request' }, 400);
+    }
 
-    // 1. Check for duplicate transaction (prevents double-grants).
-    const { data: existing } = await supabase
+    // 1. Ask the store. What it says decides everything that follows.
+    const store = platform === 'ios'
+      ? await verifyApple(product_id, transaction_id, user.id)
+      : await verifyGoogle(product_id, String(receipt_data ?? ''), user.id);
+    if (!store.check.ok) {
+      console.warn(`Rejected ${platform} ${product_id}: ${store.check.reason}`);
+      return json({ success: false, error: 'Verification failed' }, 400);
+    }
+    // The transaction id comes from the store, never from the app.
+    const transactionId = store.check.transactionId;
+
+    // 2. Has this transaction been recorded before, and for whom?
+    const { data: existing, error: lookupError } = await supabase
       .from('purchases')
-      .select('id, status')
-      .eq('transaction_id', transaction_id)
-      .single();
+      .select('user_id, status')
+      .eq('transaction_id', transactionId)
+      .maybeSingle();
+    if (lookupError) throw lookupError;
 
-    if (existing) {
-      if (existing.status === 'granted') {
-        return new Response(
-          JSON.stringify({ success: true, already_granted: true }),
-          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-        );
-      }
-    }
-
-    // 2. Verify with the store.
-    let verified = false;
-    let rawVerification: unknown = null;
-
-    if (platform === 'ios') {
-      ({ verified, rawVerification } = await verifyApple(product_id, transaction_id, receipt_data));
-    } else {
-      ({ verified, rawVerification } = await verifyGoogle(product_id, receipt_data));
-    }
-
-    if (!verified) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Verification failed' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-      );
-    }
-
-    // 3. Insert the purchase record (unique constraint prevents duplicates).
-    const { error: insertError } = await supabase.from('purchases').insert({
-      user_id: user.id,
-      platform,
-      product_id,
-      transaction_id,
-      status: 'granted',
-      raw_verification: rawVerification as Record<string, unknown>,
-      granted_at: new Date().toISOString(),
+    const decision = decideGrant(existing, {
+      userId: user.id,
+      consumable: product.consumable,
+      consumedAtStore: store.consumedAtStore,
     });
+    if (decision === 'reject') {
+      console.warn(`Rejected ${platform} ${transactionId}: not grantable to this player`);
+      return json({ success: false, error: 'Verification failed' }, 400);
+    }
 
-    if (insertError) {
-      // If unique constraint violation, the purchase was already granted.
-      if (insertError.code === '23505') {
-        return new Response(
-          JSON.stringify({ success: true, already_granted: true }),
-          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-        );
+    if (decision === 'grant') {
+      // 3. Record it. The unique transaction id makes a double grant impossible.
+      const { data: inserted, error: insertError } = await supabase
+        .from('purchases')
+        .insert({
+          user_id: user.id,
+          platform,
+          product_id,
+          transaction_id: transactionId,
+          status: 'granted',
+          raw_verification: store.raw as Record<string, unknown>,
+          granted_at: new Date().toISOString(),
+        })
+        .select('id')
+        .single();
+      if (insertError) {
+        // 23505: two requests raced; the other one recorded it.
+        if (insertError.code !== '23505') throw insertError;
+      } else {
+        await supabase.from('wallet_grants').insert({
+          user_id: user.id,
+          purchase_id: inserted.id,
+          grant_type: 'purchase',
+          pearls_delta: product.pearls ?? 0,
+          items_delta: product.generator_level
+            ? [{ type: 'generator', level: product.generator_level }]
+            : [],
+          note: `Purchase: ${product_id}`,
+        });
       }
-      throw insertError;
     }
 
-    // 4. Grant items.
-    const grant = PRODUCTS[product_id];
-    if (grant) {
-      await supabase.from('wallet_grants').insert({
-        user_id: user.id,
-        grant_type: 'purchase',
-        pearls_delta: grant.pearls ?? 0,
-        items_delta: grant.generator_level
-          ? [{ type: 'generator', level: grant.generator_level }]
-          : [],
-        note: `Purchase: ${product_id}`,
-      });
+    // 4. Only now is the store told the purchase is delivered.
+    try {
+      await store.settle?.();
+    } catch (err) {
+      // The grant stands; the app also settles on its side.
+      console.error('Could not settle with the store:', err);
     }
 
-    return new Response(
-      JSON.stringify({ success: true, grant }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-    );
+    return json({
+      success: true,
+      already_granted: decision === 'already_granted',
+      transaction_id: transactionId,
+    }, 200);
   } catch (err) {
     console.error('verify-purchase error:', err);
-    return new Response(
-      JSON.stringify({ error: 'Internal error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-    );
+    return json({ success: false, error: 'Internal error' }, 500);
   }
 });
 
-// ---- Platform verifiers ----
+// ---- Apple ----
+
+async function appleToken(bundleId: string): Promise<string | null> {
+  const keyId = Deno.env.get('APPLE_IAP_KEY_ID');
+  const issuerId = Deno.env.get('APPLE_IAP_ISSUER_ID');
+  const privateKey = Deno.env.get('APPLE_IAP_PRIVATE_KEY');
+  if (!keyId || !issuerId || !privateKey) {
+    console.error('Apple IAP secrets not configured');
+    return null;
+  }
+  const now = Math.floor(Date.now() / 1000);
+  const header = b64url(JSON.stringify({ alg: 'ES256', kid: keyId, typ: 'JWT' }));
+  const payload = b64url(JSON.stringify({
+    iss: issuerId,
+    iat: now,
+    exp: now + 600,
+    aud: 'appstoreconnect-v1',
+    bid: bundleId,
+  }));
+  const key = await importPkcs8(privateKey, { name: 'ECDSA', namedCurve: 'P-256' });
+  const sig = await crypto.subtle.sign(
+    { name: 'ECDSA', hash: 'SHA-256' },
+    key,
+    new TextEncoder().encode(`${header}.${payload}`),
+  );
+  return `${header}.${payload}.${b64url(new Uint8Array(sig))}`;
+}
 
 async function verifyApple(
   productId: string,
   transactionId: string,
-  receiptData: string,
-): Promise<{ verified: boolean; rawVerification: unknown }> {
-  // Apple App Store Server API verification.
-  // Secrets loaded from Supabase Edge Function secrets (never in code).
-  const keyId = Deno.env.get('APPLE_IAP_KEY_ID');
-  const issuerId = Deno.env.get('APPLE_IAP_ISSUER_ID');
-  const privateKey = Deno.env.get('APPLE_IAP_PRIVATE_KEY');
+  userId: string,
+): Promise<StoreResult> {
   const bundleId = Deno.env.get('APPLE_BUNDLE_ID') ?? 'com.whispersofjoppa.game';
+  const fail = (reason: string, raw: unknown = null): StoreResult => ({
+    check: { ok: false, reason },
+    raw,
+    consumedAtStore: false,
+  });
+  const token = await appleToken(bundleId);
+  if (!token) return fail('Apple keys not configured');
 
-  if (!keyId || !issuerId || !privateKey) {
-    console.error('Apple IAP secrets not configured');
-    return { verified: false, rawVerification: null };
+  // Production first, then the sandbox (testers and App Review use it).
+  let reply: Record<string, unknown> | null = null;
+  for (const host of ['api.storekit.itunes.apple.com', 'api.storekit-sandbox.itunes.apple.com']) {
+    const res = await fetch(
+      `https://${host}/inApps/v1/transactions/${encodeURIComponent(transactionId)}`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+    if (res.ok) {
+      reply = await res.json();
+      break;
+    }
+    await res.body?.cancel();
   }
+  if (!reply) return fail('Apple does not know this transaction');
 
-  // Build a JWT for the App Store Server API.
+  // The reply was fetched from Apple over TLS with our own key, so its
+  // signed payload is read directly.
+  const tx = decodeJwsPayload(reply.signedTransactionInfo);
+  return {
+    check: checkAppleTransaction(tx, { bundleId, productId, transactionId, userId }),
+    raw: tx,
+    consumedAtStore: false,
+  };
+}
+
+// ---- Google ----
+
+async function googleAccessToken(): Promise<string | null> {
+  const serviceAccount = Deno.env.get('GOOGLE_PLAY_SERVICE_ACCOUNT');
+  if (!serviceAccount) {
+    console.error('Google Play service account not configured');
+    return null;
+  }
+  const sa = JSON.parse(serviceAccount) as { client_email: string; private_key: string };
   const now = Math.floor(Date.now() / 1000);
-  const header = btoa(JSON.stringify({ alg: 'ES256', kid: keyId, typ: 'JWT' }));
-  const payload = btoa(JSON.stringify({
-    iss: issuerId,
+  const header = b64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
+  const payload = b64url(JSON.stringify({
+    iss: sa.client_email,
+    scope: 'https://www.googleapis.com/auth/androidpublisher',
+    aud: 'https://oauth2.googleapis.com/token',
     iat: now,
-    exp: now + 3600,
-    aud: 'appstoreconnect-v1',
-    bid: bundleId,
+    exp: now + 600,
   }));
-
-  // Import the private key and sign.
-  const pemKey = privateKey.replace(/\\n/g, '\n');
-  const keyData = pemKey
-    .replace('-----BEGIN PRIVATE KEY-----', '')
-    .replace('-----END PRIVATE KEY-----', '')
-    .replace(/\s/g, '');
-  const keyBytes = Uint8Array.from(atob(keyData), (c) => c.charCodeAt(0));
-  const cryptoKey = await crypto.subtle.importKey(
-    'pkcs8', keyBytes.buffer,
-    { name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign'],
+  const key = await importPkcs8(sa.private_key, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' });
+  const sig = await crypto.subtle.sign(
+    'RSASSA-PKCS1-v1_5',
+    key,
+    new TextEncoder().encode(`${header}.${payload}`),
   );
-  const sigInput = new TextEncoder().encode(`${header}.${payload}`);
-  const sig = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, cryptoKey, sigInput);
-  const token = `${header}.${payload}.${btoa(String.fromCharCode(...new Uint8Array(sig)))}`;
-
-  // Verify the transaction.
-  const url = `https://api.storekit.itunes.apple.com/inApps/v1/transactions/${transactionId}`;
-  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-  if (!res.ok) {
-    // Try sandbox if production fails.
-    const sandboxUrl = `https://api.storekit-sandbox.itunes.apple.com/inApps/v1/transactions/${transactionId}`;
-    const sandboxRes = await fetch(sandboxUrl, { headers: { Authorization: `Bearer ${token}` } });
-    if (!sandboxRes.ok) return { verified: false, rawVerification: await sandboxRes.json() };
-    const data = await sandboxRes.json();
-    return { verified: (data as Record<string, unknown>).bundleId === bundleId, rawVerification: data };
-  }
-  const data = await res.json();
-  return { verified: (data as Record<string, unknown>).bundleId === bundleId, rawVerification: data };
+  const jwt = `${header}.${payload}.${b64url(new Uint8Array(sig))}`;
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
+  });
+  const data = await res.json() as { access_token?: string };
+  return data.access_token ?? null;
 }
 
 async function verifyGoogle(
   productId: string,
   purchaseToken: string,
-): Promise<{ verified: boolean; rawVerification: unknown }> {
-  // Google Play Developer API verification.
-  const serviceAccount = Deno.env.get('GOOGLE_PLAY_SERVICE_ACCOUNT');
+  userId: string,
+): Promise<StoreResult> {
   const packageName = Deno.env.get('ANDROID_PACKAGE_NAME') ?? 'com.whispersofjoppa.game';
+  const fail = (reason: string, raw: unknown = null): StoreResult => ({
+    check: { ok: false, reason },
+    raw,
+    consumedAtStore: false,
+  });
+  if (!purchaseToken) return fail('no purchase token');
+  const accessToken = await googleAccessToken();
+  if (!accessToken) return fail('Google keys not configured');
 
-  if (!serviceAccount) {
-    console.error('Google Play service account not configured');
-    return { verified: false, rawVerification: null };
-  }
+  const base =
+    `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${packageName}` +
+    `/purchases/products/${encodeURIComponent(productId)}/tokens/${encodeURIComponent(purchaseToken)}`;
+  const auth = { Authorization: `Bearer ${accessToken}` };
+  const res = await fetch(base, { headers: auth });
+  if (!res.ok) return fail('Google does not know this purchase', await res.json());
+  const purchase = await res.json() as Record<string, unknown>;
 
-  const sa = JSON.parse(serviceAccount) as {
-    client_email: string;
-    private_key: string;
+  const consumable = PRODUCTS[productId]?.consumable ?? false;
+  return {
+    check: checkGooglePurchase(purchase, { userId }),
+    raw: purchase,
+    // consumptionState: 0 not yet consumed, 1 consumed.
+    consumedAtStore: purchase.consumptionState === 1,
+    // A pack is used up so it can be bought again; a one-time product is
+    // acknowledged so Google does not refund it automatically.
+    settle: async () => {
+      if (consumable && purchase.consumptionState === 0) {
+        await (await fetch(`${base}:consume`, { method: 'POST', headers: auth })).body?.cancel();
+      } else if (!consumable && purchase.acknowledgementState === 0) {
+        await (await fetch(`${base}:acknowledge`, { method: 'POST', headers: auth })).body?.cancel();
+      }
+    },
   };
+}
 
-  // Get an access token via JWT.
-  const now = Math.floor(Date.now() / 1000);
-  const jwtHeader = btoa(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
-  const jwtPayload = btoa(JSON.stringify({
-    iss: sa.client_email,
-    scope: 'https://www.googleapis.com/auth/androidpublisher',
-    aud: 'https://oauth2.googleapis.com/token',
-    iat: now,
-    exp: now + 3600,
-  }));
+// ---- shared ----
 
-  const pemKey = sa.private_key.replace(/\\n/g, '\n');
-  const keyData = pemKey
-    .replace('-----BEGIN RSA PRIVATE KEY-----', '')
-    .replace('-----END RSA PRIVATE KEY-----', '')
-    .replace('-----BEGIN PRIVATE KEY-----', '')
-    .replace('-----END PRIVATE KEY-----', '')
+function importPkcs8(pem: string, algorithm: EcKeyImportParams | RsaHashedImportParams) {
+  const body = pem
+    .replace(/\\n/g, '\n')
+    .replace(/-----(BEGIN|END)( RSA)? PRIVATE KEY-----/g, '')
     .replace(/\s/g, '');
-  const keyBytes = Uint8Array.from(atob(keyData), (c) => c.charCodeAt(0));
-  const cryptoKey = await crypto.subtle.importKey(
-    'pkcs8', keyBytes.buffer,
-    { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign'],
-  );
-  const sigInput = new TextEncoder().encode(`${jwtHeader}.${jwtPayload}`);
-  const sig = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', cryptoKey, sigInput);
-  const jwt = `${jwtHeader}.${jwtPayload}.${btoa(String.fromCharCode(...new Uint8Array(sig)))}`;
-
-  const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
-  });
-  const tokenData = await tokenRes.json() as { access_token?: string };
-  if (!tokenData.access_token) return { verified: false, rawVerification: tokenData };
-
-  // Verify the purchase.
-  const url = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${packageName}/purchases/products/${productId}/tokens/${purchaseToken}`;
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${tokenData.access_token}` },
-  });
-  if (!res.ok) return { verified: false, rawVerification: await res.json() };
-  const data = await res.json() as { purchaseState?: number };
-  // purchaseState 0 = Purchased.
-  return { verified: data.purchaseState === 0, rawVerification: data };
+  const bytes = Uint8Array.from(atob(body), (c) => c.charCodeAt(0));
+  return crypto.subtle.importKey('pkcs8', bytes.buffer, algorithm, false, ['sign']);
 }

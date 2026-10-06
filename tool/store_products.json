@@ -1,0 +1,14 @@
+{
+  "apple_app_id": "6819075333",
+  "android_package": "com.whispersofjoppa.game",
+  "locale": "en-US",
+  "products": [
+    { "id": "pearls_tier1", "consumable": true,  "usd": "0.99",  "name": "Handful of Pearls",   "description": "{pearls} Pearls of Great Price" },
+    { "id": "pearls_tier2", "consumable": true,  "usd": "4.99",  "name": "Pouch of Pearls",     "description": "{pearls} Pearls of Great Price" },
+    { "id": "pearls_tier3", "consumable": true,  "usd": "9.99",  "name": "Jar of Pearls",       "description": "{pearls} Pearls of Great Price" },
+    { "id": "pearls_tier4", "consumable": true,  "usd": "19.99", "name": "Chest of Pearls",     "description": "{pearls} Pearls of Great Price" },
+    { "id": "pearls_tier5", "consumable": true,  "usd": "49.99", "name": "Merchant's Treasure", "description": "{pearls} Pearls of Great Price" },
+    { "id": "pearls_tier6", "consumable": true,  "usd": "99.99", "name": "King's Treasury",     "description": "{pearls} Pearls of Great Price" },
+    { "id": "starter_pack", "consumable": false, "usd": "1.99",  "name": "Joppa Starter Pack",  "description": "{pearls} Pearls, {manna} Manna, and a better Pantry" }
+  ]
+}
