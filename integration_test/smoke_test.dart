@@ -8,6 +8,7 @@ import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 
 import 'helpers.dart';
+import 'package:whispers_of_joppa/app/app.dart';
 import 'package:whispers_of_joppa/main.dart' as app;
 
 void main() {
@@ -16,6 +17,8 @@ void main() {
   testWidgets('board screen appears on launch', (WidgetTester tester) async {
     // Start from a new game, whatever an earlier run left on the device.
     await SaveRepository().clear();
+    // Tests never touch the live account or content server.
+    WhispersApp.accountsEnabled = false;
     app.main();
     await skipOpeningScene(tester);
     // The Flame board redraws every frame, so pumpAndSettle would never finish.

@@ -17,6 +17,15 @@ abstract class CloudSaveStore {
 
   /// Stores [state] for the account and returns the cloud's new timestamp.
   Future<DateTime> upload(String userId, SaveState state);
+
+  /// Stores [state] only if the cloud save is still the one this phone last
+  /// saw ([expectedUpdatedAt]). Returns the new timestamp, or null, changing
+  /// nothing, if another phone has saved since.
+  Future<DateTime?> uploadIfUnchanged(
+    String userId,
+    SaveState state,
+    DateTime expectedUpdatedAt,
+  );
 }
 
 class SupabaseCloudSaveStore implements CloudSaveStore {
@@ -51,5 +60,25 @@ class SupabaseCloudSaveStore implements CloudSaveStore {
         .select('updated_at')
         .single();
     return DateTime.parse(row['updated_at'] as String);
+  }
+
+  @override
+  Future<DateTime?> uploadIfUnchanged(
+    String userId,
+    SaveState state,
+    DateTime expectedUpdatedAt,
+  ) async {
+    final rows = await _client
+        .from('saves')
+        .update({
+          'save_data': state.toJson(),
+          'save_version': currentSaveVersion,
+          'updated_at': DateTime.now().toUtc().toIso8601String(),
+        })
+        .eq('user_id', userId)
+        .eq('updated_at', expectedUpdatedAt.toUtc().toIso8601String())
+        .select('updated_at');
+    if (rows.isEmpty) return null;
+    return DateTime.parse(rows.first['updated_at'] as String);
   }
 }

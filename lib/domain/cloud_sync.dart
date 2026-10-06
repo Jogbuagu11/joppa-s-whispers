@@ -47,14 +47,19 @@ enum SyncAction {
 /// - [hasBase]: this phone has synced with this account before.
 /// - [localChanged] / [cloudChanged]: that side changed since the last sync
 ///   (only meaningful when [hasBase] is true).
+/// - [cloudFresh]: the cloud save is itself an unplayed game.
 SyncAction decideSync({
   required bool hasCloud,
   required bool localFresh,
   required bool hasBase,
   required bool localChanged,
   required bool cloudChanged,
+  bool cloudFresh = false,
 }) {
   if (!hasCloud) return SyncAction.upload;
+  // An unplayed game on this phone (a new phone, or a lost or reset save)
+  // must never replace real progress in the cloud: the cloud rescues it.
+  if (localFresh && !cloudFresh) return SyncAction.download;
   if (!hasBase) {
     // First time this phone meets this account.
     return localFresh ? SyncAction.download : SyncAction.ask;

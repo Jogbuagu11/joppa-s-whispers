@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 14 — Accounts + cloud save (built; live sign-in still to be checked with Jennifer)
+## Current milestone: 15 — Server-driven content (built). Milestones 14 and 15 both await a live check with Jennifer.
 
 ---
 
@@ -23,7 +23,7 @@
 | 12 | Chapter 1 playable | DONE (m12-working) |
 | 13 | Esther's letters | DONE (m13-working) |
 | 14 | Accounts + cloud save | BUILT — not tagged: real sign-in not yet verified |
-| 15 | Server-driven content | Not started |
+| 15 | Server-driven content | BUILT — not tagged: needs the database change applied and a first release |
 | 16 | IAP: buy & deliver | Not started |
 | 17 | IAP: restore & refunds | Not started |
 | 18 | Rewarded ads | Not started |
@@ -522,6 +522,29 @@ Still needed before real sign-in can be verified:
   the App ID, and Jennifer's Team selected in Xcode. The entitlement is not added to the
   project yet because adding it without a Team breaks device builds.
 
+Fixed after the code review (it found two ways a cloud save could be silently lost):
+- Uploads while playing are now conditional: the cloud refuses a save if another phone has
+  saved since this phone last synced, and this phone then compares again instead.
+- An unplayed game on the phone (new phone, or a lost or reset save) never replaces real
+  progress in the cloud; the cloud game is brought down instead.
+- Coming back to the app re-checks the account; leaving the app sends the latest save.
+- A game brought from the account is only recorded as "held" after it is written to the
+  phone; if that write fails the old game stays and the player is told.
+- Switching or deleting the account clears what the phone assumed about being in step.
+- Device tests switch accounts off (`WhispersApp.accountsEnabled = false`) so a test run can
+  never sign in to, or change anything in, the live backend.
+
+Carried forward from the code review:
+- When Apple sign-in goes live, account deletion must also revoke the Apple token
+  (App Store guideline 5.1.1(v)).
+- Signing out then into a different account with no cloud save uploads the game on the
+  phone to that account without asking (nothing is lost; matters on a shared phone).
+- The "has my game changed" check compares the whole save; a content or save-format update
+  can make it look changed and cause an unnecessary "which game?" question.
+- `SupabaseAuthService` and `SupabaseCloudSaveStore` have no automated tests (they need the
+  real backend); the app-side flow is tested with stand-ins.
+- The account link is a static in `lib/app/app.dart`; a Riverpod provider would be tidier.
+
 Decisions:
 - Sign-in is optional and never shown at launch.
 - Apple and Google sign-in do not use a nonce (Supabase's "Skip nonce checks" is on for
@@ -533,6 +556,46 @@ Not in this milestone:
 - No password reset or "resend confirmation email" button.
 - Uploads are throttled, not guaranteed on app close; the next launch syncs.
 - The clock used for Manna and order-skip is still the phone's, not the server's.
+
+## Milestone 15 — state (2026-10-05)
+
+BUILT, NOT TAGGED. Analyze clean, 342 unit tests pass, eleven device tests pass on the iOS
+Simulator and Android Emulator, and the real app was launched on Android against the live
+backend: it logged "Using content v1" and the update check ran without error (there is no
+release on the server yet).
+
+What is built:
+- All content is treated as one bundle with a version (`content/version.json`, now 1).
+- At launch the game uses downloaded content if it is newer than the app's own AND passes
+  every content check; otherwise the app's own content. A bad or damaged download is
+  deleted and ignored. A bad content release can never crash the game.
+- After the board is up, the app asks the server (`content_versions` table) whether a newer
+  release exists; if so it downloads the bundle from the `content` storage bucket, checks
+  it, and keeps it for the NEXT launch (content never changes under a game in progress).
+- `dart run tool/build_content_bundle.dart` validates `content/` and writes
+  `build/content/content_v<version>.json`, the file to upload for a release.
+
+To release new content (until the admin panel exists, Milestone 22):
+1. Edit files in `content/`, raise `version` in `content/version.json`.
+2. Run `dart run tool/build_content_bundle.dart` (it refuses if anything is wrong).
+3. Upload the file to the Supabase `content` storage bucket.
+4. Add a row to `content_versions` with that version and the file's path.
+
+Needed before this works for real players:
+- **Apply `supabase/migrations/20261005000001_content_public_read.sql`** to the live
+  project. Today only signed-in players may read content releases, so guests (most
+  players) would silently stay on the app's own content. Content is public game data.
+- Publish a first test release and see a phone pick it up.
+
+Decisions:
+- New content applies from the next launch, not mid-game.
+- Only JSON content is delivered this way; new art still ships in an app update.
+- `format` in the bundle lets a future app refuse content made for a newer version.
+
+Not in this milestone:
+- Downloading new art with a release.
+- Telling the player that new content is ready, or forcing a restart.
+- Rolling back a release from inside the app (remove the row on the server instead).
 
 ## Decisions made for Jennifer (2026-10-05)
 
@@ -575,6 +638,7 @@ beside the game with its history kept. A backup of the original is in the GitHub
 ## Waiting on Jennifer
 
 - Try real sign-in (see "Milestone 14 — state" for what each method needs).
+- Apply the new database change so guests can receive content updates (see "Milestone 15").
 - In Vercel: Project → Settings → Build and Deployment → Root Directory → `web`, then redeploy.
 - Decide the Letter 1 scripture question (1 John 4:18 vs the story bible's period rule).
 - Art still missing: Word and Oil item chains, all generators, bakehouse before/after

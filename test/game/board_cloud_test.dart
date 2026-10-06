@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/app/cloud_sync.dart';
+import 'package:whispers_of_joppa/data/cloud_save_store.dart';
 import 'package:whispers_of_joppa/data/sync_base_repository.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
@@ -37,7 +38,7 @@ void main() {
   final more = testSave(tasks: ['t1', 't2'], orders: ['o1', 'o2']);
 
   /// Runs syncNow with a real BuildContext.
-  Future<({String message, SaveState? adopt})> sync(
+  Future<({String message, CloudSave? adopt})> sync(
     WidgetTester tester,
     SaveState local,
   ) async {
@@ -52,7 +53,7 @@ void main() {
         ),
       ),
     );
-    late ({String message, SaveState? adopt}) result;
+    late ({String message, CloudSave? adopt}) result;
     await tester.runAsync(
       () async => result = await cloud.syncNow(context, local),
     );
@@ -94,7 +95,7 @@ void main() {
     auth.signInAs('u1');
     store.seed('u1', more);
     final r = await sync(tester, testSave());
-    expect(r.adopt?.completedTasks, ['t1', 't2']);
+    expect(r.adopt?.state.completedTasks, ['t1', 't2']);
     expect(r.message, contains('brought to this phone'));
   });
 
@@ -125,8 +126,70 @@ void main() {
     auth.signInAs('u1');
     await sync(tester, played);
     cloud.reset();
+    expect(cloud.inStep, isFalse);
     now = now.add(const Duration(minutes: 5));
     await tester.runAsync(() => cloud.afterLocalSave(more));
     expect(store.uploads, 1);
+  });
+
+  testWidgets('another phone saving in between stops this one overwriting it', (
+    tester,
+  ) async {
+    auth.signInAs('u1');
+    await sync(tester, played);
+    expect(cloud.inStep, isTrue);
+    // Another phone uploads newer progress.
+    store.seed('u1', more);
+    now = now.add(const Duration(minutes: 5));
+    final mine = testSave(tasks: ['t1'], orders: ['o1', 'o9']);
+    await tester.runAsync(() => cloud.afterLocalSave(mine));
+    expect(store.saves['u1']?.state.completedTasks, ['t1', 't2']);
+    // And it stops sending until a full sync has compared them again.
+    expect(cloud.inStep, isFalse);
+  });
+
+  testWidgets('leaving the app sends the save at once, ignoring the wait', (
+    tester,
+  ) async {
+    auth.signInAs('u1');
+    await sync(tester, played);
+    now = now.add(const Duration(seconds: 1));
+    await tester.runAsync(() => cloud.afterLocalSave(more, force: true));
+    expect(store.saves['u1']?.state.completedTasks, ['t1', 't2']);
+  });
+
+  testWidgets('a downloaded game counts as in step only once confirmed', (
+    tester,
+  ) async {
+    auth.signInAs('u1');
+    store.seed('u1', more);
+    final r = await sync(tester, testSave());
+    expect(cloud.inStep, isFalse);
+    final adopt = r.adopt;
+    expect(adopt, isNotNull);
+    if (adopt == null) return;
+    await tester.runAsync(() => cloud.confirmAdopted(adopt));
+    expect(cloud.inStep, isTrue);
+  });
+
+  testWidgets('switching account stops uploads until the next sync', (
+    tester,
+  ) async {
+    auth.signInAs('u1');
+    await sync(tester, played);
+    expect(cloud.inStep, isTrue);
+    auth.signInAs('u2');
+    expect(cloud.inStep, isFalse);
+    now = now.add(const Duration(minutes: 5));
+    await tester.runAsync(() => cloud.afterLocalSave(more));
+    expect(store.saves['u2'], isNull);
+  });
+
+  testWidgets('forgetAccount clears the sync record', (tester) async {
+    auth.signInAs('u1');
+    await sync(tester, played);
+    await tester.runAsync(cloud.forgetAccount);
+    expect(cloud.inStep, isFalse);
+    expect(await tester.runAsync(() => cloud.sync.push(more)), isFalse);
   });
 }

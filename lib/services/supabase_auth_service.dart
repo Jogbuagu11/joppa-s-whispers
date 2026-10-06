@@ -112,8 +112,10 @@ class SupabaseAuthService implements AuthService {
 
   @override
   Future<AuthOutcome> deleteAccount() => _attempt('Delete account', () async {
-    final response = await _client.functions.invoke('delete-account');
-    if (response.status != 200) {
+    try {
+      await _client.functions.invoke('delete-account');
+    } on FunctionException catch (e) {
+      _log.warning('delete-account returned ${e.status}: ${e.details}');
       return const AuthOutcome.failure(
         'Your account could not be deleted just now. Please try again.',
       );

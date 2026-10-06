@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
+import 'package:whispers_of_joppa/app/app.dart';
 import 'package:whispers_of_joppa/main.dart' as app;
 
 import 'helpers.dart';
@@ -22,6 +23,8 @@ void main() {
     tester,
   ) async {
     await SaveRepository().clear();
+    // Tests never touch the live account or content server.
+    WhispersApp.accountsEnabled = false;
     app.main();
     await skipOpeningScene(tester);
     final board = find.byType(GameWidget<BoardGame>);

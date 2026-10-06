@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:whispers_of_joppa/data/cloud_save_store.dart';
+import 'package:whispers_of_joppa/domain/cloud_sync.dart';
+import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/letters/letters_screen.dart';
-import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
 import 'package:whispers_of_joppa/features/settings/account_screen.dart';
 import 'package:whispers_of_joppa/features/restoration/location_screen.dart';
@@ -28,11 +32,16 @@ class BoardScreen extends StatefulWidget {
     this.playOpeningScene = true,
     this.playTutorial = true,
     this.cloud,
+    this.content,
   });
 
   /// The player's account and cloud save. Null (in tests, or if the backend
   /// is not set up) hides the account button and keeps the game local.
   final BoardCloud? cloud;
+
+  /// Where content comes from. Null (in tests) means the app's own content
+  /// only, with no check for newer content on the server.
+  final ContentRepository? content;
 
   /// Whether a new game shows the tutorial hints (with free early taps).
   /// Tests that are about something else turn this off.

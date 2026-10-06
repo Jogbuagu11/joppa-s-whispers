@@ -7,16 +7,20 @@ mixin _BoardScreenActions on State<BoardScreen> {
   BoardSession? _session;
   bool _popupOpen = false;
   bool _busy = false;
+  bool _syncing = false;
+  AppLifecycleListener? _lifecycle;
   String? _error;
 
   @override
   void initState() {
     super.initState();
+    _lifecycle = AppLifecycleListener(onStateChange: _onLifecycle);
     _init();
   }
 
   @override
   void dispose() {
+    _lifecycle?.dispose();
     // Saves any unsaved change, then stops the timers.
     _session?.dispose();
     super.dispose();
@@ -97,11 +101,13 @@ mixin _BoardScreenActions on State<BoardScreen> {
     try {
       await Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) =>
-              AccountScreen(auth: cloud.auth, syncNow: _syncWithAccount),
+          builder: (_) => AccountScreen(
+            auth: cloud.auth,
+            syncNow: _syncWithAccount,
+            onDeleted: cloud.forgetAccount,
+          ),
         ),
       );
-      if (!cloud.signedIn) cloud.reset();
     } finally {
       _busy = false;
     }
@@ -109,25 +115,67 @@ mixin _BoardScreenActions on State<BoardScreen> {
 
   /// Compares this phone's game with the account's. If the account's game
   /// wins, it replaces this one and the board reloads. Returns a short line
-  /// saying what happened.
+  /// saying what happened. Only one comparison runs at a time.
   Future<String> _syncWithAccount() async {
     final cloud = widget.cloud;
     final session = _session;
-    if (cloud == null || session == null || !mounted) return '';
-    final result = await cloud.syncNow(context, session.snapshot());
-    final adopt = result.adopt;
-    if (adopt != null && mounted) await _replaceGame(session, adopt);
-    return result.message;
+    if (cloud == null || session == null || _syncing || !mounted) return '';
+    _syncing = true;
+    try {
+      final before = saveFingerprint(session.snapshot());
+      final result = await cloud.syncNow(context, session.snapshot());
+      final adopt = result.adopt;
+      if (adopt == null || !mounted) return result.message;
+      // If the player kept playing while the account was being checked, do
+      // not throw those moves away: compare again next time instead.
+      if (saveFingerprint(session.snapshot()) != before) {
+        return 'Your game changed while checking. Tap Sync now to try again.';
+      }
+      final replaced = await _replaceGame(session, adopt);
+      return replaced
+          ? result.message
+          : 'Your saved game could not be brought to this phone. '
+                'Nothing was changed.';
+    } finally {
+      _syncing = false;
+    }
   }
 
-  /// Swaps the running game for [save] (a game brought from the account).
-  Future<void> _replaceGame(BoardSession old, SaveState save) async {
+  /// Swaps the running game for [cloud] (a game brought from the account).
+  /// Returns false, leaving the old game on the phone, if it cannot be
+  /// written.
+  Future<bool> _replaceGame(BoardSession old, CloudSave cloud) async {
+    final repository = widget.saveRepository ?? SaveRepository();
     setState(() => _session = null);
     // Stop the old session saving over the new game, then write the new one.
     old.saver.onSaved = null;
     await old.discard();
-    await (widget.saveRepository ?? SaveRepository()).save(save);
+    var replaced = true;
+    try {
+      await repository.save(cloud.state);
+      // Only now does this phone really hold the account's game.
+      await widget.cloud?.confirmAdopted(cloud);
+    } on Exception catch (e, stack) {
+      _log.severe('Could not write the game from the account', e, stack);
+      replaced = false;
+    }
+    // Reload from the phone: the new game, or the old one if writing failed.
     if (mounted) await _init(resuming: true);
+    return replaced;
+  }
+
+  /// Leaving the app sends the latest save on at once; coming back checks the
+  /// account again, in case the game moved on from another phone meanwhile.
+  void _onLifecycle(AppLifecycleState state) {
+    final cloud = widget.cloud;
+    final session = _session;
+    if (cloud == null || session == null || !cloud.signedIn) return;
+    if (state == AppLifecycleState.paused) {
+      unawaited(cloud.afterLocalSave(session.snapshot(), force: true));
+    } else if (state == AppLifecycleState.resumed && !_busy) {
+      cloud.reset();
+      unawaited(_syncWithAccount());
+    }
   }
 
   /// The letters button: opens the keepsake book.
@@ -178,12 +226,15 @@ mixin _BoardScreenActions on State<BoardScreen> {
         onOutOfManna: _showOutOfManna,
         startingMannaOverride: widget.startingMannaOverride,
         playTutorial: widget.playTutorial,
+        content: widget.content,
       );
       if (!mounted) {
         await session.dispose();
         return;
       }
       session.saver.onSaved = (state) => widget.cloud?.afterLocalSave(state);
+      // Look for newer content in the background; it is used from next launch.
+      unawaited(widget.content?.checkForUpdate(session.contentBundle));
       setState(() => _session = session);
       if (resuming) return;
       final opening = session.openingScene;

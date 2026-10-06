@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
+import 'package:whispers_of_joppa/data/content_bundle.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/letters.dart';
@@ -58,26 +59,35 @@ class ContentLoader {
   late EconomyConfig economy;
   late StartingBoard startingBoard;
 
+  /// The version of the content that was loaded.
+  int contentVersion = 0;
+
   bool _loaded = false;
   bool get isLoaded => _loaded;
 
-  /// Reads the bundled content files and builds the lookup tables.
-  Future<void> load() async {
+  /// Reads the content that ships in the app and builds the lookup tables.
+  Future<void> load() async => loadFromBundle(await loadBundledContent());
+
+  /// Builds the lookup tables from a content bundle (the app's own, or one
+  /// downloaded from the server and already checked).
+  void loadFromBundle(ContentBundle bundle) {
+    final files = bundle.files;
     try {
       loadFromJson(
-        chainsJson: await _loadJson('content/chains.json'),
-        generatorsJson: await _loadJson('content/generators.json'),
-        economyJson: await _loadJson('content/economy.json'),
-        startingBoardJson: await _loadJson('content/starting_board.json'),
-        ordersJson: await _loadJson('content/orders.json'),
-        charactersJson: await _loadJson('content/characters.json'),
-        scenesJson: await _loadJson('content/scenes.json'),
-        chaptersJson: await _loadJson('content/chapters.json'),
-        locationsJson: await _loadJson('content/locations.json'),
-        tutorialJson: await _loadJson('content/tutorial.json'),
-        endingsJson: await _loadJson('content/endings.json'),
-        lettersJson: await _loadJson('content/letters.json'),
+        chainsJson: files['chains'],
+        generatorsJson: files['generators'],
+        economyJson: files['economy'],
+        startingBoardJson: files['starting_board'],
+        ordersJson: files['orders'],
+        charactersJson: files['characters'],
+        scenesJson: files['scenes'],
+        chaptersJson: files['chapters'],
+        locationsJson: files['locations'],
+        tutorialJson: files['tutorial'],
+        endingsJson: files['endings'],
+        lettersJson: files['letters'],
       );
+      contentVersion = bundle.version;
     } catch (e, stack) {
       _log.severe('Failed to load content', e, stack);
       rethrow;
@@ -203,15 +213,22 @@ class ContentLoader {
       );
     }
   }
-
-  Future<dynamic> _loadJson(String assetPath) async {
-    final raw = await rootBundle.loadString(assetPath);
-    return jsonDecode(raw);
-  }
 }
 
 /// Turns "#RRGGBB" into an opaque ARGB int, or null if it is not that shape.
 int? parseHexColor(String? hex) {
   if (hex == null || !RegExp(r'^#[0-9a-fA-F]{6}$').hasMatch(hex)) return null;
   return 0xFF000000 | int.parse(hex.substring(1), radix: 16);
+}
+
+/// Reads the content that ships inside the app (content/*.json).
+Future<ContentBundle> loadBundledContent() async {
+  Future<Object?> read(String name) async =>
+      jsonDecode(await rootBundle.loadString('content/$name.json'));
+  final manifest = await read('version') as Map<String, dynamic>;
+  return ContentBundle(
+    version: manifest['version'] as int,
+    format: manifest['format'] as int,
+    files: {for (final name in contentFileNames) name: await read(name)},
+  );
 }

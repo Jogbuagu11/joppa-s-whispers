@@ -7,7 +7,16 @@ const _cream = Color(0xFFF3E6C8);
 const _ink = Color(0xFF1A1205);
 
 class AccountScreen extends StatefulWidget {
-  const AccountScreen({super.key, required this.auth, required this.syncNow});
+  const AccountScreen({
+    super.key,
+    required this.auth,
+    required this.syncNow,
+    this.onDeleted,
+  });
+
+  /// Called after the account has been deleted, to clear what this phone
+  /// remembers about it.
+  final Future<void> Function()? onDeleted;
 
   final AuthService auth;
 
@@ -38,16 +47,22 @@ class _AccountScreenState extends State<AccountScreen> {
       _busy = true;
       _message = null;
     });
-    final outcome = await action();
-    var message = outcome.message;
-    if (outcome.ok && widget.auth.user.value != null) {
-      message = await widget.syncNow();
+    String? message;
+    try {
+      final outcome = await action();
+      message = outcome.message;
+      if (outcome.ok && widget.auth.user.value != null) {
+        final synced = await widget.syncNow();
+        if (synced.isNotEmpty) message = synced;
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          _message = message;
+        });
+      }
     }
-    if (!mounted) return;
-    setState(() {
-      _busy = false;
-      _message = message;
-    });
   }
 
   Future<void> _sync() => _run(() async => const AuthOutcome.success());
@@ -82,9 +97,10 @@ class _AccountScreenState extends State<AccountScreen> {
         ],
       ),
     );
-    if (confirmed != true) return;
+    if (confirmed != true || !mounted) return;
     setState(() => _busy = true);
     final outcome = await widget.auth.deleteAccount();
+    if (outcome.ok) await widget.onDeleted?.call();
     if (!mounted) return;
     setState(() {
       _busy = false;

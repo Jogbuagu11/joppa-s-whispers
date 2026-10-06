@@ -59,7 +59,7 @@ void main() {
     store.seed('u1', further);
     final out = await sync.sync(testSave(), choose: choose);
     expect(out.result, SyncResult.downloaded);
-    expect(out.cloudSave?.completedTasks, ['t1', 't2']);
+    expect(out.cloud?.state.completedTasks, ['t1', 't2']);
     expect(asked, isEmpty);
     expect(store.uploads, 0);
   });
@@ -73,7 +73,7 @@ void main() {
       final out = await sync.sync(played, choose: choose);
       expect(asked, [true]);
       expect(out.result, SyncResult.downloaded);
-      expect(out.cloudSave?.completedTasks, ['t1', 't2']);
+      expect(out.cloud?.state.completedTasks, ['t1', 't2']);
     },
   );
 
@@ -82,7 +82,7 @@ void main() {
     store.seed('u1', further);
     answer = false;
     final out = await sync.sync(played, choose: choose);
-    expect(out.result, SyncResult.keptLocal);
+    expect(out.result, SyncResult.keptLocalUploaded);
     expect(store.saves['u1']?.state.completedTasks, ['t1']);
   });
 
@@ -91,7 +91,7 @@ void main() {
     store.seed('u1', further);
     answer = null;
     final out = await sync.sync(played, choose: choose);
-    expect(out.result, SyncResult.keptLocal);
+    expect(out.result, SyncResult.undecided);
     expect(store.uploads, 0);
     expect(store.saves['u1']?.state.completedTasks, ['t1', 't2']);
   });
@@ -122,7 +122,7 @@ void main() {
     store.seed('u1', further);
     final out = await sync.sync(played, choose: choose);
     expect(out.result, SyncResult.downloaded);
-    expect(out.cloudSave?.completedTasks, ['t1', 't2']);
+    expect(out.cloud?.state.completedTasks, ['t1', 't2']);
     expect(asked, isEmpty);
   });
 
@@ -134,7 +134,7 @@ void main() {
     final mine = testSave(tasks: ['t1'], orders: ['o1', 'o9']);
     final out = await sync.sync(mine, choose: choose);
     expect(asked, [true]);
-    expect(out.result, SyncResult.keptLocal);
+    expect(out.result, SyncResult.keptLocalUploaded);
     expect(store.saves['u1']?.state.completedOrders, ['o1', 'o9']);
   });
 
@@ -152,6 +152,65 @@ void main() {
     },
   );
 
+  test(
+    'push is refused when another phone has saved since the last sync',
+    () async {
+      auth.signInAs('u1');
+      await sync.sync(played, choose: choose);
+      // Another phone moves the cloud game on.
+      store.seed('u1', further);
+      final mine = testSave(tasks: ['t1'], orders: ['o1', 'o9']);
+      expect(await sync.push(mine), isFalse);
+      // The other phone's progress is untouched.
+      expect(store.saves['u1']?.state.completedTasks, ['t1', 't2']);
+    },
+  );
+
+  test('push does nothing on a phone that has never synced', () async {
+    auth.signInAs('u1');
+    store.seed('u1', further);
+    expect(await sync.push(played), isFalse);
+    expect(store.saves['u1']?.state.completedTasks, ['t1', 't2']);
+  });
+
+  test(
+    'a lost local save is rescued from the cloud, not uploaded over it',
+    () async {
+      auth.signInAs('u1');
+      await sync.sync(further, choose: choose);
+      // The phone's save is lost; it starts a new game but still has its sync record.
+      final out = await sync.sync(testSave(), choose: choose);
+      expect(out.result, SyncResult.downloaded);
+      expect(out.cloud?.state.completedTasks, ['t1', 't2']);
+      expect(store.saves['u1']?.state.completedTasks, ['t1', 't2']);
+      expect(asked, isEmpty);
+    },
+  );
+
+  test('a downloaded game is only recorded as held once confirmed', () async {
+    auth.signInAs('u1');
+    store.seed('u1', further);
+    final out = await sync.sync(testSave(), choose: choose);
+    final cloud = out.cloud;
+    expect(cloud, isNotNull);
+    if (cloud == null) return;
+    // Not confirmed (the write to the phone failed): the phone still holds an
+    // unplayed game, and the next sync offers the cloud game again.
+    final again = await sync.sync(testSave(), choose: choose);
+    expect(again.result, SyncResult.downloaded);
+    // Confirmed: the two are in step.
+    await sync.confirmAdopted(cloud);
+    final after = await sync.sync(cloud.state, choose: choose);
+    expect(after.result, SyncResult.upToDate);
+  });
+
+  test('forget clears the sync record', () async {
+    auth.signInAs('u1');
+    await sync.sync(played, choose: choose);
+    await sync.forget();
+    expect(await sync.push(played), isFalse);
+  });
+
   test('no connection: reported as failed, nothing lost', () async {
     auth.signInAs('u1');
     store.offline = true;
@@ -165,11 +224,12 @@ void main() {
     () async {
       expect(await sync.push(played), isFalse);
       auth.signInAs('u1');
-      expect(await sync.push(played), isTrue);
-      expect(store.saves['u1']?.state.blessings, 1);
+      await sync.sync(played, choose: choose);
+      expect(await sync.push(further), isTrue);
+      expect(store.saves['u1']?.state.completedTasks, ['t1', 't2']);
       // A push keeps the sync record current, so the next sync is quiet.
       expect(
-        (await sync.sync(played, choose: choose)).result,
+        (await sync.sync(further, choose: choose)).result,
         SyncResult.upToDate,
       );
     },

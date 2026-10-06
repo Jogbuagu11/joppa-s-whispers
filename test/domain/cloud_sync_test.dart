@@ -57,12 +57,14 @@ void main() {
       bool hasBase = true,
       bool localChanged = false,
       bool cloudChanged = false,
+      bool cloudFresh = false,
     }) => decideSync(
       hasCloud: hasCloud,
       localFresh: localFresh,
       hasBase: hasBase,
       localChanged: localChanged,
       cloudChanged: cloudChanged,
+      cloudFresh: cloudFresh,
     );
 
     test('no cloud save yet: upload', () {
@@ -79,6 +81,26 @@ void main() {
 
     test('new phone with its own progress asks the player', () {
       expect(decide(hasBase: false), SyncAction.ask);
+    });
+
+    test(
+      'a lost or reset local game takes the cloud save, even after earlier syncs',
+      () {
+        // With a sync record this looks like "only this phone changed", which
+        // must not upload an empty game over real progress.
+        expect(
+          decide(localFresh: true, hasBase: true, localChanged: true),
+          SyncAction.download,
+        );
+      },
+    );
+
+    test('two unplayed games: nothing to rescue, normal rules apply', () {
+      expect(
+        decide(localFresh: true, cloudFresh: true, hasBase: false),
+        SyncAction.download,
+      );
+      expect(decide(localFresh: true, cloudFresh: true), SyncAction.nothing);
     });
 
     test('nothing changed: nothing to do', () {

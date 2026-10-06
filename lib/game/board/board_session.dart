@@ -4,7 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/app/game_saver.dart';
+import 'package:whispers_of_joppa/data/content_bundle.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
+import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/domain/letters.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
@@ -42,6 +44,9 @@ class BoardSession {
   /// scene_id -> scene, for the scenes that tasks play.
   final Map<String, SceneModel> scenes;
 
+  /// The content this session is playing, for the background update check.
+  final ContentBundle contentBundle;
+
   /// Esther's letters, for the keepsake book.
   final List<LetterModel> letters;
 
@@ -68,6 +73,7 @@ class BoardSession {
     required this.scenes,
     required this.locations,
     required this.letters,
+    required this.contentBundle,
     required this.saver,
     required this.characterNames,
     required this.openingScene,
@@ -79,9 +85,13 @@ class BoardSession {
     required VoidCallback onOutOfManna,
     int? startingMannaOverride,
     bool playTutorial = true,
+    ContentRepository? content,
   }) async {
-    final loader = ContentLoader();
-    await loader.load();
+    // Downloaded content if it is newer and sound, else the app's own.
+    final repository =
+        content ?? ContentRepository(loadBundled: loadBundledContent);
+    final bundle = await repository.current();
+    final loader = ContentLoader()..loadFromBundle(bundle);
 
     final loaded = await saveRepository.load();
     final fresh = newGameState(loader, startingMannaOverride);
@@ -216,6 +226,7 @@ class BoardSession {
       scenes: loader.scenes,
       locations: loader.locations,
       letters: loader.letters,
+      contentBundle: bundle,
       saver: saver,
       characterNames: loader.characterNames,
       openingScene: loaded == null

@@ -9,15 +9,33 @@ import 'package:whispers_of_joppa/services/auth_service.dart';
 final _log = Logger('CloudSync');
 
 /// What a sync did.
-enum SyncResult { signedOut, upToDate, uploaded, downloaded, keptLocal, failed }
+enum SyncResult {
+  signedOut,
+  upToDate,
+  uploaded,
 
-/// The outcome of [CloudSync.sync]. [cloudSave] is set when the phone's game
-/// must be replaced by the cloud's ([SyncResult.downloaded]).
+  /// The cloud game should replace this phone's: see [SyncOutcome.cloud].
+  downloaded,
+
+  /// The player was asked and chose this phone's game, which was uploaded.
+  keptLocalUploaded,
+
+  /// The player was asked and backed out; nothing changed.
+  undecided,
+
+  /// The account's save was made by a newer version of the app.
+  needsNewerApp,
+  failed,
+}
+
+/// The outcome of [CloudSync.sync]. [cloud] is set for
+/// [SyncResult.downloaded]: write it to the phone, then call
+/// [CloudSync.confirmAdopted].
 class SyncOutcome {
   final SyncResult result;
-  final SaveState? cloudSave;
+  final CloudSave? cloud;
 
-  const SyncOutcome(this.result, [this.cloudSave]);
+  const SyncOutcome(this.result, [this.cloud]);
 }
 
 /// Asks the player which game to keep when both have moved on. Returns true
@@ -37,7 +55,8 @@ class CloudSync {
 
   CloudSync({required this.auth, required this.store, required this.bases});
 
-  /// Compares [local] with the cloud and uploads, downloads or asks.
+  /// Compares [local] with the cloud and uploads, hands back the cloud game
+  /// to adopt, or asks the player.
   Future<SyncOutcome> sync(
     SaveState local, {
     required ChooseSave choose,
@@ -45,14 +64,22 @@ class CloudSync {
     final user = auth.user.value;
     if (user == null) return const SyncOutcome(SyncResult.signedOut);
     try {
-      final cloud = await store.fetch(user.id);
+      final CloudSave? cloud;
+      try {
+        cloud = await store.fetch(user.id);
+      } on FormatException catch (e) {
+        // The save exists but this build cannot read it.
+        _log.warning('Cloud save cannot be read by this version: $e');
+        return const SyncOutcome(SyncResult.needsNewerApp);
+      }
       final base = await bases.load(user.id);
-      final fingerprint = saveFingerprint(local);
       final action = decideSync(
         hasCloud: cloud != null,
         localFresh: isFreshGame(local),
+        cloudFresh: cloud != null && isFreshGame(cloud.state),
         hasBase: base != null,
-        localChanged: base != null && base.localFingerprint != fingerprint,
+        localChanged:
+            base != null && base.localFingerprint != saveFingerprint(local),
         cloudChanged:
             base != null &&
             cloud != null &&
@@ -60,26 +87,24 @@ class CloudSync {
       );
       _log.info('Sync decision: $action');
 
-      if (cloud == null || action == SyncAction.upload) {
-        return _upload(user.id, local, SyncResult.uploaded);
-      }
+      if (cloud == null) return _upload(user.id, local, SyncResult.uploaded);
       switch (action) {
         case SyncAction.nothing:
           return const SyncOutcome(SyncResult.upToDate);
         case SyncAction.download:
-          return _adopt(user.id, cloud);
+          return SyncOutcome(SyncResult.downloaded, cloud);
+        case SyncAction.upload:
+          return _upload(user.id, local, SyncResult.uploaded);
         case SyncAction.ask:
           final keepCloud = await choose(
             local: local,
             cloud: cloud.state,
             cloudIsFurtherOn: cloudIsFurtherOn(local, cloud.state),
           );
-          if (keepCloud == null) return const SyncOutcome(SyncResult.keptLocal);
+          if (keepCloud == null) return const SyncOutcome(SyncResult.undecided);
           return keepCloud
-              ? _adopt(user.id, cloud)
-              : _upload(user.id, local, SyncResult.keptLocal);
-        case SyncAction.upload:
-          return _upload(user.id, local, SyncResult.uploaded);
+              ? SyncOutcome(SyncResult.downloaded, cloud)
+              : _upload(user.id, local, SyncResult.keptLocalUploaded);
       }
     } on Exception catch (e, stack) {
       _log.warning('Cloud sync failed', e, stack);
@@ -87,13 +112,41 @@ class CloudSync {
     }
   }
 
-  /// Sends [local] to the cloud without comparing first. Used after ordinary
-  /// local saves once the phone and cloud are known to be in step.
+  /// Records that [cloud] is now the game on this phone. Call only after it
+  /// has been written to the phone, so a failed write cannot leave the phone
+  /// claiming to hold a game it does not.
+  Future<void> confirmAdopted(CloudSave cloud) async {
+    final user = auth.user.value;
+    if (user == null) return;
+    await bases.save(
+      SyncBase(
+        userId: user.id,
+        cloudUpdatedAt: cloud.updatedAt,
+        localFingerprint: saveFingerprint(cloud.state),
+      ),
+    );
+  }
+
+  /// Sends [local] to the cloud, but only if the cloud save is still the one
+  /// this phone last synced with. Returns false, changing nothing, if another
+  /// phone has saved since (a full [sync] is then needed), if this phone has
+  /// never synced, or if the cloud cannot be reached.
   Future<bool> push(SaveState local) async {
     final user = auth.user.value;
     if (user == null) return false;
     try {
-      await _upload(user.id, local, SyncResult.uploaded);
+      final base = await bases.load(user.id);
+      if (base == null) return false;
+      final updatedAt = await store.uploadIfUnchanged(
+        user.id,
+        local,
+        base.cloudUpdatedAt,
+      );
+      if (updatedAt == null) {
+        _log.info('Cloud changed elsewhere; not uploading over it');
+        return false;
+      }
+      await _remember(user.id, updatedAt, local);
       return true;
     } on Exception catch (e) {
       _log.warning('Cloud upload failed: $e');
@@ -101,30 +154,25 @@ class CloudSync {
     }
   }
 
+  /// Forgets what this phone knows about its last sync (after an account is
+  /// deleted).
+  Future<void> forget() => bases.clear();
+
   Future<SyncOutcome> _upload(
     String userId,
     SaveState local,
     SyncResult result,
   ) async {
-    final updatedAt = await store.upload(userId, local);
-    await bases.save(
-      SyncBase(
-        userId: userId,
-        cloudUpdatedAt: updatedAt,
-        localFingerprint: saveFingerprint(local),
-      ),
-    );
+    await _remember(userId, await store.upload(userId, local), local);
     return SyncOutcome(result);
   }
 
-  Future<SyncOutcome> _adopt(String userId, CloudSave cloud) async {
-    await bases.save(
-      SyncBase(
-        userId: userId,
-        cloudUpdatedAt: cloud.updatedAt,
-        localFingerprint: saveFingerprint(cloud.state),
-      ),
-    );
-    return SyncOutcome(SyncResult.downloaded, cloud.state);
-  }
+  Future<void> _remember(String userId, DateTime updatedAt, SaveState local) =>
+      bases.save(
+        SyncBase(
+          userId: userId,
+          cloudUpdatedAt: updatedAt,
+          localFingerprint: saveFingerprint(local),
+        ),
+      );
 }

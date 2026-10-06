@@ -99,6 +99,21 @@ class FakeCloudSaveStore implements CloudSaveStore {
     saves[userId] = CloudSave(state: state, updatedAt: _clock);
     return _clock;
   }
+
+  @override
+  Future<DateTime?> uploadIfUnchanged(
+    String userId,
+    SaveState state,
+    DateTime expectedUpdatedAt,
+  ) async {
+    if (offline) throw Exception('offline');
+    final current = saves[userId];
+    if (current == null ||
+        !current.updatedAt.isAtSameMomentAs(expectedUpdatedAt)) {
+      return null;
+    }
+    return upload(userId, state);
+  }
 }
 
 /// A save with the given progress, for tests.
