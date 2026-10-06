@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 17 — IAP: restore & refunds (built; needs the server pieces deployed and real purchase + refund tests by Jennifer). Milestones 14 and 16 are also built and awaiting her real-device tests.
+## Current milestone: 17 — IAP: restore & refunds (built; needs the server pieces deployed deployed; needs store keys on the server and real purchase + refund tests by Jennifer). Milestones 14 and 16 are also built and awaiting her real-device tests.
 
 ---
 
@@ -25,7 +25,7 @@
 | 14 | Accounts + cloud save | BUILT — not tagged: real sign-in not yet verified |
 | 15 | Server-driven content | DONE (m15-working) — verified against the live server |
 | 16 | IAP: buy & deliver | BUILT — not tagged: needs store products and a sandbox purchase by Jennifer |
-| 17 | IAP: restore & refunds | BUILT — not tagged: server functions not deployed; needs real purchase and refund tests by Jennifer |
+| 17 | IAP: restore & refunds | BUILT — not tagged: functions deployed; needs store keys on the server and real purchase + refund tests by Jennifer |
 | 18 | Rewarded ads | Not started |
 | 19 | Firebase: analytics + crash reporting | Not started |
 | 20 | Notifications | Not started |
@@ -722,7 +722,7 @@ Not in this milestone:
 
 BUILT, NOT TAGGED. Analyze clean, 441 unit tests, 29 server rule tests, twelve device
 tests on the iOS Simulator and Android Emulator. **Nothing here has been tried with a real
-purchase or a real refund, and none of the server functions are deployed.**
+purchase or a real refund.** (The server functions were deployed later the same day; see below.)
 
 What is built:
 - Refunds in the app (`lib/domain/refunds.dart`, `PurchasesController.applyRefunds`): each
@@ -771,8 +771,16 @@ Known limits:
   (they need the live database and stores); their decisions are tested in
   `_shared/refund_rules_test.ts`.
 
-Needed to finish (Jennifer's OK required for each live change):
-1. Deploy `verify-purchase`, `store-notifications-apple`, `store-notifications-google`.
+**Deployed 2026-10-05** (Jennifer: "deploy"): `verify-purchase`,
+`store-notifications-apple` and `store-notifications-google` are live on the Whispers of
+Joppa project, replacing the old unsafe versions. `STORE_NOTIFY_SECRET` is set on the
+server (a copy is in `.env`, not in git). Checked with harmless calls: no sign-in → refused;
+Google function without the secret → refused; a non-refund notice → accepted, nothing
+changed. Until the Apple and Google keys are stored as server secrets, every purchase
+check answers "try again later" (nothing can be granted wrongly).
+
+Still needed to finish (Jennifer's OK required for each live change):
+1. (done) Deploy the three functions.
 2. Supabase secrets: Apple In-App Purchase key (id, issuer, key), Play service account
    JSON, and a new random `STORE_NOTIFY_SECRET`.
 3. App Store Connect → App Store Server Notifications → the Apple function's address.
