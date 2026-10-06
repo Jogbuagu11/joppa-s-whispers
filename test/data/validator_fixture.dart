@@ -74,7 +74,13 @@ Map<String, Object?> validContent() => {
     },
   ],
   'letters': [
-    {'id': 'letter_01', 'title': 'T', 'body': 'B', 'reference': 'R'},
+    {
+      'id': 'letter_01',
+      'chapter': 1,
+      'title': 'T',
+      'body': 'B',
+      'reference': 'R',
+    },
   ],
   'chapters': [
     {

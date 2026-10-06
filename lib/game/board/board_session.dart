@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/app/game_saver.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
+import 'package:whispers_of_joppa/domain/letters.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
 import 'package:whispers_of_joppa/domain/progression.dart';
@@ -40,6 +41,9 @@ class BoardSession {
   /// scene_id -> scene, for the scenes that tasks play.
   final Map<String, SceneModel> scenes;
 
+  /// Esther's letters, for the keepsake book.
+  final List<LetterModel> letters;
+
   /// location_id -> location, for the restoration screen.
   final Map<String, LocationModel> locations;
   final GameSaver saver;
@@ -62,6 +66,7 @@ class BoardSession {
     required this.endingsChanged,
     required this.scenes,
     required this.locations,
+    required this.letters,
     required this.saver,
     required this.characterNames,
     required this.openingScene,
@@ -217,6 +222,7 @@ class BoardSession {
       endingsChanged: endingsChanged,
       scenes: loader.scenes,
       locations: loader.locations,
+      letters: loader.letters,
       saver: saver,
       characterNames: loader.characterNames,
       openingScene: loaded == null

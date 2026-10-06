@@ -64,10 +64,13 @@ void main() {
     ((firstOf(c, 'locations')['areas'] as List<dynamic>).first
             as Map<String, dynamic>)
         .remove('after');
-    firstOf(c, 'letters')['body'] = ' ';
+    firstOf(c, 'letters')
+      ..['body'] = ' '
+      ..['chapter'] = 'one';
     final problems = checkContent(c);
     expect(problems, contains(contains('missing after')));
     expect(problems, contains(contains('missing body')));
+    expect(problems, contains(contains('chapter must be a whole number')));
   });
 
   test('bad chapter number, title, beat and empty task list are reported', () {

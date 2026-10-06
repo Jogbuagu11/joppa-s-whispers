@@ -11,7 +11,11 @@ class TaskBar extends StatelessWidget {
     required this.controller,
     required this.onDo,
     required this.onOpenLocation,
+    required this.onOpenLetters,
   });
+
+  /// Called when the player taps the button that opens Esther's letters.
+  final VoidCallback onOpenLetters;
 
   /// Called when the player taps the button that shows the location.
   final VoidCallback onOpenLocation;
@@ -47,8 +51,16 @@ class TaskBar extends StatelessWidget {
                 onPressed: onOpenLocation,
                 tooltip: 'See what you have restored',
                 padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+                constraints: const BoxConstraints(minWidth: 40, minHeight: 44),
                 icon: const Icon(Icons.home_work_outlined, color: _gold),
+              ),
+              IconButton(
+                key: const Key('letters_button'),
+                onPressed: onOpenLetters,
+                tooltip: "Esther's letters",
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 40, minHeight: 44),
+                icon: const Icon(Icons.mail_outline, color: _gold),
               ),
               const SizedBox(width: 4),
               Expanded(

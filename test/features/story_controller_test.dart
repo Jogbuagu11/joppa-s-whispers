@@ -17,6 +17,7 @@ ChapterModel _chapter(String id, int number, List<int> costs) => ChapterModel(
         costBlessings: costs[i],
         sceneId: '${id}_s${i + 1}',
         restoresArea: i == 0 ? '${id}_area' : null,
+        letterId: i == 1 ? '${id}_letter' : null,
       ),
   ],
 );
@@ -155,5 +156,13 @@ void main() {
     blessings = 1;
     story.doNext();
     expect(done, ['ch1_t1']);
+  });
+
+  test('foundLetterIds grows as letter tasks are done', () {
+    blessings = 6;
+    story.doNext();
+    expect(story.foundLetterIds, isEmpty);
+    story.doNext();
+    expect(story.foundLetterIds, {'ch1_letter'});
   });
 }

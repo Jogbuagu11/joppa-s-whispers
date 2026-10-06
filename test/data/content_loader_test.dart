@@ -23,6 +23,7 @@ void main() {
         locationsJson: _read('locations'),
         tutorialJson: _read('tutorial'),
         endingsJson: _read('endings'),
+        lettersJson: _read('letters'),
       );
   });
 
@@ -128,6 +129,7 @@ void main() {
         locationsJson: _read('locations'),
         tutorialJson: _read('tutorial'),
         endingsJson: _read('endings'),
+        lettersJson: _read('letters'),
       );
     expect(custom.generators[first['id']]?.energyCost, 0);
   });
@@ -185,6 +187,20 @@ void main() {
     expect(loader.tutorial.first.text, (raw.first as Map)['text']);
     for (final chapter in loader.chapters) {
       expect(loader.endings[chapter.id]?.title, isNotEmpty, reason: chapter.id);
+    }
+  });
+
+  test('letters are loaded and every task letter exists', () {
+    final raw = _read('letters') as List<dynamic>;
+    expect(loader.letters.length, raw.length);
+    expect(loader.letters.first.body, (raw.first as Map)['body']);
+    final ids = {for (final l in loader.letters) l.id};
+    for (final chapter in loader.chapters) {
+      for (final task in chapter.tasks) {
+        if (task.letterId case final letter?) {
+          expect(ids.contains(letter), isTrue, reason: task.id);
+        }
+      }
     }
   });
 }

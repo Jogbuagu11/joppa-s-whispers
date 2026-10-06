@@ -2,6 +2,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
+import 'package:whispers_of_joppa/features/letters/letters_screen.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
 import 'package:whispers_of_joppa/features/restoration/location_screen.dart';
 import 'package:whispers_of_joppa/features/story/scene_screen.dart';
@@ -126,6 +127,25 @@ class _BoardScreenState extends State<BoardScreen> {
     }
   }
 
+  /// The letters button: opens the keepsake book.
+  Future<void> _openLetters() async {
+    final session = _session;
+    if (session == null || _taskRunning || !mounted) return;
+    _taskRunning = true;
+    try {
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => LettersScreen(
+            letters: session.letters,
+            foundLetterIds: session.story.foundLetterIds,
+          ),
+        ),
+      );
+    } finally {
+      _taskRunning = false;
+    }
+  }
+
   Future<void> _showLocation(String? locationId, {String? justRestored}) async {
     final session = _session;
     final location = session?.locations[locationId];
@@ -220,6 +240,7 @@ class _BoardScreenState extends State<BoardScreen> {
               controller: session.story,
               onDo: _doNextTask,
               onOpenLocation: _openLocation,
+              onOpenLetters: _openLetters,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),

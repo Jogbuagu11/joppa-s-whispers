@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
+import 'package:whispers_of_joppa/domain/letters.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
@@ -39,6 +40,9 @@ class ContentLoader {
   /// chapter_id -> the message shown when that chapter is finished.
   final Map<String, ChapterEnding> endings = {};
 
+  /// Esther's letters, in content order.
+  final List<LetterModel> letters = [];
+
   /// location_id -> location
   final Map<String, LocationModel> locations = {};
 
@@ -72,6 +76,7 @@ class ContentLoader {
         locationsJson: await _loadJson('content/locations.json'),
         tutorialJson: await _loadJson('content/tutorial.json'),
         endingsJson: await _loadJson('content/endings.json'),
+        lettersJson: await _loadJson('content/letters.json'),
       );
     } catch (e, stack) {
       _log.severe('Failed to load content', e, stack);
@@ -93,6 +98,7 @@ class ContentLoader {
     required Object? locationsJson,
     required Object? tutorialJson,
     required Object? endingsJson,
+    required Object? lettersJson,
   }) {
     economy = EconomyConfig.fromJson(economyJson as Map<String, dynamic>);
     _parseChains(chainsJson as List<dynamic>);
@@ -125,6 +131,9 @@ class ContentLoader {
     for (final e in endingsJson as List<dynamic>) {
       final ending = ChapterEnding.fromJson(e as Map<String, dynamic>);
       endings[ending.chapterId] = ending;
+    }
+    for (final l in lettersJson as List<dynamic>) {
+      letters.add(LetterModel.fromJson(l as Map<String, dynamic>));
     }
     _loaded = true;
     _log.info(

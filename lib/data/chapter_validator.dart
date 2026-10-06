@@ -47,6 +47,9 @@ void checkChapters({
   final letterIds = <String>{};
   for (final letter in letters) {
     checkId('Letter', letter['id'], letterIds);
+    if (letter['chapter'] is! int) {
+      problems.add('Letter ${letter['id']}: chapter must be a whole number');
+    }
     for (final key in ['title', 'body', 'reference']) {
       final value = letter[key];
       if (value is! String || value.trim().isEmpty) {

@@ -46,6 +46,11 @@ class StoryController extends ChangeNotifier {
     for (final c in chapters) ...restoredAreas(c, _completed),
   };
 
+  /// Ids of every letter found so far, across all chapters.
+  Set<String> get foundLetterIds => {
+    for (final c in chapters) ...lettersFound(c, _completed),
+  };
+
   TaskModel? get next {
     final current = chapter;
     return current == null ? null : nextTask(current, _completed);

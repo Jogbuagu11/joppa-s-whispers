@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 12 — Chapter 1 playable (done; next is 13 — Esther's letters)
+## Current milestone: 13 — Esther's letters (done; next is 14 — Accounts + cloud save)
 
 ---
 
@@ -21,7 +21,7 @@
 | 10 | Tasks & Blessings | DONE (m10-working) |
 | 11 | Restoration scenes | DONE (m11-working) |
 | 12 | Chapter 1 playable | DONE (m12-working) |
-| 13 | Esther's letters | Not started |
+| 13 | Esther's letters | DONE (m13-working) |
 | 14 | Accounts + cloud save | Not started |
 | 15 | Server-driven content | Not started |
 | 16 | IAP: buy & deliver | Not started |
@@ -452,6 +452,24 @@ Not in this milestone:
 - No pointing hand or highlight on the thing to tap; hints are text only.
 - The GDD's 30–40 tasks per chapter, Kindness order, Jars of Clay and rubble cells are not built.
 - Analytics events `tutorial_step` / `tutorial_complete` come with Milestone 19.
+
+## Milestone 13 — state (2026-10-05)
+
+- Keepsake book ("Esther's Letters"), opened from the envelope button on the task bar:
+  one page per letter in story order, "N of M found". A letter not yet found is a locked
+  page; a found letter shows its title and opens on a parchment page with the full text
+  and its scripture reference.
+- A letter is found when the task that reveals it is done (`letter_id` in
+  `content/chapters.json`): Letter 1 at task 3 (the oven niche), Letter 2 at task 10
+  (the loose brick). Nothing extra is saved: found letters follow from task progress.
+- `content/letters.json` holds the two Chapter 1 letters word for word from the story
+  bible (1 John 4:18 KJV; Lamentations 3:22–23 KJV).
+
+Not in this milestone:
+- The book does not open by itself when a letter is found (the scene already reads the
+  letter aloud); a "new letter" badge on the envelope button would help.
+- Letters for Chapters 2–6 come with those chapters (Milestone 23).
+- The Letter 1 scripture question (1 John vs the story bible's period rule) is still open.
 
 ## Decisions made for Jennifer (2026-10-05)
 
