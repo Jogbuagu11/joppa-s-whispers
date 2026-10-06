@@ -236,5 +236,125 @@
         "letter_id": null
       }
     ]
+  },
+  {
+    "id": "ch3",
+    "number": 3,
+    "title": "The Tax Collector",
+    "location_id": "docks",
+    "unlocks_chains": [
+      "armor"
+    ],
+    "crown_id": null,
+    "tasks": [
+      {
+        "id": "ch3_t_01",
+        "beat": 1,
+        "title": "Carry bread to the toll steps",
+        "cost_blessings": 2,
+        "scene_id": "ch3_s_01",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch3_t_02",
+        "beat": 2,
+        "title": "Sort Savta's writing shards",
+        "cost_blessings": 2,
+        "scene_id": "ch3_s_02",
+        "restores_area": null,
+        "letter_id": "letter_05"
+      },
+      {
+        "id": "ch3_t_03",
+        "beat": 3,
+        "title": "Brace the mooring posts",
+        "cost_blessings": 2,
+        "scene_id": "ch3_s_03",
+        "restores_area": "docks_posts",
+        "letter_id": null
+      },
+      {
+        "id": "ch3_t_04",
+        "beat": 4,
+        "title": "Sell loaves in the market",
+        "cost_blessings": 2,
+        "scene_id": "ch3_s_04",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch3_t_05",
+        "beat": 5,
+        "title": "Lay the new dock planking",
+        "cost_blessings": 2,
+        "scene_id": "ch3_s_05",
+        "restores_area": "docks_planking",
+        "letter_id": null
+      },
+      {
+        "id": "ch3_t_06",
+        "beat": 6,
+        "title": "Clear the weedy slipway",
+        "cost_blessings": 2,
+        "scene_id": "ch3_s_06",
+        "restores_area": "docks_slipway",
+        "letter_id": null
+      },
+      {
+        "id": "ch3_t_07",
+        "beat": 7,
+        "title": "Take the page to the boat shed",
+        "cost_blessings": 3,
+        "scene_id": "ch3_s_07",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch3_t_08",
+        "beat": 8,
+        "title": "Scrub the fish table",
+        "cost_blessings": 2,
+        "scene_id": "ch3_s_08",
+        "restores_area": "docks_table",
+        "letter_id": null
+      },
+      {
+        "id": "ch3_t_09",
+        "beat": 9,
+        "title": "Rebuild the net racks",
+        "cost_blessings": 3,
+        "scene_id": "ch3_s_09",
+        "restores_area": "docks_racks",
+        "letter_id": null
+      },
+      {
+        "id": "ch3_t_10",
+        "beat": 10,
+        "title": "Light the dock lantern",
+        "cost_blessings": 2,
+        "scene_id": "ch3_s_10",
+        "restores_area": "docks_lantern",
+        "letter_id": null
+      },
+      {
+        "id": "ch3_t_11",
+        "beat": 10,
+        "title": "Mend Silas's net box",
+        "cost_blessings": 3,
+        "scene_id": "ch3_s_11",
+        "restores_area": "docks_netbox",
+        "letter_id": "letter_06"
+      },
+      {
+        "id": "ch3_t_12",
+        "beat": 11,
+        "title": "Share bread on the new dock",
+        "cost_blessings": 3,
+        "scene_id": "ch3_s_12",
+        "restores_area": null,
+        "letter_id": null
+      }
+    ]
   }
 ]

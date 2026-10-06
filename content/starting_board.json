@@ -4,7 +4,8 @@
   "generators": [
     { "generator_id": "gen_pantry", "col": 2, "row": 8 },
     { "generator_id": "gen_tree", "col": 4, "row": 8 },
-    { "generator_id": "gen_chest", "col": 3, "row": 8, "chapter": 2 }
+    { "generator_id": "gen_chest", "col": 3, "row": 8, "chapter": 2 },
+    { "generator_id": "gen_armor", "col": 5, "row": 8, "chapter": 3 }
   ],
   "items": [
     { "item_id": "bakery_01", "col": 0, "row": 0 },

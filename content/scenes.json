@@ -914,5 +914,732 @@
         "text": "Marcus."
       }
     ]
+  },
+  {
+    "id": "ch3_s_01",
+    "background": "loc_docks",
+    "lines": [
+      {
+        "speaker": "dockworker",
+        "expression": "angry",
+        "text": "There's your toll, collector. Right at your feet. Rome can have that share for nothing."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "neutral",
+        "text": "You missed the sandal. Most men do. Five baskets, I make it. Next boat."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "thinking",
+        "text": "Baker. He called you 'Sister' last night. You know that man?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Hm. I know flatbread. Yours is going cold. Take it."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "Little loaf. That's Esther's grandson on those steps. You can't 'Hm' him into the sea."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "angry",
+        "text": "Eight years without a word, Silas. Then he comes home wearing Rome's seal. I can try."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "happy",
+        "text": "No toll on bread, baker. Pass freely. We've never met, after all. Have we, Sister?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "He looks thin under that fine cloak. No. I'm not looking. I've bread to carry."
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "Esther wrote to that boy every month. I sent each shard up the coast with any boat that would carry one."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Every month? And he never answered her. Not once?"
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "Not once. And the last she wrote the week she took ill. I never did find where she put it."
+      }
+    ]
+  },
+  {
+    "id": "ch3_s_02",
+    "background": "loc_bakehouse_inside",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Savta's basket of writing shards. Under the counter all this time, and I only took from the top."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "After Father died, Marcus stopped talking. One morning his bed was empty. He was eighteen."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "He thought Joppa pitied him. A proud boy would sooner be hated than pitied."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "angry",
+        "text": "I asked at every gate. Savta only said, 'He knows the way home.' Eight years, Silas!"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Here. At the very bottom. This one isn't blank. It has his name on it."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "Marcus. I wrote you every month. You never answered, and I never stopped."
+      },
+      {
+        "speaker": "esther",
+        "expression": "thinking",
+        "text": "When you come back — and you will — know this:"
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "\"But when he was yet a great way off, his father saw him, and had compassion,\" (Luke 15:20)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "\"and ran, and fell on his neck, and kissed him.\" (Luke 15:20)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "happy",
+        "text": "Nobody has to earn their way back to this table. — your Savta"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "She never stopped. I stopped years ago. Hm. This isn't mine to keep, is it."
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "It's got his name on it, little loaf. But I'd not hand it over on the open dock. Not this week."
+      }
+    ]
+  },
+  {
+    "id": "ch3_s_03",
+    "background": "loc_docks",
+    "lines": [
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "Three posts rotted through at the waterline. One good swell and the whole dock walks off."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Then we brace them today. Bread for every man who lifts a beam. Who's with me?"
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "neutral",
+        "text": "For your bread, baker, gladly. But not while he stands on the toll steps counting us."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "angry",
+        "text": "Mend the dock so he can tax it finer? Let him haul the timber. Or let it rot."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "happy",
+        "text": "Don't stop on my account. A sound dock lands more fish. I'm very fond of fish."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "angry",
+        "text": "Must you make it worse every time you open your mouth?"
+      },
+      {
+        "speaker": "marcus",
+        "expression": "angry",
+        "text": "It's a gift, Sister. Ask anyone. I'll take my seal up the quay. Mend your dock."
+      },
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "Is he the bad man? He doesn't look bad. He looks like he forgot to eat."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Hm. Hold the mallet for your father, Joy."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "He's gone. They'll work now. ...He looked back twice, Naomi."
+      }
+    ]
+  },
+  {
+    "id": "ch3_s_04",
+    "background": "loc_market",
+    "lines": [
+      {
+        "speaker": "demas",
+        "expression": "happy",
+        "text": "Gather close, friends, gather close! Today, a tale of a fine cloak and a Roman seal."
+      },
+      {
+        "speaker": "demas",
+        "expression": "thinking",
+        "text": "He counts your catch to the last fin. And what he takes, friends? Does it all reach Caesarea?"
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "angry",
+        "text": "Toll went up at the new year, and now he comes to count it. I knew it. He's lining that cloak with our fish."
+      },
+      {
+        "speaker": "demas",
+        "expression": "neutral",
+        "text": "And at night! A lamp in the old boat shed. A pen, scratching. Whose names does he write?"
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "surprised",
+        "text": "Names? For Rome? My cousin sold two baskets off the back steps and never paid toll..."
+      },
+      {
+        "speaker": "demas",
+        "expression": "surprised",
+        "text": "Did I say Rome? I said a lamp and a pen! A teller of tales only tells. You do the adding up."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "thinking",
+        "text": "And such a familiar chin on that young man, dear. I'm only saying what people are saying."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "He tells it well. That's the trouble. Eight years gone, and I can't swear it isn't true."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "I don't know my own brother well enough to defend him. What does he write at night?"
+      }
+    ]
+  },
+  {
+    "id": "ch3_s_05",
+    "background": "loc_docks",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "Twelve new planks, Silas. You can reach your boat without swimming. Say something about fish."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "No story today, little loaf. Sit down by me."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "No story? Now you're frightening me."
+      },
+      {
+        "speaker": "silas",
+        "expression": "neutral",
+        "text": "Your brother stopped by my boat at dusk. Asked after my nets, my catch. Friendly. My lads saw."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "Now they say I'm selling names to the toll man. Two of them won't sail with me tomorrow."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "angry",
+        "text": "On Demas's word? A lamp and a pen, and a whole crew scatters?"
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "On nobody's word. That's how it works. So I'm asking you plain: keep him away from my crew."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "You carried Savta's letters to him for years. Now you want me to turn him away for you."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "For my crew. They've children to feed. It's the hardest thing I've ever asked of Esther's girl."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. I'll tell him. And then I'll hate that I did."
+      }
+    ]
+  },
+  {
+    "id": "ch3_s_06",
+    "background": "loc_harbor_dusk",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Last of the weed off the slipway. A boat could come up this without breaking its back."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "Wind's turning. Something's blown down off the quay. There, in the shallows."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Papyrus. It'll be pulp in a moment. Got it. Hm. Columns of figures. This is from a toll roll."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "The collector's hand?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "My brother's hand. That crooked tail on every letter. Father used to scold him for it."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Boat by boat, day by day. And beside each one, two numbers. Caleb, they don't match."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "Two counts for one catch."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "angry",
+        "text": "One count for the crews and one for himself. Two sets of numbers. What else is that for?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Demas was right. I wanted so badly for Demas to be wrong."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "A page isn't a man. I've had a tale told about me off less than that."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hear the whole matter. Savta wrote me that once. Hm. Then I'll hear it from him. Tonight."
+      }
+    ]
+  },
+  {
+    "id": "ch3_s_07",
+    "background": "loc_boat_shed_night",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "A cloak for a blanket and a net for a pillow. Rome's collector sleeps in a boat shed?"
+      },
+      {
+        "speaker": "marcus",
+        "expression": "angry",
+        "text": "The lodging is cheap and the neighbors don't spit. What do you want, Sister?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "angry",
+        "text": "This blew into the harbor. Two columns, Marcus. Two numbers for every boat. Explain it."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "neutral",
+        "text": "You've heard Demas. I cheat, I inform, I sour the milk. Pick one and go home."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "I nearly did. Then I found Silas's boat. Nine baskets landed. You wrote six, and six is what he paid."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "The second column is smaller. Every line. You're writing down less than they land."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "sad",
+        "text": "Caesarea raised the rate at the new year. Half these boats would have been sold by summer."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "neutral",
+        "text": "So I enter less, they pay less, and I make up the box from my wages. The box is never short."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "All your wages? That's why you sleep here. That's why you look half starved."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "angry",
+        "text": "Don't make me good. I took the seal for the cloak and the coin. I just can't watch them sink."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "They spit at you and you let them. ...This was at the bottom of Savta's basket. It has your name on it."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "sad",
+        "text": "'Nobody has to earn their way back.' She would say that. ...Nomi. Tell no one. If the crews hear, Caesarea hears."
+      }
+    ]
+  },
+  {
+    "id": "ch3_s_08",
+    "background": "loc_docks",
+    "lines": [
+      {
+        "speaker": "dockworker",
+        "expression": "surprised",
+        "text": "Leave the fish table, baker. A boat from Caesarea, and scribes on the plank. That's no merchant."
+      },
+      {
+        "speaker": "collector",
+        "expression": "neutral",
+        "text": "I am chief collector for this coast. Joppa's toll roll is to be examined. Three days, every boat."
+      },
+      {
+        "speaker": "collector",
+        "expression": "thinking",
+        "text": "I count the landings myself, at this table. Collector, bring me your roll at the third dawn."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "neutral",
+        "text": "It will be ready, sir."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Three days of his counting against weeks of yours. Marcus, he'll see it."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "happy",
+        "text": "By the second morning, I'd think. He has the look of a man who can add."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "thinking",
+        "text": "There's a grain ship for Cyprus on tomorrow's tide. Nobody knows me in Cyprus."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "angry",
+        "text": "You'd run. Again."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "angry",
+        "text": "What would you have me do, Sister? Say it to his face and lose the little I have left?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "I can't say it for you. I wouldn't if I could. But I'd sooner have a brother than a collector."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "sad",
+        "text": "...The tide's at dawn, Nomi. Don't wait up."
+      }
+    ]
+  },
+  {
+    "id": "ch3_s_09",
+    "background": "loc_docks",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "New net racks up by first light. The Cyprus ship cleared the rocks at dawn. I didn't look who was aboard."
+      },
+      {
+        "speaker": "silas",
+        "expression": "surprised",
+        "text": "Little loaf. Look to the fish table. That's your brother standing at it, roll in hand."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "neutral",
+        "text": "Sir. Before you count another boat. The roll is false, and I am the one who falsified it."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "neutral",
+        "text": "I entered every catch smaller than it landed. What the box lacked, I paid in from my own wages."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "sad",
+        "text": "The crews never knew. They paid what I asked. If there is a fault here, it has one name. Mine."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "surprised",
+        "text": "Smaller? He wrote us down smaller, and paid the rest himself? ...And we spat at him."
+      },
+      {
+        "speaker": "collector",
+        "expression": "thinking",
+        "text": "The box is whole. I cannot charge these boats for a debt already paid. That much is plain."
+      },
+      {
+        "speaker": "collector",
+        "expression": "neutral",
+        "text": "But a man who writes a false roll cannot carry a seal. Your post is ended, your wages forfeit."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "sad",
+        "text": "Take the seal. It never did sit right on my belt."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "No seal, no wages, no post. And he's standing straighter than he has all week."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "sad",
+        "text": "Baker... your own brother. And what have we been saying about him?"
+      }
+    ]
+  },
+  {
+    "id": "ch3_s_10",
+    "background": "loc_harbor_dusk",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "There. Oil in the lantern and a flame that holds. The dock hasn't had a light since I came home."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "thinking",
+        "text": "Very fine. It'll light my way to the boat shed. If the shed will still have me."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "sad",
+        "text": "Marcus. I spat at your feet every morning, and you were paying my toll. I was wrong."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "sad",
+        "text": "I said worse than he did, in the market, to anyone who'd stand still. Can you forgive it?"
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "And I turned Esther's grandson from my boat on a market tale. That one's mine to carry, lad."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "sad",
+        "text": "I wore the seal and the sneer both. I gave you every reason. ...Yes. It's forgiven. All of it."
+      },
+      {
+        "speaker": "silas",
+        "expression": "neutral",
+        "text": "I'm short two hands and long on nets. Cold, wet work, and the pay is fish. Will you sail with us?"
+      },
+      {
+        "speaker": "marcus",
+        "expression": "surprised",
+        "text": "Me? I can't tell a sprat from a sandal."
+      },
+      {
+        "speaker": "silas",
+        "expression": "happy",
+        "text": "Every runaway sails from Joppa. Some sail home."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "happy",
+        "text": "...Nomi. Say something sharp, quick, before I disgrace myself in front of my crew."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "Hm. You'll smell of fish. I'll bake for you anyway."
+      }
+    ]
+  },
+  {
+    "id": "ch3_s_11",
+    "background": "loc_docks",
+    "lines": [
+      {
+        "speaker": "silas",
+        "expression": "neutral",
+        "text": "My old net box, little loaf. Lid's split, hinge is rope. Now, that reminds me of the year—"
+      },
+      {
+        "speaker": "marcus",
+        "expression": "happy",
+        "text": "The fish that swam backward? I've crewed two days and heard it four times."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Hush, both of you. There's a shard wedged under the bottom board. Silas, that's Savta's hand."
+      },
+      {
+        "speaker": "silas",
+        "expression": "surprised",
+        "text": "Forty years she borrowed twine out of that box. I never once looked under the boards."
+      },
+      {
+        "speaker": "esther",
+        "expression": "happy",
+        "text": "For both my grandchildren, who are stubborn like their grandfather."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "When the whole harbor is against you, remember who stands with you."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "\"The LORD is my rock, and my fortress, and my deliverer; my God, my strength, in whom I will trust;\" (Psalm 18:2)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "\"my buckler, and the horn of my salvation, and my high tower.\" (Psalm 18:2) — your Savta"
+      },
+      {
+        "speaker": "marcus",
+        "expression": "sad",
+        "text": "Both. She wrote 'both.' She put me in it before I'd even come home."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "She knew the harbor would turn on each of us. And she knew we'd be standing here together."
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "She told me once, 'Mind that box, Silas.' I thought she meant the twine."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Sound lid, new hinge. That's the last of the dock mended. I almost don't trust the quiet."
+      }
+    ]
+  },
+  {
+    "id": "ch3_s_12",
+    "background": "loc_harbor_dusk",
+    "lines": [
+      {
+        "speaker": "joy",
+        "expression": "happy",
+        "text": "The whole dock's done! I ran it end to end and nothing wobbled. I ran it six times!"
+      },
+      {
+        "speaker": "caleb",
+        "expression": "happy",
+        "text": "Posts are sound. Planks are true. It'll stand a storm."
+      },
+      {
+        "speaker": "silas",
+        "expression": "happy",
+        "text": "And my new hand caught a fish today! A small one. It may have been unwell. But a fish!"
+      },
+      {
+        "speaker": "marcus",
+        "expression": "happy",
+        "text": "It was a fine fish, old man. Nomi, tell him it was a fine fish."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "It was a fish. Sit, all of you. The bread's warm, and for once nobody here is whispering."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "neutral",
+        "text": "Demas has it in the market already. The toll man who paid our tolls. He tells it well."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. He always does. One day I'd like him to ask first."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Wait. Listen. Someone's crying out on the upper street."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "surprised",
+        "text": "Baker! Come quick! It's Tabitha, who sews for the widows. She's collapsed!"
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "Tabitha? She's clothed half the widows in Joppa. Esther's dearest friend..."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "All these weeks home, and I never once climbed the hill to see her. Marcus, the basket. I'm going up."
+      }
+    ]
   }
 ]

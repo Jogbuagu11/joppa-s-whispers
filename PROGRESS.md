@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 23 — Chapters 2–6, one at a time. Chapter 2 is built; Chapter 3 is next. Milestones 14 and 16–22 are built and awaiting Jennifer's checks.
+## Current milestone: 23 — Chapters 2–6, one at a time. Chapters 2 and 3 are built; Chapter 4 is next. Milestones 14 and 16–22 are built and awaiting Jennifer's checks.
 
 ---
 
@@ -31,7 +31,7 @@
 | 20 | Notifications | BUILT — not tagged: no real notification has been seen on a phone; push needs Jennifer's Apple push key |
 | 21 | Events system | BUILT — not tagged: the Joppa Boat Festival is live on the server (to 2026-10-27); Jennifer has not yet seen it on a phone |
 | 22 | Admin panel | BUILT — not tagged: Jennifer has not yet signed in and used it; push needs the Firebase key on the server |
-| 23 | Chapters 2–6 | IN PROGRESS — Chapter 2 built (not tagged: Jennifer has not played it; no art for the well yet). Chapters 3–6 to do |
+| 23 | Chapters 2–6 | IN PROGRESS — Chapters 2 and 3 built (not tagged: Jennifer has not played them). Chapters 4–6 to do |
 | 24 | Polish & accessibility | Not started |
 | 25 | Release builds | Not started |
 
@@ -1093,7 +1093,7 @@ tested directly).
 
 BUILT, NOT TAGGED. Analyze clean, 573 unit tests (including a play-through of both
 chapters with the real rules), seventeen device tests on the iOS Simulator and Android
-Emulator (the new one, `chapter2_test`, starts from a finished Chapter 1). Nobody has
+Emulator (the chapter test, now `chapters_test`, starts from a finished chapter). Nobody has
 played Chapter 2 by hand yet, and none of its pictures exist.
 
 Also on this date: Jennifer added art for The Word and Anointing Oil chains (14 items);
@@ -1160,6 +1160,63 @@ Review notes carried forward:
   Blessings: the poorest return in the game, by design the hardest and optional. Raise
   its Blessings if it plays as a wall.
 - `board_session.dart` (295 lines) and `board_game.dart` (286) are near the size limit.
+
+## Milestone 23, Chapter 3 "The Tax Collector" — state (2026-10-06)
+
+BUILT, NOT TAGGED. Analyze clean, 578 unit tests (with a play-through of all three
+chapters), seventeen device tests on both the iOS Simulator and the Android Emulator
+(`chapters_test` covers finishing Chapter 1 and finishing Chapter 2). Not played by hand.
+Content is version 8 (format 2), in the app only; nothing published to the server.
+
+What is built:
+- 12 tasks at the fishing docks covering the 11 beats, 12 scenes, 12 orders (7 ordinary,
+  5 spiritual, including Belt of Truth and Shield of Faith for Marcus), the docks with 7
+  areas, Letters 5 and 6 word for word, a Chapter 2 ending that now leads to the docks,
+  and a Chapter 3 ending. Silas's line is exact: "Every runaway sails from Joppa. Some
+  sail home."
+- The Armor Rack (Armor of God) arrives on the board when Chapter 3 is reached.
+- A new speaking character, the Chief Collector (no portrait; name and words only).
+- Blessings: orders pay 33, tasks cost 28; the chapter can be finished without the two
+  hardest orders. About 294 generator taps in all (Chapter 1: 162; Chapter 2: 242).
+
+Decisions / assumptions to confirm:
+- 12 tasks (as Chapters 1–2). The "Rejoicing" crown is not awarded (crowns not built).
+- The Armor Rack arrives at the chapter's start, not at beat 5; the Shield of Faith
+  order is the last card rather than at beat 5.
+- Letter 5 is found "In Savta's shard basket" (the bible only says "never sent").
+- Edits after review: the Shield of Faith and Belt of Truth order texts were reworded
+  so they are true whenever the card is seen and do not give away the ending; Marcus's
+  bread order now comes after Zilpah's so his warm "Nomi" cannot appear before the
+  boat-shed scene; "months" became "weeks" (Marcus has only just arrived); Naomi now
+  clears Marcus from what Silas's crew actually paid ("Nine baskets landed. You wrote
+  six, and six is what he paid."), since two unequal columns alone would also fit a
+  cheat; a few filler "Hm."s were cut.
+
+For Jennifer's reviewer:
+- Invented toll details: tolls per boat on the landed catch, a rate raised by Caesarea
+  at the new year, a "toll roll", a strongbox Marcus tops up from his wages, a three-day
+  audit by a chief collector, dismissal and forfeited wages. The falsified roll is
+  sympathetic but is named false and punished.
+- Luke 15:20 in Letter 5 (as the story bible prescribes): Luke's Gospel was not written
+  by AD 40, so it stands as a saying of Jesus passed along. Same question as Letter 1.
+- Tabitha is only spoken of: "clothed half the widows in Joppa", "Esther's dearest
+  friend" (Acts 9:36–39 says she was full of good works; "collapsed" is the bible's beat).
+- Invented backstory: Marcus left at eighteen, eight years ago; Esther's monthly shards
+  went up the coast with any boat that would carry one; Letter 5 was written the week
+  she took ill; a grain ship for Cyprus.
+- Demas is left unresolved (his own story is Chapter 5).
+
+Art needed for Chapter 3:
+- 14 docks pictures: mooring posts, planking, slipway, fish table, net racks, lantern
+  post and Silas's net box, each "before" and "after"
+  (`loc_docks_<posts|planking|slipway|table|racks|lantern|netbox>_<before|after>`).
+- The Armor Rack generator (all seven generators are still missing).
+- Optional: a Chief Collector portrait (neutral and thinking are used) and a Dock
+  Worker portrait (he now gives an order).
+- Backgrounds: none — all five used already exist.
+
+Note: `content/scenes.json` (about 1,650 lines) and `content/orders.json` are long
+single files; splitting them per chapter would need a loader change.
 
 ## Art delivery and second Android bundle (2026-10-06)
 

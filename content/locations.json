@@ -59,5 +59,53 @@
         "after": "loc_well_paving_after"
       }
     ]
+  },
+  {
+    "id": "docks",
+    "name": "The fishing docks",
+    "areas": [
+      {
+        "id": "docks_posts",
+        "name": "Mooring posts",
+        "before": "loc_docks_posts_before",
+        "after": "loc_docks_posts_after"
+      },
+      {
+        "id": "docks_planking",
+        "name": "Dock planking",
+        "before": "loc_docks_planking_before",
+        "after": "loc_docks_planking_after"
+      },
+      {
+        "id": "docks_slipway",
+        "name": "Slipway",
+        "before": "loc_docks_slipway_before",
+        "after": "loc_docks_slipway_after"
+      },
+      {
+        "id": "docks_table",
+        "name": "Fish table",
+        "before": "loc_docks_table_before",
+        "after": "loc_docks_table_after"
+      },
+      {
+        "id": "docks_racks",
+        "name": "Net racks",
+        "before": "loc_docks_racks_before",
+        "after": "loc_docks_racks_after"
+      },
+      {
+        "id": "docks_lantern",
+        "name": "Lantern post",
+        "before": "loc_docks_lantern_before",
+        "after": "loc_docks_lantern_after"
+      },
+      {
+        "id": "docks_netbox",
+        "name": "Silas's net box",
+        "before": "loc_docks_netbox_before",
+        "after": "loc_docks_netbox_after"
+      }
+    ]
   }
 ]

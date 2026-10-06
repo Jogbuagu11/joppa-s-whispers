@@ -8,7 +8,13 @@
   {
     "chapter_id": "ch2",
     "title": "Chapter 2 Complete",
-    "body": "The well is mended and Elder Amos's name with it. But Marcus has stepped onto the docks, and Naomi's bread is on the ground. The next chapter is still rising. The story continues soon.",
+    "body": "The well is mended and Elder Amos's name with it. But a man with a Roman toll seal has stepped onto the docks, and Naomi knows his walk. It is her brother, Marcus.",
+    "button": "Go to the docks"
+  },
+  {
+    "chapter_id": "ch3",
+    "title": "Chapter 3 Complete",
+    "body": "The docks are sound and Marcus has come home. But Tabitha has collapsed, and Naomi is running for the upper street. The next chapter is still rising. The story continues soon.",
     "button": "Keep baking"
   }
 ]

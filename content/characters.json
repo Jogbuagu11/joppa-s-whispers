@@ -88,5 +88,10 @@
     "id": "dockworker2",
     "name": "Dock Worker",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
+  },
+  {
+    "id": "collector",
+    "name": "Chief Collector",
+    "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   }
 ]

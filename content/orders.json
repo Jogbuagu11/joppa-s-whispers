@@ -404,5 +404,273 @@
     },
     "text": "The elder kept faith with me and never said my name. Now I must keep faith with him. Stand with me?",
     "scene_id": null
+  },
+  {
+    "id": "ch3_o_001",
+    "chapter": 3,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_04",
+        "count": 2
+      }
+    ],
+    "rewards": {
+      "talents": 40,
+      "blessings": 2
+    },
+    "text": "Two flatbreads, little loaf. The lads won't haul timber on empty bellies. Nor will I, and I only watch.",
+    "scene_id": null
+  },
+  {
+    "id": "ch3_o_002",
+    "chapter": 3,
+    "character_id": "caleb",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      },
+      {
+        "item_id": "church_01",
+        "count": 2
+      }
+    ],
+    "rewards": {
+      "talents": 35,
+      "blessings": 2
+    },
+    "text": "A loaf. And two clay lamps for under the dock. Can't brace a post I can't see.",
+    "scene_id": null
+  },
+  {
+    "id": "ch3_o_003",
+    "chapter": 3,
+    "character_id": "joy",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "armor_01",
+        "count": 1
+      },
+      {
+        "item_id": "fruit_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 15,
+      "blessings": 2
+    },
+    "text": "Everybody says the toll man is bad. Nobody asked HIM. I want to know what's true. Can I ask him?",
+    "scene_id": null
+  },
+  {
+    "id": "ch3_o_004",
+    "chapter": 3,
+    "character_id": "dockworker",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_03",
+        "count": 2
+      }
+    ],
+    "rewards": {
+      "talents": 55,
+      "blessings": 3
+    },
+    "text": "A loaf and two lumps of dough for the fire, baker. We'll mend your dock. Just not with him watching.",
+    "scene_id": null
+  },
+  {
+    "id": "ch3_o_005",
+    "chapter": 3,
+    "character_id": "naomi",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "armor_02",
+        "count": 1
+      },
+      {
+        "item_id": "fruit_04",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 3
+    },
+    "text": "Hm. He says 'Sister' like a door slamming. Walk softly, Naomi. Patience. He is still your brother.",
+    "scene_id": null
+  },
+  {
+    "id": "ch3_o_006",
+    "chapter": 3,
+    "character_id": "demas",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_06",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_04",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 50,
+      "blessings": 3
+    },
+    "text": "Gather close, baker! A fig cake and a flatbread. A tale about a toll man wants a sweet finish, no?",
+    "scene_id": null
+  },
+  {
+    "id": "ch3_o_007",
+    "chapter": 3,
+    "character_id": "silas",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "armor_03",
+        "count": 1
+      },
+      {
+        "item_id": "fruit_03",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 3
+    },
+    "text": "No story today, little loaf. A crew to keep whole and Esther's grandson to turn away. Help me do right.",
+    "scene_id": null
+  },
+  {
+    "id": "ch3_o_008",
+    "chapter": 3,
+    "character_id": "zilpah",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_06",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 55,
+      "blessings": 3
+    },
+    "text": "A fig cake and a loaf, dear. They say the toll man has your grandmother's chin. People do notice a chin.",
+    "scene_id": null
+  },
+  {
+    "id": "ch3_o_009",
+    "chapter": 3,
+    "character_id": "marcus",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_04",
+        "count": 1
+      },
+      {
+        "item_id": "church_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 55,
+      "blessings": 3
+    },
+    "text": "A loaf, a flatbread and a lamp for the shed. I'll pay, Nomi. No, I will. Let me keep that much.",
+    "scene_id": null
+  },
+  {
+    "id": "ch3_o_010",
+    "chapter": 3,
+    "character_id": "marcus",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "armor_01",
+        "count": 1
+      },
+      {
+        "item_id": "armor_03",
+        "count": 1
+      },
+      {
+        "item_id": "fruit_06",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 50,
+      "blessings": 3
+    },
+    "text": "Savta said the truth is lighter to carry than the lie. I've carried the lie a long while, Nomi.",
+    "scene_id": null
+  },
+  {
+    "id": "ch3_o_011",
+    "chapter": 3,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_06",
+        "count": 1
+      },
+      {
+        "item_id": "church_04",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_04",
+        "count": 2
+      }
+    ],
+    "rewards": {
+      "talents": 90,
+      "blessings": 3
+    },
+    "text": "A fig cake, a bread basket, two flatbreads, little loaf. A mended dock wants a feast. So do the menders.",
+    "scene_id": null
+  },
+  {
+    "id": "ch3_o_012",
+    "chapter": 3,
+    "character_id": "marcus",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "armor_04",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 20,
+      "blessings": 3
+    },
+    "text": "Cold hands, wet nets, and half the dock still unsure of me, Nomi. Stand by me a while longer?",
+    "scene_id": null
   }
 ]
