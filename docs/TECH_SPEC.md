@@ -61,7 +61,7 @@ assets_incoming/  # Jennifer drops raw AI art here
 tool/             # scripts: process_assets.dart, validate_content.dart
 test/             # unit tests (mirror lib/domain and lib/data)
 integration_test/ # smoke_test.dart + flow tests
-admin/            # web admin panel (Milestone 20)
+admin/            # web admin panel (Milestone 22); published copy in web/public/admin
 web/              # marketing website (Lovable / TanStack Start + Vite), deployed by Vercel with Root Directory = web
 ```
 Rule: `domain/` has zero Flutter or Flame imports, so all game rules are testable without a phone.
@@ -205,6 +205,7 @@ Spiritual orders set `"kind": "spiritual"` and a `scene_id` that plays on comple
 | `wallet_grants` | every Pearl/item grant and removal tied to a purchase (audit trail) |
 | `device_tokens` | user id, FCM token, platform, notification settings, updated at |
 | `notifications_log` | every push sent: type, audience, time (for frequency caps) |
+| `admins` | accounts allowed to use the admin panel (rows added from the server side only) |
 
 - Row-level security on every table: users read/write only their own rows.
 - **Server-driven content:** the app bundles `content/` as a fallback. On launch it checks `content_versions`; if newer, it downloads the bundle (JSON + new art) from Supabase Storage, validates it, and switches over. If download or validation fails, it keeps the current content. A bad content push must never crash the app.
@@ -285,6 +286,8 @@ Never send personal data in events.
 - Settings has separate toggles: reminders, events, new chapters.
 - Max 1 push per day per player; no notifications 9 pm–9 am in the player's time zone.
 - Pushes are sent by a Supabase Edge Function using the FCM HTTP v1 API, triggered from the admin panel or on a schedule. The Firebase service account key lives only in Edge Function secrets.
+- As built (Milestone 22): `send-push` accepts only a signed-in admin, sends to the `events` or `chapters` topic, and the database (`reserve_push`) allows one push per 24 hours for the whole game. Per-player sending, scheduled pushes and time-zone quiet hours are not built.
+- Admin panel: `admin/` (plain HTML + JavaScript, no build step; supabase-js 2.45.4 kept beside it).
 - Tapping a notification opens the matching screen (event board, new chapter, rooftop board).
 
 ## 10. Art asset specs

@@ -2,7 +2,7 @@
 -- (Before this only signed-in players could read events, and they could read
 -- every event, including ones still being prepared.)
 -- Events hold no personal data: a name, dates and the event's game settings.
--- NOT YET APPLIED to the live project: needs Jennifer's OK.
+-- Applied to the live project on 2026-10-06 with Jennifer's OK.
 
 drop policy if exists "Authenticated users can read events" on events;
 

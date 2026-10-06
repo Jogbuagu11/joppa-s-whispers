@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 21 — Events system (built; needs Jennifer to approve a first event and one server change before it can be seen). Milestones 14 and 16–20 are also built and awaiting her checks. Next to build: 22 — Admin panel.
+## Current milestone: 22 — Admin panel (built; needs Jennifer to sign in and try it). Milestones 14 and 16–21 are also built and awaiting her checks. Next to build: 23 — Chapters 2–6 (one chapter at a time).
 
 ---
 
@@ -29,8 +29,8 @@
 | 18 | Rewarded ads | BUILT — not tagged: a real (test) ad has not yet been watched on a phone |
 | 19 | Firebase: analytics + crash reporting | BUILT — not tagged: Jennifer has not yet confirmed events and a test crash in the Firebase console |
 | 20 | Notifications | BUILT — not tagged: no real notification has been seen on a phone; push needs Jennifer's Apple push key |
-| 21 | Events system | BUILT — not tagged: no real event exists yet; the server permission change is not applied; needs an event theme approved by Jennifer |
-| 22 | Admin panel | Not started |
+| 21 | Events system | BUILT — not tagged: the Joppa Boat Festival is live on the server (to 2026-10-27); Jennifer has not yet seen it on a phone |
+| 22 | Admin panel | BUILT — not tagged: Jennifer has not yet signed in and used it; push needs the Firebase key on the server |
 | 23 | Chapters 2–6 | Not started |
 | 24 | Polish & accessibility | Not started |
 | 25 | Release builds | Not started |
@@ -999,6 +999,96 @@ Known limits (from the review; accepted for now):
   Manna spent on the event board is now saved like any other change; an account sync
   cannot swap the game under an open event; a cancelled saver can never write.
 
+## Milestone 22 — state (2026-10-06)
+
+BUILT, NOT TAGGED. Jennifer's instructions (2026-10-06): the admin is only her; first
+event is the Boat Festival ("you can choose from now on" — Claude chooses later themes);
+yes to applying the server change.
+
+Done on the LIVE server (project sincvubcsnqzjefzsifq):
+- Migration `20261006000001_events_public_read.sql` applied (every player can read
+  switched-on events).
+- Migration `20261006000002_admins.sql` applied: an `admins` table and `is_admin()`;
+  admins can manage events, add content releases and upload bundle files, and read the
+  record of pushes sent. Nobody can make themselves an admin (rows are added only from
+  the server side).
+- One admin account created for Jennifer (her own email address) with a generated password. The
+  password is in `~/Downloads/WhispersofJoppa-admin-login.txt` on this Mac ONLY (not in
+  the project, not in git, never shown in chat). She should change it at first sign-in.
+- `send-push` rewritten and deployed: only a signed-in admin may call it; event-news or
+  new-chapter audience only; at most one push per 24 hours; recorded in
+  `notifications_log`. It answers "Push is not set up yet" until the Firebase service
+  account JSON is stored as the `FIREBASE_SERVICE_ACCOUNT` secret.
+- The first event row, `boat_festival_2026` ("Joppa Boat Festival", 2026-10-06 to
+  2026-10-27 UTC), switched on. Same content as `content/events.json`.
+- Checked on the live server: a visitor cannot add or delete events, add a content
+  release or add an admin; the admin can add, see and delete events and cannot add
+  another admin; send-push refuses anyone not signed in.
+
+The panel (`admin/index.html`, `admin.js`, `admin.css`; no build step):
+- Events: list, create from a template, edit, switch on/off, delete. It runs the same
+  checks as the game before saving (the game checks again on every phone).
+- Content: release a content file built with `dart run tool/build_content_bundle.dart`
+  (must be a higher version than the last release; cannot be undone from the panel).
+- Notifications: title, message, audience; the list of what was sent.
+- Account: change password.
+- Published with the website at https://joppa-s-whispers.vercel.app/admin/index.html
+  (copies in `web/public/admin/`; sign-in required; search engines told not to list it)
+  and copied to `~/Downloads/WhispersofJoppa-Admin/` (open `index.html`).
+- "Edit content" here means releasing a content file Claude has built and checked;
+  editing individual items or dialogue in the browser is not built.
+
+The Joppa Boat Festival (first event):
+- 5×7 board; chain "Boatbuilding": Cedar log → Sawn plank → Keel → Planked hull →
+  Ribbed hull → Sealed hull → Mast and sail → Festival boat; generator "Caleb's
+  Boatyard" (1 Manna a tap; tier 1 85%, tier 2 15%); 20 reward steps
+  paying 10–50 Manna or 20–300 Talents. Names by the content-writer.
+- (Reward steps now run from 25 to 7,000 points; see the review notes below.)
+- Decisions: tier 8 is "Festival boat", not "The Leah" (Caleb only begins the Leah in
+  Chapter 5; naming it would spoil that). No art yet: coloured placeholders.
+- Content-writer notes for Jennifer's reviewer: shell-first building order (planked
+  hull before ribs) is period-correct; cedar/oak are plausible, not certain; avoid
+  painted prow "eyes" in the art (a protective charm in the period).
+
+Security review (2026-10-06) and what was done:
+- It found no way for a visitor or an ordinary signed-in player to become an admin or
+  to change anything. Re-tested on the live server with a throw-away player account
+  (since deleted): cannot add, change or delete events, add a release, upload a file,
+  read the admin list or the push record, or send a push. The admin can upload a bundle
+  file but cannot overwrite or delete one.
+- One push a day is now enforced in the database (`reserve_push`, migration
+  `20261006000003_push_limit.sql`, applied): the record is written before sending, under
+  a lock, so two requests at once cannot both pass.
+- The page loads nothing from other websites (supabase-js 2.45.4 is kept beside it), has
+  a strict content policy, refuses to run inside another page's frame, and keeps the
+  sign-in in memory only: **closing or reloading the page signs out.**
+- The page's event checks mirror the game's and are tested (`admin/event_rules_test.ts`);
+  a test fails if the published copy in `web/public/admin` is stale.
+- The Boat Festival's reward track was lengthened (last step 7,000 points, was 2,600):
+  the review estimated a normal player would have finished the shorter one in 4–7 days
+  of a three-week event. Rough guide: about 3 points per Manna spent.
+
+Assumptions to confirm / known gaps:
+- Quiet hours (no pushes 9 pm–9 am in the player's own time zone) cannot be enforced for
+  a push sent to everyone at once; the page only reminds the sender. One push a day is
+  for the whole game, not per player. Scheduled pushes and "event ending, only to
+  players who joined" are not built.
+- The admin account has a password only (no second step). Worth turning on later.
+- The panel is on the same web address as the marketing site; a dedicated address would
+  separate them further.
+- If a release stops half way (file uploaded, release not recorded) pressing Release
+  again finishes it.
+- `send-push` no longer uses a `FIREBASE_PROJECT_ID` secret (the project comes from the
+  Firebase key itself). Only the rules in `send-push/rules.ts` are unit tested, not the
+  function's sign-in checks end to end (those were tested live, above).
+- The Boat Festival has no season pass, decoration, side-plot scenes or art yet (see
+  Milestone 21's list).
+- The app's own `content/events.json` carries the same event as the offline fallback.
+
+Not verified: nobody has clicked through the admin page in a browser yet (its scripts
+were syntax-checked, its event checks tested, and every server permission it relies on
+tested directly).
+
 ## First Android bundle for Google Play (2026-10-05)
 
 Jennifer asked for a bundle to upload to Google Play ahead of Milestone 25.
@@ -1066,6 +1156,11 @@ beside the game with its history kept. A backup of the original is in the GitHub
 ## Waiting on Jennifer
 
 **To do next (added 2026-10-05, for 2026-10-06) — Google Play, after the first bundle upload:**
+- Milestone 22: sign in at https://joppa-s-whispers.vercel.app/admin/index.html with the
+  details in `Downloads/WhispersofJoppa-admin-login.txt`, change the password, and look
+  at the Events tab (the Boat Festival should be listed as "Yes, now").
+- For pushes: Firebase console → Project settings → Service accounts → Generate new
+  private key; tell Claude the file name so it can be stored on the server.
 - Milestone 21: choose the first event theme (LIVEOPS section 3) and say whether Claude
   may apply the small server change that lets all players see switched-on events.
 - Milestone 20 check: on a phone, tap the bell, turn on "Gentle reminders", allow

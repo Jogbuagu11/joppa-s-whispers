@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://sincvubcsnqzjefzsifq.supabase.co; img-src 'self'; base-uri 'none'; form-action 'none'">
+<title>Whispers of Joppa — Admin</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<main>
+  <h1>Whispers of Joppa — Admin</h1>
+
+  <section id="signin" class="card">
+    <h2>Sign in</h2>
+    <label for="email">Email</label><input id="email" type="email" autocomplete="username">
+    <label for="password">Password</label><input id="password" type="password" autocomplete="current-password">
+    <button id="signinBtn">Sign in</button>
+    <div id="signinMsg" class="msg"></div>
+  </section>
+
+  <section id="app" hidden>
+    <nav>
+      <button data-tab="events" class="on">Events</button>
+      <button data-tab="content">Content</button>
+      <button data-tab="push">Notifications</button>
+      <button data-tab="account">Account</button>
+      <button id="signoutBtn" class="plain">Sign out</button>
+    </nav>
+
+    <div id="tab-events">
+      <h2>Events</h2>
+      <div class="card">
+        <table><thead><tr><th>Event</th><th>Starts</th><th>Ends</th><th>Players see it?</th><th></th></tr></thead><tbody id="eventRows"></tbody></table>
+        <button id="newEventBtn">New event</button>
+        <div id="eventsMsg" class="msg"></div>
+      </div>
+      <div class="card" id="eventForm" hidden>
+        <h2 id="eventFormTitle">Event</h2>
+        <div class="row">
+          <div><label for="evId">Id (lowercase letters, digits, _ — never re-use an old id)</label><input id="evId"></div>
+          <div><label for="evName">Name (up to 40 characters)</label><input id="evName" maxlength="40"></div>
+        </div>
+        <div class="row">
+          <div><label for="evStart">Starts (your local time)</label><input id="evStart" type="datetime-local"></div>
+          <div><label for="evEnd">Ends (your local time)</label><input id="evEnd" type="datetime-local"></div>
+        </div>
+        <label><input id="evActive" type="checkbox">Switched on (players can see it between its start and end)</label>
+        <label for="evConfig">Board, chain, generator and reward steps</label>
+        <textarea id="evConfig" spellcheck="false"></textarea>
+        <div class="hint">On an event that is already running, only add reward steps at the end. Do not insert, reorder or remove steps.</div>
+        <button id="saveEventBtn">Check and save</button>
+        <button id="cancelEventBtn" class="plain">Cancel</button>
+        <button id="deleteEventBtn" class="danger">Delete</button>
+        <div id="eventMsg" class="msg"></div>
+      </div>
+    </div>
+
+    <div id="tab-content" hidden>
+      <h2>Content releases</h2>
+      <div class="card">
+        <div id="contentNow">Loading…</div>
+        <label for="bundleFile">Content file to release (content_v…json, made by Claude)</label>
+        <input id="bundleFile" type="file" accept="application/json,.json">
+        <label for="bundleNotes">Note (players can read this, keep it plain)</label>
+        <input id="bundleNotes" maxlength="200">
+        <button id="publishBtn">Release to players</button>
+        <div class="hint">A release cannot be taken back from here. Players get it the next time they open the game.</div>
+        <div id="contentMsg" class="msg"></div>
+      </div>
+    </div>
+
+    <div id="tab-push" hidden>
+      <h2>Send a notification</h2>
+      <div class="card">
+        <label for="pushTopic">Who gets it</label>
+        <select id="pushTopic"><option value="events">Players who turned on event news</option><option value="chapters">Players who turned on new-chapter news</option></select>
+        <label for="pushTitle">Title (up to 50 characters)</label><input id="pushTitle" maxlength="50">
+        <label for="pushBody">Message (up to 150 characters)</label><input id="pushBody" maxlength="150">
+        <button id="pushBtn">Send</button>
+        <div class="hint">At most one notification a day. Please send between 9 am and 9 pm for most of your players.</div>
+        <div id="pushMsg" class="msg"></div>
+      </div>
+      <h2>Sent so far</h2>
+      <div class="card"><table><tbody id="pushRows"></tbody></table></div>
+    </div>
+
+    <div id="tab-account" hidden>
+      <h2>Change password</h2>
+      <div class="card">
+        <label for="newPw">New password (at least 12 characters)</label><input id="newPw" type="password" autocomplete="new-password">
+        <label for="newPw2">Again</label><input id="newPw2" type="password" autocomplete="new-password">
+        <button id="changePwBtn">Change password</button>
+        <div id="accountMsg" class="msg"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- supabase-js 2.45.4, kept beside this page so nothing is loaded from elsewhere. -->
+<script src="supabase.min.js"></script>
+<script src="event_rules.js"></script>
+<script src="admin.js"></script>
+<script src="admin_more.js"></script>
+</body>
+</html>

@@ -1,1 +1,168 @@
-[]
+[
+  {
+    "id": "boat_festival_2026",
+    "name": "Joppa Boat Festival",
+    "starts_at": "2026-10-06T00:00:00Z",
+    "ends_at": "2026-10-27T00:00:00Z",
+    "config": {
+      "board": {
+        "cols": 5,
+        "rows": 7
+      },
+      "chain": {
+        "id": "boat",
+        "placeholder_color": "#3A7CA5",
+        "name": "Boatbuilding",
+        "tiers": [
+          {
+            "tier": 1,
+            "item_id": "boat_01",
+            "name": "Cedar log",
+            "sell": 1
+          },
+          {
+            "tier": 2,
+            "item_id": "boat_02",
+            "name": "Sawn plank",
+            "sell": 2
+          },
+          {
+            "tier": 3,
+            "item_id": "boat_03",
+            "name": "Keel",
+            "sell": 4
+          },
+          {
+            "tier": 4,
+            "item_id": "boat_04",
+            "name": "Planked hull",
+            "sell": 8
+          },
+          {
+            "tier": 5,
+            "item_id": "boat_05",
+            "name": "Ribbed hull",
+            "sell": 15
+          },
+          {
+            "tier": 6,
+            "item_id": "boat_06",
+            "name": "Sealed hull",
+            "sell": 30
+          },
+          {
+            "tier": 7,
+            "item_id": "boat_07",
+            "name": "Mast and sail",
+            "sell": 60
+          },
+          {
+            "tier": 8,
+            "item_id": "boat_08",
+            "name": "Festival boat",
+            "sell": 120
+          }
+        ]
+      },
+      "generator": {
+        "id": "gen_boatyard",
+        "name": "Caleb's Boatyard",
+        "chain_id": "boat",
+        "col": 2,
+        "row": 6,
+        "levels": [
+          {
+            "level": 1,
+            "odds": {
+              "1": 0.85,
+              "2": 0.15
+            }
+          }
+        ]
+      },
+      "milestones": [
+        {
+          "points": 25,
+          "manna": 10
+        },
+        {
+          "points": 60,
+          "talents": 20
+        },
+        {
+          "points": 120,
+          "manna": 10
+        },
+        {
+          "points": 190,
+          "talents": 30
+        },
+        {
+          "points": 270,
+          "manna": 15
+        },
+        {
+          "points": 380,
+          "talents": 40
+        },
+        {
+          "points": 510,
+          "manna": 15
+        },
+        {
+          "points": 675,
+          "talents": 50
+        },
+        {
+          "points": 865,
+          "manna": 20
+        },
+        {
+          "points": 1080,
+          "talents": 75
+        },
+        {
+          "points": 1350,
+          "manna": 20
+        },
+        {
+          "points": 1675,
+          "talents": 100
+        },
+        {
+          "points": 2050,
+          "manna": 25
+        },
+        {
+          "points": 2480,
+          "talents": 125
+        },
+        {
+          "points": 2970,
+          "manna": 25
+        },
+        {
+          "points": 3510,
+          "talents": 150
+        },
+        {
+          "points": 4185,
+          "manna": 30
+        },
+        {
+          "points": 4995,
+          "talents": 200
+        },
+        {
+          "points": 5940,
+          "manna": 40
+        },
+        {
+          "points": 7000,
+          "manna": 50,
+          "talents": 300
+        }
+      ]
+    }
+  }
+]

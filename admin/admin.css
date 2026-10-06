@@ -1,0 +1,25 @@
+/* Whispers of Joppa admin panel */
+:root { --ink:#1a1205; --gold:#d4802a; --cream:#f3e5c8; --card:#2a1f08; --line:#5a4a2a; }
+* { box-sizing: border-box; }
+body { margin:0; font:15px/1.45 -apple-system, "Segoe UI", sans-serif; background:var(--ink); color:var(--cream); }
+main { max-width: 860px; margin: 0 auto; padding: 16px; }
+h1 { color:var(--gold); font-size:22px; margin:8px 0 16px; }
+h2 { color:var(--gold); font-size:17px; margin:20px 0 8px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; }
+label { display:block; margin:10px 0 4px; font-size:13px; color:#bfa77a; }
+input, textarea, select { width:100%; padding:9px; border-radius:8px; border:1px solid var(--line); background:#140e03; color:var(--cream); font:inherit; }
+textarea { min-height:260px; font:13px/1.4 ui-monospace, Menlo, monospace; }
+input[type=checkbox] { width:auto; margin-right:6px; }
+button { padding:9px 14px; border-radius:8px; border:0; background:var(--gold); color:#000; font:inherit; font-weight:600; cursor:pointer; margin:8px 8px 0 0; }
+button.plain { background:transparent; color:var(--cream); border:1px solid var(--line); }
+button.danger { background:#8b2a1a; color:#fff; }
+button:disabled { opacity:.5; cursor:default; }
+nav button { background:transparent; color:var(--cream); border:1px solid var(--line); }
+nav button.on { background:var(--gold); color:#000; border-color:var(--gold); }
+table { width:100%; border-collapse:collapse; }
+td, th { text-align:left; padding:7px 6px; border-bottom:1px solid var(--line); vertical-align:top; font-size:14px; }
+.msg { margin-top:10px; white-space:pre-wrap; }
+.ok { color:#9bd18b; } .bad { color:#ff9c8a; } .hint { color:#bfa77a; font-size:13px; }
+.row { display:flex; gap:12px; flex-wrap:wrap; } .row > div { flex:1 1 220px; }
+[hidden] { display:none !important; }
+.pre { white-space: pre-line; }
