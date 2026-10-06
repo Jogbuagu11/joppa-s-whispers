@@ -22,6 +22,7 @@ void main() {
     lettersJson: _read('letters'),
     tutorialJson: _read('tutorial'),
     endingsJson: _read('endings'),
+    productsJson: _read('products'),
   );
   if (problems.isEmpty) {
     stdout.writeln('Content OK');

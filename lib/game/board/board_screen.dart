@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/cloud_save_store.dart';
 import 'package:whispers_of_joppa/domain/cloud_sync.dart';
+import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/letters/letters_screen.dart';
@@ -12,6 +13,7 @@ import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
 import 'package:whispers_of_joppa/features/settings/account_screen.dart';
 import 'package:whispers_of_joppa/features/restoration/location_screen.dart';
 import 'package:whispers_of_joppa/features/story/scene_screen.dart';
+import 'package:whispers_of_joppa/features/shop/shop_screen.dart';
 import 'package:whispers_of_joppa/features/story/chapter_ending.dart';
 import 'package:whispers_of_joppa/features/story/task_bar.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_banner.dart';
@@ -20,6 +22,7 @@ import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
 
 part 'board_screen_actions.dart';
+part 'board_screen_routes.dart';
 
 final _log = Logger('BoardScreen');
 
@@ -33,6 +36,7 @@ class BoardScreen extends StatefulWidget {
     this.playTutorial = true,
     this.cloud,
     this.content,
+    this.shop,
   });
 
   /// The player's account and cloud save. Null (in tests, or if the backend
@@ -42,6 +46,10 @@ class BoardScreen extends StatefulWidget {
   /// Where content comes from. Null (in tests) means the app's own content
   /// only, with no check for newer content on the server.
   final ContentRepository? content;
+
+  /// The Pearl shop. Null (in tests, or where purchases are not set up)
+  /// hides the shop; Pearls already owned are still shown.
+  final PurchaseCoordinator? shop;
 
   /// Whether a new game shows the tutorial hints (with free early taps).
   /// Tests that are about something else turn this off.
@@ -62,7 +70,8 @@ class BoardScreen extends StatefulWidget {
   State<BoardScreen> createState() => _BoardScreenState();
 }
 
-class _BoardScreenState extends State<BoardScreen> with _BoardScreenActions {
+class _BoardScreenState extends State<BoardScreen>
+    with _BoardState, _BoardRoutes, _BoardScreenActions {
   @override
   Widget build(BuildContext context) {
     final session = _session;
@@ -90,7 +99,17 @@ class _BoardScreenState extends State<BoardScreen> with _BoardScreenActions {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  WalletChips(controller: session.orders),
+                  ListenableBuilder(
+                    listenable: session.tutorial,
+                    builder: (context, _) => WalletChips(
+                      controller: session.orders,
+                      pearls: session.purchases.pearlsListenable,
+                      // No purchase offers during the tutorial (GDD 11).
+                      onOpenShop: widget.shop != null && session.tutorial.isOver
+                          ? _openShop
+                          : null,
+                    ),
+                  ),
                   if (widget.cloud != null)
                     IconButton(
                       key: const Key('account_button'),

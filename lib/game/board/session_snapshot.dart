@@ -2,6 +2,8 @@
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/tutorial.dart';
 import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
+import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
+import 'package:whispers_of_joppa/features/story/endings_tracker.dart';
 import 'package:whispers_of_joppa/features/story/story_controller.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
@@ -14,7 +16,8 @@ SaveState buildSnapshot({
   required OrdersController orders,
   required StoryController story,
   required TutorialController tutorial,
-  required Set<String> endingsSeen,
+  required EndingsTracker endings,
+  required PurchasesController purchases,
   required int contentVersion,
 }) => SaveState(
   items: game.snapshotItems(),
@@ -29,7 +32,10 @@ SaveState buildSnapshot({
   completedTasks: story.completedTasks,
   tutorialStep: tutorial.isOver ? tutorialFinished : tutorial.index,
   tutorialFreeTapsUsed: tutorial.freeTapsUsed,
-  endingsSeen: endingsSeen.toList(),
+  endingsSeen: endings.seen,
+  pearls: purchases.pearls,
+  appliedTransactions: purchases.appliedTransactions,
+  ownedProducts: purchases.ownedProducts,
   contentVersion: contentVersion,
   lastOrderSkip: orders.book.lastSkip,
 );

@@ -1,16 +1,9 @@
-// What the board screen does: loading the game, story tasks, and the screens
-// opened from the board (location, letters, account). The layout itself is in
-// board_screen.dart.
+// What the board screen does: loading the game, story tasks, and the
+// player's account. The screens opened from the board are in
+// board_screen_routes.dart; the layout is in board_screen.dart.
 part of 'board_screen.dart';
 
-mixin _BoardScreenActions on State<BoardScreen> {
-  BoardSession? _session;
-  bool _popupOpen = false;
-  bool _busy = false;
-  bool _syncing = false;
-  AppLifecycleListener? _lifecycle;
-  String? _error;
-
+mixin _BoardScreenActions on _BoardRoutes {
   @override
   void initState() {
     super.initState();
@@ -78,19 +71,8 @@ mixin _BoardScreenActions on State<BoardScreen> {
     final session = _session;
     final ending = session?.pendingEnding;
     if (session == null || ending == null || !mounted) return;
-    session.markEndingSeen(ending.chapterId);
+    session.endings.markSeen(ending.chapterId);
     await showChapterEnding(context, ending);
-  }
-
-  /// The location button: shows the current chapter's location.
-  Future<void> _openLocation() async {
-    if (_busy) return;
-    _busy = true;
-    try {
-      await _showLocation(_session?.story.chapter?.locationId);
-    } finally {
-      _busy = false;
-    }
   }
 
   /// The account button: sign in, sync, sign out, delete account.
@@ -173,6 +155,9 @@ mixin _BoardScreenActions on State<BoardScreen> {
   void _onLifecycle(AppLifecycleState state) {
     final cloud = widget.cloud;
     final session = _session;
+    if (state == AppLifecycleState.resumed) {
+      unawaited(widget.shop?.resume());
+    }
     if (cloud == null || session == null || !cloud.signedIn) return;
     if (state == AppLifecycleState.paused) {
       unawaited(cloud.afterLocalSave(session.snapshot(), force: true));
@@ -184,45 +169,6 @@ mixin _BoardScreenActions on State<BoardScreen> {
       cloud.reset();
       unawaited(_syncWithAccount());
     }
-  }
-
-  /// The letters button: opens the keepsake book.
-  Future<void> _openLetters() async {
-    final session = _session;
-    if (session == null || _busy || !mounted) return;
-    _busy = true;
-    try {
-      await Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => LettersScreen(
-            letters: session.letters,
-            foundLetterIds: session.story.foundLetterIds,
-          ),
-        ),
-      );
-    } finally {
-      _busy = false;
-    }
-  }
-
-  Future<void> _showLocation(String? locationId, {String? justRestored}) async {
-    final session = _session;
-    final location = session?.locations[locationId];
-    if (session == null || location == null) {
-      _log.warning('No location to show for "$locationId"');
-      return;
-    }
-    if (!mounted) return;
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => LocationScreen(
-          location: location,
-          restoredAreaIds: session.story.restoredAreaIds,
-          availableAssets: session.assetPaths,
-          justRestoredAreaId: justRestored,
-        ),
-      ),
-    );
   }
 
   /// Loads the game. [resuming] is true when reloading after a cloud save
@@ -240,6 +186,7 @@ mixin _BoardScreenActions on State<BoardScreen> {
         await session.dispose();
         return;
       }
+      _attachShop(session);
       widget.cloud?.blockUploads = session.downgraded;
       session.saver.onSaved = (state) => widget.cloud?.afterLocalSave(state);
       // Look for newer content in the background; it is used from next launch.

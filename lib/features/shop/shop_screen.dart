@@ -1,0 +1,148 @@
+// The Pearl shop: the store's products with the store's own prices.
+import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
+import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
+import 'package:whispers_of_joppa/services/store_service.dart';
+
+const _gold = Color(0xFFD4802A);
+const _cream = Color(0xFFF3E6C8);
+const _ink = Color(0xFF1A1205);
+
+class ShopScreen extends StatefulWidget {
+  const ShopScreen({super.key, required this.shop, required this.purchases});
+
+  final PurchaseCoordinator shop;
+  final PurchasesController purchases;
+
+  @override
+  State<ShopScreen> createState() => _ShopScreenState();
+}
+
+class _ShopScreenState extends State<ShopScreen> {
+  late final Future<List<StoreProduct>> _products = widget.shop.loadProducts();
+
+  @override
+  Widget build(BuildContext context) {
+    final shop = widget.shop;
+    return Scaffold(
+      key: const Key('shop_screen'),
+      backgroundColor: _ink,
+      appBar: AppBar(
+        backgroundColor: _ink,
+        foregroundColor: _gold,
+        title: const Text('Pearl Shop'),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: ListenableBuilder(
+                listenable: widget.purchases,
+                builder: (context, _) => Text(
+                  'You have ${widget.purchases.pearls} Pearls',
+                  key: const Key('shop_pearls'),
+                  style: const TextStyle(color: _cream, fontSize: 16),
+                ),
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder<List<StoreProduct>>(
+                future: _products,
+                builder: (context, snapshot) {
+                  final products = snapshot.data;
+                  if (products == null) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: _gold),
+                    );
+                  }
+                  if (products.isEmpty) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Text(
+                          'The shop is not available right now. '
+                          'Please try again later.',
+                          key: Key('shop_unavailable'),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: _cream),
+                        ),
+                      ),
+                    );
+                  }
+                  return ListenableBuilder(
+                    listenable: Listenable.merge([widget.purchases, shop.busy]),
+                    builder: (context, _) => ListView(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      children: [
+                        for (final product in products) _tile(product),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            ValueListenableBuilder<String?>(
+              valueListenable: shop.message,
+              builder: (context, message, _) => message == null
+                  ? const SizedBox.shrink()
+                  : Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                      child: Text(
+                        message,
+                        key: const Key('shop_message'),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: _cream, fontSize: 14),
+                      ),
+                    ),
+            ),
+            TextButton(
+              key: const Key('shop_restore'),
+              onPressed: shop.restore,
+              child: const Text(
+                'Restore purchases',
+                style: TextStyle(color: _gold),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _tile(StoreProduct product) {
+    final shop = widget.shop;
+    final owned = !widget.purchases.canBuyProduct(product.id);
+    final gives = shop.products[product.id];
+    final contents = [
+      if ((gives?.pearls ?? 0) > 0) '${gives?.pearls} Pearls',
+      if ((gives?.manna ?? 0) > 0) '${gives?.manna} Manna',
+      if (gives?.generatorLevel != null)
+        'a level-${gives?.generatorLevel} generator',
+    ].join(' + ');
+    return Card(
+      key: Key('shop_product_${product.id}'),
+      color: const Color(0xFF2A1F08),
+      child: ListTile(
+        // Always say exactly what the player gets.
+        title: Text(contents, style: const TextStyle(color: _cream)),
+        subtitle: Text(
+          product.title,
+          style: const TextStyle(color: Color(0xFFBFA77A), fontSize: 12),
+        ),
+        trailing: FilledButton(
+          key: Key('shop_buy_${product.id}'),
+          onPressed: owned || shop.busy.value
+              ? null
+              : () => shop.buy(product.id),
+          style: FilledButton.styleFrom(backgroundColor: _gold),
+          child: Text(
+            // The price is the store's own, never written in the app.
+            owned ? 'Owned' : product.price,
+            style: const TextStyle(color: Colors.black),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -99,6 +99,22 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
       ),
   ];
 
+  /// Raises every generator on the board to at least [level] (a purchase
+  /// reward). Generators already at or above it are left alone.
+  void raiseGeneratorsTo(int level) {
+    for (int i = 0; i < generatorPlacements.length; i++) {
+      final p = generatorPlacements[i];
+      if (p.gen.level < level) {
+        generatorPlacements[i] = (
+          gen: p.gen.atLevel(level),
+          col: p.col,
+          row: p.row,
+        );
+      }
+    }
+    _boardTouched();
+  }
+
   @override
   Map<String, int> itemCounts() => countItems(_board);
 

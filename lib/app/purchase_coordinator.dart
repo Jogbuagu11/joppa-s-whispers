@@ -18,8 +18,9 @@ class PurchaseCoordinator {
   final StoreService store;
   final PurchaseBackend backend;
 
-  /// product_id -> what it gives (from content/products.json).
-  final Map<String, ProductModel> products;
+  /// product_id -> what it gives (from content/products.json). Set again
+  /// whenever a game session loads its content.
+  Map<String, ProductModel> products;
 
   /// Puts server-confirmed purchases into the game (each once) and returns
   /// what was added. Null until a game is attached.
@@ -36,7 +37,7 @@ class PurchaseCoordinator {
   PurchaseCoordinator({
     required this.store,
     required this.backend,
-    required this.products,
+    this.products = const {},
   });
 
   /// Starts listening to the store. Purchases left unfinished by an earlier
@@ -90,7 +91,20 @@ class PurchaseCoordinator {
     }
   }
 
-  /// Asks the store to report purchases again and delivers anything owed.
+  /// Run at launch and when the app comes back: quietly picks up purchases
+  /// left unfinished and delivers anything the server holds for this player.
+  /// Never prompts the player.
+  Future<void> resume() async {
+    try {
+      await store.redeliverUnfinished();
+    } on Exception catch (e) {
+      _log.warning('Could not check for unfinished purchases: $e');
+    }
+    await deliverConfirmed();
+  }
+
+  /// The "Restore purchases" button: asks the store to report purchases
+  /// again and delivers anything owed.
   Future<void> restore() async {
     try {
       await store.restore();

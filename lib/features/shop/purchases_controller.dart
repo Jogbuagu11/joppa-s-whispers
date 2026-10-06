@@ -30,6 +30,21 @@ class PurchasesController extends ChangeNotifier {
 
   int get pearls => _pearls;
 
+  /// The Pearls count as something a widget can listen to.
+  late final ValueNotifier<int> pearlsListenable = ValueNotifier<int>(_pearls);
+
+  @override
+  void notifyListeners() {
+    pearlsListenable.value = _pearls;
+    super.notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    pearlsListenable.dispose();
+    super.dispose();
+  }
+
   /// Written to the save file.
   List<String> get appliedTransactions => _applied.toList();
   List<String> get ownedProducts => _owned.toList();

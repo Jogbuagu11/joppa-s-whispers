@@ -108,6 +108,22 @@ void main() {
   );
 
   test(
+    'resume quietly delivers an unfinished purchase without a restore prompt',
+    () async {
+      backend.answer = VerifyResult.unavailable;
+      await shop.buy('pearls_tier1');
+      await settle();
+      backend.answer = VerifyResult.confirmed;
+      await shop.resume();
+      await settle();
+      expect(wallet.pearls, 50);
+      expect(store.quietChecks, 1);
+      // The player was never sent through the store's restore flow.
+      expect(store.restores, 0);
+    },
+  );
+
+  test(
     'a purchase confirmed by the server but not yet in the game is delivered',
     () async {
       // The app died after the server recorded it and before it was granted.

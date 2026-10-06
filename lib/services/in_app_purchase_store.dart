@@ -93,4 +93,11 @@ class InAppPurchaseStore implements StoreService {
 
   @override
   Future<void> restore() => _iap.restorePurchases();
+
+  @override
+  Future<void> redeliverUnfinished() async {
+    // The App Store re-sends unfinished purchases by itself as soon as the
+    // app listens. Google Play has to be asked, and asking is silent there.
+    if (Platform.isAndroid) await _iap.restorePurchases();
+  }
 }

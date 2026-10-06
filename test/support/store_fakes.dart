@@ -71,6 +71,16 @@ class FakeStore implements StoreService {
     unfinished.removeWhere((p) => p.transactionId == purchase.transactionId);
   }
 
+  int quietChecks = 0;
+
+  @override
+  Future<void> redeliverUnfinished() async {
+    quietChecks++;
+    for (final purchase in [...unfinished]) {
+      _controller.add(purchase);
+    }
+  }
+
   @override
   Future<void> restore() async {
     restores++;

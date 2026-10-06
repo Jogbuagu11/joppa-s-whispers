@@ -1,4 +1,5 @@
 // The row of order cards above the board, and the Talents / Blessings count.
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/features/orders/order_card.dart';
@@ -58,9 +59,21 @@ class OrdersBar extends StatelessWidget {
 
 /// Shows how many Talents and Blessings the player has.
 class WalletChips extends StatelessWidget {
-  const WalletChips({super.key, required this.controller});
+  const WalletChips({
+    super.key,
+    required this.controller,
+    this.pearls,
+    this.onOpenShop,
+  });
 
   final OrdersController controller;
+
+  /// Shows the Pearls count; null hides it.
+  final ValueListenable<int>? pearls;
+
+  /// Opens the Pearl shop when the Pearls count is tapped; null means the
+  /// shop is not offered (for example during the tutorial).
+  final VoidCallback? onOpenShop;
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +90,17 @@ class WalletChips extends StatelessWidget {
             controller.blessings,
             const Key('blessings_count'),
           ),
+          if (pearls case final pearls?) ...[
+            const SizedBox(height: 4),
+            ValueListenableBuilder<int>(
+              valueListenable: pearls,
+              builder: (context, count, _) => GestureDetector(
+                key: const Key('pearls_chip'),
+                onTap: onOpenShop,
+                child: _chip('Pearls', count, const Key('pearls_count')),
+              ),
+            ),
+          ],
         ],
       ),
     );

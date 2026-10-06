@@ -51,6 +51,17 @@ class MannaController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Adds bought or gifted Manna. It may go above the bar; the bar then
+  /// simply stops refilling until Manna is spent back below it.
+  void add(int amount) {
+    if (amount <= 0) return;
+    _state = MannaState(
+      manna: _state.manna + amount,
+      lastRegen: _state.lastRegen,
+    );
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     _timer?.cancel();

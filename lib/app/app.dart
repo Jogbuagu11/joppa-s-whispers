@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:whispers_of_joppa/app/cloud_sync.dart';
+import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/data/cloud_save_store.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
@@ -10,6 +11,8 @@ import 'package:whispers_of_joppa/data/supabase_remote_content.dart';
 import 'package:whispers_of_joppa/data/sync_base_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
+import 'package:whispers_of_joppa/services/in_app_purchase_store.dart';
+import 'package:whispers_of_joppa/services/purchase_backend.dart';
 import 'package:whispers_of_joppa/services/supabase_auth_service.dart';
 
 class WhispersApp extends ConsumerWidget {
@@ -23,6 +26,12 @@ class WhispersApp extends ConsumerWidget {
   static final ContentRepository _content = ContentRepository(
     loadBundled: loadBundledContent,
     remote: SupabaseRemoteContent(Supabase.instance.client),
+  );
+
+  // Purchases: the store's payment sheet, checked by the server.
+  static final PurchaseCoordinator _shop = PurchaseCoordinator(
+    store: InAppPurchaseStore(),
+    backend: SupabasePurchaseBackend(Supabase.instance.client),
   );
 
   // One account link for the life of the app.
@@ -57,7 +66,7 @@ class WhispersApp extends ConsumerWidget {
         useMaterial3: true,
       ),
       home: accountsEnabled
-          ? BoardScreen(cloud: _cloud, content: _content)
+          ? BoardScreen(cloud: _cloud, content: _content, shop: _shop)
           : const BoardScreen(),
     );
   }

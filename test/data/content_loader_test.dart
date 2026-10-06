@@ -24,6 +24,7 @@ void main() {
         tutorialJson: _read('tutorial'),
         endingsJson: _read('endings'),
         lettersJson: _read('letters'),
+        productsJson: _read('products'),
       );
   });
 
@@ -130,6 +131,7 @@ void main() {
         tutorialJson: _read('tutorial'),
         endingsJson: _read('endings'),
         lettersJson: _read('letters'),
+        productsJson: _read('products'),
       );
     expect(custom.generators[first['id']]?.energyCost, 0);
   });
@@ -202,5 +204,14 @@ void main() {
         }
       }
     }
+  });
+
+  test('products are loaded with what they give', () {
+    final raw = _read('products') as List<dynamic>;
+    expect(loader.products.length, raw.length);
+    final pack = loader.products['starter_pack'];
+    expect(pack?.consumable, isFalse);
+    expect(pack?.pearls, greaterThan(0));
+    expect(loader.products['pearls_tier1']?.consumable, isTrue);
   });
 }

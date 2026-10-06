@@ -11,6 +11,7 @@ import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
 import 'package:whispers_of_joppa/domain/progression.dart';
+import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';
 import 'package:whispers_of_joppa/domain/tutorial.dart';
 
@@ -40,6 +41,9 @@ class ContentLoader {
 
   /// chapter_id -> the message shown when that chapter is finished.
   final Map<String, ChapterEnding> endings = {};
+
+  /// product_id -> what the product gives.
+  final Map<String, ProductModel> products = {};
 
   /// Esther's letters, in content order.
   final List<LetterModel> letters = [];
@@ -86,6 +90,7 @@ class ContentLoader {
         tutorialJson: files['tutorial'],
         endingsJson: files['endings'],
         lettersJson: files['letters'],
+        productsJson: files['products'],
       );
       contentVersion = bundle.version;
     } catch (e, stack) {
@@ -109,6 +114,7 @@ class ContentLoader {
     required Object? tutorialJson,
     required Object? endingsJson,
     required Object? lettersJson,
+    required Object? productsJson,
   }) {
     economy = EconomyConfig.fromJson(economyJson as Map<String, dynamic>);
     _parseChains(chainsJson as List<dynamic>);
@@ -144,6 +150,10 @@ class ContentLoader {
     }
     for (final l in lettersJson as List<dynamic>) {
       letters.add(LetterModel.fromJson(l as Map<String, dynamic>));
+    }
+    for (final p in productsJson as List<dynamic>) {
+      final product = ProductModel.fromJson(p as Map<String, dynamic>);
+      products[product.id] = product;
     }
     _loaded = true;
     _log.info(

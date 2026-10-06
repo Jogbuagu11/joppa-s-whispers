@@ -27,6 +27,7 @@ void main() {
       tutorialJson: _read('tutorial'),
       endingsJson: _read('endings'),
       lettersJson: _read('letters'),
+      productsJson: _read('products'),
     );
 
   for (final chapter in loader.chapters) {

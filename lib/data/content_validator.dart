@@ -3,8 +3,8 @@
 import 'package:whispers_of_joppa/data/chapter_validator.dart';
 import 'package:whispers_of_joppa/data/order_validator.dart';
 import 'package:whispers_of_joppa/data/scene_validator.dart';
+import 'package:whispers_of_joppa/data/starting_board_validator.dart';
 import 'package:whispers_of_joppa/data/tutorial_validator.dart';
-import 'package:whispers_of_joppa/domain/models.dart';
 
 final _idPattern = RegExp(r'^[a-z][a-z0-9_]*$');
 final _itemAssetPattern = RegExp(
@@ -46,6 +46,7 @@ List<String> validateContent({
   required Object? lettersJson,
   required Object? tutorialJson,
   required Object? endingsJson,
+  required Object? productsJson,
 }) {
   final problems = <String>[];
   try {
@@ -86,6 +87,10 @@ List<String> validateContent({
       orders: ordersJson.cast<Map<String, dynamic>>(),
       problems: problems,
     );
+    checkProducts(
+      (productsJson as List<dynamic>).cast<Map<String, dynamic>>(),
+      problems,
+    );
     checkTutorialAndEndings(
       tutorial: (tutorialJson as List<dynamic>).cast<Map<String, dynamic>>(),
       endings: (endingsJson as List<dynamic>).cast<Map<String, dynamic>>(),
@@ -105,7 +110,7 @@ List<String> validateContent({
     if (opening != null && !scenes.any((s) => s['id'] == opening)) {
       problems.add('Starting board: unknown opening scene "$opening"');
     }
-    _checkStartingBoard(
+    checkStartingBoard(
       startingBoardJson,
       generatorIds: generatorIds,
       itemIds: {
@@ -240,56 +245,5 @@ void _checkEconomy(Map<String, dynamic> economy, List<String> problems) {
     } else if (value == 0 && _mustBePositive.contains(entry.key)) {
       problems.add('Economy ${entry.key}: must be at least 1');
     }
-  }
-}
-
-void _checkStartingBoard(
-  Map<String, dynamic> board, {
-  required Set<String> generatorIds,
-  required Set<String> itemIds,
-  required Map<String, dynamic> economy,
-  required List<String> problems,
-}) {
-  final manna = board['manna'];
-  final maxManna = economy['max_manna'];
-  if (manna is! int || manna < 0 || (maxManna is int && manna > maxManna)) {
-    problems.add('Starting board: manna must be between 0 and max_manna');
-  }
-  final taken = <(int, int)>{};
-  final placed = <String>{};
-  void checkCell(String what, Map<String, dynamic> entry) {
-    final col = entry['col'];
-    final row = entry['row'];
-    final onBoard =
-        col is int &&
-        row is int &&
-        col >= 0 &&
-        col < BoardState.cols &&
-        row >= 0 &&
-        row < BoardState.rows;
-    if (!onBoard) {
-      problems.add('Starting board: $what is off the board ($col, $row)');
-    } else if (!taken.add((col, row))) {
-      problems.add('Starting board: two things share cell ($col, $row)');
-    }
-  }
-
-  for (final g
-      in (board['generators'] as List<dynamic>).cast<Map<String, dynamic>>()) {
-    final id = g['generator_id'];
-    if (!generatorIds.contains(id)) {
-      problems.add('Starting board: unknown generator "$id"');
-    } else if (!placed.add(id as String)) {
-      problems.add('Starting board: generator "$id" is placed more than once');
-    }
-    checkCell('generator $id', g);
-  }
-  for (final i
-      in (board['items'] as List<dynamic>).cast<Map<String, dynamic>>()) {
-    final id = i['item_id'];
-    if (!itemIds.contains(id)) {
-      problems.add('Starting board: unknown item "$id"');
-    }
-    checkCell('item $id', i);
   }
 }

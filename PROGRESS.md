@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 16 — IAP: buy & deliver (next). Milestone 15 is done; Milestone 14 still awaits a real sign-in.
+## Current milestone: 16 — IAP: buy & deliver (built; a real sandbox purchase by Jennifer is still required). Milestone 14 still awaits a real sign-in.
 
 ---
 
@@ -24,7 +24,7 @@
 | 13 | Esther's letters | DONE (m13-working) |
 | 14 | Accounts + cloud save | BUILT — not tagged: real sign-in not yet verified |
 | 15 | Server-driven content | DONE (m15-working) — verified against the live server |
-| 16 | IAP: buy & deliver | Not started |
+| 16 | IAP: buy & deliver | BUILT — not tagged: needs store products and a sandbox purchase by Jennifer |
 | 17 | IAP: restore & refunds | Not started |
 | 18 | Rewarded ads | Not started |
 | 19 | Firebase: analytics + crash reporting | Not started |
@@ -613,6 +613,71 @@ Not in this milestone:
 - A rejected release is downloaded and checked again at every launch until replaced.
 - No size limit on a download; it is checked on the main thread at launch.
 - Anyone can read `content_versions.notes` and every file in the `content` bucket.
+
+## Milestone 16 — state (2026-10-05)
+
+BUILT, NOT TAGGED. Analyze clean, 401 unit tests pass, twelve device tests pass on the iOS
+Simulator and Android Emulator, and the real app launches on both with the real store
+service attached. The whole purchase flow is tested with a stand-in store and server.
+**No real purchase has been made.** CLAUDE.md requires a sandbox purchase on a real device
+by Jennifer before purchase code counts as working, so `m16-working` is not tagged.
+
+What is built:
+- Pearl shop (tap the Pearls count on the board): the store's own product titles and
+  prices, exactly what each product gives, Buy, and Restore purchases. It is not offered
+  until the tutorial is over (GDD: no purchase offers in the tutorial).
+- Pearls are a third currency in the wallet and in the save (save format version 5).
+- The purchase rule, enforced in `lib/app/purchase_coordinator.dart` and unit tested:
+  1. the store reports a purchase;
+  2. it is sent to the `verify-purchase` server function;
+  3. the app then reads the purchases the server has recorded for THIS player and puts
+     in the game only those not already applied (each transaction id once, kept in the
+     save);
+  4. only then is the store told the purchase is finished.
+  The store's on-device word, and even the server's reply, are never enough alone.
+- Interrupted purchases: at every launch and return to the app, unfinished store
+  purchases are re-checked and anything the server holds for the player is delivered.
+- A rejected or unverifiable purchase grants nothing and is left unfinished for retry.
+- The starter pack gives Pearls and Manna and raises generators to level 2; it can be
+  bought once.
+- Products are in `content/products.json` (now validated and part of the content bundle).
+
+Decisions:
+- **Buying needs an account.** The server records purchases against a player, so a
+  signed-out player is asked to sign in before the payment sheet opens. (Supabase
+  anonymous sign-in could remove that step later.)
+- The starter pack's "level-2 generator" raises the generators already on the board to
+  level 2, because generators are not yet loose items that can be handed out.
+- Bought Manna may go above the 100 bar; the bar just stops refilling until it is used.
+- On Android a Pearl pack is consumed by the app after the server confirms it. TECH_SPEC
+  says the server function should consume it; the deployed function does not.
+- The app's own content is now version 3 (products added), newer than test release 2 on
+  the server, so this build ignores that release. The next real release must be 4+.
+- Added `in_app_purchase_android 0.5.3` to pubspec (it was already installed as part of
+  `in_app_purchase`; it is needed to consume a Google Play purchase).
+
+Needed before this can be verified for real (SETUP_CHECKLIST Phases 2 and 4):
+- Apple: Paid Applications Agreement active, products `pearls_tier1`…`pearls_tier6` and
+  `starter_pack` created in App Store Connect, a sandbox tester, the In-App Purchase key
+  stored as a Supabase secret, and signing with Jennifer's Team.
+- Google: the app uploaded to Internal testing, the same products created, license
+  testers added, and the Play service account stored as a Supabase secret.
+- Then Jennifer buys each product once on a real phone.
+
+Server-side points to fix before real money (need a function redeploy):
+- `verify-purchase` answers "already granted" for a transaction recorded for ANY player.
+  The app does not grant on that answer alone (it checks its own purchase list), so
+  nothing is given away, but the function should check the owner.
+- `verify-purchase` keeps its own copy of what each product gives; it must match
+  `content/products.json`.
+- It does not consume Google Play purchases.
+
+Not in this milestone:
+- Nothing spends Pearls yet (Manna refills and basket slots come later).
+- Refunds and automatic restore on a new phone are Milestone 17.
+- Pearls live in the local/cloud save. Choosing an older game in the "which game?"
+  question can lose unspent Pearls from the newer one; purchases themselves are never
+  lost, because the server list re-delivers any transaction a save has not applied.
 
 ## Decisions made for Jennifer (2026-10-05)
 

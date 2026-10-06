@@ -41,6 +41,9 @@ Map<String, Object?> validContent() => {
       'expressions': ['neutral', 'happy'],
     },
   ],
+  'products': [
+    {'id': 'pearls_tier1', 'type': 'consumable', 'pearls': 50},
+  ],
   'tutorial': [
     {
       'id': 'tut_merge',
@@ -151,6 +154,7 @@ List<String> checkContent(Map<String, Object?> c) => validateContent(
   lettersJson: c['letters'],
   tutorialJson: c['tutorial'],
   endingsJson: c['endings'],
+  productsJson: c['products'],
 );
 
 Map<String, dynamic> firstOf(Map<String, Object?> c, String key) =>

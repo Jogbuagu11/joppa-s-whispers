@@ -62,6 +62,11 @@ abstract class StoreService {
   Future<void> finish(StorePurchase purchase, {required bool consumable});
 
   /// Asks the store to report purchases again (restores one-time products and
-  /// surfaces anything left unfinished).
+  /// surfaces anything left unfinished). On iPhone this can ask the player
+  /// for their Apple ID, so only call it when they tap "Restore purchases".
   Future<void> restore();
+
+  /// Quietly asks the store for purchases left unfinished by an earlier run,
+  /// without ever prompting the player. Safe to call at every launch.
+  Future<void> redeliverUnfinished();
 }

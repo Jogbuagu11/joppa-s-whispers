@@ -80,6 +80,22 @@ void main() {
     expect(c.secondsUntilNext, 60);
   });
 
+  test('bought Manna is added, even above the bar, and regen then waits', () {
+    final c = make(90);
+    var notified = 0;
+    c.addListener(() => notified++);
+    c.add(100);
+    expect(c.manna, 190);
+    expect(notified, 1);
+    expect(c.secondsUntilNext, isNull);
+    now = t0.add(const Duration(hours: 1));
+    c.tick();
+    expect(c.manna, 190);
+    c.add(0);
+    c.add(-5);
+    expect(c.manna, 190);
+  });
+
   testWidgets('start ticks once a second, only one timer, dispose stops it', (
     tester,
   ) async {

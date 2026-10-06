@@ -1,6 +1,5 @@
 // Puts a play session together: loads content, restores the save (or starts
 // a new game), and creates the board, Manna, orders and the auto-saver.
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/app/game_saver.dart';
@@ -15,6 +14,8 @@ import 'package:whispers_of_joppa/domain/progression.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';
 import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
+import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
+import 'package:whispers_of_joppa/features/story/endings_tracker.dart';
 import 'package:whispers_of_joppa/features/story/story_controller.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
@@ -32,14 +33,11 @@ class BoardSession {
   final StoryController story;
   final TutorialController tutorial;
 
-  /// chapter_id -> the message shown when that chapter is finished.
-  final Map<String, ChapterEnding> endings;
+  /// Which chapters' closing messages have been shown.
+  final EndingsTracker endings;
 
-  /// Chapters whose closing message the player has already seen.
-  final Set<String> endingsSeen;
-
-  /// Fires when [endingsSeen] changes, so it gets saved.
-  final ValueNotifier<int> endingsChanged;
+  /// The player's Pearls and applied purchases.
+  final PurchasesController purchases;
 
   /// scene_id -> scene, for the scenes that tasks play.
   final Map<String, SceneModel> scenes;
@@ -75,8 +73,7 @@ class BoardSession {
     required this.story,
     required this.tutorial,
     required this.endings,
-    required this.endingsSeen,
-    required this.endingsChanged,
+    required this.purchases,
     required this.scenes,
     required this.locations,
     required this.letters,
@@ -189,8 +186,18 @@ class BoardSession {
       completedTasks: save.completedTasks,
     );
 
-    final endingsSeen = {...save.endingsSeen};
-    final endingsChanged = ValueNotifier<int>(0);
+    final endings = EndingsTracker(
+      endings: loader.endings,
+      seen: save.endingsSeen,
+    );
+    final purchases = PurchasesController(
+      products: loader.products,
+      addManna: manna.add,
+      raiseGenerators: game.raiseGeneratorsTo,
+      startingPearls: save.pearls,
+      appliedTransactions: save.appliedTransactions,
+      ownedProducts: save.ownedProducts,
+    );
 
     final tutorial = TutorialController(
       steps: loader.tutorial,
@@ -212,12 +219,20 @@ class BoardSession {
         orders: orders,
         story: story,
         tutorial: tutorial,
-        endingsSeen: endingsSeen,
+        endings: endings,
+        purchases: purchases,
         contentVersion: contentVersion,
       ),
       // Manna spends always come with a board change, so the per-second Manna
       // tick does not need to trigger a write.
-      triggers: [game.boardChanged, orders, story, tutorial, endingsChanged],
+      triggers: [
+        game.boardChanged,
+        orders,
+        story,
+        tutorial,
+        endings,
+        purchases,
+      ],
     )..start();
 
     return BoardSession._(
@@ -226,9 +241,8 @@ class BoardSession {
       orders: orders,
       story: story,
       tutorial: tutorial,
-      endings: loader.endings,
-      endingsSeen: endingsSeen,
-      endingsChanged: endingsChanged,
+      endings: endings,
+      purchases: purchases,
       scenes: loader.scenes,
       locations: loader.locations,
       letters: loader.letters,
@@ -252,34 +266,25 @@ class BoardSession {
     orders: orders,
     story: story,
     tutorial: tutorial,
-    endingsSeen: endingsSeen,
+    endings: endings,
+    purchases: purchases,
     contentVersion: savedContentVersion,
   );
 
-  /// The closing message for a finished chapter the player has not seen yet,
-  /// or null. Covers the case where the app closed before it was shown.
-  ChapterEnding? get pendingEnding {
-    final done = story.completedTasks.toSet();
-    for (final chapter in story.chapters) {
-      final ending = endings[chapter.id];
-      if (ending != null &&
-          isChapterComplete(chapter, done) &&
-          !endingsSeen.contains(chapter.id)) {
-        return ending;
-      }
-    }
-    return null;
-  }
-
-  /// Records that a chapter's closing message has been shown.
-  void markEndingSeen(String chapterId) {
-    if (endingsSeen.add(chapterId)) endingsChanged.value++;
-  }
+  /// The closing message of a finished chapter not yet shown, or null.
+  ChapterEnding? get pendingEnding =>
+      endings.pending(story.chapters, story.completedTasks.toSet());
 
   /// Stops everything WITHOUT writing: used when this game is being replaced
   /// by one from the player's account, so it must not save over it.
   Future<void> discard() async {
     await saver.cancel();
+    _disposeParts();
+  }
+
+  void _disposeParts() {
+    purchases.dispose();
+    endings.dispose();
     tutorial.dispose();
     story.dispose();
     orders.dispose();
@@ -289,9 +294,6 @@ class BoardSession {
   /// Writes any unsaved change and stops the timers.
   Future<void> dispose() async {
     await saver.dispose();
-    tutorial.dispose();
-    story.dispose();
-    orders.dispose();
-    manna.dispose();
+    _disposeParts();
   }
 }
