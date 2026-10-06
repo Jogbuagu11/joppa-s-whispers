@@ -142,6 +142,19 @@ class FakePurchaseBackend with PurchaseBackend {
     return answer;
   }
 
+  /// Makes the server hold [transactionId] as refunded, as it does once the
+  /// store reports the refund.
+  void refund(String transactionId) {
+    final i = recorded.indexWhere((r) => r.transactionId == transactionId);
+    if (i < 0) throw StateError('No purchase $transactionId to refund');
+    recorded[i] = PurchaseRecord(
+      transactionId: transactionId,
+      productId: recorded[i].productId,
+      granted: false,
+      refunded: true,
+    );
+  }
+
   @override
   Future<List<PurchaseRecord>> myPurchases() async {
     if (listOffline) throw Exception('offline');

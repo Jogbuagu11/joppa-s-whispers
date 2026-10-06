@@ -94,6 +94,9 @@ mixin _BoardScreenActions on _BoardRoutes {
     } finally {
       _busy = false;
     }
+    // The player may have just signed in (perhaps on a new phone): bring
+    // over anything their account has bought.
+    unawaited(widget.shop?.resume());
   }
 
   /// Compares this phone's game with the account's. If the account's game

@@ -49,3 +49,11 @@ enable_confirmations = false
 
 [analytics]
 enabled = false
+
+# Apple and Google call these directly, so they cannot carry a player's
+# sign-in. Each function checks its caller in its own way (see the files).
+[functions.store-notifications-apple]
+verify_jwt = false
+
+[functions.store-notifications-google]
+verify_jwt = false

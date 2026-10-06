@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 16 — IAP: buy & deliver (built; a real sandbox purchase by Jennifer is still required). Milestone 14 still awaits a real sign-in.
+## Current milestone: 17 — IAP: restore & refunds (built; needs the server pieces deployed and real purchase + refund tests by Jennifer). Milestones 14 and 16 are also built and awaiting her real-device tests.
 
 ---
 
@@ -25,7 +25,7 @@
 | 14 | Accounts + cloud save | BUILT — not tagged: real sign-in not yet verified |
 | 15 | Server-driven content | DONE (m15-working) — verified against the live server |
 | 16 | IAP: buy & deliver | BUILT — not tagged: needs store products and a sandbox purchase by Jennifer |
-| 17 | IAP: restore & refunds | Not started |
+| 17 | IAP: restore & refunds | BUILT — not tagged: server functions not deployed; needs real purchase and refund tests by Jennifer |
 | 18 | Rewarded ads | Not started |
 | 19 | Firebase: analytics + crash reporting | Not started |
 | 20 | Notifications | Not started |
@@ -718,6 +718,71 @@ Not in this milestone:
   question can lose unspent Pearls from the newer one; purchases themselves are never
   lost, because the server list re-delivers any transaction a save has not applied.
 
+## Milestone 17 — state (2026-10-05)
+
+BUILT, NOT TAGGED. Analyze clean, 441 unit tests, 29 server rule tests, twelve device
+tests on the iOS Simulator and Android Emulator. **Nothing here has been tried with a real
+purchase or a real refund, and none of the server functions are deployed.**
+
+What is built:
+- Refunds in the app (`lib/domain/refunds.dart`, `PurchasesController.applyRefunds`): each
+  time the app reads the player's purchases from the server (launch, return to the app,
+  after the account screen, Restore), a purchase the server marks refunded has its Pearls
+  taken back, never below zero, exactly once. A refunded starter pack can be bought again.
+- Restore: "Restore purchases" in the Pearl shop; and purchases are brought over
+  automatically after signing in (new phone) — the app checks as soon as the account
+  screen closes.
+- Server (in the repo, NOT deployed): `store-notifications-apple` and
+  `store-notifications-google` rewritten; shared code in `supabase/functions/_shared/`.
+  Neither trusts what a notification says. Apple's only names a transaction, and Apple is
+  then asked directly whether it was refunded. Google's only triggers a read of Google's
+  own list of voided purchases. A refund is recorded once (`recordRefund`).
+- `verify-purchase` now treats "Apple is busy/down" as "try again later" instead of
+  "unknown purchase".
+
+Decisions (differences from TECH_SPEC section 6 — **assumptions to confirm**):
+- A refunded starter pack loses its Pearls and can be bought again, but the Manna and the
+  generator level it gave stay: once the player has played on there is no telling which
+  Manna was the pack's.
+- A refund takes Pearls from whatever the player holds (up to the pack's amount), not
+  only "Pearls from that purchase" — Pearls are not tracked per purchase.
+- Signing in on a new phone delivers every purchase the account holds that this game has
+  not applied, Pearl packs included (not only the starter pack). Pearls live in the save,
+  so a fresh game on the same account would otherwise have lost them.
+- A starter pack paid for twice (iPhone and Android) and refunded once is kept.
+- "Restore purchases" stays in the Pearl shop; there is no general Settings screen yet.
+- Refunds are silent in the game (no message when Pearls are taken back).
+
+Known limits:
+- A refund only reaches the game when the player is signed in and online. A player who
+  stays signed out keeps the Pearls. Server-held Pearl balances would close this.
+- If Apple reverses a refund (REFUND_REVERSED), the purchase is not given back
+  automatically; it would need a manual fix in the `purchases` table.
+- The Apple notification address is open to anyone. A forged call cannot refund anything
+  (only Apple's own answer counts), but a flood of them could use up our Apple API
+  allowance. Checking Apple's signature on the notification would close this.
+- Google's shared secret travels in the address (`?key=`); if it leaked, the only effect
+  is extra reads of Google's voided list.
+- The daily Google check (`?sweep=1`) is written but **not scheduled**; it must be set up
+  at deploy time (a Supabase scheduled job). It matters: it catches a missed notification.
+- The `wallet_grants` refund line records the pack's full Pearls, the most that can be
+  removed; the game removes only what is left.
+- No automated test of the two notification functions end to end or of `recordRefund`
+  (they need the live database and stores); their decisions are tested in
+  `_shared/refund_rules_test.ts`.
+
+Needed to finish (Jennifer's OK required for each live change):
+1. Deploy `verify-purchase`, `store-notifications-apple`, `store-notifications-google`.
+2. Supabase secrets: Apple In-App Purchase key (id, issuer, key), Play service account
+   JSON, and a new random `STORE_NOTIFY_SECRET`.
+3. App Store Connect → App Store Server Notifications → the Apple function's address.
+4. Google Cloud Pub/Sub topic + push subscription to the Google function's address with
+   `?key=<secret>`; Play Console → Monetization setup → Real-time developer notifications.
+   The Play service account needs "View financial data" for the voided-purchases list.
+5. Schedule the daily `?sweep=1` call.
+6. The real-device list in TECH_SPEC section 6 (buy each pack, kill the app mid-purchase,
+   airplane mode, restore on a fresh install, cancel, refund on each store).
+
 ## First Android bundle for Google Play (2026-10-05)
 
 Jennifer asked for a bundle to upload to Google Play ahead of Milestone 25.
@@ -783,6 +848,19 @@ beside the game with its history kept. A backup of the original is in the GitHub
 - Never force-push this repo again.
 
 ## Waiting on Jennifer
+
+**To do next (added 2026-10-05, for 2026-10-06) — Google Play, after the first bundle upload:**
+- Play Console → Testing → Internal testing → Testers: add her Gmail address, then open
+  the opt-in link on her Android phone and install the game.
+- Play Console → Settings → License testing: add the same Gmail address (so test
+  purchases are not charged).
+- Create a Play service account (SETUP_CHECKLIST Phase 4), give it access to Whispers of
+  Joppa only, download its JSON file into Downloads and tell Claude the file name. Claude
+  then creates the seven Pearl products on Google.
+- Send Claude the SHA-1 shown under Play Console → Setup → App signing → "App signing key
+  certificate" (needed for Google sign-in on the store-installed game).
+- Move the `WhispersofJoppa-signing-key-BACKUP` folder out of Downloads to a safe,
+  private place.
 
 - Try real sign-in (see "Milestone 14 — state" for what each method needs).
 - In Vercel: Project → Settings → Build and Deployment → Root Directory → `web`, then redeploy.

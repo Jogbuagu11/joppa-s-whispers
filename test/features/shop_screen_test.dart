@@ -43,6 +43,7 @@ void main() {
           ..target = PurchaseTarget(
             applyConfirmed: wallet.applyConfirmed,
             hasApplied: wallet.hasApplied,
+            applyRefunds: wallet.applyRefunds,
             saveNow: () async => saves++,
           )
           ..start();

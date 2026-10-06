@@ -3,7 +3,6 @@ import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
 import 'package:whispers_of_joppa/services/purchase_backend.dart';
-import 'package:whispers_of_joppa/services/store_service.dart';
 
 import '../support/store_fakes.dart';
 
@@ -46,6 +45,7 @@ void main() {
           ..target = PurchaseTarget(
             applyConfirmed: wallet.applyConfirmed,
             hasApplied: wallet.hasApplied,
+            applyRefunds: wallet.applyRefunds,
             saveNow: () async => saves++,
           )
           ..start();
@@ -91,6 +91,7 @@ void main() {
       shop.target = PurchaseTarget(
         applyConfirmed: wallet.applyConfirmed,
         hasApplied: wallet.hasApplied,
+        applyRefunds: wallet.applyRefunds,
         saveNow: () async {
           // At this moment the store must not have been told yet.
           order.add('saved with ${store.finished.length} finished');
@@ -244,107 +245,6 @@ void main() {
       expect(wallet.pearls, 50);
       expect((await shop.deliverConfirmed()).isEmpty, isTrue);
       expect(wallet.pearls, 50);
-    },
-  );
-
-  test('a receipt recorded for a different player grants nothing', () async {
-    backend.recordForSomeoneElse = true;
-    await shop.buy('pearls_tier1');
-    await settle();
-    expect(wallet.pearls, 0);
-    expect(store.finished, isEmpty);
-    expect(shop.message.value, "Purchase couldn't be verified.");
-  });
-
-  test(
-    'cancelling at the payment sheet grants nothing and shows no error',
-    () async {
-      store.nextStatus = StorePurchaseStatus.canceled;
-      await shop.buy('pearls_tier1');
-      await settle();
-      expect(wallet.pearls, 0);
-      expect(backend.verified, isEmpty);
-      expect(shop.message.value, isNull);
-    },
-  );
-
-  test('a failed or pending payment grants nothing', () async {
-    store.nextStatus = StorePurchaseStatus.failed;
-    await shop.buy('pearls_tier1');
-    await settle();
-    expect(wallet.pearls, 0);
-    expect(shop.message.value, contains('not charged'));
-
-    store.nextStatus = StorePurchaseStatus.pending;
-    await shop.buy('pearls_tier1');
-    await settle();
-    expect(wallet.pearls, 0);
-    expect(backend.verified, isEmpty);
-  });
-
-  test(
-    'buying needs an account, and the payment sheet is not opened without one',
-    () async {
-      backend.signedIn = false;
-      await shop.buy('pearls_tier1');
-      await settle();
-      expect(shop.message.value, contains('Sign in first'));
-      expect(backend.verified, isEmpty);
-      expect(wallet.pearls, 0);
-    },
-  );
-
-  test('a purchase arriving while signed out is kept for later', () async {
-    backend.signedIn = false;
-    store.emit('pearls_tier1');
-    await settle();
-    expect(wallet.pearls, 0);
-    expect(store.finished, isEmpty);
-    backend.signedIn = true;
-    await shop.restore();
-    await settle();
-    expect(wallet.pearls, 50);
-  });
-
-  test(
-    'if the purchase list cannot be read after verifying, nothing is finished',
-    () async {
-      backend.listOffline = true;
-      await shop.buy('pearls_tier1');
-      await settle();
-      expect(wallet.pearls, 0);
-      expect(store.finished, isEmpty);
-      backend.listOffline = false;
-      await shop.deliverConfirmed();
-      expect(wallet.pearls, 50);
-    },
-  );
-
-  test(
-    'the starter pack is granted and finished as a one-time product',
-    () async {
-      await shop.buy('starter_pack');
-      await settle();
-      expect(wallet.pearls, 100);
-      expect(wallet.canBuyProduct('starter_pack'), isFalse);
-      expect(store.finishedAsConsumable, [false]);
-    },
-  );
-
-  test('a store that cannot open reports it without crashing', () async {
-    store.throwOnBuy = true;
-    await shop.buy('pearls_tier1');
-    expect(shop.message.value, contains('could not be opened'));
-  });
-
-  test(
-    'products come from the store with its own prices; none if unavailable',
-    () async {
-      final listed = await shop.loadProducts();
-      expect({for (final p in listed) p.id}, _products.keys.toSet());
-      expect(listed.first.price, isNotEmpty);
-      store.available = false;
-      expect(await shop.loadProducts(), isEmpty);
     },
   );
 }

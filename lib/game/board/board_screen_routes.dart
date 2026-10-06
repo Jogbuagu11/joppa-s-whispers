@@ -51,6 +51,7 @@ mixin _BoardRoutes on _BoardState {
       ..target = PurchaseTarget(
         applyConfirmed: session.purchases.applyConfirmed,
         hasApplied: session.purchases.hasApplied,
+        applyRefunds: session.purchases.applyRefunds,
         saveNow: session.saver.saveNow,
       )
       ..start();

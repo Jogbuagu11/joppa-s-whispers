@@ -112,4 +112,81 @@ void main() {
     expect(c.spendPearls(20), isTrue);
     expect(c.pearls, 30);
   });
+
+  group('refunds', () {
+    PurchaseRecord refunded(String tx, String product) => PurchaseRecord(
+      transactionId: tx,
+      productId: product,
+      granted: false,
+      refunded: true,
+    );
+
+    test('a refunded pack takes its Pearls back, once', () {
+      c.applyConfirmed([_p('t1', 'pearls_tier1'), _p('t2', 'pearls_tier1')]);
+      expect(c.pearls, 100);
+      final server = [refunded('t1', 'pearls_tier1'), _p('t2', 'pearls_tier1')];
+      expect(c.applyRefunds(server), 1);
+      expect(c.pearls, 50);
+      // Seeing the same refund again changes nothing.
+      expect(c.applyRefunds(server), 0);
+      expect(c.pearls, 50);
+      expect(c.applyConfirmed(server).isEmpty, isTrue);
+      expect(c.pearls, 50);
+    });
+
+    test('Pearls already spent are not taken below zero', () {
+      c.applyConfirmed([_p('t1', 'pearls_tier1')]);
+      expect(c.spendPearls(40), isTrue);
+      expect(c.applyRefunds([refunded('t1', 'pearls_tier1')]), 1);
+      expect(c.pearls, 0);
+    });
+
+    test('a refunded starter pack can be bought again', () {
+      c.applyConfirmed([_p('t1', 'starter_pack')]);
+      expect(c.canBuyProduct('starter_pack'), isFalse);
+      expect(c.applyRefunds([refunded('t1', 'starter_pack')]), 1);
+      expect(c.pearls, 0);
+      expect(c.canBuyProduct('starter_pack'), isTrue);
+      // Buying it again later delivers it again.
+      final again = c.applyConfirmed([
+        refunded('t1', 'starter_pack'),
+        _p('t9', 'starter_pack'),
+      ]);
+      expect(again.pearls, 100);
+    });
+
+    test('a starter pack paid for twice survives one refund untouched', () {
+      // Bought on an iPhone and again on an Android phone; only the first
+      // was put in the game.
+      final both = [_p('ios', 'starter_pack'), _p('and', 'starter_pack')];
+      c.applyConfirmed(both);
+      expect(c.pearls, 100);
+      final server = [
+        refunded('ios', 'starter_pack'),
+        _p('and', 'starter_pack'),
+      ];
+      expect(c.applyRefunds(server), 1);
+      expect(c.pearls, 100);
+      expect(c.canBuyProduct('starter_pack'), isFalse);
+      expect(c.appliedTransactions, ['and']);
+      // The standing purchase is not delivered a second time.
+      expect(c.applyConfirmed(server).isEmpty, isTrue);
+      expect(c.pearls, 100);
+      // If that one is refunded too, the pack goes.
+      expect(
+        c.applyRefunds([
+          refunded('ios', 'starter_pack'),
+          refunded('and', 'starter_pack'),
+        ]),
+        1,
+      );
+      expect(c.pearls, 0);
+      expect(c.canBuyProduct('starter_pack'), isTrue);
+    });
+
+    test('a refund of something never delivered here does nothing', () {
+      expect(c.applyRefunds([refunded('zz', 'pearls_tier1')]), 0);
+      expect(c.pearls, 0);
+    });
+  });
 }

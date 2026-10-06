@@ -7,12 +7,11 @@
 // does the talking: to the caller, the stores and the database.
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { fetchAppleTransaction, googleAccessToken } from '../_shared/stores.ts';
 import {
-  b64url,
   checkAppleTransaction,
   checkGooglePurchase,
   decideGrant,
-  decodeJwsPayload,
   PRODUCTS,
   type Check,
 } from './rules.ts';
@@ -155,32 +154,6 @@ serve(async (req: Request) => {
 
 // ---- Apple ----
 
-async function appleToken(bundleId: string): Promise<string | null> {
-  const keyId = Deno.env.get('APPLE_IAP_KEY_ID');
-  const issuerId = Deno.env.get('APPLE_IAP_ISSUER_ID');
-  const privateKey = Deno.env.get('APPLE_IAP_PRIVATE_KEY');
-  if (!keyId || !issuerId || !privateKey) {
-    console.error('Apple IAP secrets not configured');
-    return null;
-  }
-  const now = Math.floor(Date.now() / 1000);
-  const header = b64url(JSON.stringify({ alg: 'ES256', kid: keyId, typ: 'JWT' }));
-  const payload = b64url(JSON.stringify({
-    iss: issuerId,
-    iat: now,
-    exp: now + 600,
-    aud: 'appstoreconnect-v1',
-    bid: bundleId,
-  }));
-  const key = await importPkcs8(privateKey, { name: 'ECDSA', namedCurve: 'P-256' });
-  const sig = await crypto.subtle.sign(
-    { name: 'ECDSA', hash: 'SHA-256' },
-    key,
-    new TextEncoder().encode(`${header}.${payload}`),
-  );
-  return `${header}.${payload}.${b64url(new Uint8Array(sig))}`;
-}
-
 async function verifyApple(
   productId: string,
   transactionId: string,
@@ -192,27 +165,10 @@ async function verifyApple(
     raw,
     consumedAtStore: false,
   });
-  const token = await appleToken(bundleId);
-  if (!token) return fail('Apple keys not configured');
-
-  // Production first, then the sandbox (testers and App Review use it).
-  let reply: Record<string, unknown> | null = null;
-  for (const host of ['api.storekit.itunes.apple.com', 'api.storekit-sandbox.itunes.apple.com']) {
-    const res = await fetch(
-      `https://${host}/inApps/v1/transactions/${encodeURIComponent(transactionId)}`,
-      { headers: { Authorization: `Bearer ${token}` } },
-    );
-    if (res.ok) {
-      reply = await res.json();
-      break;
-    }
-    await res.body?.cancel();
-  }
-  if (!reply) return fail('Apple does not know this transaction');
-
-  // The reply was fetched from Apple over TLS with our own key, so its
-  // signed payload is read directly.
-  const tx = decodeJwsPayload(reply.signedTransactionInfo);
+  const found = await fetchAppleTransaction(bundleId, transactionId);
+  if (found.status === 'not_configured') return fail('Apple keys not configured');
+  if (found.status === 'unknown') return fail('Apple does not know this transaction');
+  const tx = found.tx;
   return {
     check: checkAppleTransaction(tx, { bundleId, productId, transactionId, userId }),
     raw: tx,
@@ -221,38 +177,6 @@ async function verifyApple(
 }
 
 // ---- Google ----
-
-async function googleAccessToken(): Promise<string | null> {
-  const serviceAccount = Deno.env.get('GOOGLE_PLAY_SERVICE_ACCOUNT');
-  if (!serviceAccount) {
-    console.error('Google Play service account not configured');
-    return null;
-  }
-  const sa = JSON.parse(serviceAccount) as { client_email: string; private_key: string };
-  const now = Math.floor(Date.now() / 1000);
-  const header = b64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
-  const payload = b64url(JSON.stringify({
-    iss: sa.client_email,
-    scope: 'https://www.googleapis.com/auth/androidpublisher',
-    aud: 'https://oauth2.googleapis.com/token',
-    iat: now,
-    exp: now + 600,
-  }));
-  const key = await importPkcs8(sa.private_key, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' });
-  const sig = await crypto.subtle.sign(
-    'RSASSA-PKCS1-v1_5',
-    key,
-    new TextEncoder().encode(`${header}.${payload}`),
-  );
-  const jwt = `${header}.${payload}.${b64url(new Uint8Array(sig))}`;
-  const res = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
-  });
-  const data = await res.json() as { access_token?: string };
-  return data.access_token ?? null;
-}
 
 async function verifyGoogle(
   productId: string,
@@ -293,15 +217,4 @@ async function verifyGoogle(
       }
     },
   };
-}
-
-// ---- shared ----
-
-function importPkcs8(pem: string, algorithm: EcKeyImportParams | RsaHashedImportParams) {
-  const body = pem
-    .replace(/\\n/g, '\n')
-    .replace(/-----(BEGIN|END)( RSA)? PRIVATE KEY-----/g, '')
-    .replace(/\s/g, '');
-  const bytes = Uint8Array.from(atob(body), (c) => c.charCodeAt(0));
-  return crypto.subtle.importKey('pkcs8', bytes.buffer, algorithm, false, ['sign']);
 }

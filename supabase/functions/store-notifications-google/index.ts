@@ -1,100 +1,75 @@
 // store-notifications-google Edge Function
-// Receives Google Play real-time developer notifications via Pub/Sub.
+// Called two ways, both with ?key=<STORE_NOTIFY_SECRET> in the URL:
+//  - by a Google Cloud Pub/Sub push subscription, when Google Play sends a
+//    real-time developer notification;
+//  - once a day by a scheduled job with ?sweep=1, as a safety net.
+//
+// What a notification says is never trusted. It is only a nudge to ask
+// Google for its list of voided (refunded or charged-back) purchases, and
+// only purchases on that list are marked refunded.
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import {
+  googleNotificationKind,
+  sameSecret,
+  voidedOrderIds,
+} from '../_shared/refund_rules.ts';
+import { recordRefund } from '../_shared/refunds.ts';
+import { googleAccessToken } from '../_shared/stores.ts';
+
+const MAX_PAGES = 20;
 
 serve(async (req: Request) => {
-  if (req.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+  if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
+
+  const url = new URL(req.url);
+  if (!sameSecret(url.searchParams.get('key'), Deno.env.get('STORE_NOTIFY_SECRET'))) {
+    return new Response('Unauthorized', { status: 401 });
   }
 
   try {
+    const packageName = Deno.env.get('ANDROID_PACKAGE_NAME') ?? 'com.whispersofjoppa.game';
+    const sweep = url.searchParams.get('sweep') === '1';
+    if (!sweep) {
+      const body = await req.json().catch(() => null);
+      // Other notifications (a purchase made, a test message) need nothing.
+      if (googleNotificationKind(body, packageName) !== 'voided') {
+        return new Response('ok', { status: 200 });
+      }
+    }
+
+    const accessToken = await googleAccessToken();
+    if (!accessToken) return new Response('Not configured', { status: 500 });
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
-    // Pub/Sub message format.
-    const pubsubMessage = await req.json() as {
-      message?: { data?: string };
-    };
-    const data = pubsubMessage.message?.data;
-    if (!data) {
-      return new Response('ok', { status: 200 }); // acknowledge empty
-    }
-
-    const notification = JSON.parse(atob(data)) as {
-      packageName?: string;
-      oneTimeProductNotification?: {
-        sku?: string;
-        purchaseToken?: string;
-        notificationType?: number;
+    // Google's list covers the last 30 days; recording is safe to repeat.
+    let pageToken: string | undefined;
+    let recorded = 0;
+    for (let page = 0; page < MAX_PAGES; page++) {
+      const listUrl = new URL(
+        `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${packageName}` +
+          '/purchases/voidedpurchases',
+      );
+      if (pageToken) listUrl.searchParams.set('token', pageToken);
+      const res = await fetch(listUrl, { headers: { Authorization: `Bearer ${accessToken}` } });
+      if (!res.ok) throw new Error(`Voided purchases list failed: ${res.status}`);
+      const reply = await res.json() as {
+        tokenPagination?: { nextPageToken?: string };
       };
-      voidedPurchaseNotification?: {
-        purchaseToken?: string;
-        productType?: number;
-      };
-    };
-
-    // Notification type 4 = PURCHASED, 1 = CANCELED/REFUNDED.
-    const otp = notification.oneTimeProductNotification;
-    const voided = notification.voidedPurchaseNotification;
-
-    if (otp?.notificationType === 1 || voided) {
-      const purchaseToken = otp?.purchaseToken ?? voided?.purchaseToken;
-      if (purchaseToken) {
-        await handleVoidedPurchase(supabase, purchaseToken, otp?.sku ?? '');
+      for (const orderId of voidedOrderIds(reply)) {
+        if (await recordRefund(supabase, orderId, 'Google')) recorded++;
       }
+      pageToken = reply.tokenPagination?.nextPageToken;
+      if (!pageToken) break;
     }
-
+    console.log(`Google voided purchases checked: ${recorded} newly recorded`);
     return new Response('ok', { status: 200 });
   } catch (err) {
+    // A 500 makes Pub/Sub deliver the notification again later.
     console.error('store-notifications-google error:', err);
-    return new Response('ok', { status: 200 }); // always 200 to Pub/Sub
+    return new Response('Internal error', { status: 500 });
   }
 });
-
-async function handleVoidedPurchase(
-  supabase: ReturnType<typeof createClient>,
-  purchaseToken: string,
-  productId: string,
-): Promise<void> {
-  // Google uses purchase_token as the transaction_id in our schema.
-  const { data: purchase } = await supabase
-    .from('purchases')
-    .select('id, user_id, product_id')
-    .eq('transaction_id', purchaseToken)
-    .single();
-
-  if (!purchase) {
-    console.warn(`Refund for unknown token: ${purchaseToken}`);
-    return;
-  }
-
-  const resolvedProductId = productId || (purchase.product_id as string);
-
-  await supabase
-    .from('purchases')
-    .update({ status: 'refunded', refunded_at: new Date().toISOString() })
-    .eq('transaction_id', purchaseToken);
-
-  const pearlsToRemove = getPearlsForProduct(resolvedProductId);
-  if (pearlsToRemove > 0) {
-    await supabase.from('wallet_grants').insert({
-      user_id: purchase.user_id,
-      purchase_id: purchase.id,
-      grant_type: 'refund',
-      pearls_delta: -pearlsToRemove,
-      note: `Refund: ${resolvedProductId} (Google)`,
-    });
-  }
-}
-
-function getPearlsForProduct(productId: string): number {
-  const products: Record<string, number> = {
-    pearls_tier1: 50, pearls_tier2: 270, pearls_tier3: 560,
-    pearls_tier4: 1200, pearls_tier5: 3200, pearls_tier6: 7000,
-    starter_pack: 100,
-  };
-  return products[productId] ?? 0;
-}

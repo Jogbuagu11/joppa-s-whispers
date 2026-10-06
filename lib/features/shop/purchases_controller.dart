@@ -2,6 +2,7 @@
 // game. Pearls only ever arrive here from purchases the server has confirmed.
 import 'package:flutter/foundation.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
+import 'package:whispers_of_joppa/domain/refunds.dart';
 
 class PurchasesController extends ChangeNotifier {
   /// product_id -> what it gives (from content/products.json).
@@ -77,6 +78,32 @@ class PurchasesController extends ChangeNotifier {
     if (level != null) raiseGenerators(level);
     notifyListeners();
     return totals;
+  }
+
+  /// Takes back what refunded purchases gave: their Pearls (never below
+  /// zero) and ownership of a refunded one-time product. Each refund is
+  /// taken once. Returns the number of refunds handled.
+  ///
+  /// Manna and generator levels from a refunded starter pack stay: once the
+  /// player has played on, there is no telling which Manna was the pack's.
+  int applyRefunds(List<PurchaseRecord> fromServer) {
+    final refunds = refundsToApply(fromServer, _applied, products);
+    if (refunds.isEmpty) return 0;
+    // A one-time product also paid for in a purchase that still stands is
+    // kept: that purchase takes the refunded one's place.
+    final standIns = standInPurchases(refunds, fromServer, _applied, products);
+    final lost = [
+      for (final r in refunds)
+        if (!standIns.containsKey(r.transactionId)) r,
+    ];
+    _pearls -= pearlsToRemove(_pearls, lost, products);
+    _owned.removeAll(productsNoLongerOwned(lost, products));
+    // Forgetting the transaction is what stops it being taken back twice.
+    _applied
+      ..removeAll(refunds.map((r) => r.transactionId))
+      ..addAll(standIns.values);
+    notifyListeners();
+    return refunds.length;
   }
 
   /// Takes Pearls for something bought with them. Returns false, taking

@@ -8,30 +8,14 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
+import 'package:whispers_of_joppa/app/purchase_target.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/services/purchase_backend.dart';
 import 'package:whispers_of_joppa/services/store_service.dart';
 
+export 'package:whispers_of_joppa/app/purchase_target.dart';
+
 final _log = Logger('Purchases');
-
-/// The game a purchase is delivered into.
-class PurchaseTarget {
-  /// Puts server-confirmed purchases into the game (each once) and returns
-  /// what was added.
-  final GrantTotals Function(List<PurchaseRecord> fromServer) applyConfirmed;
-
-  /// Whether a transaction's contents are already in the game.
-  final bool Function(String transactionId) hasApplied;
-
-  /// Writes the game to disk now, so a grant survives the app being closed.
-  final Future<void> Function() saveNow;
-
-  const PurchaseTarget({
-    required this.applyConfirmed,
-    required this.hasApplied,
-    required this.saveNow,
-  });
-}
 
 class PurchaseCoordinator {
   final StoreService store;
@@ -111,13 +95,22 @@ class PurchaseCoordinator {
 
   /// Checks with the server for purchases that belong to this player but are
   /// not in the game yet (an interrupted purchase, a new phone) and adds
-  /// them. Safe to call at any time. Returns what was added.
+  /// them, and takes back any the store has since refunded. Safe to call at
+  /// any time. Returns what was added.
   Future<GrantTotals> deliverConfirmed() async {
     final game = target;
     if (game == null || !backend.signedIn) return const GrantTotals();
     try {
-      final added = game.applyConfirmed(await backend.myPurchases());
-      if (!added.isEmpty) await game.saveNow();
+      final recorded = await backend.myPurchases();
+      // The game may have been replaced while the server was answering
+      // (the account's game brought to this phone): leave the old one alone.
+      if (!identical(target, game)) return const GrantTotals();
+      // Refunds first, so a refunded pack is taken back before anything new
+      // is counted.
+      final refunds = game.applyRefunds(recorded);
+      final added = game.applyConfirmed(recorded);
+      if (refunds > 0) _log.info('Took back $refunds refunded purchase(s)');
+      if (refunds > 0 || !added.isEmpty) await game.saveNow();
       return added;
     } on Exception catch (e) {
       _log.warning('Could not read purchases from the server: $e');
@@ -246,6 +239,11 @@ class PurchaseCoordinator {
         );
         _waiting.remove(transactionId);
         _say(purchase, "Purchase couldn't be verified.");
+        return;
+      }
+      if (!identical(target, game)) {
+        // The game was replaced meanwhile; deliver into the new one later.
+        _waiting[transactionId] = purchase;
         return;
       }
       final added = game.applyConfirmed(recorded);

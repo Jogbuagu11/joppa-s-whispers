@@ -38,10 +38,14 @@ class PurchaseRecord {
   /// True while the purchase stands; false once refunded or still pending.
   final bool granted;
 
+  /// True once the store has given the player their money back.
+  final bool refunded;
+
   const PurchaseRecord({
     required this.transactionId,
     required this.productId,
     required this.granted,
+    this.refunded = false,
   });
 }
 

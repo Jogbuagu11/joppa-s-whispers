@@ -90,6 +90,7 @@ class SupabasePurchaseBackend implements PurchaseBackend {
           transactionId: row['transaction_id'] as String,
           productId: row['product_id'] as String,
           granted: row['status'] == 'granted',
+          refunded: row['status'] == 'refunded',
         ),
     ];
   }
