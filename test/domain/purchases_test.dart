@@ -87,6 +87,38 @@ void main() {
     });
   });
 
+  test('a one-time product is applied once even with two transactions', () {
+    final out = purchasesToApply(
+      [_p('ios-1', 'starter_pack'), _p('android-1', 'starter_pack')],
+      {},
+      _products,
+    );
+    expect([for (final r in out) r.transactionId], ['ios-1']);
+    // And not at all if the game already owns it.
+    expect(
+      purchasesToApply(
+        [_p('android-1', 'starter_pack')],
+        {},
+        _products,
+        ownedProductIds: {'starter_pack'},
+      ),
+      isEmpty,
+    );
+  });
+
+  test('a purchase with an empty transaction id is never applied', () {
+    expect(purchasesToApply([_p('', 'pearls_tier1')], {}, _products), isEmpty);
+  });
+
+  test(
+    'raisedGeneratorLevels raises lower generators and leaves higher ones',
+    () {
+      expect(raisedGeneratorLevels([1, 2, 3], 2), [2, 2, 3]);
+      expect(raisedGeneratorLevels([1, 1], 1), [1, 1]);
+      expect(raisedGeneratorLevels([], 5), isEmpty);
+    },
+  );
+
   group('totalGrant', () {
     test('adds up Pearls and Manna and takes the highest generator level', () {
       final t = totalGrant([

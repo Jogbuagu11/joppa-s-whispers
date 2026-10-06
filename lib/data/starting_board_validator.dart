@@ -74,6 +74,10 @@ void checkProducts(List<Map<String, dynamic>> products, List<String> problems) {
         problems.add('Product $id: $key must be a whole number, 0 or more');
       }
     }
+    final level = product['generator_level'];
+    if (level is int && (level < 1 || level > 5)) {
+      problems.add('Product $id: generator_level must be 1 to 5');
+    }
     final gives =
         (product['pearls'] is int ? product['pearls'] as int : 0) +
         (product['manna'] is int ? product['manna'] as int : 0);

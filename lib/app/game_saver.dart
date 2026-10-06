@@ -31,6 +31,10 @@ class GameSaver with WidgetsBindingObserver {
 
   Timer? _timer;
   bool _dirty = false;
+
+  // Until start() is called nothing is ever written (see BoardSession: a
+  // game missing parts to older content must not replace the one on disk).
+  bool _started = false;
   DateTime? _deadline;
   Future<void> _writing = Future<void>.value();
 
@@ -43,6 +47,7 @@ class GameSaver with WidgetsBindingObserver {
   });
 
   void start() {
+    _started = true;
     for (final trigger in triggers) {
       trigger.addListener(_changed);
     }
@@ -58,10 +63,18 @@ class GameSaver with WidgetsBindingObserver {
     _timer = Timer(untilDeadline < delay ? untilDeadline : delay, flush);
   }
 
+  /// Writes the current state now, whether or not a change was noticed, and
+  /// completes when it is on disk. Used when something must not be lost.
+  Future<void> saveNow() {
+    if (!_started) return _writing;
+    _dirty = true;
+    return flush();
+  }
+
   /// Writes now if anything changed since the last write.
   Future<void> flush() {
     _timer?.cancel();
-    if (!_dirty) return _writing;
+    if (!_dirty || !_started) return _writing;
     _dirty = false;
     _deadline = null;
     final state = snapshot();

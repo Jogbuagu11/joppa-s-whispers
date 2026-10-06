@@ -123,4 +123,38 @@ void main() {
       expect(await repo.load(), isNotNull);
     },
   );
+
+  test('a saver that was never started writes nothing', () async {
+    await saver.dispose();
+    saver = GameSaver(
+      repository: repo,
+      snapshot: () => _state(manna),
+      triggers: [trigger],
+      delay: const Duration(milliseconds: 20),
+    );
+    trigger.value++;
+    await saver.saveNow();
+    await wait(100);
+    expect(await repo.load(), isNull);
+  });
+
+  test('saveNow writes at once and tells onSaved', () async {
+    final saved = <int>[];
+    saver.onSaved = (state) => saved.add(state.manna);
+    manna = 61;
+    await saver.saveNow();
+    expect((await repo.load())?.manna, 61);
+    expect(saved, [61]);
+  });
+
+  test('cancel drops unsaved changes and stops listening', () async {
+    manna = 33;
+    trigger.value++;
+    await saver.cancel();
+    await wait(200);
+    expect(await repo.load(), isNull);
+    trigger.value++;
+    await wait(200);
+    expect(await repo.load(), isNull);
+  });
 }

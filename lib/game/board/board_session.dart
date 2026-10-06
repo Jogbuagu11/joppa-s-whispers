@@ -11,6 +11,7 @@ import 'package:whispers_of_joppa/domain/letters.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
 import 'package:whispers_of_joppa/domain/progression.dart';
+import 'package:whispers_of_joppa/domain/save_repair.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';
 import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
@@ -115,17 +116,7 @@ class BoardSession {
             maxManna: loader.economy.maxManna,
           );
     _log.info(loaded == null ? 'Starting a new game' : 'Restored saved game');
-    // A save last played with newer content than is running now has had the
-    // parts this content does not know removed. It must not be sent to the
-    // player's account in that state.
-    final savedContent = loaded?.contentVersion ?? 0;
-    final downgraded = savedContent > bundle.version;
-    if (downgraded) {
-      _log.warning(
-        'Save was made with content v$savedContent; running v${bundle.version}',
-      );
-    }
-    final contentVersion = downgraded ? savedContent : bundle.version;
+    final (:contentVersion, :downgraded) = contentVersionFor(loaded, bundle);
 
     final manna = MannaController(
       config: loader.economy,
@@ -233,7 +224,10 @@ class BoardSession {
         endings,
         purchases,
       ],
-    )..start();
+    );
+    // A game that has lost parts to older content is played from memory only:
+    // the full game on disk is left untouched for when newer content is back.
+    if (!downgraded) saver.start();
 
     return BoardSession._(
       game: game,

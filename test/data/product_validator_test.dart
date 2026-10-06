@@ -9,6 +9,7 @@ void main() {
       {'id': 'Pearls', 'type': 'gift', 'pearls': -5},
       {'id': 'empty_pack', 'type': 'consumable'},
       {'id': 'empty_pack', 'type': 'consumable', 'manna': 10},
+      {'id': 'big_pack', 'type': 'non_consumable', 'generator_level': 9},
     ];
     final problems = checkContent(c);
     expect(problems, contains(contains('lowercase snake_case')));
@@ -19,5 +20,6 @@ void main() {
     expect(problems, contains(contains('pearls must be a whole number')));
     expect(problems, contains(contains('empty_pack: gives nothing')));
     expect(problems, contains(contains('used more than once')));
+    expect(problems, contains(contains('generator_level must be 1 to 5')));
   });
 }

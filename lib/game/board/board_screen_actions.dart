@@ -14,6 +14,7 @@ mixin _BoardScreenActions on _BoardRoutes {
   @override
   void dispose() {
     _lifecycle?.dispose();
+    widget.shop?.detach();
     // Saves any unsaved change, then stops the timers.
     _session?.dispose();
     super.dispose();
@@ -135,6 +136,7 @@ mixin _BoardScreenActions on _BoardRoutes {
     setState(() => _session = null);
     // Stop the old session saving over the new game, then write the new one.
     old.saver.onSaved = null;
+    widget.shop?.detach();
     await old.discard();
     var replaced = true;
     try {

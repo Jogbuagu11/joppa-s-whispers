@@ -2,8 +2,8 @@
 //
 // The rule that matters: nothing is granted because the store on the phone
 // says so. A purchase is sent to the server; only purchases the server has
-// recorded for this player are put into the game, each exactly once; and the
-// store is told the purchase is finished only after that.
+// recorded for this player are put into the game, each exactly once; the game
+// is saved; and only then is the store told the purchase is finished.
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -14,6 +14,25 @@ import 'package:whispers_of_joppa/services/store_service.dart';
 
 final _log = Logger('Purchases');
 
+/// The game a purchase is delivered into.
+class PurchaseTarget {
+  /// Puts server-confirmed purchases into the game (each once) and returns
+  /// what was added.
+  final GrantTotals Function(List<PurchaseRecord> fromServer) applyConfirmed;
+
+  /// Whether a transaction's contents are already in the game.
+  final bool Function(String transactionId) hasApplied;
+
+  /// Writes the game to disk now, so a grant survives the app being closed.
+  final Future<void> Function() saveNow;
+
+  const PurchaseTarget({
+    required this.applyConfirmed,
+    required this.hasApplied,
+    required this.saveNow,
+  });
+}
+
 class PurchaseCoordinator {
   final StoreService store;
   final PurchaseBackend backend;
@@ -22,17 +41,27 @@ class PurchaseCoordinator {
   /// whenever a game session loads its content.
   Map<String, ProductModel> products;
 
-  /// Puts server-confirmed purchases into the game (each once) and returns
-  /// what was added. Null until a game is attached.
-  GrantTotals Function(List<PurchaseRecord> fromServer)? applyConfirmed;
+  /// The running game, or null while none is attached (purchases then wait).
+  PurchaseTarget? target;
 
-  /// A line to show the player about the latest purchase, or null.
+  /// A line to show the player about the purchase they just made, or null.
   final ValueNotifier<String?> message = ValueNotifier<String?>(null);
 
   /// True while a purchase is being checked.
   final ValueNotifier<bool> busy = ValueNotifier<bool>(false);
 
   StreamSubscription<StorePurchase>? _subscription;
+
+  // Purchases the store has reported but that could not be delivered yet
+  // (no connection, signed out, no game attached). Retried by [resume].
+  final Map<String, StorePurchase> _waiting = {};
+
+  // Products the player tapped Buy for in this run: only these get messages,
+  // so purchases the store re-sends by itself stay silent.
+  final Set<String> _asked = {};
+
+  // Deliveries run one at a time.
+  Future<void> _queue = Future<void>.value();
 
   PurchaseCoordinator({
     required this.store,
@@ -44,7 +73,7 @@ class PurchaseCoordinator {
   /// run arrive here too and are delivered.
   void start() {
     _subscription ??= store.purchases.listen(
-      _handle,
+      (purchase) => _queue = _queue.then((_) => _handle(purchase)),
       onError: (Object e) => _log.warning('Store stream error: $e'),
     );
   }
@@ -63,15 +92,18 @@ class PurchaseCoordinator {
   /// Opens the store's payment sheet for [productId].
   Future<void> buy(String productId) async {
     final product = products[productId];
-    if (product == null) return;
-    if (!backend.signedIn) {
+    if (product == null || busy.value) return;
+    final accountId = backend.userId;
+    if (accountId == null) {
       message.value = 'Sign in first, so your purchase is kept safe.';
       return;
     }
     message.value = null;
+    _asked.add(productId);
     try {
-      await store.buy(product);
-    } on Exception catch (e) {
+      await store.buy(product, accountId: accountId);
+    } on Object catch (e) {
+      // Includes store plugin errors that are not Exceptions.
       _log.warning('Could not start the purchase: $e');
       message.value = 'The store could not be opened. Please try again.';
     }
@@ -81,20 +113,26 @@ class PurchaseCoordinator {
   /// not in the game yet (an interrupted purchase, a new phone) and adds
   /// them. Safe to call at any time. Returns what was added.
   Future<GrantTotals> deliverConfirmed() async {
-    final apply = applyConfirmed;
-    if (apply == null || !backend.signedIn) return const GrantTotals();
+    final game = target;
+    if (game == null || !backend.signedIn) return const GrantTotals();
     try {
-      return apply(await backend.myPurchases());
+      final added = game.applyConfirmed(await backend.myPurchases());
+      if (!added.isEmpty) await game.saveNow();
+      return added;
     } on Exception catch (e) {
       _log.warning('Could not read purchases from the server: $e');
       return const GrantTotals();
     }
   }
 
-  /// Run at launch and when the app comes back: quietly picks up purchases
-  /// left unfinished and delivers anything the server holds for this player.
-  /// Never prompts the player.
+  /// Run at launch and when the app comes back: retries purchases that could
+  /// not be delivered earlier, quietly asks the store for unfinished ones,
+  /// and delivers anything the server holds for this player. Never prompts.
   Future<void> resume() async {
+    for (final purchase in [..._waiting.values]) {
+      _queue = _queue.then((_) => _verifyAndDeliver(purchase));
+    }
+    await _queue;
     try {
       await store.redeliverUnfinished();
     } on Exception catch (e) {
@@ -111,19 +149,31 @@ class PurchaseCoordinator {
     } on Exception catch (e) {
       _log.warning('Restore failed: $e');
     }
-    await deliverConfirmed();
+    final added = await deliverConfirmed();
+    message.value = added.isEmpty
+        ? 'Nothing new to restore.'
+        : '${_describe(added)} restored.';
+  }
+
+  /// Stops delivering into a game that is being closed or replaced.
+  void detach() => target = null;
+
+  void _say(StorePurchase purchase, String? text) {
+    if (_asked.contains(purchase.productId)) message.value = text;
   }
 
   Future<void> _handle(StorePurchase purchase) async {
     switch (purchase.status) {
       case StorePurchaseStatus.pending:
-        message.value = 'Waiting for the store to confirm your payment…';
+        _say(purchase, 'Waiting for the store to confirm your payment…');
       case StorePurchaseStatus.canceled:
         // The player changed their mind: nothing granted, nothing to say.
-        message.value = null;
+        _say(purchase, null);
       case StorePurchaseStatus.failed:
-        message.value =
-            'The purchase did not go through. You were not charged.';
+        _say(
+          purchase,
+          'The purchase did not go through. You were not charged.',
+        );
       case StorePurchaseStatus.purchased || StorePurchaseStatus.restored:
         await _verifyAndDeliver(purchase);
     }
@@ -132,15 +182,24 @@ class PurchaseCoordinator {
   Future<void> _verifyAndDeliver(StorePurchase purchase) async {
     final transactionId = purchase.transactionId;
     final product = products[purchase.productId];
-    if (transactionId == null || product == null) {
+    if (transactionId == null || transactionId.isEmpty || product == null) {
       _log.warning(
         'Ignoring purchase without id or product: ${purchase.productId}',
       );
       return;
     }
-    if (!backend.signedIn || applyConfirmed == null) {
-      // Kept unfinished: the store will report it again next time.
-      message.value = 'Sign in to receive your purchase.';
+    final game = target;
+    if (game == null || !backend.signedIn) {
+      // Kept unfinished and retried later.
+      _waiting[transactionId] = purchase;
+      _say(purchase, 'Sign in to receive your purchase.');
+      return;
+    }
+    if (game.hasApplied(transactionId)) {
+      // Already in the game (the store re-sends owned one-time products):
+      // no server call needed, just make sure the store knows it is done.
+      _waiting.remove(transactionId);
+      await _finish(purchase, product);
       return;
     }
     busy.value = true;
@@ -154,12 +213,16 @@ class PurchaseCoordinator {
       switch (result) {
         case VerifyResult.rejected:
           // Grant nothing and leave it unfinished, as the spec requires.
-          message.value = "Purchase couldn't be verified.";
+          _waiting.remove(transactionId);
+          _say(purchase, "Purchase couldn't be verified.");
           return;
         case VerifyResult.unavailable:
-          message.value =
-              "We couldn't check your purchase just now. It will be "
-              'delivered automatically when you are back online.';
+          _waiting[transactionId] = purchase;
+          _say(
+            purchase,
+            "We couldn't check your purchase just now. It will be "
+            'delivered automatically when you are back online.',
+          );
           return;
         case VerifyResult.confirmed:
           break;
@@ -171,34 +234,56 @@ class PurchaseCoordinator {
         recorded = await backend.myPurchases();
       } on Exception catch (e) {
         _log.warning('Could not read purchases after verifying: $e');
-        message.value = 'Your purchase is confirmed and will appear shortly.';
+        _waiting[transactionId] = purchase;
+        _say(purchase, 'Your purchase is confirmed and will appear shortly.');
         return;
       }
-      final mine = recorded.any(
-        (r) => r.transactionId == transactionId && r.granted,
-      );
-      if (!mine) {
+      if (!recorded.any((r) => r.transactionId == transactionId && r.granted)) {
         // Confirmed, but not recorded for this player (for example a receipt
         // already used on another account). Nothing is granted.
         _log.warning(
           'Transaction $transactionId is not recorded for this player',
         );
-        message.value = "Purchase couldn't be verified.";
+        _waiting.remove(transactionId);
+        _say(purchase, "Purchase couldn't be verified.");
         return;
       }
-      final added = applyConfirmed?.call(recorded) ?? const GrantTotals();
-      // Only now, with the contents in the game, is the store told it is done.
-      await store.finish(purchase, consumable: product.consumable);
-      message.value = added.isEmpty
-          ? 'Your purchase is already in your game.'
-          : 'Thank you! ${_describe(added)} added.';
+      final added = game.applyConfirmed(recorded);
+      // The grant is written to disk before the store is told it is done, so
+      // closing the app at this moment cannot lose it.
+      await game.saveNow();
+      _waiting.remove(transactionId);
+      _say(
+        purchase,
+        added.isEmpty
+            ? 'Your purchase is already in your game.'
+            : 'Thank you! ${_describe(added)} added.',
+      );
+      await _finish(purchase, product);
     } on Exception catch (e, stack) {
       _log.severe('Purchase delivery failed', e, stack);
-      message.value =
-          'Something went wrong delivering your purchase. It will be '
-          'delivered automatically next time you open the game.';
+      _waiting[transactionId] = purchase;
+      _say(
+        purchase,
+        'Something went wrong delivering your purchase. It will be '
+        'delivered automatically next time you open the game.',
+      );
     } finally {
       busy.value = false;
+    }
+  }
+
+  /// Tells the store the purchase is delivered. A store that fails or never
+  /// answers must not hold up the game: it will report the purchase again.
+  Future<void> _finish(StorePurchase purchase, ProductModel product) async {
+    try {
+      await store
+          .finish(purchase, consumable: product.consumable)
+          .timeout(const Duration(seconds: 15));
+    } on Object catch (e) {
+      _log.warning(
+        'The store did not confirm finishing ${purchase.productId}: $e',
+      );
     }
   }
 

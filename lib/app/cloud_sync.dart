@@ -71,7 +71,7 @@ class CloudSync {
   Future<SyncOutcome> sync(
     SaveState local, {
     required ChooseSave choose,
-    int contentVersion = 1 << 30,
+    required int contentVersion,
   }) async {
     final user = auth.user.value;
     if (user == null) return const SyncOutcome(SyncResult.signedOut);

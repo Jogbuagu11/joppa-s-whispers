@@ -17,9 +17,11 @@ enum VerifyResult {
   unavailable,
 }
 
-abstract class PurchaseBackend {
-  /// Whether a player is signed in (purchases belong to an account).
-  bool get signedIn;
+abstract mixin class PurchaseBackend {
+  /// The signed-in player's id, or null. Purchases belong to an account.
+  String? get userId;
+
+  bool get signedIn => userId != null;
 
   /// Asks the server to check a purchase with the store and record it.
   Future<VerifyResult> verify({
@@ -40,7 +42,10 @@ class SupabasePurchaseBackend implements PurchaseBackend {
   SupabasePurchaseBackend(this._client);
 
   @override
-  bool get signedIn => _client.auth.currentUser != null;
+  String? get userId => _client.auth.currentUser?.id;
+
+  @override
+  bool get signedIn => userId != null;
 
   @override
   Future<VerifyResult> verify({

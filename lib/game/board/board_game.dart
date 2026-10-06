@@ -8,6 +8,7 @@ import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
+import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/app/board_inventory.dart';
 import 'package:whispers_of_joppa/domain/board_grid.dart';
@@ -102,15 +103,16 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   /// Raises every generator on the board to at least [level] (a purchase
   /// reward). Generators already at or above it are left alone.
   void raiseGeneratorsTo(int level) {
+    final levels = raisedGeneratorLevels([
+      for (final p in generatorPlacements) p.gen.level,
+    ], level);
     for (int i = 0; i < generatorPlacements.length; i++) {
       final p = generatorPlacements[i];
-      if (p.gen.level < level) {
-        generatorPlacements[i] = (
-          gen: p.gen.atLevel(level),
-          col: p.col,
-          row: p.row,
-        );
-      }
+      generatorPlacements[i] = (
+        gen: p.gen.atLevel(levels[i]),
+        col: p.col,
+        row: p.row,
+      );
     }
     _boardTouched();
   }

@@ -2,6 +2,7 @@
 import 'dart:io' show Platform;
 
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
@@ -56,18 +57,26 @@ class InAppPurchaseStore implements StoreService {
   }
 
   @override
-  Future<void> buy(ProductModel product) async {
+  Future<void> buy(ProductModel product, {required String accountId}) async {
     final details = _details[product.id];
     if (details == null) {
       throw StateError(
         'Product ${product.id} has not been loaded from the store',
       );
     }
-    final param = PurchaseParam(productDetails: details);
+    final param = PurchaseParam(
+      productDetails: details,
+      applicationUserName: accountId,
+    );
     if (product.consumable) {
-      // Not auto-consumed: the purchase is only used up after the server has
-      // confirmed it and the contents have been granted (see finish()).
-      await _iap.buyConsumable(purchaseParam: param, autoConsume: false);
+      // On Google Play the pack is NOT used up automatically: that happens
+      // only after the server has confirmed it and the contents are granted
+      // (see finish()). On iPhone the plugin requires auto-consume; the
+      // purchase still stays unfinished there until finish() is called.
+      await _iap.buyConsumable(
+        purchaseParam: param,
+        autoConsume: !Platform.isAndroid,
+      );
     } else {
       await _iap.buyNonConsumable(purchaseParam: param);
     }
@@ -82,9 +91,16 @@ class InAppPurchaseStore implements StoreService {
     if (details is! PurchaseDetails) return;
     if (consumable && Platform.isAndroid) {
       // On Google Play a pack must be consumed before it can be bought again.
-      await _iap
+      final result = await _iap
           .getPlatformAddition<InAppPurchaseAndroidPlatformAddition>()
           .consumePurchase(details);
+      if (result.responseCode != BillingResponse.ok) {
+        // It will be tried again the next time the store reports it.
+        _log.warning(
+          'Google Play did not consume the pack: ${result.responseCode}',
+        );
+      }
+      return;
     }
     if (details.pendingCompletePurchase) {
       await _iap.completePurchase(details);

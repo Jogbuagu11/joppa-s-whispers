@@ -51,10 +51,18 @@ class PurchasesController extends ChangeNotifier {
 
   bool canBuyProduct(String productId) => canBuy(productId, products, _owned);
 
+  /// Whether this transaction's contents are already in the game.
+  bool hasApplied(String transactionId) => _applied.contains(transactionId);
+
   /// Puts every server-confirmed purchase that is not in the game yet into
   /// it, each exactly once. Returns what was added (empty if nothing was).
   GrantTotals applyConfirmed(List<PurchaseRecord> fromServer) {
-    final fresh = purchasesToApply(fromServer, _applied, products);
+    final fresh = purchasesToApply(
+      fromServer,
+      _applied,
+      products,
+      ownedProductIds: _owned,
+    );
     if (fresh.isEmpty) return const GrantTotals();
     final totals = totalGrant(fresh, products);
     for (final record in fresh) {

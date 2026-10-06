@@ -58,3 +58,6 @@ client_secret_*.json
 
 # Raw incoming art (processed separately)
 assets_incoming/
+
+# Supabase CLI scratch files
+supabase/.temp/

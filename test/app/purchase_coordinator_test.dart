@@ -27,6 +27,7 @@ void main() {
   late FakePurchaseBackend backend;
   late PurchasesController wallet;
   late PurchaseCoordinator shop;
+  var saves = 0;
 
   /// Lets the store's report travel through the coordinator.
   Future<void> settle() =>
@@ -42,7 +43,11 @@ void main() {
     );
     shop =
         PurchaseCoordinator(store: store, backend: backend, products: _products)
-          ..applyConfirmed = wallet.applyConfirmed
+          ..target = PurchaseTarget(
+            applyConfirmed: wallet.applyConfirmed,
+            hasApplied: wallet.hasApplied,
+            saveNow: () async => saves++,
+          )
           ..start();
   });
   tearDown(() => shop.dispose());
@@ -66,7 +71,107 @@ void main() {
     store.emit('pearls_tier1', transactionId: tx);
     await settle();
     expect(wallet.pearls, 50);
-    expect(shop.message.value, contains('already in your game'));
+    // The second report is recognised without asking the server again.
+    expect(backend.verified, [tx]);
+  });
+
+  test(
+    'the purchase carries the signed-in player\'s id to the store',
+    () async {
+      await shop.buy('pearls_tier1');
+      await settle();
+      expect(store.accountIds, ['player-1']);
+    },
+  );
+
+  test(
+    'the game is saved before the store is told the purchase is finished',
+    () async {
+      final order = <String>[];
+      shop.target = PurchaseTarget(
+        applyConfirmed: wallet.applyConfirmed,
+        hasApplied: wallet.hasApplied,
+        saveNow: () async {
+          // At this moment the store must not have been told yet.
+          order.add('saved with ${store.finished.length} finished');
+        },
+      );
+      await shop.buy('pearls_tier1');
+      await settle();
+      expect(order, ['saved with 0 finished']);
+      expect(store.finished.length, 1);
+    },
+  );
+
+  test(
+    'a purchase the store re-sends by itself is delivered without a message',
+    () async {
+      // Not started by tapping Buy in this run (an interrupted purchase).
+      store.emit('pearls_tier1');
+      await settle();
+      expect(wallet.pearls, 50);
+      expect(shop.message.value, isNull);
+    },
+  );
+
+  test(
+    'an undelivered purchase is retried on resume even if the store stays quiet',
+    () async {
+      // On iPhone the store reports an unfinished purchase only once per launch.
+      backend.answer = VerifyResult.unavailable;
+      await shop.buy('pearls_tier1');
+      await settle();
+      expect(wallet.pearls, 0);
+      store.unfinished.clear(); // the store will not send it again
+      backend.answer = VerifyResult.confirmed;
+      await shop.resume();
+      await settle();
+      expect(wallet.pearls, 50);
+      expect(store.finished, ['tx1']);
+    },
+  );
+
+  test(
+    'a store that fails to finish does not undo the grant or block the shop',
+    () async {
+      store.throwOnFinish = true;
+      await shop.buy('pearls_tier1');
+      await settle();
+      expect(wallet.pearls, 50);
+      expect(shop.message.value, contains('50 Pearls'));
+      expect(shop.busy.value, isFalse);
+    },
+  );
+
+  test(
+    'purchases wait while no game is attached and are delivered once one is',
+    () async {
+      final game = shop.target;
+      shop.detach();
+      store.emit('pearls_tier1');
+      await settle();
+      expect(wallet.pearls, 0);
+      expect(backend.verified, isEmpty);
+      shop.target = game;
+      await shop.resume();
+      await settle();
+      expect(wallet.pearls, 50);
+    },
+  );
+
+  test('Restore purchases says what came back, or that nothing did', () async {
+    await shop.restore();
+    expect(shop.message.value, 'Nothing new to restore.');
+    backend.recorded.add(
+      const PurchaseRecord(
+        transactionId: 'old',
+        productId: 'starter_pack',
+        granted: true,
+      ),
+    );
+    await shop.restore();
+    expect(shop.message.value, contains('restored'));
+    expect(wallet.pearls, 100);
   });
 
   test('a rejected purchase grants nothing and is left unfinished', () async {

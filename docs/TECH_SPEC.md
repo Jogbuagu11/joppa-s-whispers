@@ -188,7 +188,7 @@ Spiritual orders set `"kind": "spiritual"` and a `scene_id` that plays on comple
 - Local save file: `save.json` in the app documents folder, written after every meaningful action (debounced 2 seconds) and on app pause.
 - Contents: board cells, basket, currencies, Manna and last-regen timestamp, chapter/task progress, discovered items, letters found, crowns, settings, save version.
 - `save_version` field + migration functions for every format change. Never break an existing save.
-- Current format: version 4. Version 2 added `completed_orders`; version 3 added `completed_tasks`; version 4 added the tutorial position, free taps used and chapter endings seen. Migrations live in `migrateSave` in `lib/domain/save_state.dart`.
+- Current format: version 5. Version 2 added `completed_orders`; version 3 added `completed_tasks`; version 4 added the tutorial position, free taps used, chapter endings seen and the content version; version 5 added Pearls, applied store transactions and owned one-time products. Migrations live in `migrateSave` in `lib/domain/save_state.dart`.
 - Cloud save (Milestone 14): same JSON stored in Supabase `saves` table. On conflict, keep the save with more progress and ask the player only if both have progressed.
 
 ## 5. Supabase

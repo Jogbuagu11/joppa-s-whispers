@@ -37,8 +37,15 @@ class FakeStore implements StoreService {
       StoreProduct(id: id, title: 'Title $id', price: r'$0.99'),
   ];
 
+  /// The account id attached to each purchase attempt.
+  final List<String> accountIds = [];
+
+  /// When true, telling the store a purchase is finished throws.
+  bool throwOnFinish = false;
+
   @override
-  Future<void> buy(ProductModel product) async {
+  Future<void> buy(ProductModel product, {required String accountId}) async {
+    accountIds.add(accountId);
     if (throwOnBuy) throw Exception('store closed');
     emit(product.id, status: nextStatus);
   }
@@ -66,6 +73,7 @@ class FakeStore implements StoreService {
     StorePurchase purchase, {
     required bool consumable,
   }) async {
+    if (throwOnFinish) throw StateError('store did not answer');
     finished.add(purchase.transactionId ?? '');
     finishedAsConsumable.add(consumable);
     unfinished.removeWhere((p) => p.transactionId == purchase.transactionId);
@@ -90,9 +98,13 @@ class FakeStore implements StoreService {
   }
 }
 
-class FakePurchaseBackend implements PurchaseBackend {
+class FakePurchaseBackend with PurchaseBackend {
+  bool _signedIn = true;
+
   @override
-  bool signedIn = true;
+  String? get userId => _signedIn ? 'player-1' : null;
+
+  set signedIn(bool value) => _signedIn = value;
 
   /// What the server answers to the next verification.
   VerifyResult answer = VerifyResult.confirmed;

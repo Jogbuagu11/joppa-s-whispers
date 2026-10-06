@@ -28,6 +28,7 @@ void main() {
   late FakePurchaseBackend backend;
   late PurchasesController wallet;
   late PurchaseCoordinator shop;
+  var saves = 0;
 
   setUp(() {
     store = FakeStore();
@@ -39,7 +40,11 @@ void main() {
     );
     shop =
         PurchaseCoordinator(store: store, backend: backend, products: _products)
-          ..applyConfirmed = wallet.applyConfirmed
+          ..target = PurchaseTarget(
+            applyConfirmed: wallet.applyConfirmed,
+            hasApplied: wallet.hasApplied,
+            saveNow: () async => saves++,
+          )
           ..start();
   });
 

@@ -48,7 +48,11 @@ mixin _BoardRoutes on _BoardState {
     if (shop == null) return;
     shop
       ..products = session.purchases.products
-      ..applyConfirmed = session.purchases.applyConfirmed
+      ..target = PurchaseTarget(
+        applyConfirmed: session.purchases.applyConfirmed,
+        hasApplied: session.purchases.hasApplied,
+        saveNow: session.saver.saveNow,
+      )
       ..start();
     unawaited(shop.resume());
   }

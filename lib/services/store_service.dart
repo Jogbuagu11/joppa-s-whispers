@@ -55,7 +55,9 @@ abstract class StoreService {
   Future<List<StoreProduct>> loadProducts(Set<String> productIds);
 
   /// Opens the store's payment sheet. The result arrives on [purchases].
-  Future<void> buy(ProductModel product);
+  /// [accountId] is the signed-in player's id; the store attaches it to the
+  /// purchase so the server can check the purchase belongs to that player.
+  Future<void> buy(ProductModel product, {required String accountId});
 
   /// Tells the store the purchase has been delivered. Only call this after
   /// the server has confirmed and the contents have been granted.

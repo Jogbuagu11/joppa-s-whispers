@@ -60,20 +60,35 @@ class GrantTotals {
 /// yet. Each transaction is applied at most once: anything already in
 /// [appliedTransactionIds], repeated in the list, refunded, pending, or for a
 /// product this build does not know is left out.
+///
+/// A one-time product is applied at most once in total, however many
+/// transactions exist for it (the same pack bought on an iPhone and an
+/// Android phone, say): [ownedProductIds] are the ones this game already has.
 List<PurchaseRecord> purchasesToApply(
   List<PurchaseRecord> fromServer,
   Set<String> appliedTransactionIds,
-  Map<String, ProductModel> products,
-) {
+  Map<String, ProductModel> products, {
+  Set<String> ownedProductIds = const {},
+}) {
   final seen = {...appliedTransactionIds};
-  return [
-    for (final record in fromServer)
-      if (record.granted &&
-          products.containsKey(record.productId) &&
-          seen.add(record.transactionId))
-        record,
-  ];
+  final owned = {...ownedProductIds};
+  final out = <PurchaseRecord>[];
+  for (final record in fromServer) {
+    final product = products[record.productId];
+    if (!record.granted || product == null) continue;
+    if (record.transactionId.isEmpty) continue;
+    if (!seen.add(record.transactionId)) continue;
+    if (!product.consumable && !owned.add(product.id)) continue;
+    out.add(record);
+  }
+  return out;
 }
+
+/// The level each generator ends up at when a purchase raises generators to
+/// at least [level]: lower ones are raised, higher ones are left alone.
+List<int> raisedGeneratorLevels(List<int> currentLevels, int level) => [
+  for (final current in currentLevels) current < level ? level : current,
+];
 
 /// What [records] give in total.
 GrantTotals totalGrant(
