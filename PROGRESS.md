@@ -664,13 +664,40 @@ Needed before this can be verified for real (SETUP_CHECKLIST Phases 2 and 4):
   testers added, and the Play service account stored as a Supabase secret.
 - Then Jennifer buys each product once on a real phone.
 
-Server-side points to fix before real money (need a function redeploy):
-- `verify-purchase` answers "already granted" for a transaction recorded for ANY player.
-  The app does not grant on that answer alone (it checks its own purchase list), so
-  nothing is given away, but the function should check the owner.
-- `verify-purchase` keeps its own copy of what each product gives; it must match
-  `content/products.json`.
-- It does not consume Google Play purchases.
+Code review (2026-10-05) and what was done about it:
+- It found the deployed `verify-purchase` function unsafe: on Android one paid purchase
+  could be replayed for unlimited Pearls (the transaction id was taken from the app, not
+  from Google), and on iPhone every purchase would be rejected after payment (Apple's
+  reply was read wrongly). No real player or real money is involved yet.
+- The function is REWRITTEN in the repo (`supabase/functions/verify-purchase/`), with its
+  decisions in `rules.ts` and 20 tests in `rules_test.ts`
+  (`~/development/deno/deno test --allow-read --allow-net=deno.land
+  supabase/functions/verify-purchase/rules_test.ts`). **It is NOT deployed**: the live
+  server still runs the old version. Deploy needs Jennifer's OK, and it can only be
+  proven with a real sandbox purchase.
+- App side fixed and tested: correct iPhone purchase call; undelivered purchases retried
+  on return to the app; the game is saved before the store is told a purchase is done;
+  purchases carry the player's account id; one-time products apply once in total; store
+  re-sends are silent; a game running on older content is not written over the full one.
+- Analyze clean, 420 unit tests, 20 server rule tests, twelve device tests on both phones.
+
+Store products:
+- `tool/create_store_products.ts` (run with Deno) creates the products in App Store
+  Connect and Google Play from `tool/store_products.json`; descriptions take their Pearl
+  and Manna amounts from `content/products.json`. Nothing has been created yet.
+- Waiting on Jennifer: which Pearl amounts are right (her list says 25/140/300/650/1,750/
+  3,750; the game gives 50/270/560/1,200/3,200/7,000), the App Store Connect Issuer ID,
+  and for Google a Play service account file plus a first build uploaded.
+- Apple key `AuthKey_3RX9BR6Z6S.p8` is in the project folder (ignored by git); its path
+  and Key ID are in `.env` (ignored by git).
+
+Known limits (from the review):
+- Pearls live in the player's save, which the player's own account can write. An honest
+  app only adds Pearls from server-recorded purchases, but a determined player could edit
+  their cloud save. Server-side Pearl balances would close this (matters for refunds, M17).
+- The starter pack is offered as soon as the tutorial ends; the GDD says after task 10.
+- `SupabasePurchaseBackend` and `InAppPurchaseStore` have no automated tests (they need
+  the real services); the flow around them is tested with stand-ins.
 
 Not in this milestone:
 - Nothing spends Pearls yet (Manna refills and basket slots come later).
