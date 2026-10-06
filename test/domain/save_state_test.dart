@@ -14,6 +14,9 @@ SaveState _sample() => SaveState(
   mannaLastRegen: DateTime.utc(2040, 1, 1, 12, 30),
   talents: 120,
   blessings: 3,
+  pearls: 75,
+  appliedTransactions: const ['tx1'],
+  ownedProducts: const ['starter_pack'],
   activeOrders: const ['ch1_o_004', 'ch1_o_002'],
   pendingOrders: const ['ch1_o_005'],
   completedOrders: const ['ch1_o_001'],
@@ -52,6 +55,9 @@ void main() {
     expect(back.mannaLastRegen, DateTime.utc(2040, 1, 1, 12, 30));
     expect(back.talents, 120);
     expect(back.blessings, 3);
+    expect(back.pearls, 75);
+    expect(back.appliedTransactions, ['tx1']);
+    expect(back.ownedProducts, ['starter_pack']);
     expect(back.activeOrders, ['ch1_o_004', 'ch1_o_002']);
     expect(back.pendingOrders, ['ch1_o_005']);
     expect(back.completedOrders, ['ch1_o_001']);
@@ -82,7 +88,10 @@ void main() {
         ..['save_version'] = 1
         ..remove('completed_orders')
         ..remove('completed_tasks')
-        ..remove('tutorial_step');
+        ..remove('tutorial_step')
+        ..remove('pearls')
+        ..remove('applied_transactions')
+        ..remove('owned_products');
       final migrated = migrateSave(v1);
       expect(migrated['save_version'], currentSaveVersion);
       expect(migrated['completed_orders'], isEmpty);
@@ -93,7 +102,10 @@ void main() {
       final v2 = _sample().toJson()
         ..['save_version'] = 2
         ..remove('completed_tasks')
-        ..remove('tutorial_step');
+        ..remove('tutorial_step')
+        ..remove('pearls')
+        ..remove('applied_transactions')
+        ..remove('owned_products');
       expect(migrateSave(v2)['save_version'], currentSaveVersion);
       expect(SaveState.fromJson(v2).completedTasks, isEmpty);
       expect(SaveState.fromJson(v2).completedOrders, ['ch1_o_001']);
@@ -101,10 +113,26 @@ void main() {
     test('a version 3 save counts the tutorial as finished', () {
       final v3 = _sample().toJson()
         ..['save_version'] = 3
-        ..remove('tutorial_step');
+        ..remove('tutorial_step')
+        ..remove('pearls')
+        ..remove('applied_transactions')
+        ..remove('owned_products');
       expect(migrateSave(v3)['save_version'], currentSaveVersion);
       expect(SaveState.fromJson(v3).tutorialStep, tutorialFinished);
       expect(SaveState.fromJson(v3).completedTasks, ['ch1_t_01']);
+    });
+    test('a version 4 save gains an empty Pearl purse', () {
+      final v4 = _sample().toJson()
+        ..['save_version'] = 4
+        ..remove('pearls')
+        ..remove('applied_transactions')
+        ..remove('owned_products');
+      expect(migrateSave(v4)['save_version'], currentSaveVersion);
+      final back = SaveState.fromJson(v4);
+      expect(back.pearls, 0);
+      expect(back.appliedTransactions, isEmpty);
+      expect(back.ownedProducts, isEmpty);
+      expect(back.talents, 120);
     });
     test('rejects a save with no version', () {
       final json = _sample().toJson()..remove('save_version');
@@ -264,7 +292,8 @@ void main() {
           lastOrderSkip: null,
         ),
       );
-      expect(s.manna, 100);
+      // 500 is allowed: bought Manna may sit above the bar.
+      expect(s.manna, 500);
       expect(s.talents, 0);
       expect(s.blessings, 0);
       expect(s.activeOrders, ['ch1_o_004']);

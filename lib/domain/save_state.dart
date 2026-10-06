@@ -2,7 +2,10 @@
 
 /// The save format this build writes. Raise it, and add a step to
 /// [migrateSave], whenever the format changes. Never break an existing save.
-const currentSaveVersion = 4;
+const currentSaveVersion = 5;
+
+/// The most bought or gifted Manna a game may hold above its bar.
+const maxBonusManna = 100000;
 
 /// A tutorial position meaning "finished", whatever the number of steps.
 const tutorialFinished = 1 << 20;
@@ -61,6 +64,16 @@ class SaveState {
   final DateTime mannaLastRegen;
   final int talents;
   final int blessings;
+
+  /// Pearls (bought currency).
+  final int pearls;
+
+  /// Store transactions whose contents are already in this game, so none is
+  /// ever applied twice.
+  final List<String> appliedTransactions;
+
+  /// One-time products this game has received (for example the starter pack).
+  final List<String> ownedProducts;
   final List<String> activeOrders;
   final List<String> pendingOrders;
 
@@ -92,6 +105,9 @@ class SaveState {
     required this.mannaLastRegen,
     required this.talents,
     required this.blessings,
+    this.pearls = 0,
+    this.appliedTransactions = const [],
+    this.ownedProducts = const [],
     required this.activeOrders,
     required this.pendingOrders,
     required this.completedOrders,
@@ -111,6 +127,9 @@ class SaveState {
     'manna_last_regen': mannaLastRegen.toUtc().toIso8601String(),
     'talents': talents,
     'blessings': blessings,
+    'pearls': pearls,
+    'applied_transactions': appliedTransactions,
+    'owned_products': ownedProducts,
     'active_orders': activeOrders,
     'pending_orders': pendingOrders,
     'completed_orders': completedOrders,
@@ -141,6 +160,13 @@ class SaveState {
         mannaLastRegen: DateTime.parse(json['manna_last_regen'] as String),
         talents: json['talents'] as int,
         blessings: json['blessings'] as int,
+        pearls: json['pearls'] as int,
+        appliedTransactions: List<String>.from(
+          json['applied_transactions'] as List<dynamic>,
+        ),
+        ownedProducts: List<String>.from(
+          json['owned_products'] as List<dynamic>,
+        ),
         activeOrders: List<String>.from(json['active_orders'] as List<dynamic>),
         pendingOrders: List<String>.from(
           json['pending_orders'] as List<dynamic>,
@@ -196,6 +222,13 @@ Map<String, dynamic> migrateSave(Map<String, dynamic> raw) {
     json['tutorial_step'] = tutorialFinished;
     json['save_version'] = 4;
   }
+  if (json['save_version'] == 4) {
+    // Version 5 adds Pearls and the record of applied purchases.
+    json['pearls'] = 0;
+    json['applied_transactions'] = <String>[];
+    json['owned_products'] = <String>[];
+    json['save_version'] = 5;
+  }
   // The next format change goes here, as another one-version step.
   return json;
 }
@@ -238,10 +271,14 @@ SaveState sanitizeSave(
   return SaveState(
     items: items,
     generators: generators,
-    manna: save.manna.clamp(0, maxManna),
+    // Bought Manna may sit above the bar; only nonsense values are cut.
+    manna: save.manna.clamp(0, maxManna + maxBonusManna),
     mannaLastRegen: save.mannaLastRegen,
     talents: save.talents < 0 ? 0 : save.talents,
     blessings: save.blessings < 0 ? 0 : save.blessings,
+    pearls: save.pearls < 0 ? 0 : save.pearls,
+    appliedTransactions: save.appliedTransactions.toSet().toList(),
+    ownedProducts: save.ownedProducts.toSet().toList(),
     activeOrders: active,
     pendingOrders: pending,
     completedOrders: completed,
