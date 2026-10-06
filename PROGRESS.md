@@ -685,9 +685,14 @@ Store products:
 - `tool/create_store_products.ts` (run with Deno) creates the products in App Store
   Connect and Google Play from `tool/store_products.json`; descriptions take their Pearl
   and Manna amounts from `content/products.json`. Nothing has been created yet.
-- Waiting on Jennifer: which Pearl amounts are right (her list says 25/140/300/650/1,750/
-  3,750; the game gives 50/270/560/1,200/3,200/7,000), the App Store Connect Issuer ID,
-  and for Google a Play service account file plus a first build uploaded.
+- Pearl amounts decided 2026-10-05 (Jennifer asked for a recommendation; her new list was
+  adopted): 25 / 140 / 300 / 650 / 1,750 / 3,750 for $0.99 … $99.99. Changed in
+  `content/products.json` and the server's `rules.ts`; a test keeps the two equal.
+  Content version is now 4. Why: at the old amounts $0.99 bought five Manna refills and
+  the $1.99 starter pack was no better value than the cheapest pack; at the new amounts
+  the starter pack is about twice the value of any other pack, as a starter offer should be.
+- Waiting on Jennifer: the App Store Connect Issuer ID, and for Google a Play service
+  account file plus a first build uploaded.
 - Apple key `AuthKey_3RX9BR6Z6S.p8` is in the project folder (ignored by git); its path
   and Key ID are in `.env` (ignored by git).
 

@@ -10,12 +10,12 @@ export interface ProductGrant {
 
 // Product catalog — must match content/products.json in the app.
 export const PRODUCTS: Record<string, ProductGrant> = {
-  pearls_tier1: { consumable: true, pearls: 50 },
-  pearls_tier2: { consumable: true, pearls: 270 },
-  pearls_tier3: { consumable: true, pearls: 560 },
-  pearls_tier4: { consumable: true, pearls: 1200 },
-  pearls_tier5: { consumable: true, pearls: 3200 },
-  pearls_tier6: { consumable: true, pearls: 7000 },
+  pearls_tier1: { consumable: true, pearls: 25 },
+  pearls_tier2: { consumable: true, pearls: 140 },
+  pearls_tier3: { consumable: true, pearls: 300 },
+  pearls_tier4: { consumable: true, pearls: 650 },
+  pearls_tier5: { consumable: true, pearls: 1750 },
+  pearls_tier6: { consumable: true, pearls: 3750 },
   starter_pack: { consumable: false, pearls: 100, manna: 100, generator_level: 2 },
 };
 
