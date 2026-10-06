@@ -73,6 +73,17 @@ class ContentLoader {
   bool _loaded = false;
   bool get isLoaded => _loaded;
 
+  /// A loader holding only one event's chain and generator (in the same
+  /// form as content/chains.json and content/generators.json entries).
+  static ContentLoader forEvent({
+    required Map<String, dynamic> chain,
+    required Map<String, dynamic> generator,
+    required EconomyConfig economy,
+  }) => ContentLoader()
+    ..economy = economy
+    .._parseChains([chain])
+    .._parseGenerators([generator]);
+
   /// Reads the content that ships in the app and builds the lookup tables.
   Future<void> load() async => loadFromBundle(await loadBundledContent());
 
@@ -253,3 +264,9 @@ Future<ContentBundle> loadBundledContent() async {
     files: {for (final name in contentFileNames) name: await read(name)},
   );
 }
+
+/// Reads the app's own events (content/events.json): the fallback when the
+/// server's list has never been fetched.
+Future<List<Object?>> loadBundledEvents() async =>
+    jsonDecode(await rootBundle.loadString('content/events.json'))
+        as List<dynamic>;

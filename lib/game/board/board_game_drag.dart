@@ -3,8 +3,8 @@ part of 'board_game.dart';
 
 extension _BoardDrag on BoardGame {
   void _dragStart(DragStartEvent event) {
-    for (int c = 0; c < BoardGame.cols; c++) {
-      for (int r = 0; r < BoardGame.rows; r++) {
+    for (int c = 0; c < gridCols; c++) {
+      for (int r = 0; r < gridRows; r++) {
         final cell = _cells[c][r];
         final hasItem = _board[c][r] != null;
         final isGenCell = _generatorCellSet.contains((c, r));
@@ -32,8 +32,8 @@ extension _BoardDrag on BoardGame {
     if (dragging == null || origin == null) return;
 
     CellComponent? target;
-    for (int c = 0; c < BoardGame.cols; c++) {
-      for (int r = 0; r < BoardGame.rows; r++) {
+    for (int c = 0; c < gridCols; c++) {
+      for (int r = 0; r < gridRows; r++) {
         if (!_generatorCellSet.contains((c, r)) &&
             _cells[c][r].containsPoint(dragging.center)) {
           target = _cells[c][r];
@@ -75,6 +75,7 @@ extension _BoardDrag on BoardGame {
           _log.fine('Merged ${originItem.itemId} -> ${merged.itemId}');
           _boardTouched();
           onMerge?.call();
+          onMerged?.call(merged);
         } else {
           _snapBack(dragging, origin, originItem);
         }

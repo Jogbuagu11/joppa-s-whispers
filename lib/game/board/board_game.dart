@@ -33,6 +33,13 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   static const int cols = BoardState.cols;
   static const int rows = BoardState.rows;
 
+  /// This board's own size (an event board is smaller than the main one).
+  final int gridCols;
+  final int gridRows;
+
+  /// Called with the new item after two items merge.
+  void Function(ItemModel merged)? onMerged;
+
   final Map<String, ItemModel> itemCatalog;
   final Map<String, ChainTierData> chainData;
   final Map<String, List<GeneratorLevelData>> generatorLevels;
@@ -66,9 +73,9 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   CellComponent? _dragOriginCell;
 
   // Board data: item placed in each cell (null = empty).
-  final List<List<ItemModel?>> _board = List.generate(
-    cols,
-    (_) => List.generate(rows, (_) => null),
+  late final List<List<ItemModel?>> _board = List.generate(
+    gridCols,
+    (_) => List.generate(gridRows, (_) => null),
   );
 
   final ValueNotifier<int> _boardVersion = ValueNotifier<int>(0);
@@ -83,8 +90,8 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
 
   /// Every item on the board with its cell (written to the save file).
   List<SavedItem> snapshotItems() => [
-    for (int c = 0; c < cols; c++)
-      for (int r = 0; r < rows; r++)
+    for (int c = 0; c < gridCols; c++)
+      for (int r = 0; r < gridRows; r++)
         if (_board[c][r] case final item?)
           SavedItem(itemId: item.itemId, col: c, row: r),
   ];
@@ -157,6 +164,8 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
     required this.chainPlaceholderColors,
     required this.manna,
     required this.onOutOfManna,
+    this.gridCols = cols,
+    this.gridRows = rows,
   });
 
   @override
@@ -198,18 +207,18 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   Future<void> _loadArtFor(ItemModel item) async {
     try {
       _art[item.itemId] = await images.load(item.asset);
-    } on Exception catch (e) {
+    } on Object catch (e) {
       _log.warning('No art for ${item.itemId} at ${item.asset}: $e');
     }
   }
 
   void _buildCells() {
     final cellSize = _cellSize;
-    final offsetX = (size.x - cols * cellSize) / 2;
-    final offsetY = (size.y - rows * cellSize) / 2;
+    final offsetX = (size.x - gridCols * cellSize) / 2;
+    final offsetY = (size.y - gridRows * cellSize) / 2;
 
-    _cells = List.generate(cols, (c) {
-      return List.generate(rows, (r) {
+    _cells = List.generate(gridCols, (c) {
+      return List.generate(gridRows, (r) {
         final cell = CellComponent(
           col: c,
           row: r,
@@ -224,8 +233,8 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
 
   void _buildGenerators() {
     final cellSize = _cellSize;
-    final offsetX = (size.x - cols * cellSize) / 2;
-    final offsetY = (size.y - rows * cellSize) / 2;
+    final offsetX = (size.x - gridCols * cellSize) / 2;
+    final offsetY = (size.y - gridRows * cellSize) / 2;
 
     for (final placement in generatorPlacements) {
       _generatorCellSet.add((placement.col, placement.row));
@@ -247,8 +256,8 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
       Color(chainPlaceholderColors[item.chainId] ?? 0xFF888888);
 
   double get _cellSize {
-    final maxW = size.x / cols;
-    final maxH = size.y / rows;
+    final maxW = size.x / gridCols;
+    final maxH = size.y / gridRows;
     return (maxW < maxH ? maxW : maxH) - 2;
   }
 

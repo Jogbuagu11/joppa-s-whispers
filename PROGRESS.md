@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 20 — Notifications (built; needs a real-phone check and, for iPhone push, Jennifer's Apple push key). Milestones 14, 16, 17, 18 and 19 are also built and awaiting her checks. Next to build: 21 — Events system.
+## Current milestone: 21 — Events system (built; needs Jennifer to approve a first event and one server change before it can be seen). Milestones 14 and 16–20 are also built and awaiting her checks. Next to build: 22 — Admin panel.
 
 ---
 
@@ -29,7 +29,7 @@
 | 18 | Rewarded ads | BUILT — not tagged: a real (test) ad has not yet been watched on a phone |
 | 19 | Firebase: analytics + crash reporting | BUILT — not tagged: Jennifer has not yet confirmed events and a test crash in the Firebase console |
 | 20 | Notifications | BUILT — not tagged: no real notification has been seen on a phone; push needs Jennifer's Apple push key |
-| 21 | Events system | Not started |
+| 21 | Events system | BUILT — not tagged: no real event exists yet; the server permission change is not applied; needs an event theme approved by Jennifer |
 | 22 | Admin panel | Not started |
 | 23 | Chapters 2–6 | Not started |
 | 24 | Polish & accessibility | Not started |
@@ -940,6 +940,65 @@ Review notes carried forward:
 - `ContentLoader.notifications` is parsed but the board reads the same data from the
   content bundle (board_session.dart is at the 300-line limit); tidy when that file is split.
 
+## Milestone 21 — state (2026-10-06)
+
+BUILT, NOT TAGGED. Analyze clean, 547 unit tests, sixteen device tests on the iOS
+Simulator and Android Emulator (the new one, `event_test`, plays a made-up "Joppa Boat
+Festival" from a stand-in server), and the real app launches on both. **No real event
+exists, so players see nothing new yet.**
+
+What is built:
+- While an event is on (and the tutorial is over) a banner on the board shows its name
+  and time left. Tapping it opens the event's own smaller board (size set by the event,
+  5×7 in the plan) with the event's own chain and generator.
+- The event board spends the player's ordinary Manna. Each merge earns points (the tier
+  made); points climb a track of reward steps that pay Manna and Talents into the main
+  game straight away, each step once.
+- Events come from the server's `events` table (rows switched on), then the last list
+  the server gave (for offline play), then the app's own `content/events.json` (empty).
+- Every event is checked before it is shown (`lib/data/event_validator.dart`) and its
+  board is trial-built; a faulty event is simply left out. A picture the installed app
+  does not have shows the coloured placeholder.
+- Event progress (board, points, steps paid) is kept on the phone, one file per event.
+- The main board can now be any size (`BoardGame.gridCols/gridRows`); the main game is
+  unchanged at 7×9.
+- Rules in `lib/domain/events.dart`; `lib/features/events/`; `lib/data/events_repository.dart`.
+
+The event format (`events.config`, also an entry of `content/events.json`):
+`{ "board": {"cols":5,"rows":7}, "chain": {…as in chains.json…}, "generator": {…as in
+generators.json…, "col":2, "row":6}, "milestones": [{"points":10,"manna":10}, {"points":30,
+"talents":50}, …] }` plus the row's `id` (lowercase letters, digits, _), `name`,
+`starts_at`, `ends_at`. A full example is `test/support/event_fixtures.dart`.
+
+Decisions / assumptions to confirm:
+- NOT in this milestone: the season pass (a purchase), the exclusive decoration, the
+  story side-plot scenes, Pearl rewards (Pearls only come from verified purchases),
+  event art, weekend events, "event started/ending" pushes, and event progress in the
+  cloud save. Each is a piece of LIVEOPS section 2 still to build.
+- No real event is included: LIVEOPS says each theme needs Jennifer's approval.
+- Rules for running events: never re-use an event id; on a live event only ADD reward
+  steps at the end (do not insert or reorder); give dates with a time zone.
+- Points per merge = the tier made (not yet settable per event).
+
+Needed before a real event can be seen (each needs Jennifer's OK):
+1. Apply `supabase/migrations/20261006000001_events_public_read.sql` (lets signed-out
+   players read switched-on events; today only signed-in players can read events).
+2. Choose the first event theme; then the chain, rewards and dates go into an `events` row.
+
+Known limits (from the review; accepted for now):
+- Event progress lives on the phone only: reinstalling, or a second phone on the same
+  account, lets a player earn an event's rewards again (capped by the checks: at most
+  500 Manna / 5,000 Talents a step). Proper fix: progress in the cloud save.
+- Whether an event is on goes by the phone's clock.
+- For up to 20 seconds after an event ends, taps on its board still spend Manna for no
+  points; then the board closes itself.
+- No unit test builds a non-7×9 board or a merge on one; the device test covers the
+  5×7 board and generator taps, not merges or rewards (those are unit tested in
+  `event_controller_test.dart`).
+- Review fixes made: faulty server data can no longer leave the event screen stuck;
+  Manna spent on the event board is now saved like any other change; an account sync
+  cannot swap the game under an open event; a cancelled saver can never write.
+
 ## First Android bundle for Google Play (2026-10-05)
 
 Jennifer asked for a bundle to upload to Google Play ahead of Milestone 25.
@@ -1007,6 +1066,8 @@ beside the game with its history kept. A backup of the original is in the GitHub
 ## Waiting on Jennifer
 
 **To do next (added 2026-10-05, for 2026-10-06) — Google Play, after the first bundle upload:**
+- Milestone 21: choose the first event theme (LIVEOPS section 3) and say whether Claude
+  may apply the small server change that lets all players see switched-on events.
 - Milestone 20 check: on a phone, tap the bell, turn on "Gentle reminders", allow
   notifications, use up your Manna, close the game and wait for the "Manna is full"
   notification (it will not arrive between 9 pm and 9 am).

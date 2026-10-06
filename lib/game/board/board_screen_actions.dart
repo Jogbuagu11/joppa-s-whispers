@@ -3,7 +3,7 @@
 // board_screen_routes.dart; the layout is in board_screen.dart.
 part of 'board_screen.dart';
 
-mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications {
+mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
   @override
   void initState() {
     super.initState();
@@ -120,6 +120,8 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications {
       );
       final adopt = result.adopt;
       if (adopt == null || !mounted) return result.message;
+      // Never swap the game out from under an open event board.
+      if (_eventOpen) return result.message;
       // If the player kept playing while the account was being checked, do
       // not throw those moves away: compare again next time instead.
       if (saveFingerprint(session.snapshot()) != before) {
@@ -167,6 +169,7 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications {
     final cloud = widget.cloud;
     final session = _session;
     if (state == AppLifecycleState.resumed) {
+      unawaited(_loadEvent());
       _events?.sessionStarted();
       unawaited(widget.shop?.resume());
     } else if (state == AppLifecycleState.paused) {
@@ -208,6 +211,7 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications {
       session.ads.service = widget.ads;
       widget.cloud?.blockUploads = session.downgraded;
       session.saver.onSaved = (state) => widget.cloud?.afterLocalSave(state);
+      unawaited(_loadEvent());
       // Look for newer content in the background; it is used from next launch.
       unawaited(widget.content?.checkForUpdate(session.contentBundle));
       setState(() => _session = session);

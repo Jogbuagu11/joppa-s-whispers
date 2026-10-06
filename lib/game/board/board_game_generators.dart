@@ -4,8 +4,8 @@ part of 'board_game.dart';
 extension _BoardGenerators on BoardGame {
   /// Places an item in the first empty non-generator cell.
   void placeItem(ItemModel item) {
-    for (int c = 0; c < BoardGame.cols; c++) {
-      for (int r = 0; r < BoardGame.rows; r++) {
+    for (int c = 0; c < gridCols; c++) {
+      for (int r = 0; r < gridRows; r++) {
         if (_board[c][r] == null && !_generatorCellSet.contains((c, r))) {
           _board[c][r] = item;
           _cells[c][r].setItem(item, _colorFor(item), _art[item.itemId]);
@@ -52,8 +52,8 @@ extension _BoardGenerators on BoardGame {
   }
 
   bool _hasSpaceForItem() {
-    for (int c = 0; c < BoardGame.cols; c++) {
-      for (int r = 0; r < BoardGame.rows; r++) {
+    for (int c = 0; c < gridCols; c++) {
+      for (int r = 0; r < gridRows; r++) {
         if (_board[c][r] == null && !_generatorCellSet.contains((c, r))) {
           return true;
         }

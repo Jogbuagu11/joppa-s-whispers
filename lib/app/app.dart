@@ -7,7 +7,9 @@ import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/data/cloud_save_store.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
+import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/data/notification_prefs_repository.dart';
+import 'package:whispers_of_joppa/data/supabase_remote_events.dart';
 import 'package:whispers_of_joppa/data/supabase_remote_content.dart';
 import 'package:whispers_of_joppa/data/sync_base_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
@@ -56,6 +58,12 @@ class WhispersApp extends ConsumerWidget {
     tokens: SupabaseDeviceTokens(Supabase.instance.client),
   );
 
+  // Events: from the server, with the app's own file as the fallback.
+  static final EventsRepository _events = EventsRepository(
+    loadBundled: loadBundledEvents,
+    remote: SupabaseRemoteEvents(Supabase.instance.client),
+  );
+
   // One account link for the life of the app.
   static final BoardCloud _cloud = _buildCloud();
 
@@ -95,6 +103,7 @@ class WhispersApp extends ConsumerWidget {
               ads: _ads,
               analytics: analytics,
               notifications: _notifications,
+              events: _events,
             )
           : const BoardScreen(),
     );

@@ -13,6 +13,12 @@ mixin _BoardState on State<BoardScreen> {
 
   /// Reports what happens in the game; null where analytics is not set up.
   GameAnalytics? _events;
+
+  /// The event that is on now, if any.
+  EventModel? _event;
+
+  /// True while the event board is open over this one.
+  bool _eventOpen = false;
 }
 
 mixin _BoardRoutes on _BoardState {

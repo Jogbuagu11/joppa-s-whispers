@@ -182,6 +182,8 @@ Spiritual orders set `"kind": "spiritual"` and a `scene_id` that plays on comple
 - `economy.json`: every number from GDD Section 12
 - `products.json`: IAP product IDs mapped to contents
 - `events.json`: local fallback for events (live events come from Supabase)
+  - One event = `{id, name, starts_at, ends_at, config}`; `config` = `{board: {cols, rows}, chain: <a chains.json entry>, generator: <a generators.json entry + col, row>, milestones: [{points, manna?, talents?}]}`. Checked by `lib/data/event_validator.dart`; a faulty event is left out, never shown.
+  - On the phone: `events_cache.json` (the server's last list) and `event_progress_<id>.json` (board, points, reward steps paid).
 - `tutorial.json`: first-session hints in order: id, speaker, text, `done_when` (`merge`, `generator_tap`, `order_delivered` + id, `task_done` + id, or `tap`), `free_manna`
 - `endings.json`: the message shown when a chapter's last task is done: chapter_id, title, body, button
 

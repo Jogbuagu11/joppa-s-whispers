@@ -54,6 +54,12 @@ class GameSaver with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
   }
 
+  /// Says the game changed in a way the triggers do not see (Manna spent
+  /// on an event board), so it is written like any other change.
+  void markChanged() {
+    if (_started) _changed();
+  }
+
   void _changed() {
     _dirty = true;
     final now = DateTime.now();
@@ -106,6 +112,8 @@ class GameSaver with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     _dirty = false;
+    // A cancelled saver never writes again, whoever still holds it.
+    _started = false;
     return _writing;
   }
 

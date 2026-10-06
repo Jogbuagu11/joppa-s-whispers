@@ -11,7 +11,10 @@ import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/letters/letters_screen.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
+import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
+import 'package:whispers_of_joppa/domain/events.dart';
+import 'package:whispers_of_joppa/features/events/event_screen.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
 import 'package:whispers_of_joppa/features/settings/account_screen.dart';
 import 'package:whispers_of_joppa/features/settings/notification_settings_screen.dart';
@@ -29,6 +32,7 @@ import 'package:whispers_of_joppa/services/ad_service.dart';
 import 'package:whispers_of_joppa/services/analytics_service.dart';
 
 part 'board_screen_actions.dart';
+part 'board_screen_events.dart';
 part 'board_screen_notifications.dart';
 part 'board_screen_routes.dart';
 
@@ -48,6 +52,8 @@ class BoardScreen extends StatefulWidget {
     this.ads,
     this.analytics,
     this.notifications,
+    this.events,
+    this.eventProgress,
   });
 
   /// The player's account and cloud save. Null (in tests, or if the backend
@@ -65,6 +71,12 @@ class BoardScreen extends StatefulWidget {
   /// Rewarded ads. Null (in tests, or where ads are not set up) means the
   /// "watch an ad" choice is never shown.
   final AdService? ads;
+
+  /// Time-limited events. Null (in tests) means there are none.
+  final EventsRepository? events;
+
+  /// Where event progress is kept. Tests pass their own.
+  final EventProgressRepository? eventProgress;
 
   /// Notifications. Null (in tests) hides the bell and never asks.
   final NotificationsController? notifications;
@@ -92,7 +104,12 @@ class BoardScreen extends StatefulWidget {
 }
 
 class _BoardScreenState extends State<BoardScreen>
-    with _BoardState, _BoardRoutes, _BoardNotifications, _BoardScreenActions {
+    with
+        _BoardState,
+        _BoardRoutes,
+        _BoardNotifications,
+        _BoardEvents,
+        _BoardScreenActions {
   @override
   Widget build(BuildContext context) {
     final session = _session;
@@ -162,6 +179,17 @@ class _BoardScreenState extends State<BoardScreen>
               onOpenLocation: _openLocation,
               onOpenLetters: _openLetters,
             ),
+            // No event offers during the tutorial.
+            if (_event case final event?)
+              ListenableBuilder(
+                listenable: session.tutorial,
+                // Nor for a game played from memory only (older content):
+                // rewards could not be kept.
+                builder: (context, _) =>
+                    session.tutorial.isOver && !session.downgraded
+                    ? _eventBanner(event)
+                    : const SizedBox.shrink(),
+              ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: OrdersBar(

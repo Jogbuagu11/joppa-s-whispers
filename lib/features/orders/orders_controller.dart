@@ -46,6 +46,13 @@ class OrdersController extends ChangeNotifier {
   int get talents => _talents;
   int get blessings => _blessings;
 
+  /// Adds Talents earned outside orders (an event reward).
+  void addTalents(int amount) {
+    if (amount <= 0) return;
+    _talents += amount;
+    notifyListeners();
+  }
+
   /// The orders on screen, in card order.
   List<OrderModel> get activeOrders => [
     for (final id in _book.active) ?_orders[id],
