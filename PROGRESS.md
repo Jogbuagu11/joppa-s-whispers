@@ -691,8 +691,15 @@ Store products:
   Content version is now 4. Why: at the old amounts $0.99 bought five Manna refills and
   the $1.99 starter pack was no better value than the cheapest pack; at the new amounts
   the starter pack is about twice the value of any other pack, as a starter offer should be.
-- Waiting on Jennifer: the App Store Connect Issuer ID, and for Google a Play service
-  account file plus a first build uploaded.
+- **Apple: all seven products created in App Store Connect on 2026-10-05** (app
+  6819075333): English name and description, US price, Apple's prices elsewhere,
+  available in 175 countries. Their status is "Missing Metadata" because each still
+  needs a review screenshot (Jennifer asked to add those once the shop screen exists;
+  it exists now). Product IDs on Apple are permanent.
+- Google: nothing created. The app is not in Play Console yet; it needs a first build
+  uploaded and a Play service account file (path goes in `.env`). Then run
+  `deno run -A tool/create_store_products.ts --apply --google`.
+- The Apple API key can see all of Jennifer's apps; only Whispers of Joppa is touched.
 - Apple key `AuthKey_3RX9BR6Z6S.p8` is in the project folder (ignored by git); its path
   and Key ID are in `.env` (ignored by git).
 
