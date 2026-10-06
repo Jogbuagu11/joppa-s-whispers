@@ -38,6 +38,7 @@ lib/
     items/
     effects/
   features/       # Flutter UI screens, one folder per feature
+    ads/          # optional rewarded ads (bonus Manna)
     orders/
     story/        # dialogue scenes
     restoration/  # location screens

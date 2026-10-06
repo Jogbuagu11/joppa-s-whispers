@@ -61,6 +61,8 @@ SaveState sanitizeSave(
     endingsSeen: save.endingsSeen.toSet().toList(),
     contentVersion: save.contentVersion,
     lastOrderSkip: save.lastOrderSkip,
+    adDay: save.adDay,
+    adMannaWatched: save.adMannaWatched < 0 ? 0 : save.adMannaWatched,
   );
 }
 

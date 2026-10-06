@@ -1,4 +1,5 @@
-// Milestone 6: the Manna bar counts down and the out-of-Manna popup appears.
+// Milestone 18: out of Manna, the player may choose to watch an ad for more.
+// The ad here is a stand-in: no real ad is ever loaded by a test.
 import 'dart:convert';
 
 import 'package:flame/game.dart';
@@ -10,19 +11,24 @@ import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
+import '../test/support/ad_fakes.dart';
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('running out of Manna shows the popup', (tester) async {
-    // Start almost empty so the test does not depend on the starting amount.
-    const manna = 3;
+  testWidgets('an ad the player chooses to watch gives bonus Manna', (
+    tester,
+  ) async {
+    const manna = 0;
+    final ads = FakeAdService();
     await SaveRepository().clear();
     await tester.pumpWidget(
-      const MaterialApp(
+      MaterialApp(
         home: BoardScreen(
           startingMannaOverride: manna,
           playOpeningScene: false,
           playTutorial: false,
+          ads: ads,
         ),
       ),
     );
@@ -58,30 +64,41 @@ void main() {
     String countText() =>
         tester.widget<Text>(find.byKey(const Key('manna_count'))).data ?? '';
 
-    // The bar shows the starting Manna and a running countdown.
-    expect(countText(), '$manna/$max');
-    expect(
-      tester.widget<Text>(find.byKey(const Key('manna_timer'))).data,
-      startsWith('+1 in '),
-    );
+    final bonus = economy['rewarded_ad_manna_bonus'] as int;
+    final cap = economy['rewarded_ad_manna_daily_cap'] as int;
+    expect(cost, greaterThan(0));
+    final watchAd = find.byKey(const Key('out_of_manna_watch_ad'));
 
-    // Spend all of it.
-    final taps = manna ~/ cost;
-    for (int i = 0; i < taps; i++) {
-      await tester.tapAt(generatorCentre);
-      await tester.pump(const Duration(milliseconds: 100));
-    }
-    expect(countText(), '${manna - taps * cost}/$max');
-    expect(find.byKey(const Key('out_of_manna_popup')), findsNothing);
-
-    // One more tap cannot be paid for: the popup appears, nothing is spent.
+    // No Manna: tapping a generator brings up the popup, with the ad choice.
     await tester.tapAt(generatorCentre);
     await tester.pump(const Duration(milliseconds: 600));
     expect(find.byKey(const Key('out_of_manna_popup')), findsOneWidget);
-    expect(countText(), '${manna - taps * cost}/$max');
-    // Where ads are not set up, no ad is offered.
-    expect(find.byKey(const Key('out_of_manna_watch_ad')), findsNothing);
+    expect(watchAd, findsOneWidget);
+    // Nothing plays until the player asks.
+    expect(ads.shown, 0);
 
+    // An ad closed early gives nothing.
+    ads.watchedToEnd = false;
+    await tester.tap(watchAd);
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(ads.shown, 1);
+    expect(countText(), '0/$max');
+
+    // An ad watched to the end gives the bonus.
+    ads.watchedToEnd = true;
+    await tester.tap(watchAd);
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(countText(), '$bonus/$max');
+
+    // Watching up to the daily limit removes the choice.
+    for (int i = 1; i < cap; i++) {
+      await tester.tap(watchAd);
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+    expect(countText(), '${bonus * cap}/$max');
+    expect(watchAd, findsNothing);
+
+    // The popup can always simply be closed.
     await tester.tap(find.byKey(const Key('out_of_manna_ok')));
     await tester.pump(const Duration(milliseconds: 600));
     expect(find.byKey(const Key('out_of_manna_popup')), findsNothing);

@@ -1,6 +1,7 @@
 // Turns the live pieces of a play session into the state that gets saved.
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/tutorial.dart';
+import 'package:whispers_of_joppa/features/ads/ad_rewards_controller.dart';
 import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
 import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
 import 'package:whispers_of_joppa/features/story/endings_tracker.dart';
@@ -18,6 +19,7 @@ SaveState buildSnapshot({
   required TutorialController tutorial,
   required EndingsTracker endings,
   required PurchasesController purchases,
+  required AdRewardsController ads,
   required int contentVersion,
 }) => SaveState(
   items: game.snapshotItems(),
@@ -38,6 +40,8 @@ SaveState buildSnapshot({
   ownedProducts: purchases.ownedProducts,
   contentVersion: contentVersion,
   lastOrderSkip: orders.book.lastSkip,
+  adDay: ads.tally.day,
+  adMannaWatched: ads.tally.mannaAds,
 );
 
 /// Connects the tutorial to everything it watches: merges, generator taps,

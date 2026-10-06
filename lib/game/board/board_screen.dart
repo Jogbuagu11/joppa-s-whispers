@@ -20,6 +20,7 @@ import 'package:whispers_of_joppa/features/story/tutorial_banner.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
+import 'package:whispers_of_joppa/services/ad_service.dart';
 
 part 'board_screen_actions.dart';
 part 'board_screen_routes.dart';
@@ -37,6 +38,7 @@ class BoardScreen extends StatefulWidget {
     this.cloud,
     this.content,
     this.shop,
+    this.ads,
   });
 
   /// The player's account and cloud save. Null (in tests, or if the backend
@@ -50,6 +52,10 @@ class BoardScreen extends StatefulWidget {
   /// The Pearl shop. Null (in tests, or where purchases are not set up)
   /// hides the shop; Pearls already owned are still shown.
   final PurchaseCoordinator? shop;
+
+  /// Rewarded ads. Null (in tests, or where ads are not set up) means the
+  /// "watch an ad" choice is never shown.
+  final AdService? ads;
 
   /// Whether a new game shows the tutorial hints (with free early taps).
   /// Tests that are about something else turn this off.

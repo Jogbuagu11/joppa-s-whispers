@@ -2,7 +2,7 @@
 
 /// The save format this build writes. Raise it, and add a step to
 /// [migrateSave], whenever the format changes. Never break an existing save.
-const currentSaveVersion = 5;
+const currentSaveVersion = 6;
 
 /// The most bought or gifted Manna a game may hold above its bar.
 const maxBonusManna = 100000;
@@ -98,6 +98,10 @@ class SaveState {
   final int contentVersion;
   final DateTime? lastOrderSkip;
 
+  /// The day (yyyy-mm-dd) Manna ads were last watched, and how many that day.
+  final String adDay;
+  final int adMannaWatched;
+
   const SaveState({
     required this.items,
     required this.generators,
@@ -117,6 +121,8 @@ class SaveState {
     this.endingsSeen = const [],
     this.contentVersion = 0,
     required this.lastOrderSkip,
+    this.adDay = '',
+    this.adMannaWatched = 0,
   });
 
   Map<String, dynamic> toJson() => {
@@ -139,6 +145,8 @@ class SaveState {
     'endings_seen': endingsSeen,
     'content_version': contentVersion,
     'last_order_skip': lastOrderSkip?.toUtc().toIso8601String(),
+    'ad_day': adDay,
+    'ad_manna_watched': adMannaWatched,
   };
 
   /// Reads a save of any known version. Throws [FormatException] if the data
@@ -185,6 +193,8 @@ class SaveState {
         ),
         contentVersion: json['content_version'] as int? ?? 0,
         lastOrderSkip: skip == null ? null : DateTime.parse(skip),
+        adDay: json['ad_day'] as String,
+        adMannaWatched: json['ad_manna_watched'] as int,
       );
     } on TypeError catch (e) {
       throw FormatException('Save file is missing or has a wrong field: $e');
@@ -228,6 +238,12 @@ Map<String, dynamic> migrateSave(Map<String, dynamic> raw) {
     json['applied_transactions'] = <String>[];
     json['owned_products'] = <String>[];
     json['save_version'] = 5;
+  }
+  if (json['save_version'] == 5) {
+    // Version 6 adds the count of rewarded ads watched today.
+    json['ad_day'] = '';
+    json['ad_manna_watched'] = 0;
+    json['save_version'] = 6;
   }
   // The next format change goes here, as another one-version step.
   return json;

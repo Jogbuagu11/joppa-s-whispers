@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 17 — IAP: restore & refunds (built; needs the server pieces deployed deployed; needs store keys on the server and real purchase + refund tests by Jennifer). Milestones 14 and 16 are also built and awaiting her real-device tests.
+## Current milestone: 18 — Rewarded ads (built; needs Jennifer to watch one test ad on a phone). Milestones 14, 16 and 17 are also built and awaiting her real-device tests. Next to build: 19 — Firebase analytics + crash reporting.
 
 ---
 
@@ -26,7 +26,7 @@
 | 15 | Server-driven content | DONE (m15-working) — verified against the live server |
 | 16 | IAP: buy & deliver | BUILT — not tagged: needs store products and a sandbox purchase by Jennifer |
 | 17 | IAP: restore & refunds | BUILT — not tagged: functions deployed; needs store keys on the server and real purchase + refund tests by Jennifer |
-| 18 | Rewarded ads | Not started |
+| 18 | Rewarded ads | BUILT — not tagged: a real (test) ad has not yet been watched on a phone |
 | 19 | Firebase: analytics + crash reporting | Not started |
 | 20 | Notifications | Not started |
 | 21 | Events system | Not started |
@@ -791,6 +791,46 @@ Still needed to finish (Jennifer's OK required for each live change):
 6. The real-device list in TECH_SPEC section 6 (buy each pack, kill the app mid-purchase,
    airplane mode, restore on a fresh install, cancel, refund on each store).
 
+## Milestone 18 — state (2026-10-05)
+
+BUILT, NOT TAGGED. Analyze clean, 462 unit tests, thirteen device tests on the iOS
+Simulator and Android Emulator (the new one, `rewarded_ad_test`, uses a stand-in ad), and
+the real app launches on both with the real ad service switched on. **No real ad has been
+seen on screen yet** — that needs someone to finish the tutorial, run out of Manna and tap
+the button.
+
+What is built:
+- When the player is out of Manna, the popup offers "Watch an ad for +20 Manna (N left
+  today)". It appears only if an ad is loaded and ready, the tutorial is over, and fewer
+  than 5 have been watched today. OK always closes the popup. Nothing ever plays by itself.
+- The Manna is given only when the ad is watched to the end. Amount and daily limit come
+  from `content/economy.json` (`rewarded_ad_manna_bonus`, `rewarded_ad_manna_daily_cap`).
+- Today's count is in the save (format version 6; older saves upgrade automatically).
+- If no ad can be loaded the button simply is not there; loading is retried quietly.
+- Rules in `lib/domain/ads.dart`; `lib/features/ads/ad_rewards_controller.dart`;
+  the AdMob part in `lib/services/google_rewarded_ads.dart`.
+
+Decisions:
+- Only the Manna ad is in this milestone. The GDD's other two ad rewards (double an order
+  reward, daily clay jar) come with the features they belong to.
+- The ad is offered in the out-of-Manna popup only (the moment it is useful).
+- The day is the phone's own calendar day. Changing the phone's clock resets the limit;
+  accepted (at most 100 Manna, and Manna regen already trusts the clock).
+- The app uses Google's public TEST ad units by default: sample ads, no earnings.
+
+Needed before real ads (SETUP_CHECKLIST Phase 9; all for Jennifer / Milestone 25):
+- Real AdMob app ids (AndroidManifest.xml, ios Info.plist) and real rewarded unit ids,
+  passed at build time as `ADMOB_REWARDED_UNIT_IOS` / `ADMOB_REWARDED_UNIT_ANDROID`.
+  **A release built without them shows test ads.**
+- Privacy: the consent prompt for European players (Google UMP), Apple's tracking
+  permission text and SKAdNetwork list in Info.plist. None of these exist yet.
+
+Review notes carried forward:
+- `google_rewarded_ads.dart` has no automated test (it wraps the AdMob plugin). It guards
+  against an ad that never appears (10 s), a reward reported just after closing (1 s
+  wait), and stale ads (reloaded after 50 minutes) — all unproven until a real ad runs.
+- `board_session.dart` is at exactly 300 lines: split it before adding anything.
+
 ## First Android bundle for Google Play (2026-10-05)
 
 Jennifer asked for a bundle to upload to Google Play ahead of Milestone 25.
@@ -858,6 +898,9 @@ beside the game with its history kept. A backup of the original is in the GitHub
 ## Waiting on Jennifer
 
 **To do next (added 2026-10-05, for 2026-10-06) — Google Play, after the first bundle upload:**
+- Milestone 18 check: after the tutorial, run out of Manna, tap "Watch an ad" in the
+  popup, watch the sample ad to the end and confirm +20 Manna (and that closing it early
+  gives nothing).
 - Play Console → Testing → Internal testing → Testers: add her Gmail address, then open
   the opt-in link on her Android phone and install the game.
 - Play Console → Settings → License testing: add the same Gmail address (so test

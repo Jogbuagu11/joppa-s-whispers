@@ -24,7 +24,7 @@ mixin _BoardScreenActions on _BoardRoutes {
     final manna = _session?.manna;
     if (manna == null || _popupOpen || !mounted) return;
     _popupOpen = true;
-    await showOutOfMannaPopup(context, manna);
+    await showOutOfMannaPopup(context, manna, ads: _session?.ads);
     _popupOpen = false;
   }
 
@@ -192,6 +192,7 @@ mixin _BoardScreenActions on _BoardRoutes {
         return;
       }
       _attachShop(session);
+      session.ads.service = widget.ads;
       widget.cloud?.blockUploads = session.downgraded;
       session.saver.onSaved = (state) => widget.cloud?.afterLocalSave(state);
       // Look for newer content in the background; it is used from next launch.

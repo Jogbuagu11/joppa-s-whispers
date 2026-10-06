@@ -11,6 +11,8 @@ import 'package:whispers_of_joppa/data/supabase_remote_content.dart';
 import 'package:whispers_of_joppa/data/sync_base_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
+import 'package:whispers_of_joppa/services/ad_service.dart';
+import 'package:whispers_of_joppa/services/google_rewarded_ads.dart';
 import 'package:whispers_of_joppa/services/in_app_purchase_store.dart';
 import 'package:whispers_of_joppa/services/purchase_backend.dart';
 import 'package:whispers_of_joppa/services/supabase_auth_service.dart';
@@ -19,7 +21,8 @@ class WhispersApp extends ConsumerWidget {
   const WhispersApp({super.key});
 
   /// Device tests set this to false before starting the app, so a test run
-  /// can never sign in, sync with, or change anything in the live backend.
+  /// can never sign in, sync with, or change anything in the live backend,
+  /// and never loads a real ad.
   static bool accountsEnabled = true;
 
   // Content: the app's own, replaced by newer server content when available.
@@ -33,6 +36,9 @@ class WhispersApp extends ConsumerWidget {
     store: InAppPurchaseStore(),
     backend: SupabasePurchaseBackend(Supabase.instance.client),
   );
+
+  // Optional rewarded ads (bonus Manna). Never shown unless asked for.
+  static final AdService _ads = GoogleRewardedAds();
 
   // One account link for the life of the app.
   static final BoardCloud _cloud = _buildCloud();
@@ -66,7 +72,12 @@ class WhispersApp extends ConsumerWidget {
         useMaterial3: true,
       ),
       home: accountsEnabled
-          ? BoardScreen(cloud: _cloud, content: _content, shop: _shop)
+          ? BoardScreen(
+              cloud: _cloud,
+              content: _content,
+              shop: _shop,
+              ads: _ads,
+            )
           : const BoardScreen(),
     );
   }

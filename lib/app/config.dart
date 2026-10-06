@@ -22,7 +22,16 @@ class AppConfig {
   static const String googleWebClientId =
       '913228851937-g1lai48o6vv1fej5cmpimn0l135ogv1p.apps.googleusercontent.com';
 
-  // AdMob IDs — filled in at Milestone 18
-  static const String admobAppIdIos = '';
-  static const String admobAppIdAndroid = '';
+  // AdMob rewarded ad units. These defaults are Google's public TEST units:
+  // they show sample ads and earn nothing. The real ones are passed in at
+  // build time (--dart-define) once Jennifer's AdMob account has them; the
+  // AdMob APP ids live in AndroidManifest.xml and ios/Runner/Info.plist.
+  static const String admobRewardedUnitIos = String.fromEnvironment(
+    'ADMOB_REWARDED_UNIT_IOS',
+    defaultValue: 'ca-app-pub-3940256099942544/1712485313',
+  );
+  static const String admobRewardedUnitAndroid = String.fromEnvironment(
+    'ADMOB_REWARDED_UNIT_ANDROID',
+    defaultValue: 'ca-app-pub-3940256099942544/5224354917',
+  );
 }

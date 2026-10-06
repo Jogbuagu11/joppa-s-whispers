@@ -7,6 +7,7 @@ import 'package:whispers_of_joppa/data/content_bundle.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
+import 'package:whispers_of_joppa/domain/ads.dart';
 import 'package:whispers_of_joppa/domain/letters.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
@@ -14,6 +15,7 @@ import 'package:whispers_of_joppa/domain/progression.dart';
 import 'package:whispers_of_joppa/domain/save_repair.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';
+import 'package:whispers_of_joppa/features/ads/ad_rewards_controller.dart';
 import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
 import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
 import 'package:whispers_of_joppa/features/story/endings_tracker.dart';
@@ -40,6 +42,9 @@ class BoardSession {
   /// The player's Pearls and applied purchases.
   final PurchasesController purchases;
 
+  /// Optional rewarded ads and today's count of them.
+  final AdRewardsController ads;
+
   /// scene_id -> scene, for the scenes that tasks play.
   final Map<String, SceneModel> scenes;
 
@@ -49,8 +54,7 @@ class BoardSession {
   /// The content version written into saves (the newest this game has seen).
   final int savedContentVersion;
 
-  /// True when this game was last played with newer content than is running
-  /// now, so parts of it are missing and it must not go to the account.
+  /// True when the game was saved with newer content than is running now.
   bool get downgraded => savedContentVersion > contentBundle.version;
 
   /// Esther's letters, for the keepsake book.
@@ -75,6 +79,7 @@ class BoardSession {
     required this.tutorial,
     required this.endings,
     required this.purchases,
+    required this.ads,
     required this.scenes,
     required this.locations,
     required this.letters,
@@ -200,6 +205,13 @@ class BoardSession {
     );
     wireTutorial(game: game, orders: orders, story: story, tutorial: tutorial);
 
+    final ads = AdRewardsController(
+      config: loader.economy,
+      addManna: manna.add,
+      tutorialOver: () => tutorial.isOver,
+      startingTally: AdTally(day: save.adDay, mannaAds: save.adMannaWatched),
+    );
+
     await game.loadArt();
 
     final saver = GameSaver(
@@ -212,6 +224,7 @@ class BoardSession {
         tutorial: tutorial,
         endings: endings,
         purchases: purchases,
+        ads: ads,
         contentVersion: contentVersion,
       ),
       // Manna spends always come with a board change, so the per-second Manna
@@ -223,6 +236,7 @@ class BoardSession {
         tutorial,
         endings,
         purchases,
+        ads.tallyChanged,
       ],
     );
     // A game that has lost parts to older content is played from memory only:
@@ -237,6 +251,7 @@ class BoardSession {
       tutorial: tutorial,
       endings: endings,
       purchases: purchases,
+      ads: ads,
       scenes: loader.scenes,
       locations: loader.locations,
       letters: loader.letters,
@@ -254,16 +269,7 @@ class BoardSession {
   }
 
   /// The game exactly as it is now, in the form that gets saved.
-  SaveState snapshot() => buildSnapshot(
-    game: game,
-    manna: manna,
-    orders: orders,
-    story: story,
-    tutorial: tutorial,
-    endings: endings,
-    purchases: purchases,
-    contentVersion: savedContentVersion,
-  );
+  SaveState snapshot() => saver.snapshot();
 
   /// The closing message of a finished chapter not yet shown, or null.
   ChapterEnding? get pendingEnding =>
@@ -277,6 +283,7 @@ class BoardSession {
   }
 
   void _disposeParts() {
+    ads.dispose();
     purchases.dispose();
     endings.dispose();
     tutorial.dispose();

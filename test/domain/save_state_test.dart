@@ -123,6 +123,26 @@ void main() {
       expect(back.ownedProducts, isEmpty);
       expect(back.talents, 120);
     });
+    test('a version 5 save starts with no ads watched', () {
+      final v5 = _sample().toJson()
+        ..['save_version'] = 5
+        ..remove('ad_day')
+        ..remove('ad_manna_watched');
+      expect(migrateSave(v5)['save_version'], currentSaveVersion);
+      final back = SaveState.fromJson(v5);
+      expect(back.adDay, '');
+      expect(back.adMannaWatched, 0);
+      expect(back.talents, 120);
+    });
+    test('the count of ads watched survives a save and load', () {
+      final json = _sample().toJson()
+        ..['ad_day'] = '2026-10-05'
+        ..['ad_manna_watched'] = 3;
+      final back = SaveState.fromJson(json);
+      expect(back.adDay, '2026-10-05');
+      expect(back.adMannaWatched, 3);
+      expect(back.toJson()['ad_manna_watched'], 3);
+    });
     test('rejects a save with no version', () {
       final json = _sample().toJson()..remove('save_version');
       expect(() => migrateSave(json), throwsFormatException);

@@ -1,6 +1,7 @@
 // The Manna (energy) bar shown above the board, and the out-of-Manna popup.
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
+import 'package:whispers_of_joppa/features/ads/ad_rewards_controller.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
 const _gold = Color(0xFFD4802A);
@@ -70,11 +71,14 @@ const _labelStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
-/// Tells the player they are out of Manna and when more arrives.
+/// Tells the player they are out of Manna and when more arrives. If a
+/// rewarded ad is ready and allowed, offers it as a choice; it is never
+/// required and never shown unless the player taps it.
 Future<void> showOutOfMannaPopup(
   BuildContext context,
-  MannaController controller,
-) {
+  MannaController controller, {
+  AdRewardsController? ads,
+}) {
   return showDialog<void>(
     context: context,
     builder: (context) => AlertDialog(
@@ -94,7 +98,23 @@ Future<void> showOutOfMannaPopup(
           );
         },
       ),
+      actionsOverflowAlignment: OverflowBarAlignment.end,
       actions: [
+        if (ads != null)
+          ListenableBuilder(
+            listenable: ads,
+            builder: (context, _) => ads.mannaAdOffered
+                ? TextButton(
+                    key: const Key('out_of_manna_watch_ad'),
+                    onPressed: ads.watchForManna,
+                    child: Text(
+                      'Watch an ad for +${ads.mannaReward} Manna '
+                      '(${ads.mannaAdsLeft} left today)',
+                      style: const TextStyle(color: _gold),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
         TextButton(
           key: const Key('out_of_manna_ok'),
           onPressed: () => Navigator.of(context).pop(),
