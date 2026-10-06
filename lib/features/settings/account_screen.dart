@@ -1,4 +1,5 @@
 // Sign in, sync, sign out and delete the account.
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/services/auth_service.dart';
@@ -15,7 +16,12 @@ class AccountScreen extends StatefulWidget {
     required this.auth,
     required this.syncNow,
     this.onDeleted,
+    this.onTestCrash,
   });
+
+  /// Debug builds only: crashes the app on purpose, to check that crash
+  /// reports arrive.
+  final VoidCallback? onTestCrash;
 
   /// Called after the account has been deleted, to clear what this phone
   /// remembers about it.
@@ -227,6 +233,12 @@ class _AccountScreenState extends State<AccountScreen> {
       onPressed: _busy ? null : _confirmDelete,
       child: const Text('Delete account', style: TextStyle(color: Colors.red)),
     ),
+    if (kDebugMode && widget.onTestCrash != null)
+      TextButton(
+        key: const Key('account_test_crash'),
+        onPressed: widget.onTestCrash,
+        child: const Text('Test crash (debug only)'),
+      ),
   ];
 
   Widget _field(

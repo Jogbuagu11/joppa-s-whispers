@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:whispers_of_joppa/app/app.dart';
 import 'package:whispers_of_joppa/app/config.dart';
+import 'package:whispers_of_joppa/app/crash_reporting.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +16,12 @@ void main() async {
       '[${record.level.name}] ${record.loggerName}: ${record.message}',
     );
   });
+
+  // Crash reports and analytics. The game runs the same without them.
+  // Device tests switch the live services off: they report nothing.
+  if (WhispersApp.accountsEnabled) {
+    WhispersApp.analytics = await startCrashReporting();
+  }
 
   await Supabase.initialize(
     url: AppConfig.supabaseUrl,

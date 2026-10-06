@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/cloud_save_store.dart';
 import 'package:whispers_of_joppa/domain/cloud_sync.dart';
+import 'package:whispers_of_joppa/app/game_analytics.dart';
 import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
@@ -21,6 +22,7 @@ import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
 import 'package:whispers_of_joppa/services/ad_service.dart';
+import 'package:whispers_of_joppa/services/analytics_service.dart';
 
 part 'board_screen_actions.dart';
 part 'board_screen_routes.dart';
@@ -39,6 +41,7 @@ class BoardScreen extends StatefulWidget {
     this.content,
     this.shop,
     this.ads,
+    this.analytics,
   });
 
   /// The player's account and cloud save. Null (in tests, or if the backend
@@ -56,6 +59,9 @@ class BoardScreen extends StatefulWidget {
   /// Rewarded ads. Null (in tests, or where ads are not set up) means the
   /// "watch an ad" choice is never shown.
   final AdService? ads;
+
+  /// Analytics and crash reports. Null (in tests) means nothing is sent.
+  final Analytics? analytics;
 
   /// Whether a new game shows the tutorial hints (with free early taps).
   /// Tests that are about something else turn this off.

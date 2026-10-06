@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 18 — Rewarded ads (built; needs Jennifer to watch one test ad on a phone). Milestones 14, 16 and 17 are also built and awaiting her real-device tests. Next to build: 19 — Firebase analytics + crash reporting.
+## Current milestone: 19 — Firebase analytics + crash reporting (built; needs Jennifer to confirm in the Firebase console). Milestones 14, 16, 17 and 18 are also built and awaiting her real-device checks. Next to build: 20 — Notifications.
 
 ---
 
@@ -27,7 +27,7 @@
 | 16 | IAP: buy & deliver | BUILT — not tagged: needs store products and a sandbox purchase by Jennifer |
 | 17 | IAP: restore & refunds | BUILT — not tagged: functions deployed; needs store keys on the server and real purchase + refund tests by Jennifer |
 | 18 | Rewarded ads | BUILT — not tagged: a real (test) ad has not yet been watched on a phone |
-| 19 | Firebase: analytics + crash reporting | Not started |
+| 19 | Firebase: analytics + crash reporting | BUILT — not tagged: Jennifer has not yet confirmed events and a test crash in the Firebase console |
 | 20 | Notifications | Not started |
 | 21 | Events system | Not started |
 | 22 | Admin panel | Not started |
@@ -64,6 +64,7 @@
 | supabase_flutter | 2.18.0 |
 | in_app_purchase | 3.3.1 |
 | google_mobile_ads | 9.1.0 |
+| firebase_core | 4.15.0 |
 | firebase_crashlytics | 5.4.0 |
 | firebase_analytics | 12.6.0 |
 | firebase_messaging | 16.7.0 |
@@ -831,6 +832,54 @@ Review notes carried forward:
   wait), and stale ads (reloaded after 50 minutes) — all unproven until a real ad runs.
 - `board_session.dart` is at exactly 300 lines: split it before adding anything.
 
+## Milestone 19 — state (2026-10-06)
+
+BUILT, NOT TAGGED. Analyze clean, 473 unit tests, fourteen device tests on the iOS
+Simulator and Android Emulator (the new one, `analytics_test`, records events with a
+stand-in), and the real app starts Firebase and Crashlytics on both (seen in the device
+logs). **Nobody has yet looked in the Firebase console to confirm events and a test crash
+arrive.**
+
+What is built:
+- Events (TECH_SPEC 8): tutorial_step, tutorial_complete, merge and generator_tap (one in
+  ten sent), order_complete, task_complete, chapter_complete, out_of_energy,
+  purchase_started, purchase_complete, ad_watched, letter_opened, session_end.
+- No personal data: an event may carry only a short list of game ids and numbers
+  (`allowedParamKeys` in `lib/domain/analytics_events.dart`); anything else is dropped. No
+  account id is ever given to Firebase.
+- Crash reports: every uncaught error goes to Crashlytics with the content version and
+  current chapter (app version is added by Crashlytics itself).
+- A "Test crash (debug only)" button on the Account screen (signed in, debug builds).
+- If Firebase cannot start, the game runs exactly the same without it.
+- Device tests switch all of this off; they send nothing.
+- `lib/app/game_analytics.dart` listens to the game; `lib/app/crash_reporting.dart` starts
+  Firebase; `lib/services/firebase_analytics_service.dart` sends.
+
+Decisions / assumptions to confirm:
+- `session_start` is NOT sent by the game: Firebase records it by itself and refuses
+  that name from an app. `session_end` (with the session's length) is ours.
+- `purchase_complete` means "a purchase was put into this game". Restoring old purchases
+  on a new phone reports them again, so it over-counts as a sales figure; the `purchases`
+  table is the true record of sales.
+- `lib/firebase_options.dart` was written from the two Firebase config files already in
+  the project (the same values `flutterfire configure` produces), because the iOS config
+  file is not attached to the Xcode project. These identify the app; they are not
+  secrets. It sits outside `lib/app/config.dart`, the usual home for app-safe keys.
+- `firebase_core 4.15.0` is now listed in pubspec (it was already installed as part of
+  the other Firebase packages, at that version).
+- Debug builds on a developer's machine DO report to the live Firebase project (needed
+  for the test-crash check). Filter by app version in the console if that gets noisy.
+
+Review notes carried forward:
+- `GameAnalytics.attach` (the wiring to a live game) is covered only by the device test
+  (session, generator tap, out of energy), not by unit tests: it needs a whole session.
+- iOS crash reports will not show readable code locations until the Crashlytics
+  "upload symbols" build step is added (Milestone 25, release builds).
+- Crash reports carry the error's own text; an error message that happened to include
+  an email address would be uploaded as written.
+- `account_screen.dart` (298 lines) and `purchase_coordinator.dart` (299) are at the
+  size limit: split before adding to them.
+
 ## First Android bundle for Google Play (2026-10-05)
 
 Jennifer asked for a bundle to upload to Google Play ahead of Milestone 25.
@@ -898,6 +947,8 @@ beside the game with its history kept. A backup of the original is in the GitHub
 ## Waiting on Jennifer
 
 **To do next (added 2026-10-05, for 2026-10-06) — Google Play, after the first bundle upload:**
+- Milestone 19 check: open the Firebase console → Analytics → Realtime (or DebugView)
+  while playing and confirm events arrive; then Crashlytics after a test crash.
 - Milestone 18 check: after the tutorial, run out of Manna, tap "Watch an ad" in the
   popup, watch the sample ad to the end and confirm +20 Manna (and that closing it early
   gives nothing).

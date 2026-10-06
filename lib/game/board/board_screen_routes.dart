@@ -10,6 +10,9 @@ mixin _BoardState on State<BoardScreen> {
   bool _syncing = false;
   AppLifecycleListener? _lifecycle;
   String? _error;
+
+  /// Reports what happens in the game; null where analytics is not set up.
+  GameAnalytics? _events;
 }
 
 mixin _BoardRoutes on _BoardState {
@@ -33,7 +36,11 @@ mixin _BoardRoutes on _BoardState {
     try {
       await Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) => ShopScreen(shop: shop, purchases: session.purchases),
+          builder: (_) => ShopScreen(
+            shop: shop,
+            purchases: session.purchases,
+            onBuy: _events?.purchaseStarted,
+          ),
         ),
       );
     } finally {
@@ -49,7 +56,9 @@ mixin _BoardRoutes on _BoardState {
     shop
       ..products = session.purchases.products
       ..target = PurchaseTarget(
-        applyConfirmed: session.purchases.applyConfirmed,
+        applyConfirmed:
+            _events?.reportingPurchases(session.purchases) ??
+            session.purchases.applyConfirmed,
         hasApplied: session.purchases.hasApplied,
         applyRefunds: session.purchases.applyRefunds,
         saveNow: session.saver.saveNow,
@@ -69,6 +78,7 @@ mixin _BoardRoutes on _BoardState {
           builder: (_) => LettersScreen(
             letters: session.letters,
             foundLetterIds: session.story.foundLetterIds,
+            onOpened: _events?.letterOpened,
           ),
         ),
       );

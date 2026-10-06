@@ -12,7 +12,11 @@ class LettersScreen extends StatelessWidget {
     super.key,
     required this.letters,
     required this.foundLetterIds,
+    this.onOpened,
   });
+
+  /// Told which letter the player opened (analytics).
+  final void Function(String letterId)? onOpened;
 
   final List<LetterModel> letters;
   final Set<String> foundLetterIds;
@@ -47,11 +51,14 @@ class LettersScreen extends StatelessWidget {
                 separatorBuilder: (_, _) => const SizedBox(height: 10),
                 itemBuilder: (context, i) => _LetterTile(
                   page: pages[i],
-                  onOpen: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => LetterReader(letter: pages[i].letter),
-                    ),
-                  ),
+                  onOpen: () {
+                    onOpened?.call(pages[i].letter.id);
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => LetterReader(letter: pages[i].letter),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

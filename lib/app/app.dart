@@ -12,6 +12,7 @@ import 'package:whispers_of_joppa/data/sync_base_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 import 'package:whispers_of_joppa/services/ad_service.dart';
+import 'package:whispers_of_joppa/services/analytics_service.dart';
 import 'package:whispers_of_joppa/services/google_rewarded_ads.dart';
 import 'package:whispers_of_joppa/services/in_app_purchase_store.dart';
 import 'package:whispers_of_joppa/services/purchase_backend.dart';
@@ -24,6 +25,10 @@ class WhispersApp extends ConsumerWidget {
   /// can never sign in, sync with, or change anything in the live backend,
   /// and never loads a real ad.
   static bool accountsEnabled = true;
+
+  /// Analytics and crash reports; set by main() once Firebase has started.
+  /// Null (in tests, or if Firebase could not start) means nothing is sent.
+  static Analytics? analytics;
 
   // Content: the app's own, replaced by newer server content when available.
   static final ContentRepository _content = ContentRepository(
@@ -77,6 +82,7 @@ class WhispersApp extends ConsumerWidget {
               content: _content,
               shop: _shop,
               ads: _ads,
+              analytics: analytics,
             )
           : const BoardScreen(),
     );

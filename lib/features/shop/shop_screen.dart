@@ -9,7 +9,15 @@ const _cream = Color(0xFFF3E6C8);
 const _ink = Color(0xFF1A1205);
 
 class ShopScreen extends StatefulWidget {
-  const ShopScreen({super.key, required this.shop, required this.purchases});
+  const ShopScreen({
+    super.key,
+    required this.shop,
+    required this.purchases,
+    this.onBuy,
+  });
+
+  /// Told which product the player tapped Buy for (analytics).
+  final void Function(String productId)? onBuy;
 
   final PurchaseCoordinator shop;
   final PurchasesController purchases;
@@ -134,7 +142,10 @@ class _ShopScreenState extends State<ShopScreen> {
           key: Key('shop_buy_${product.id}'),
           onPressed: owned || shop.busy.value
               ? null
-              : () => shop.buy(product.id),
+              : () {
+                  widget.onBuy?.call(product.id);
+                  shop.buy(product.id);
+                },
           style: FilledButton.styleFrom(backgroundColor: _gold),
           child: Text(
             // The price is the store's own, never written in the app.

@@ -14,6 +14,7 @@ mixin _BoardScreenActions on _BoardRoutes {
   @override
   void dispose() {
     _lifecycle?.dispose();
+    _events?.detach();
     widget.shop?.detach();
     // Saves any unsaved change, then stops the timers.
     _session?.dispose();
@@ -24,6 +25,7 @@ mixin _BoardScreenActions on _BoardRoutes {
     final manna = _session?.manna;
     if (manna == null || _popupOpen || !mounted) return;
     _popupOpen = true;
+    _events?.outOfEnergy();
     await showOutOfMannaPopup(context, manna, ads: _session?.ads);
     _popupOpen = false;
   }
@@ -88,6 +90,7 @@ mixin _BoardScreenActions on _BoardRoutes {
             auth: cloud.auth,
             syncNow: _syncWithAccount,
             onDeleted: cloud.forgetAccount,
+            onTestCrash: widget.analytics?.testCrash,
           ),
         ),
       );
@@ -139,6 +142,7 @@ mixin _BoardScreenActions on _BoardRoutes {
     setState(() => _session = null);
     // Stop the old session saving over the new game, then write the new one.
     old.saver.onSaved = null;
+    _events?.detach();
     widget.shop?.detach();
     await old.discard();
     var replaced = true;
@@ -161,7 +165,10 @@ mixin _BoardScreenActions on _BoardRoutes {
     final cloud = widget.cloud;
     final session = _session;
     if (state == AppLifecycleState.resumed) {
+      _events?.sessionStarted();
       unawaited(widget.shop?.resume());
+    } else if (state == AppLifecycleState.paused) {
+      _events?.sessionEnded();
     }
     if (cloud == null || session == null || !cloud.signedIn) return;
     if (state == AppLifecycleState.paused) {
@@ -190,6 +197,10 @@ mixin _BoardScreenActions on _BoardRoutes {
       if (!mounted) {
         await session.dispose();
         return;
+      }
+      final analytics = widget.analytics;
+      if (analytics != null) {
+        (_events ??= GameAnalytics(analytics)).attach(session);
       }
       _attachShop(session);
       session.ads.service = widget.ads;
