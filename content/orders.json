@@ -672,5 +672,265 @@
     },
     "text": "Cold hands, wet nets, and half the dock still unsure of me, Nomi. Stand by me a while longer?",
     "scene_id": null
+  },
+  {
+    "id": "ch4_o_001",
+    "chapter": 4,
+    "character_id": "hannah",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "loom_01",
+        "count": 2
+      },
+      {
+        "item_id": "loom_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 20,
+      "blessings": 3
+    },
+    "text": "Two tufts of wool and a thread, Naomi. It's for the widows' tunics on Tabitha's loom.",
+    "scene_id": null
+  },
+  {
+    "id": "ch4_o_002",
+    "chapter": 4,
+    "character_id": "hannah",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_04",
+        "count": 1
+      },
+      {
+        "item_id": "loom_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 3
+    },
+    "text": "A flatbread and a little thread, please. The widows sew together on the hill. I'd not come empty-handed.",
+    "scene_id": null
+  },
+  {
+    "id": "ch4_o_003",
+    "chapter": 4,
+    "character_id": "joy",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "fruit_02",
+        "count": 1
+      },
+      {
+        "item_id": "fruit_03",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 25,
+      "blessings": 3
+    },
+    "text": "Grown-ups go so quiet when they're sad. I don't like it. Can I bring them something glad, Naomi?",
+    "scene_id": null
+  },
+  {
+    "id": "ch4_o_004",
+    "chapter": 4,
+    "character_id": "naomi",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "loom_04",
+        "count": 1
+      },
+      {
+        "item_id": "loom_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 3
+    },
+    "text": "Hm. I can braid a loaf. A hem can't be so different. One cloth, one thread. Steady hands, Naomi.",
+    "scene_id": null
+  },
+  {
+    "id": "ch4_o_005",
+    "chapter": 4,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      },
+      {
+        "item_id": "loom_03",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 40,
+      "blessings": 3
+    },
+    "text": "A loaf and a spindle, little loaf. Esther swore a man who mends nets can spin. She was wrong, mind.",
+    "scene_id": null
+  },
+  {
+    "id": "ch4_o_006",
+    "chapter": 4,
+    "character_id": "amos",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_02",
+        "count": 2
+      },
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 45,
+      "blessings": 3
+    },
+    "text": "Well now. Two oil lamps and a loaf for the hill, child. Some nights want more light than others.",
+    "scene_id": null
+  },
+  {
+    "id": "ch4_o_007",
+    "chapter": 4,
+    "character_id": "caleb",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "armor_02",
+        "count": 1
+      },
+      {
+        "item_id": "fruit_04",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 3
+    },
+    "text": "Joy asks things I've no answer for. More of them lately. Steady feet and patience. That's all.",
+    "scene_id": null
+  },
+  {
+    "id": "ch4_o_008",
+    "chapter": 4,
+    "character_id": "zilpah",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "loom_04",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 45,
+      "blessings": 3
+    },
+    "text": "A cloth and a loaf, dear. My shawl is older than you are, and not a stitch has slipped.",
+    "scene_id": null
+  },
+  {
+    "id": "ch4_o_009",
+    "chapter": 4,
+    "character_id": "hannah",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "loom_05",
+        "count": 1
+      },
+      {
+        "item_id": "loom_04",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 45,
+      "blessings": 3
+    },
+    "text": "A tunic and a length of cloth, Naomi. The widow by the potter's has worn one coat nine winters.",
+    "scene_id": null
+  },
+  {
+    "id": "ch4_o_010",
+    "chapter": 4,
+    "character_id": "marcus",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "loom_05",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      },
+      {
+        "item_id": "church_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 60,
+      "blessings": 3
+    },
+    "text": "A tunic, a loaf and a lamp, Nomi. A fine cloak doesn't suit a fishing boat. I'll pay you in fish.",
+    "scene_id": null
+  },
+  {
+    "id": "ch4_o_011",
+    "chapter": 4,
+    "character_id": "zilpah",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "fruit_08",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 40,
+      "blessings": 3
+    },
+    "text": "I have a sharp tongue, dear. Everyone says so. I should like a softer one, if it isn't too late.",
+    "scene_id": null
+  },
+  {
+    "id": "ch4_o_012",
+    "chapter": 4,
+    "character_id": "zilpah",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "fruit_09",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 45,
+      "blessings": 3
+    },
+    "text": "Forty years my tongue has run ahead of me, dear. I should like, for once, to catch it up.",
+    "scene_id": null
   }
 ]

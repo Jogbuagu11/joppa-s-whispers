@@ -14,7 +14,13 @@
   {
     "chapter_id": "ch3",
     "title": "Chapter 3 Complete",
-    "body": "The docks are sound and Marcus has come home. But Tabitha has collapsed, and Naomi is running for the upper street. The next chapter is still rising. The story continues soon.",
+    "body": "The docks are sound and Marcus has come home. But a cry has gone up from the upper street: Tabitha has collapsed. Naomi takes the bread basket and runs.",
+    "button": "Go to Tabitha"
+  },
+  {
+    "chapter_id": "ch4",
+    "title": "Chapter 4 Complete",
+    "body": "Joppa is full of wonder. But Joy's question hangs in the air, and Caleb has walked out without a word. The next chapter is still rising. The story continues soon.",
     "button": "Keep baking"
   }
 ]

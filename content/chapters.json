@@ -356,5 +356,125 @@
         "letter_id": null
       }
     ]
+  },
+  {
+    "id": "ch4",
+    "number": 4,
+    "title": "Tabitha",
+    "location_id": "tanner",
+    "unlocks_chains": [
+      "loom"
+    ],
+    "crown_id": null,
+    "tasks": [
+      {
+        "id": "ch4_t_01",
+        "beat": 1,
+        "title": "Carry bread up to Tabitha",
+        "cost_blessings": 2,
+        "scene_id": "ch4_s_01",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch4_t_02",
+        "beat": 2,
+        "title": "Sweep the tanner's courtyard",
+        "cost_blessings": 2,
+        "scene_id": "ch4_s_02",
+        "restores_area": "tanner_courtyard",
+        "letter_id": null
+      },
+      {
+        "id": "ch4_t_03",
+        "beat": 3,
+        "title": "Gather up the sewing basket",
+        "cost_blessings": 2,
+        "scene_id": "ch4_s_03",
+        "restores_area": null,
+        "letter_id": "letter_07"
+      },
+      {
+        "id": "ch4_t_04",
+        "beat": 4,
+        "title": "Search for Zilpah",
+        "cost_blessings": 2,
+        "scene_id": "ch4_s_04",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch4_t_05",
+        "beat": 5,
+        "title": "Sit with Zilpah at the loom",
+        "cost_blessings": 2,
+        "scene_id": "ch4_s_05",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch4_t_06",
+        "beat": 6,
+        "title": "Air the tanner's guest room",
+        "cost_blessings": 2,
+        "scene_id": "ch4_s_06",
+        "restores_area": "tanner_guestroom",
+        "letter_id": null
+      },
+      {
+        "id": "ch4_t_07",
+        "beat": 7,
+        "title": "Wait on the upper room stair",
+        "cost_blessings": 3,
+        "scene_id": "ch4_s_07",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch4_t_08",
+        "beat": 8,
+        "title": "Clear the tanner's cistern",
+        "cost_blessings": 2,
+        "scene_id": "ch4_s_08",
+        "restores_area": "tanner_cistern",
+        "letter_id": null
+      },
+      {
+        "id": "ch4_t_09",
+        "beat": 9,
+        "title": "Mend the drying racks",
+        "cost_blessings": 2,
+        "scene_id": "ch4_s_09",
+        "restores_area": "tanner_racks",
+        "letter_id": null
+      },
+      {
+        "id": "ch4_t_10",
+        "beat": 10,
+        "title": "Reset the tanner's doorstep",
+        "cost_blessings": 2,
+        "scene_id": "ch4_s_10",
+        "restores_area": "tanner_doorstep",
+        "letter_id": "letter_08"
+      },
+      {
+        "id": "ch4_t_11",
+        "beat": 10,
+        "title": "Sweep the tanner's rooftop",
+        "cost_blessings": 2,
+        "scene_id": "ch4_s_11",
+        "restores_area": "tanner_rooftop",
+        "letter_id": null
+      },
+      {
+        "id": "ch4_t_12",
+        "beat": 11,
+        "title": "Light the lamp by the gate",
+        "cost_blessings": 3,
+        "scene_id": "ch4_s_12",
+        "restores_area": "tanner_lamp",
+        "letter_id": null
+      }
+    ]
   }
 ]

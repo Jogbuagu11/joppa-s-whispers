@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 23 — Chapters 2–6, one at a time. Chapters 2 and 3 are built; Chapter 4 is next. Milestones 14 and 16–22 are built and awaiting Jennifer's checks.
+## Current milestone: 23 — Chapters 2–6, one at a time. Chapters 2–4 are built; Chapter 5 is next. Milestones 14 and 16–22 are built and awaiting Jennifer's checks.
 
 ---
 
@@ -31,7 +31,7 @@
 | 20 | Notifications | BUILT — not tagged: no real notification has been seen on a phone; push needs Jennifer's Apple push key |
 | 21 | Events system | BUILT — not tagged: the Joppa Boat Festival is live on the server (to 2026-10-27); Jennifer has not yet seen it on a phone |
 | 22 | Admin panel | BUILT — not tagged: Jennifer has not yet signed in and used it; push needs the Firebase key on the server |
-| 23 | Chapters 2–6 | IN PROGRESS — Chapters 2 and 3 built (not tagged: Jennifer has not played them). Chapters 4–6 to do |
+| 23 | Chapters 2–6 | IN PROGRESS — Chapters 2, 3 and 4 built (not tagged: Jennifer has not played them). Chapters 5–6 to do |
 | 24 | Polish & accessibility | Not started |
 | 25 | Release builds | Not started |
 
@@ -1217,6 +1217,68 @@ Art needed for Chapter 3:
 
 Note: `content/scenes.json` (about 1,650 lines) and `content/orders.json` are long
 single files; splitting them per chapter would need a loader change.
+
+## Milestone 23, Chapter 4 "Tabitha" — state (2026-10-06)
+
+BUILT, NOT TAGGED. Analyze clean, 583 unit tests (with a play-through of all four
+chapters), seventeen device tests on both the iOS Simulator and the Android Emulator
+(`chapters_test` now covers three chapter changes). Not played by hand. Content is
+version 9, in the app only. NOT in build 4 (that bundle has Chapters 1–3).
+
+What is built:
+- 12 tasks at Simon the tanner's house covering the 11 beats, 12 scenes, 12 orders (8
+  ordinary, 4 spiritual), 7 areas, Letters 7 and 8 word for word, a Chapter 3 ending
+  that leads to Tabitha, and a Chapter 4 ending.
+- The Loom (Tabitha's Loom) arrives on the board when Chapter 4 is reached.
+- Blessings: the first ten orders pay 30, tasks cost 26. The last two orders
+  (Gentleness, Self-Control for Zilpah) are deliberately long hauls (128 and 256 Fruit
+  taps) and are not needed to finish the chapter.
+- `board_game.dart` was split (art loading is now `board_game_art.dart`).
+
+How Acts 9:36–43 is handled (for Jennifer's reviewer — please check each):
+- Tabitha speaks four gentle lines in the first scene only (she asks Naomi to finish the
+  widows' tunics). No teaching, prophecy or miracle is given to her. She is silent after
+  she is raised, as in Acts.
+- Her death is reported, briefly: "Tabitha died in the night." / "The women have washed
+  her and laid her in the upper room." ("in the night", "the women" are additions.)
+- Two men, Caleb and Marcus, are sent to Lydda: "come to us, and do not delay."
+- The raising is heard from the stair outside. Hannah: "He was kneeling to pray as I
+  shut the door." Naomi: "He's praying. I can't make out the words." Peter's only words:
+  "Tabitha, arise." Then: he has her by the hand; he calls them in, "the widows and all";
+  she is alive, standing. The prayer itself is not written. Her opening her eyes and
+  sitting up are not shown (every witness is outside).
+- Afterwards: "It's known in every street"; a townsman asks Hannah, "tell me about this
+  Lord of yours". Hannah credits prayer, not Peter: "Peter knelt and prayed. He called us
+  in, and she was alive."
+- Peter lodges with Simon the tanner "many days". He has three ordinary lines there
+  ("Peace, friends. Is that bread? …", "Thank you, Naomi. I was a fisherman. …", "Sit
+  down, friend. …") and no teaching. Nothing from Acts 10–11 appears.
+- The closing scene: Joy asks Peter whether he can bring her mother back. Peter says
+  nothing ("He's come down to her height, eye to eye. He hasn't said a word."), Caleb
+  walks out, Demas looks away. No adult endorses the idea that Peter did it. Reviewer to
+  decide whether a gentle correcting line is wanted anywhere.
+- Zilpah's backstory gives Tabitha two invented deeds from the story bible: she took
+  Zilpah in and made her clothes. Simon the tanner's character, and Esther's weekly
+  visits to him with bread, are invented.
+- Letter 8 introduces Isaiah 61:3 with "The Lord came" (the story bible's wording).
+
+Decisions / assumptions to confirm:
+- Tabitha gives no order card. (Her one order was moved to Hannah after review: a card
+  from Tabitha could have stayed on screen after her death.) Peter gives none.
+- All of the first ten orders pay 3 Blessings (earlier chapters start at 2).
+- The Loom arrives at the chapter's start; the "Righteousness" crown is not awarded.
+- The loom scenes use the upper-room picture; in the story the loom is in the weaving
+  room next door, not where Tabitha is laid.
+- Zilpah asks forgiveness of Naomi first, then Amos and Marcus (the three she is shown
+  gossiping about in Chapters 1–3).
+
+Art needed for Chapter 4:
+- 14 pictures of Simon the tanner's house: courtyard, guest room, cistern, drying racks,
+  doorstep, rooftop and gate lamp, each "before" and "after"
+  (`loc_tanner_<courtyard|guestroom|cistern|racks|doorstep|rooftop|lamp>_<before|after>`).
+- A Simon the Tanner portrait (neutral, happy, sad and thinking are used).
+- Optional: a weaving-room background with a loom.
+- The Loom generator is already in.
 
 ## Generator art and build 4 (2026-10-06)
 

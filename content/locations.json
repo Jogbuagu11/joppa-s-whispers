@@ -107,5 +107,53 @@
         "after": "loc_docks_netbox_after"
       }
     ]
+  },
+  {
+    "id": "tanner",
+    "name": "Simon the tanner's house",
+    "areas": [
+      {
+        "id": "tanner_courtyard",
+        "name": "Courtyard",
+        "before": "loc_tanner_courtyard_before",
+        "after": "loc_tanner_courtyard_after"
+      },
+      {
+        "id": "tanner_guestroom",
+        "name": "Guest room",
+        "before": "loc_tanner_guestroom_before",
+        "after": "loc_tanner_guestroom_after"
+      },
+      {
+        "id": "tanner_cistern",
+        "name": "Cistern",
+        "before": "loc_tanner_cistern_before",
+        "after": "loc_tanner_cistern_after"
+      },
+      {
+        "id": "tanner_racks",
+        "name": "Drying racks",
+        "before": "loc_tanner_racks_before",
+        "after": "loc_tanner_racks_after"
+      },
+      {
+        "id": "tanner_doorstep",
+        "name": "Doorstep",
+        "before": "loc_tanner_doorstep_before",
+        "after": "loc_tanner_doorstep_after"
+      },
+      {
+        "id": "tanner_rooftop",
+        "name": "Rooftop",
+        "before": "loc_tanner_rooftop_before",
+        "after": "loc_tanner_rooftop_after"
+      },
+      {
+        "id": "tanner_lamp",
+        "name": "Gate lamp",
+        "before": "loc_tanner_lamp_before",
+        "after": "loc_tanner_lamp_after"
+      }
+    ]
   }
 ]

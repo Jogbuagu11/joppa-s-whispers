@@ -1641,5 +1641,722 @@
         "text": "All these weeks home, and I never once climbed the hill to see her. Marcus, the basket. I'm going up."
       }
     ]
+  },
+  {
+    "id": "ch4_s_01",
+    "background": "loc_upper_room",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Tabitha? It's Naomi, Esther's granddaughter. I brought bread. It's still warm."
+      },
+      {
+        "speaker": "tabitha",
+        "expression": "happy",
+        "text": "Esther's Naomi. Come in, come in. You have her hands."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. Flour to the elbow, you mean. Lie still. Hannah says you fell at the loom."
+      },
+      {
+        "speaker": "tabitha",
+        "expression": "neutral",
+        "text": "I was tired, that is all. The tunics for the widows are not finished."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Six of them, cut and laid out. You've been sewing with a fever?"
+      },
+      {
+        "speaker": "tabitha",
+        "expression": "neutral",
+        "text": "Winter does not wait for me to be well. Naomi, will you finish them?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "I bake. My stitches wander like a goat on a hill."
+      },
+      {
+        "speaker": "tabitha",
+        "expression": "happy",
+        "text": "Then the widows will have warm coats with wandering stitches. The basket is by the loom."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "sad",
+        "text": "She made the coat on my back, Naomi. And both my boys' tunics. She never took a coin."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Then I'll finish them. Rest, Tabitha. I'll bring the first one to show you tomorrow."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "She's asleep already. Her hand is so hot. Hannah... send for me if anything changes."
+      }
+    ]
+  },
+  {
+    "id": "ch4_s_02",
+    "background": "loc_bakehouse_inside",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "One sleeve done by lamplight. Crooked, but done. I'll take it up to her with the morning bread."
+      },
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "Naomi. Elder Amos is at the door. He isn't saying 'well now.' He isn't saying anything."
+      },
+      {
+        "speaker": "amos",
+        "expression": "sad",
+        "text": "Child. Put the basket down. Tabitha died in the night."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "No. I was to show her the sleeve. I told her tomorrow."
+      },
+      {
+        "speaker": "amos",
+        "expression": "sad",
+        "text": "The women have washed her and laid her in the upper room. Half of Joppa is on the hill, weeping."
+      },
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "She made my tunic. The too-big one. She said I'd grow into it. Who'll tell her when I do?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Come here, little one. ...I don't know. I don't know."
+      },
+      {
+        "speaker": "simon",
+        "expression": "neutral",
+        "text": "Forgive me. I'm Simon, the tanner. Folk are walking in from the villages, and the hill has no room."
+      },
+      {
+        "speaker": "simon",
+        "expression": "sad",
+        "text": "My house is by the sea. People don't come to it. But the yard is wide, and the gate is open."
+      },
+      {
+        "speaker": "amos",
+        "expression": "neutral",
+        "text": "Well now. That is kindly offered, Simon. And kindly needed."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. Then it wants sweeping, and they'll want bread. Joy, bring the broom. We can do that much."
+      }
+    ]
+  },
+  {
+    "id": "ch4_s_03",
+    "background": "loc_upper_room",
+    "lines": [
+      {
+        "speaker": "hannah",
+        "expression": "sad",
+        "text": "This is the coat she made me the winter my husband died. Look at the hem. Not a stitch has slipped."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "sad",
+        "text": "My mother's shawl. Tabitha brought it herself, in the rain, and wouldn't stay for thanks."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "sad",
+        "text": "Every widow in this room is wearing her work. They keep holding it up, as if she might see."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "And six tunics still pinned on the table. I said I'd finish them. Where's her basket?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Under the thread, a potsherd. That's Savta's hand. Here, in Tabitha's basket?"
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "Tabitha and I made a pact: whoever went first would leave something for the other's girl."
+      },
+      {
+        "speaker": "esther",
+        "expression": "thinking",
+        "text": "If you are reading this, she found you. Grief is not a lack of faith, Naomi."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "\"Weeping may endure for a night, but joy cometh in the morning.\" (Psalm 30:5)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "Wait for the morning. — your Savta"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Wait for the morning. It's hard to see one from here, Savta."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Every woman from the well is in this room. All but one. Where is Zilpah?"
+      }
+    ]
+  },
+  {
+    "id": "ch4_s_04",
+    "background": "loc_upper_room",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Not at the well. Not at her door. The widows have gone down to eat. So who lit a lamp in the weaving room?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Zilpah. Alone at Tabitha's loom. How long have you been sitting here?"
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "neutral",
+        "text": "Don't fuss, dear. Someone ought to mind the thread. It tangles if it's left."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "The whole town wept upstairs today. You weren't among them."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "angry",
+        "text": "And have them watch me do it? I know what they'd say. I taught them how to say it."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. No bangles tonight. And her hands won't keep still on that shawl."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "sad",
+        "text": "She wove this. Forty years ago. Nobody knows that. I let them think I bought it in Tyre."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Tabitha made your shawl? You never said you were close."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "sad",
+        "text": "I never said a great many true things. I was too busy with the other kind."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "I've a loaf, and nowhere to be. Tell me a true one, Zilpah."
+      }
+    ]
+  },
+  {
+    "id": "ch4_s_05",
+    "background": "loc_upper_room",
+    "lines": [
+      {
+        "speaker": "zilpah",
+        "expression": "neutral",
+        "text": "I was nineteen, and betrothed. A good family. The feast was a month away."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "sad",
+        "text": "Then a whisper started at the well. About me, and a man I had never spoken to."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "And nobody asked you."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "sad",
+        "text": "Not one. His family broke the betrothal. Mine put my bundle in the street."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "thinking",
+        "text": "Only Tabitha came. She took me in and made me new clothes, so I could hold my head up."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "sad",
+        "text": "She never asked if it was true. She only measured my shoulders."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "And then you went back to the well."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "sad",
+        "text": "I swore no one would whisper about me again. So I made certain I was the one whispering."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "sad",
+        "text": "I became the thing that broke me."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "I know something about a story that isn't true. I'm not going anywhere, Zilpah."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "sad",
+        "text": "She was the only one who knew me. I never once thanked her out loud. Now who is there to tell?"
+      }
+    ]
+  },
+  {
+    "id": "ch4_s_06",
+    "background": "loc_docks",
+    "lines": [
+      {
+        "speaker": "marcus",
+        "expression": "thinking",
+        "text": "Nomi. The carters from Lydda say Peter is in their town. Half a day's walk, no more."
+      },
+      {
+        "speaker": "amos",
+        "expression": "thinking",
+        "text": "Well now. Lydda is near. The brothers are agreed: we send two men and ask him to come."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Come for what, Elder? She's washed and laid out. What do we ask him for?"
+      },
+      {
+        "speaker": "amos",
+        "expression": "neutral",
+        "text": "I don't know, child. I only know I cannot sit here and not ask."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "I'll go."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "You? You've not spent a night away from Joy since... not in two years."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "I know what a house is like, after. I'll go."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "neutral",
+        "text": "Then I'm the second. I walked that road with a toll seal once. Let me walk it for something better."
+      },
+      {
+        "speaker": "amos",
+        "expression": "neutral",
+        "text": "Tell him only this: come to us, and do not delay."
+      },
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "Papa never goes anywhere. Naomi, who is Peter? Can he fix things?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. I don't know. But if he comes he'll want a bed, and Simon has a room nobody sleeps in. That I can do."
+      }
+    ]
+  },
+  {
+    "id": "ch4_s_07",
+    "background": "loc_upper_room",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "You came up the street dust to the knee, all three. Caleb. He went straight in?"
+      },
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "Straight in. We said, come and don't delay. He got up and came with us."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "sad",
+        "text": "We showed him the coats, every one she made us. Then he sent us all out. He was kneeling to pray as I shut the door."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "All of us out on the stair, and nobody breathing. He's praying. I can't make out the words."
+      },
+      {
+        "speaker": "peter",
+        "expression": "neutral",
+        "text": "Tabitha, arise."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "...The door. He's opening the door. Hannah, he has her by the hand."
+      },
+      {
+        "speaker": "amos",
+        "expression": "surprised",
+        "text": "He is calling us in, the widows and all. Look. Look at her. She is alive."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "surprised",
+        "text": "She's standing. She's looking at us. Oh, Tabitha!"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Wait for the morning, Savta said. ...I can't see. Somebody hold my basket."
+      }
+    ]
+  },
+  {
+    "id": "ch4_s_08",
+    "background": "loc_market",
+    "lines": [
+      {
+        "speaker": "dockworker",
+        "expression": "surprised",
+        "text": "I carried the water to wash her. I saw her laid out. This morning she was at her own door, in the sun."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "thinking",
+        "text": "It's known in every street. Potters, tanners, the whole harbor. Nobody's done a stroke of work."
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "Seventy-five years, little loaf, and I've no story to set beside it. Not one. I looked."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "You? Out of stories?"
+      },
+      {
+        "speaker": "silas",
+        "expression": "happy",
+        "text": "It's restful. I may sit down. ...Esther would have liked today."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "neutral",
+        "text": "Demas! You've a crowd and no tale? Gather us close, man. Tell it!"
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "I... no. I wasn't on that stair, friends. I've nothing to add to it. Ask the widows. They were there."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "happy",
+        "text": "I'll tell what I saw and no more. She was dead. Peter knelt and prayed. He called us in, and she was alive."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "thinking",
+        "text": "Then tell me about this Lord of yours, widow. From the beginning. I've all day."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "The village folk in Simon's yard won't go home. They want to hear it again. They'll want water. Hm. The cistern."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "And Demas has gone grey as ash. A teller with no tale. What is it he can't bring himself to say?"
+      }
+    ]
+  },
+  {
+    "id": "ch4_s_09",
+    "background": "loc_well_morning",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Morning. I'll take the old well rope, if nobody wants it. Simon's drying racks are down to one rail."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "neutral",
+        "text": "Take it, baker. ...Here's Zilpah. First time at the well since the hill. Easy, lads."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "neutral",
+        "text": "Don't go, any of you. I've said a great deal at this stone. I've one thing more."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "sad",
+        "text": "Naomi. I asked about Roman houses with a smile on my face. Then I passed the Caesarea tale on. Gladly."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "sad",
+        "text": "I knew what a whisper does to a woman. Better than anyone here. I am asking you to forgive me."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "I forgive you, Zilpah."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "surprised",
+        "text": "...That's all? No speech, dear?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "Hm. I'm a baker. I keep things short."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "sad",
+        "text": "Elder. And Marcus, when he's in from the boats. I said it of each of you, here, where it would carry. I ask the same."
+      },
+      {
+        "speaker": "amos",
+        "expression": "happy",
+        "text": "Well now. Asked and given. There's still room on that bench, Zilpah."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "neutral",
+        "text": "Tabitha's tunics for the widows are washed and wet. Will you help me carry them down to Simon's racks?"
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "thinking",
+        "text": "To the tanner's house? ...Yes. Give me the heavy end. And somebody tell me if I start talking."
+      }
+    ]
+  },
+  {
+    "id": "ch4_s_10",
+    "background": "loc_harbor_dusk",
+    "lines": [
+      {
+        "speaker": "dockworker",
+        "expression": "thinking",
+        "text": "So the man of God sleeps at the tanner's. Hides and lime. A holy man, under that roof?"
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "neutral",
+        "text": "There are clean houses on the hill. People are saying he might have chosen better."
+      },
+      {
+        "speaker": "simon",
+        "expression": "sad",
+        "text": "They're not wrong about the smell. I told him so myself. He stayed anyway."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Then your doorstep shouldn't rock under him. Hold the bar, Simon. This stone comes up."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "A potsherd, flat in the sand. Savta. You came down here too?"
+      },
+      {
+        "speaker": "simon",
+        "expression": "happy",
+        "text": "Every week, with bread. She'd sit on that step and say the sea air did her good."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "People hold their noses at this house. Holy things happen in the places people hold their noses at."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "The Lord came \"to give unto them beauty for ashes, the oil of joy for mourning,\" (Isaiah 61:3)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "\"the garment of praise for the spirit of heaviness.\" (Isaiah 61:3)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "happy",
+        "text": "Tabitha sewed that verse into everything she ever made. — your Savta"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Beauty for ashes. Hm. Then this house gets a level step, a swept roof and a lamp. I'm staying, Joppa."
+      }
+    ]
+  },
+  {
+    "id": "ch4_s_11",
+    "background": "loc_tanner_rooftop_noon",
+    "lines": [
+      {
+        "speaker": "joy",
+        "expression": "happy",
+        "text": "I swept the whole roof! And the stair. And I found a crab. Simon says the crab may stay."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "Mats down, water jar filled, and a breeze off the sea. Best room in the house, Simon."
+      },
+      {
+        "speaker": "simon",
+        "expression": "thinking",
+        "text": "No guest ever stayed in my house past one night. He has stayed many days. I've stopped counting."
+      },
+      {
+        "speaker": "peter",
+        "expression": "happy",
+        "text": "Peace, friends. Is that bread? I could smell it from the street."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Barley loaves, still warm. I'm Naomi. I bake. It's all I know to do for a guest."
+      },
+      {
+        "speaker": "peter",
+        "expression": "neutral",
+        "text": "Thank you, Naomi. I was a fisherman. Warm bread at noon is no small thing."
+      },
+      {
+        "speaker": "silas",
+        "expression": "happy",
+        "text": "A fisherman! Cast net or drag? Now, that reminds me of the year the fish swam backward—"
+      },
+      {
+        "speaker": "peter",
+        "expression": "happy",
+        "text": "Sit down, friend. I'd like to hear about that year."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. The first man in Joppa to ask for the whole story. Silas may never stop."
+      },
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "Tabitha was dead and now she isn't. Hannah said. Naomi... could that happen for anybody?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Joy. ...Come and help me with the basket, little one."
+      }
+    ]
+  },
+  {
+    "id": "ch4_s_12",
+    "background": "loc_harbor_dusk",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Oil in the niche and a wick that holds. Now Simon's gate has a light, same as any house on the hill."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "Hinge is sound too. Joy. Home. It's late."
+      },
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "In a minute, Papa. I have to ask him something first."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Joy, wait. He's at his supper—"
+      },
+      {
+        "speaker": "joy",
+        "expression": "neutral",
+        "text": "Peter. My mama died in the sea. Two years ago. Can you bring her back too?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "He's set down his bread. He's come down to her height, eye to eye. He hasn't said a word."
+      },
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "Her name is Leah. Papa knows the place. He could show you."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Caleb—"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Gone. Out the gate without a word. His tools are still on the step. Caleb never leaves his tools."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "And across the street, in my new lamplight, Demas. He heard it all. He saw me look. He looked away."
+      }
+    ]
   }
 ]

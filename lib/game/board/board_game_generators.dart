@@ -48,40 +48,6 @@ extension BoardGenerators on BoardGame {
     return true;
   }
 
-  /// Loads the picture for every level of every generator that has one
-  /// among [have] (the pictures in the app). A generator without art keeps
-  /// its plain tile.
-  Future<void> _loadGeneratorArt(Set<String> have) => Future.wait([
-    for (final entry in generatorLevels.entries)
-      for (final level in entry.value)
-        if (have.contains(generatorArtPath(entry.key, level.level)))
-          () async {
-            final key = '${entry.key}_l${level.level}';
-            try {
-              _generatorArt[key] = await images.load(
-                generatorArtPath(entry.key, level.level),
-              );
-            } on Object catch (e) {
-              _log.warning('Generator picture $key could not be read: $e');
-            }
-          }(),
-  ]);
-
-  /// The picture for a generator at the level it has now. If that level has
-  /// no picture, the nearest lower level's is used.
-  ui.Image? _generatorArtFor(String generatorId) {
-    final level = generatorPlacements
-        .where((p) => p.gen.generatorId == generatorId)
-        .firstOrNull
-        ?.gen
-        .level;
-    for (int l = level ?? 1; l >= 1; l--) {
-      final picture = _generatorArt['${generatorId}_l$l'];
-      if (picture != null) return picture;
-    }
-    return null;
-  }
-
   void _onGeneratorTapped(String genId) {
     final placement = generatorPlacements
         .where((p) => p.gen.generatorId == genId)

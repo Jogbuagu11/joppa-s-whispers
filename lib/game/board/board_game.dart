@@ -20,6 +20,7 @@ import 'package:whispers_of_joppa/game/board/generator_component.dart';
 import 'package:whispers_of_joppa/game/board/item_component.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
+part 'board_game_art.dart';
 part 'board_game_drag.dart';
 part 'board_game_generators.dart';
 
@@ -201,31 +202,6 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
     }
     _built = true;
     _boardTouched();
-  }
-
-  /// Loads the picture for every item that names one. An item whose picture
-  /// is missing or unreadable keeps its coloured placeholder. BoardScreen
-  /// calls this before showing the board so the first frame already has art.
-  Future<void> loadArt() async {
-    images.prefix = '';
-    // Only pictures that are really in the app are asked for: asking for a
-    // missing one raises an error even when it is caught.
-    final have = (await AssetManifest.loadFromAssetBundle(
-      rootBundle,
-    )).listAssets().toSet();
-    await Future.wait([
-      for (final item in itemCatalog.values)
-        if (have.contains(item.asset)) _loadArtFor(item),
-      _loadGeneratorArt(have),
-    ]);
-  }
-
-  Future<void> _loadArtFor(ItemModel item) async {
-    try {
-      _art[item.itemId] = await images.load(item.asset);
-    } on Object catch (e) {
-      _log.warning('No art for ${item.itemId} at ${item.asset}: $e');
-    }
   }
 
   void _buildCells() {
