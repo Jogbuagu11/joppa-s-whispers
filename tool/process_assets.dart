@@ -56,6 +56,7 @@ void main() {
   }
 
   _processCharacters(skipped);
+  _processScenery(skipped);
 
   final available = <String>{};
   for (final f in outDir.listSync().whereType<File>()) {
@@ -125,4 +126,60 @@ void _processCharacters(List<String> skipped) {
     written++;
   }
   stdout.writeln('Processed $written portrait(s) into ${outDir.path}.');
+}
+
+const _sceneryWidth = 768;
+
+/// Copies location pictures (assets_incoming/locations/) and scene
+/// backgrounds (assets_incoming/backgrounds/) into assets/locations/, under
+/// the names the game looks for. tool/art_names.json says which raw file is
+/// which picture.
+void _processScenery(List<String> skipped) {
+  final names =
+      jsonDecode(File('tool/art_names.json').readAsStringSync())
+          as Map<String, dynamic>;
+  final outDir = Directory('assets/locations')..createSync(recursive: true);
+  var written = 0;
+  final done = <String>{};
+  void folder(String name, String prefix, {required bool mustBeListed}) {
+    final incoming = Directory('assets_incoming/$name');
+    if (!incoming.existsSync()) return;
+    final known = (names[name] as Map<String, dynamic>).cast<String, String>();
+    final files = incoming.listSync().whereType<File>().toList()
+      ..sort((a, b) => a.path.compareTo(b.path));
+    for (final file in files) {
+      final raw = file.uri.pathSegments.last;
+      if (raw.startsWith('.')) continue;
+      final base = locationAssetBaseName(raw, known);
+      final listed = known.keys.any(raw.startsWith);
+      if (base == null || (mustBeListed && !listed)) {
+        skipped.add('$raw (not listed in tool/art_names.json)');
+        continue;
+      }
+      if (!done.add('$prefix$base')) {
+        skipped.add('$raw (a second picture for $prefix$base; first kept)');
+        continue;
+      }
+      final image = img.decodeImage(file.readAsBytesSync());
+      if (image == null) {
+        skipped.add('$raw (not a picture this tool can read)');
+        continue;
+      }
+      final sized = image.width > _sceneryWidth
+          ? img.copyResize(
+              image,
+              width: _sceneryWidth,
+              interpolation: img.Interpolation.average,
+            )
+          : image;
+      File(
+        '${outDir.path}/$prefix$base.jpg',
+      ).writeAsBytesSync(img.encodeJpg(sized, quality: 85));
+      written++;
+    }
+  }
+
+  folder('locations', '', mustBeListed: false);
+  folder('backgrounds', 'bg_', mustBeListed: true);
+  stdout.writeln('Processed $written location picture(s) into ${outDir.path}.');
 }

@@ -79,4 +79,57 @@ void main() {
   test('portraitBaseName builds the expected file name', () {
     expect(portraitBaseName('silas', 'happy'), 'char_silas_happy');
   });
+
+  group('locationAssetBaseName', () {
+    const names = {
+      'loc_well_lip_after_20261006115228': 'loc_well_lip_before',
+      'loc_well_bucketstone_before': 'loc_well_stone_before',
+      'Town_well_in_Joppa': 'loc_well_morning',
+    };
+
+    test(
+      'a well-named picture keeps its name, without date or copy number',
+      () {
+        expect(
+          locationAssetBaseName(
+            'loc_well_rope_after_20261006115840.jpg',
+            names,
+          ),
+          'loc_well_rope_after',
+        );
+        expect(
+          locationAssetBaseName('loc_well_rope_before_20261006 2.jpg', names),
+          'loc_well_rope_before',
+        );
+      },
+    );
+
+    test('a listed picture takes the listed name', () {
+      expect(
+        locationAssetBaseName('Town_well_in_Joppa_20261006120414.jpg', names),
+        'loc_well_morning',
+      );
+      expect(
+        locationAssetBaseName('loc_well_bucketstone_before_2026.jpg', names),
+        'loc_well_stone_before',
+      );
+    });
+
+    test('the longest listed beginning wins over the name itself', () {
+      // Named "after" by mistake; the list says it is the "before" picture.
+      expect(
+        locationAssetBaseName('loc_well_lip_after_20261006115228 2.jpg', names),
+        'loc_well_lip_before',
+      );
+      expect(
+        locationAssetBaseName('loc_well_lip_after_20261006114922.jpg', names),
+        'loc_well_lip_after',
+      );
+    });
+
+    test('anything else is not a location picture', () {
+      expect(locationAssetBaseName('holiday.jpg', names), isNull);
+      expect(locationAssetBaseName('loc_well.jpg', names), isNull);
+    });
+  });
 }

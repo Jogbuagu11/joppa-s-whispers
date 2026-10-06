@@ -77,3 +77,26 @@ String? characterAssetBaseName(String fileName) {
 /// The portrait file for a character's expression, e.g. char_naomi_happy.
 String portraitBaseName(String characterId, String expression) =>
     'char_${characterId}_$expression';
+
+final _locationName = RegExp(r'^(loc_[a-z]+_[a-z]+_(?:before|after))');
+
+/// The name the game uses for a raw location or background picture.
+///
+/// [names] maps the start of a raw file name to the game's name for it (from
+/// tool/art_names.json): the longest matching start wins. Without a match, a
+/// file that already begins `loc_<place>_<area>_<before|after>` keeps that
+/// much of its name (dates and copy numbers after it are dropped). Returns
+/// null when neither applies.
+String? locationAssetBaseName(String fileName, Map<String, String> names) {
+  final dot = fileName.lastIndexOf('.');
+  final stem = dot <= 0 ? fileName : fileName.substring(0, dot);
+  String? best;
+  for (final start in names.keys) {
+    if (stem.startsWith(start) &&
+        (best == null || start.length > best.length)) {
+      best = start;
+    }
+  }
+  if (best != null) return names[best];
+  return _locationName.firstMatch(stem.toLowerCase())?.group(1);
+}

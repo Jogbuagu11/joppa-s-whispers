@@ -1,0 +1,28 @@
+{
+  "_about": "Raw art file names (their beginnings) and the names the game uses. Locations become assets/locations/<name>.jpg; backgrounds become assets/locations/bg_<name>.jpg.",
+  "locations": {
+    "loc_well_lip_after_20261006115228": "loc_well_lip_before",
+    "loc_well_lip_after_20261006114922": "loc_well_lip_after",
+    "loc_well_bucketstone_before": "loc_well_stone_before",
+    "loc_well_bucketstone_after": "loc_well_stone_after"
+  },
+  "backgrounds": {
+    "Town_well_in_Joppa": "loc_well_morning",
+    "Ancient_town_well_at_dawn": "loc_well_dawn",
+    "bg_amos_house": "loc_amos_house",
+    "bg_hannah_house": "loc_hannah_house",
+    "bg_bakehouse_inside": "loc_bakehouse_inside",
+    "bg_harbor_dusk": "loc_harbor_dusk",
+    "bg_market": "loc_market",
+    "bg_docks": "loc_docks",
+    "bg_church_inside": "loc_church_inside",
+    "bg_tanner_rooftop_noon": "loc_tanner_rooftop_noon",
+    "Boatyard_on_rocky": "loc_boatyard",
+    "Stormy_sea_at_Joppa_harbor": "loc_harbor_storm",
+    "Upper_room_sanctuary_interior": "loc_upper_room",
+    "Wooden_boat_shed_at_night": "loc_boat_shed_night",
+    "Ancient_stone_watchtower": "loc_watchtower",
+    "Feast_table_at_sunset_harbor": "loc_feast_table",
+    "Rooftop_view_of_Mediterranean_sea": "loc_rooftop_day"
+  }
+}

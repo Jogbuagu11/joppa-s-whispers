@@ -1161,6 +1161,25 @@ Review notes carried forward:
   its Blessings if it plays as a wall.
 - `board_session.dart` (295 lines) and `board_game.dart` (286) are near the size limit.
 
+## Art delivery and second Android bundle (2026-10-06)
+
+- Jennifer delivered: Marcus's five missing portraits (he now has all six), all 14 well
+  before/after pictures, 17 scene backgrounds, and an app icon (Naomi with a lamp).
+- `tool/process_assets.dart` now also handles location pictures and backgrounds;
+  `tool/art_names.json` says which raw file is which picture (her background files
+  have descriptive names; two well "lip" files were both named "after" — the cracked one
+  is the "before"). Backgrounds for later chapters are stored ready: docks, church
+  inside, tanner's rooftop, boatyard, storm at the harbour, upper room, boat shed at
+  night, watchtower, feast table, rooftop by day.
+- App icon set on both platforms (source: `assets/ui/app_icon.png`).
+- Bundle `dist/whispers-of-joppa-1.0.0-2.aab` (build 2), also copied to Downloads. Signed
+  with the same upload key. The release build was installed on the emulator and opened.
+  Contains Chapter 2, events, notifications, ads (test units), analytics.
+- Still missing for Chapters 1–2: the 14 bakehouse before/after pictures; backgrounds
+  "outside the bakehouse" and "rooftop at night" (the rooftop picture delivered is a
+  daytime one); all 7 generators; portraits for Naomi/Esther/Demas happy, Amos sad,
+  Simon, Tobiah, Dock Worker; Boat Festival items; the Android notification icon.
+
 ## First Android bundle for Google Play (2026-10-05)
 
 Jennifer asked for a bundle to upload to Google Play ahead of Milestone 25.
