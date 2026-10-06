@@ -132,4 +132,32 @@ void main() {
       expect(locationAssetBaseName('loc_well.jpg', names), isNull);
     });
   });
+
+  group('generator pictures', () {
+    test('a well-named picture keeps its generator and level', () {
+      expect(generatorAssetBaseName('gen_pantry_l2.jpg'), 'gen_pantry_l2');
+      expect(generatorAssetBaseName('GEN_Tree_L5.png.jpeg'), 'gen_tree_l5');
+    });
+
+    test('another name for a generator is turned into its real id', () {
+      expect(
+        generatorAssetBaseName('gen_desk_l3.jpg', {'gen_desk': 'gen_scribe'}),
+        'gen_scribe_l3',
+      );
+    });
+
+    test('anything else is not a generator picture', () {
+      expect(generatorAssetBaseName('gen_pantry.jpg'), isNull);
+      expect(generatorAssetBaseName('gen_pantry_l0.jpg'), isNull);
+      expect(generatorAssetBaseName('item_bakery_01.jpg'), isNull);
+      expect(generatorAssetBaseName('gen_pantry_level2.jpg'), isNull);
+    });
+
+    test('the game looks for a generator\'s picture by id and level', () {
+      expect(
+        generatorArtPath('gen_chest', 3),
+        'assets/generators/gen_chest_l3.jpg',
+      );
+    });
+  });
 }

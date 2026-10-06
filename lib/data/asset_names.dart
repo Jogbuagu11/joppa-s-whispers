@@ -100,3 +100,25 @@ String? locationAssetBaseName(String fileName, Map<String, String> names) {
   if (best != null) return names[best];
   return _locationName.firstMatch(stem.toLowerCase())?.group(1);
 }
+
+final _generatorName = RegExp(r'^(gen_[a-z]+)_l([1-9])$');
+
+/// Turns a raw generator picture's file name into `<generator id>_l<level>`
+/// (for example gen_pantry_l2). [otherNames] maps a name an artist may have
+/// used to the generator's real id (gen_desk -> gen_scribe). Returns null if
+/// the name does not follow `gen_<name>_l<level>`.
+String? generatorAssetBaseName(
+  String fileName, [
+  Map<String, String> otherNames = const {},
+]) {
+  final dot = fileName.indexOf('.');
+  final base = (dot < 0 ? fileName : fileName.substring(0, dot)).toLowerCase();
+  final match = _generatorName.firstMatch(base);
+  if (match == null) return null;
+  final raw = match.group(1) ?? '';
+  return '${otherNames[raw] ?? raw}_l${match.group(2)}';
+}
+
+/// Where the picture for a generator at [level] is kept.
+String generatorArtPath(String generatorId, int level) =>
+    'assets/generators/${generatorId}_l$level.jpg';

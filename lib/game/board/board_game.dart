@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
@@ -12,6 +13,7 @@ import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/unlocks.dart';
 import 'package:whispers_of_joppa/app/board_inventory.dart';
+import 'package:whispers_of_joppa/data/asset_names.dart';
 import 'package:whispers_of_joppa/domain/board_grid.dart';
 import 'package:whispers_of_joppa/game/board/cell_component.dart';
 import 'package:whispers_of_joppa/game/board/generator_component.dart';
@@ -150,6 +152,9 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
     return true;
   }
 
+  // "<generator id>_l<level>" -> loaded picture, where one exists.
+  final Map<String, ui.Image> _generatorArt = {};
+
   // item_id -> loaded picture, for items whose art file exists.
   final Map<String, ui.Image> _art = {};
 
@@ -203,9 +208,15 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   /// calls this before showing the board so the first frame already has art.
   Future<void> loadArt() async {
     images.prefix = '';
+    // Only pictures that are really in the app are asked for: asking for a
+    // missing one raises an error even when it is caught.
+    final have = (await AssetManifest.loadFromAssetBundle(
+      rootBundle,
+    )).listAssets().toSet();
     await Future.wait([
       for (final item in itemCatalog.values)
-        if (item.asset.isNotEmpty) _loadArtFor(item),
+        if (have.contains(item.asset)) _loadArtFor(item),
+      _loadGeneratorArt(have),
     ]);
   }
 
@@ -245,6 +256,7 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
       GeneratorComponent(
         generator: placement.gen,
         onTapped: _onGeneratorTapped,
+        art: () => _generatorArtFor(placement.gen.generatorId),
         position: Vector2(
           (size.x - gridCols * cellSize) / 2 + placement.col * cellSize,
           (size.y - gridRows * cellSize) / 2 + placement.row * cellSize,

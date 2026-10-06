@@ -1218,6 +1218,28 @@ Art needed for Chapter 3:
 Note: `content/scenes.json` (about 1,650 lines) and `content/orders.json` are long
 single files; splitting them per chapter would need a loader change.
 
+## Generator art and build 4 (2026-10-06)
+
+- Jennifer had put the generator pictures in `assets/items` (named `gen_<name>_l<level>`):
+  pantry, tree, chest, armour rack, scribe's desk (as `gen_desk`), loom and olive press,
+  five levels each, except Olive Press level 3. Moved to `assets_incoming/generators/`,
+  processed to `assets/generators/` (34 pictures). Claude at first reported them missing,
+  having searched the incoming folder only.
+- The board now draws each generator's picture for its current level (a missing level
+  falls back to the nearest lower one; no picture at all keeps the plain tile).
+- Found by the device tests: asking Flutter for a picture that is not in the app raises
+  an error even when caught. The board now loads only pictures listed in the app's own
+  asset list. This also covers an event naming art the installed app does not have.
+- `board_game.dart` is at 298 lines: split it before the next change.
+- Bundle `dist/whispers-of-joppa-1.0.0-4.aab` (build 4) replaces build 3 in Downloads.
+- Noticed in the art (Jennifer's call): pantry level 3 has "LVL 3" and level 4 has
+  "LEVEL 1" written on it; the anointing vial has a cross and a paper label; the reed
+  pen has "REEDPEN" written on it; the apostle's letter is drawn as an envelope.
+- Art still missing: Olive Press level 3; 14 bakehouse and 14 docks before/after
+  pictures; backgrounds "outside the bakehouse" and "rooftop at night"; portraits Naomi,
+  Esther and Demas happy, Amos sad, Dock Worker, Chief Collector (optional), Simon,
+  Tobiah; Boat Festival items and boatyard; Android notification icon; store art.
+
 ## Art delivery and second Android bundle (2026-10-06)
 
 - Jennifer delivered: Marcus's five missing portraits (he now has all six), all 14 well

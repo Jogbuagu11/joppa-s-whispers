@@ -1,5 +1,5 @@
 {
-  "_about": "Raw art file names (their beginnings) and the names the game uses. Locations become assets/locations/<name>.jpg; backgrounds become assets/locations/bg_<name>.jpg.",
+  "_about": "Raw art file names (their beginnings) and the names the game uses. Locations become assets/locations/<name>.jpg; backgrounds become assets/locations/bg_<name>.jpg. Generators become assets/generators/<generator id>_l<level>.jpg; \"generators\" lists other names a raw file may use for a generator.",
   "locations": {
     "loc_well_lip_after_20261006115228": "loc_well_lip_before",
     "loc_well_lip_after_20261006114922": "loc_well_lip_after",
@@ -24,5 +24,8 @@
     "Ancient_stone_watchtower": "loc_watchtower",
     "Feast_table_at_sunset_harbor": "loc_feast_table",
     "Rooftop_view_of_Mediterranean_sea": "loc_rooftop_day"
+  },
+  "generators": {
+    "gen_desk": "gen_scribe"
   }
 }

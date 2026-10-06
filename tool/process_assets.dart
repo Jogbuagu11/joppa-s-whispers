@@ -57,6 +57,7 @@ void main() {
 
   _processCharacters(skipped);
   _processScenery(skipped);
+  _processGenerators(skipped);
 
   final available = <String>{};
   for (final f in outDir.listSync().whereType<File>()) {
@@ -182,4 +183,48 @@ void _processScenery(List<String> skipped) {
   folder('locations', '', mustBeListed: false);
   folder('backgrounds', 'bg_', mustBeListed: true);
   stdout.writeln('Processed $written location picture(s) into ${outDir.path}.');
+}
+
+/// Shrinks generator pictures (assets_incoming/generators/, one per level,
+/// named `gen_<name>_l<level>`) into assets/generators/.
+void _processGenerators(List<String> skipped) {
+  final incoming = Directory('assets_incoming/generators');
+  if (!incoming.existsSync()) return;
+  final names =
+      jsonDecode(File('tool/art_names.json').readAsStringSync())
+          as Map<String, dynamic>;
+  final other = (names['generators'] as Map<String, dynamic>? ?? const {})
+      .cast<String, String>();
+  final outDir = Directory('assets/generators')..createSync(recursive: true);
+  final files = incoming.listSync().whereType<File>().toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
+  final done = <String>{};
+  for (final file in files) {
+    final raw = file.uri.pathSegments.last;
+    if (raw.startsWith('.')) continue;
+    final base = generatorAssetBaseName(raw, other);
+    if (base == null) {
+      skipped.add('$raw (name is not gen_<name>_l<level>)');
+      continue;
+    }
+    if (!done.add(base)) {
+      skipped.add('$raw (a second picture for $base; the first one was kept)');
+      continue;
+    }
+    final image = img.decodeImage(file.readAsBytesSync());
+    if (image == null) {
+      skipped.add('$raw (not a picture this tool can read)');
+      continue;
+    }
+    final small = img.copyResize(
+      image,
+      width: _size,
+      height: _size,
+      interpolation: img.Interpolation.average,
+    );
+    File(
+      '${outDir.path}/$base.jpg',
+    ).writeAsBytesSync(img.encodeJpg(small, quality: 88));
+  }
+  stdout.writeln('Processed ${done.length} generator picture(s).');
 }
