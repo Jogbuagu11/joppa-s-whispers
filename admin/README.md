@@ -11,7 +11,7 @@ to the game's Supabase project and only works for an account listed in the
 - Notifications: send one push a day through the `send-push` function.
 
 A copy is published with the website at `web/public/admin/index.html`
-(served as `/admin/index.html`). After changing anything here, copy it
+(served at `/admin`). In that copy only, `index.html` names its files from the site's root (`/admin/admin.js` …) so the page works whether or not the address ends in `/index.html`. After changing anything here, copy it
 there again: `cp admin/*.js admin/*.css admin/index.html web/public/admin/` (a test,
 `test/data/admin_panel_copies_test.dart`, fails if the copy is stale).
 
