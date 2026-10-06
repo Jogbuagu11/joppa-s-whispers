@@ -46,37 +46,41 @@ class TaskBar extends StatelessWidget {
           ),
           child: Row(
             children: [
-              IconButton(
-                key: const Key('location_button'),
-                onPressed: onOpenLocation,
+              _BarIcon(
+                buttonKey: const Key('location_button'),
+                icon: Icons.home_work_outlined,
                 tooltip: 'See what you have restored',
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 40, minHeight: 44),
-                icon: const Icon(Icons.home_work_outlined, color: _gold),
+                onTap: onOpenLocation,
               ),
-              IconButton(
-                key: const Key('letters_button'),
-                onPressed: onOpenLetters,
+              _BarIcon(
+                buttonKey: const Key('letters_button'),
+                icon: Icons.mail_outline,
                 tooltip: "Esther's letters",
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 40, minHeight: 44),
-                icon: const Icon(Icons.mail_outline, color: _gold),
+                onTap: onOpenLetters,
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: 6),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Chapter ${chapter.number} · ${chapter.title}   '
-                      '${controller.doneInChapter}/${chapter.tasks.length}',
-                      key: const Key('task_progress'),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Color(0xFFBFA77A),
-                        fontSize: 10,
-                      ),
+                    Row(
+                      children: [
+                        // The chapter name may be cut short on a narrow
+                        // phone; the count never is.
+                        Flexible(
+                          child: Text(
+                            'Chapter ${chapter.number} · ${chapter.title}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: _smallStyle,
+                          ),
+                        ),
+                        Text(
+                          '  ${controller.doneInChapter}/${chapter.tasks.length}',
+                          key: const Key('task_progress'),
+                          style: _smallStyle,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -117,6 +121,36 @@ class TaskBar extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+const _smallStyle = TextStyle(color: Color(0xFFBFA77A), fontSize: 10);
+
+/// A compact icon button for the task bar (40 wide so two fit on small phones).
+class _BarIcon extends StatelessWidget {
+  const _BarIcon({
+    required this.buttonKey,
+    required this.icon,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  final Key buttonKey;
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: InkResponse(
+        key: buttonKey,
+        onTap: onTap,
+        radius: 24,
+        child: SizedBox(width: 40, height: 44, child: Icon(icon, color: _gold)),
+      ),
     );
   }
 }

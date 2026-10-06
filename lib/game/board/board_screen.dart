@@ -46,7 +46,7 @@ class BoardScreen extends StatefulWidget {
 class _BoardScreenState extends State<BoardScreen> {
   BoardSession? _session;
   bool _popupOpen = false;
-  bool _taskRunning = false;
+  bool _busy = false;
   String? _error;
 
   @override
@@ -70,12 +70,14 @@ class _BoardScreenState extends State<BoardScreen> {
     _popupOpen = false;
   }
 
-  /// Pays for the next story task, then plays its scene. A second tap while
-  /// this is running is ignored, so one tap can never pay for two tasks.
+  /// Pays for the next story task, then plays its scene. While this (or any
+  /// other screen opened from the task bar) is running, [_busy] is set and
+  /// further taps are ignored, so one tap can never pay for two tasks or
+  /// stack two screens.
   Future<void> _doNextTask() async {
     final session = _session;
-    if (session == null || _taskRunning) return;
-    _taskRunning = true;
+    if (session == null || _busy) return;
+    _busy = true;
     try {
       // The task's own chapter, read before doing it: finishing a chapter's
       // last task moves the story on to the next chapter.
@@ -103,7 +105,7 @@ class _BoardScreenState extends State<BoardScreen> {
       // The chapter's last task ends with its closing message.
       await _showPendingEnding();
     } finally {
-      _taskRunning = false;
+      _busy = false;
     }
   }
 
@@ -118,20 +120,20 @@ class _BoardScreenState extends State<BoardScreen> {
 
   /// The location button: shows the current chapter's location.
   Future<void> _openLocation() async {
-    if (_taskRunning) return;
-    _taskRunning = true;
+    if (_busy) return;
+    _busy = true;
     try {
       await _showLocation(_session?.story.chapter?.locationId);
     } finally {
-      _taskRunning = false;
+      _busy = false;
     }
   }
 
   /// The letters button: opens the keepsake book.
   Future<void> _openLetters() async {
     final session = _session;
-    if (session == null || _taskRunning || !mounted) return;
-    _taskRunning = true;
+    if (session == null || _busy || !mounted) return;
+    _busy = true;
     try {
       await Navigator.of(context).push(
         MaterialPageRoute<void>(
@@ -142,7 +144,7 @@ class _BoardScreenState extends State<BoardScreen> {
         ),
       );
     } finally {
-      _taskRunning = false;
+      _busy = false;
     }
   }
 

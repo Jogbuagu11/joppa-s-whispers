@@ -465,6 +465,19 @@ Not in this milestone:
 - `content/letters.json` holds the two Chapter 1 letters word for word from the story
   bible (1 John 4:18 KJV; Lamentations 3:22–23 KJV).
 
+Verified on the iOS Simulator and Android Emulator: analyze clean, 270 unit tests pass, content
+validator OK, ten device tests pass on both (the nine from Milestone 12 plus letters).
+The code review found nothing blocking.
+
+Carried forward from the code review:
+- The scripture reference shows twice on a letter page (inside the letter as the story
+  bible writes it, and again as the citation line).
+- TECH_SPEC section 4 lists "letters found" in the save; they are derived from finished
+  tasks instead, so nothing separate needs saving or syncing.
+- Loading content twice in one run would duplicate list-type content (letters, orders,
+  chapters); make the loader clear its lists before Milestone 15 re-loads content.
+- Locked letter pages use low-contrast grey text (Milestone 24 accessibility pass).
+
 Not in this milestone:
 - The book does not open by itself when a letter is found (the scene already reads the
   letter aloud); a "new letter" badge on the envelope button would help.

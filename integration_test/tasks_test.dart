@@ -51,7 +51,7 @@ void main() {
     // The first task is shown, but with no Blessings it cannot be started.
     expect(text('task_title'), first['title']);
     expect(text('task_progress'), contains('0/${tasks.length}'));
-    expect(text('task_progress'), contains(chapter['title'] as String));
+    expect(find.textContaining(chapter['title'] as String), findsOneWidget);
     expect(text('blessings_count'), '0');
     expect(taskButton().onPressed, isNull);
 

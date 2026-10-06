@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/domain/progression.dart';
 import 'package:whispers_of_joppa/domain/tutorial.dart';
 import 'package:whispers_of_joppa/features/story/chapter_ending.dart';
+import 'package:whispers_of_joppa/features/story/story_controller.dart';
+import 'package:whispers_of_joppa/features/story/task_bar.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_banner.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 
@@ -93,4 +95,60 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('chapter_ending')), findsNothing);
   });
+
+  for (final width in [320.0, 360.0]) {
+    testWidgets('the task bar fits a ${width.toInt()}pt-wide phone', (
+      tester,
+    ) async {
+      tester.view.physicalSize = Size(width, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final wallet = ValueNotifier<int>(0);
+      final story = StoryController(
+        chapters: const [
+          ChapterModel(
+            id: 'ch1',
+            number: 1,
+            title: 'Homecoming and a rather long name',
+            locationId: 'bakehouse',
+            tasks: [
+              TaskModel(
+                id: 't1',
+                beat: 1,
+                title: 'See to the broken shutters now',
+                costBlessings: 2,
+              ),
+              TaskModel(id: 't2', beat: 2, title: 'Next', costBlessings: 1),
+            ],
+          ),
+        ],
+        blessings: () => 5,
+        spendBlessings: (_) => true,
+        wallet: wallet,
+      );
+      var went = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: TaskBar(
+              controller: story,
+              onDo: () => went++,
+              onOpenLocation: () {},
+              onOpenLetters: () {},
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      // The count is always shown in full, and all three buttons are there.
+      expect(
+        tester.widget<Text>(find.byKey(const Key('task_progress'))).data,
+        '  0/2',
+      );
+      expect(find.byKey(const Key('location_button')), findsOneWidget);
+      expect(find.byKey(const Key('letters_button')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('task_button')));
+      expect(went, 1);
+    });
+  }
 }

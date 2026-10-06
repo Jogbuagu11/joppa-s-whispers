@@ -45,8 +45,13 @@ void checkChapters({
   }
 
   final letterIds = <String>{};
+  final letterChapters = <String, Object?>{};
+  final revealedLetters = <String>{};
   for (final letter in letters) {
     checkId('Letter', letter['id'], letterIds);
+    if (letter['id'] is String) {
+      letterChapters[letter['id'] as String] = letter['chapter'];
+    }
     if (letter['chapter'] is! int) {
       problems.add('Letter ${letter['id']}: chapter must be a whole number');
     }
@@ -126,8 +131,17 @@ void checkChapters({
         }
       }
       final letter = task['letter_id'];
-      if (letter != null && !letterIds.contains(letter)) {
-        problems.add('Task $taskId: unknown letter "$letter"');
+      if (letter != null) {
+        if (!letterIds.contains(letter)) {
+          problems.add('Task $taskId: unknown letter "$letter"');
+        } else if (!revealedLetters.add(letter as String)) {
+          problems.add('Task $taskId: letter "$letter" is found by two tasks');
+        } else if (letterChapters[letter] != number) {
+          problems.add(
+            'Task $taskId: letter "$letter" is filed under chapter '
+            '${letterChapters[letter]}, not chapter $number',
+          );
+        }
       }
     }
 
@@ -144,5 +158,8 @@ void checkChapters({
         '$earnable',
       );
     }
+  }
+  for (final id in letterIds.difference(revealedLetters)) {
+    problems.add('Letter $id: no task reveals it, so it can never be found');
   }
 }

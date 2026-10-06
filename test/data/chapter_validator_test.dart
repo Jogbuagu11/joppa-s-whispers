@@ -88,4 +88,17 @@ void main() {
     firstOf(d, 'chapters')['tasks'] = <Map<String, dynamic>>[];
     expect(checkContent(d), contains(contains('has no tasks')));
   });
+
+  test(
+    'a letter no task reveals, or filed under the wrong chapter, is reported',
+    () {
+      final c = validContent();
+      _task(c).remove('letter_id');
+      expect(checkContent(c).single, contains('no task reveals it'));
+
+      final d = validContent();
+      firstOf(d, 'letters')['chapter'] = 2;
+      expect(checkContent(d).single, contains('is filed under chapter 2'));
+    },
+  );
 }

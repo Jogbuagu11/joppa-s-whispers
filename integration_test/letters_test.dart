@@ -60,6 +60,7 @@ void main() {
 
     // --- New game: the book is there but every letter is locked. ---
     await SaveRepository().clear();
+    addTearDown(SaveRepository().clear);
     await open(tester, const Key('new'));
     await tester.tap(find.byKey(const Key('letters_button')));
     await settle(tester);
@@ -72,9 +73,10 @@ void main() {
     await tester.pageBack();
     await settle(tester);
 
-    // --- A game where the tasks up to the letter's task are done. ---
+    // --- A game one task short of the letter, with Blessings to spend. ---
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 1));
+    final letterTask = taskList[letterTaskIndex];
     await SaveRepository().save(
       SaveState(
         items: const [],
@@ -82,18 +84,37 @@ void main() {
         manna: 50,
         mannaLastRegen: DateTime.now(),
         talents: 0,
-        blessings: 0,
+        blessings: letterTask['cost_blessings'] as int,
         activeOrders: const [],
         pendingOrders: const [],
         completedOrders: const [],
         completedTasks: [
-          for (final t in taskList.take(letterTaskIndex + 1)) t['id'] as String,
+          for (final t in taskList.take(letterTaskIndex)) t['id'] as String,
         ],
         tutorialStep: tutorialFinished,
         lastOrderSkip: null,
       ),
     );
     await open(tester, const Key('later'));
+
+    // Still locked before the task is done.
+    await tester.tap(find.byKey(const Key('letters_button')));
+    await settle(tester);
+    expect(text(tester, 'letter_title_$letterId'), 'Not found yet');
+    await tester.pageBack();
+    await settle(tester);
+
+    // Do the task that reveals the letter and sit through its scene.
+    await tester.tap(find.byKey(const Key('task_button')));
+    await settle(tester);
+    await tester.tap(find.byKey(const Key('scene_skip')));
+    await settle(tester);
+    if (find.byKey(const Key('location_continue')).evaluate().isNotEmpty) {
+      await tester.tap(find.byKey(const Key('location_continue')));
+      await settle(tester);
+    }
+
+    // Now the book has it.
     await tester.tap(find.byKey(const Key('letters_button')));
     await settle(tester);
     expect(text(tester, 'letters_progress'), '1 of ${letters.length} found');
@@ -105,7 +126,5 @@ void main() {
     expect(find.byKey(const Key('letter_reader')), findsOneWidget);
     expect(text(tester, 'letter_body'), letter['body']);
     expect(text(tester, 'letter_reference'), letter['reference']);
-
-    await SaveRepository().clear();
   });
 }
