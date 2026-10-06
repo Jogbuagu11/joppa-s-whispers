@@ -19,6 +19,7 @@ import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 import 'package:whispers_of_joppa/game/board/new_game.dart';
+import 'package:whispers_of_joppa/game/board/session_snapshot.dart';
 
 final _log = Logger('BoardSession');
 
@@ -190,21 +191,13 @@ class BoardSession {
 
     final saver = GameSaver(
       repository: saveRepository,
-      snapshot: () => SaveState(
-        items: game.snapshotItems(),
-        generators: game.snapshotGenerators(),
-        manna: manna.manna,
-        mannaLastRegen: manna.lastRegen,
-        talents: orders.talents,
-        blessings: orders.blessings,
-        activeOrders: orders.book.active,
-        pendingOrders: orders.book.pending,
-        completedOrders: orders.completedOrders,
-        completedTasks: story.completedTasks,
-        tutorialStep: tutorial.isOver ? tutorialFinished : tutorial.index,
-        tutorialFreeTapsUsed: tutorial.freeTapsUsed,
-        endingsSeen: endingsSeen.toList(),
-        lastOrderSkip: orders.book.lastSkip,
+      snapshot: () => buildSnapshot(
+        game: game,
+        manna: manna,
+        orders: orders,
+        story: story,
+        tutorial: tutorial,
+        endingsSeen: endingsSeen,
       ),
       // Manna spends always come with a board change, so the per-second Manna
       // tick does not need to trigger a write.
@@ -234,6 +227,16 @@ class BoardSession {
     );
   }
 
+  /// The game exactly as it is now, in the form that gets saved.
+  SaveState snapshot() => buildSnapshot(
+    game: game,
+    manna: manna,
+    orders: orders,
+    story: story,
+    tutorial: tutorial,
+    endingsSeen: endingsSeen,
+  );
+
   /// The closing message for a finished chapter the player has not seen yet,
   /// or null. Covers the case where the app closed before it was shown.
   ChapterEnding? get pendingEnding {
@@ -252,6 +255,16 @@ class BoardSession {
   /// Records that a chapter's closing message has been shown.
   void markEndingSeen(String chapterId) {
     if (endingsSeen.add(chapterId)) endingsChanged.value++;
+  }
+
+  /// Stops everything WITHOUT writing: used when this game is being replaced
+  /// by one from the player's account, so it must not save over it.
+  Future<void> discard() async {
+    await saver.cancel();
+    tutorial.dispose();
+    story.dispose();
+    orders.dispose();
+    manna.dispose();
   }
 
   /// Writes any unsaved change and stops the timers.

@@ -3,14 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/letters/letters_screen.dart';
+import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
+import 'package:whispers_of_joppa/features/settings/account_screen.dart';
 import 'package:whispers_of_joppa/features/restoration/location_screen.dart';
 import 'package:whispers_of_joppa/features/story/scene_screen.dart';
 import 'package:whispers_of_joppa/features/story/chapter_ending.dart';
 import 'package:whispers_of_joppa/features/story/task_bar.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_banner.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
+import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
+
+part 'board_screen_actions.dart';
 
 final _log = Logger('BoardScreen');
 
@@ -22,7 +27,12 @@ class BoardScreen extends StatefulWidget {
     this.saveRepository,
     this.playOpeningScene = true,
     this.playTutorial = true,
+    this.cloud,
   });
+
+  /// The player's account and cloud save. Null (in tests, or if the backend
+  /// is not set up) hides the account button and keeps the game local.
+  final BoardCloud? cloud;
 
   /// Whether a new game shows the tutorial hints (with free early taps).
   /// Tests that are about something else turn this off.
@@ -43,169 +53,7 @@ class BoardScreen extends StatefulWidget {
   State<BoardScreen> createState() => _BoardScreenState();
 }
 
-class _BoardScreenState extends State<BoardScreen> {
-  BoardSession? _session;
-  bool _popupOpen = false;
-  bool _busy = false;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _init();
-  }
-
-  @override
-  void dispose() {
-    // Saves any unsaved change, then stops the timers.
-    _session?.dispose();
-    super.dispose();
-  }
-
-  Future<void> _showOutOfManna() async {
-    final manna = _session?.manna;
-    if (manna == null || _popupOpen || !mounted) return;
-    _popupOpen = true;
-    await showOutOfMannaPopup(context, manna);
-    _popupOpen = false;
-  }
-
-  /// Pays for the next story task, then plays its scene. While this (or any
-  /// other screen opened from the task bar) is running, [_busy] is set and
-  /// further taps are ignored, so one tap can never pay for two tasks or
-  /// stack two screens.
-  Future<void> _doNextTask() async {
-    final session = _session;
-    if (session == null || _busy) return;
-    _busy = true;
-    try {
-      // The task's own chapter, read before doing it: finishing a chapter's
-      // last task moves the story on to the next chapter.
-      final chapter = session.story.chapter;
-      final locationId = chapter?.locationId;
-      final task = session.story.doNext();
-      if (task == null) return;
-      final scene = session.scenes[task.sceneId];
-      if (scene == null || scene.lines.isEmpty) {
-        _log.warning('Task ${task.id} has no scene to play (${task.sceneId})');
-      } else if (mounted) {
-        await Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => SceneScreen(
-              scene: scene,
-              characterNames: session.characterNames,
-              availableAssets: session.assetPaths,
-            ),
-          ),
-        );
-      }
-      // A task that restores part of the location shows the change.
-      final area = task.restoresArea;
-      if (area != null) await _showLocation(locationId, justRestored: area);
-      // The chapter's last task ends with its closing message.
-      await _showPendingEnding();
-    } finally {
-      _busy = false;
-    }
-  }
-
-  /// Shows the closing message of a finished chapter, once.
-  Future<void> _showPendingEnding() async {
-    final session = _session;
-    final ending = session?.pendingEnding;
-    if (session == null || ending == null || !mounted) return;
-    session.markEndingSeen(ending.chapterId);
-    await showChapterEnding(context, ending);
-  }
-
-  /// The location button: shows the current chapter's location.
-  Future<void> _openLocation() async {
-    if (_busy) return;
-    _busy = true;
-    try {
-      await _showLocation(_session?.story.chapter?.locationId);
-    } finally {
-      _busy = false;
-    }
-  }
-
-  /// The letters button: opens the keepsake book.
-  Future<void> _openLetters() async {
-    final session = _session;
-    if (session == null || _busy || !mounted) return;
-    _busy = true;
-    try {
-      await Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => LettersScreen(
-            letters: session.letters,
-            foundLetterIds: session.story.foundLetterIds,
-          ),
-        ),
-      );
-    } finally {
-      _busy = false;
-    }
-  }
-
-  Future<void> _showLocation(String? locationId, {String? justRestored}) async {
-    final session = _session;
-    final location = session?.locations[locationId];
-    if (session == null || location == null) {
-      _log.warning('No location to show for "$locationId"');
-      return;
-    }
-    if (!mounted) return;
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => LocationScreen(
-          location: location,
-          restoredAreaIds: session.story.restoredAreaIds,
-          availableAssets: session.assetPaths,
-          justRestoredAreaId: justRestored,
-        ),
-      ),
-    );
-  }
-
-  Future<void> _init() async {
-    try {
-      final session = await BoardSession.create(
-        saveRepository: widget.saveRepository ?? SaveRepository(),
-        onOutOfManna: _showOutOfManna,
-        startingMannaOverride: widget.startingMannaOverride,
-        playTutorial: widget.playTutorial,
-      );
-      if (!mounted) {
-        await session.dispose();
-        return;
-      }
-      setState(() => _session = session);
-      final opening = session.openingScene;
-      if (opening != null &&
-          opening.lines.isNotEmpty &&
-          widget.playOpeningScene) {
-        await Navigator.of(context).push(
-          // No slide-in: the story is the first thing a new player sees, not
-          // a glimpse of the board followed by the story.
-          PageRouteBuilder<void>(
-            transitionDuration: Duration.zero,
-            pageBuilder: (_, _, _) => SceneScreen(
-              scene: opening,
-              characterNames: session.characterNames,
-              availableAssets: session.assetPaths,
-            ),
-          ),
-        );
-      }
-      // A chapter finished earlier whose closing message was never seen.
-      await _showPendingEnding();
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _error = e.toString());
-    }
-  }
-
+class _BoardScreenState extends State<BoardScreen> with _BoardScreenActions {
   @override
   Widget build(BuildContext context) {
     final session = _session;
@@ -234,6 +82,16 @@ class _BoardScreenState extends State<BoardScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   WalletChips(controller: session.orders),
+                  if (widget.cloud != null)
+                    IconButton(
+                      key: const Key('account_button'),
+                      onPressed: _openAccount,
+                      tooltip: 'Account',
+                      icon: const Icon(
+                        Icons.person_outline,
+                        color: Color(0xFFD4802A),
+                      ),
+                    ),
                   MannaBar(controller: session.manna),
                 ],
               ),

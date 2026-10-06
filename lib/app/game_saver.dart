@@ -25,6 +25,10 @@ class GameSaver with WidgetsBindingObserver {
   /// The longest a change may wait, even if changes keep coming.
   final Duration maxWait;
 
+  /// Called with the state after each successful write (used to send the
+  /// save on to the player's account).
+  void Function(SaveState state)? onSaved;
+
   Timer? _timer;
   bool _dirty = false;
   DateTime? _deadline;
@@ -65,6 +69,7 @@ class GameSaver with WidgetsBindingObserver {
     return _writing = _writing.then((_) async {
       try {
         await repository.save(state);
+        onSaved?.call(state);
       } on Object catch (e, stack) {
         // Whatever went wrong, keep saving: mark the state unsaved so the
         // next change or background event tries again.
@@ -77,6 +82,18 @@ class GameSaver with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state != AppLifecycleState.resumed) flush();
+  }
+
+  /// Stops listening and drops any unsaved change; waits for a write already
+  /// under way to finish.
+  Future<void> cancel() {
+    for (final trigger in triggers) {
+      trigger.removeListener(_changed);
+    }
+    WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
+    _dirty = false;
+    return _writing;
   }
 
   /// Stops listening and writes any unsaved change.
