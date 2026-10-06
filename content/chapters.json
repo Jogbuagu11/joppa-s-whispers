@@ -116,5 +116,125 @@
         "letter_id": null
       }
     ]
+  },
+  {
+    "id": "ch2",
+    "number": 2,
+    "title": "The Collection",
+    "location_id": "well",
+    "unlocks_chains": [
+      "church"
+    ],
+    "crown_id": null,
+    "tasks": [
+      {
+        "id": "ch2_t_01",
+        "beat": 1,
+        "title": "Listen at the well",
+        "cost_blessings": 2,
+        "scene_id": "ch2_s_01",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch2_t_02",
+        "beat": 2,
+        "title": "Mend the cracked stone lip",
+        "cost_blessings": 2,
+        "scene_id": "ch2_s_02",
+        "restores_area": "well_lip",
+        "letter_id": null
+      },
+      {
+        "id": "ch2_t_03",
+        "beat": 3,
+        "title": "Carry broth to Elder Amos",
+        "cost_blessings": 2,
+        "scene_id": "ch2_s_03",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch2_t_04",
+        "beat": 4,
+        "title": "Gather lamps and benches",
+        "cost_blessings": 2,
+        "scene_id": "ch2_s_04",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch2_t_05",
+        "beat": 5,
+        "title": "Level the bucket stone",
+        "cost_blessings": 2,
+        "scene_id": "ch2_s_05",
+        "restores_area": "well_stone",
+        "letter_id": "letter_03"
+      },
+      {
+        "id": "ch2_t_06",
+        "beat": 6,
+        "title": "Hang the new rope at dawn",
+        "cost_blessings": 2,
+        "scene_id": "ch2_s_06",
+        "restores_area": "well_rope",
+        "letter_id": null
+      },
+      {
+        "id": "ch2_t_07",
+        "beat": 7,
+        "title": "Scrub the water trough",
+        "cost_blessings": 2,
+        "scene_id": "ch2_s_07",
+        "restores_area": "well_trough",
+        "letter_id": null
+      },
+      {
+        "id": "ch2_t_08",
+        "beat": 8,
+        "title": "Take bread to Hannah's door",
+        "cost_blessings": 2,
+        "scene_id": "ch2_s_08",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch2_t_09",
+        "beat": 9,
+        "title": "Set a bench by the well",
+        "cost_blessings": 2,
+        "scene_id": "ch2_s_09",
+        "restores_area": "well_bench",
+        "letter_id": null
+      },
+      {
+        "id": "ch2_t_10",
+        "beat": 10,
+        "title": "Reset the foundation stone",
+        "cost_blessings": 2,
+        "scene_id": "ch2_s_10",
+        "restores_area": "well_foundation",
+        "letter_id": "letter_04"
+      },
+      {
+        "id": "ch2_t_11",
+        "beat": 10,
+        "title": "Lay the square's last stone",
+        "cost_blessings": 3,
+        "scene_id": "ch2_s_11",
+        "restores_area": "well_paving",
+        "letter_id": null
+      },
+      {
+        "id": "ch2_t_12",
+        "beat": 11,
+        "title": "Carry bread to the docks",
+        "cost_blessings": 3,
+        "scene_id": "ch2_s_12",
+        "restores_area": null,
+        "letter_id": null
+      }
+    ]
   }
 ]

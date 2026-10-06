@@ -40,7 +40,10 @@ void main() {
         );
         expect(brokenContent(2).problems(), isNotEmpty);
         expect(
-          realContent(version: 2, format: 2).problems().single,
+          realContent(
+            version: 2,
+            format: supportedContentFormat + 1,
+          ).problems().single,
           contains('needs a newer version of the app'),
         );
         expect(

@@ -11,5 +11,53 @@
       { "id": "bakehouse_wall", "name": "Oven wall", "before": "loc_bakehouse_wall_before", "after": "loc_bakehouse_wall_after" },
       { "id": "bakehouse_shelves", "name": "Bread shelves", "before": "loc_bakehouse_shelves_before", "after": "loc_bakehouse_shelves_after" }
     ]
+  },
+  {
+    "id": "well",
+    "name": "The town well",
+    "areas": [
+      {
+        "id": "well_lip",
+        "name": "Stone lip",
+        "before": "loc_well_lip_before",
+        "after": "loc_well_lip_after"
+      },
+      {
+        "id": "well_stone",
+        "name": "Bucket stone",
+        "before": "loc_well_stone_before",
+        "after": "loc_well_stone_after"
+      },
+      {
+        "id": "well_rope",
+        "name": "Well rope",
+        "before": "loc_well_rope_before",
+        "after": "loc_well_rope_after"
+      },
+      {
+        "id": "well_trough",
+        "name": "Water trough",
+        "before": "loc_well_trough_before",
+        "after": "loc_well_trough_after"
+      },
+      {
+        "id": "well_bench",
+        "name": "Well bench",
+        "before": "loc_well_bench_before",
+        "after": "loc_well_bench_after"
+      },
+      {
+        "id": "well_foundation",
+        "name": "Foundation",
+        "before": "loc_well_foundation_before",
+        "after": "loc_well_foundation_after"
+      },
+      {
+        "id": "well_paving",
+        "name": "Square paving",
+        "before": "loc_well_paving_before",
+        "after": "loc_well_paving_after"
+      }
+    ]
   }
 ]

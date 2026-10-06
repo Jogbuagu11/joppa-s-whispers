@@ -126,6 +126,11 @@ List<String> validateContent({
     checkStartingBoard(
       startingBoardJson,
       generatorIds: generatorIds,
+      generatorUnlockChapters: {
+        for (final g in generators)
+          if (g['unlock_chapter'] case final int chapter)
+            g['id'] as String: chapter,
+      },
       itemIds: {
         for (final chain in chains)
           for (final t in chain['tiers'] as List<dynamic>)

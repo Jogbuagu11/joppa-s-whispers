@@ -12,6 +12,29 @@ class OrdersController extends ChangeNotifier {
   OrderBook _book;
   final Set<String> _completed;
 
+  /// The chapter the story has reached. Orders of later chapters wait. Until
+  /// this is set, every order may be shown.
+  int Function()? chapterReached;
+
+  bool _available(String orderId) {
+    final reached = chapterReached?.call();
+    final order = _orders[orderId];
+    return reached == null || order == null || order.chapter <= reached;
+  }
+
+  /// Deals waiting orders into empty cards. Call when the story reaches a
+  /// new chapter, so its orders appear.
+  void refill() {
+    final filled = fillOrderCards(
+      _book,
+      config.orderSlots,
+      available: _available,
+    );
+    if (filled.active.length == _book.active.length) return;
+    _book = filled;
+    notifyListeners();
+  }
+
   /// Called with the order id each time an order is delivered.
   void Function(String orderId)? onDelivered;
   int _talents;
@@ -65,7 +88,8 @@ class OrdersController extends ChangeNotifier {
   bool Function()? skipAllowed;
 
   bool get canSkip =>
-      (skipAllowed?.call() ?? true) && canSkipOrder(config, _book, _now());
+      (skipAllowed?.call() ?? true) &&
+      canSkipOrder(config, _book, _now(), available: _available);
 
   /// Takes the items off the board, pays the rewards and shows the next order.
   /// Returns false, changing nothing, if the board does not have the items.
@@ -77,7 +101,7 @@ class OrdersController extends ChangeNotifier {
     _talents += order.talents;
     _blessings += order.blessings;
     _completed.add(orderId);
-    _book = completeOrder(_book, orderId);
+    _book = completeOrder(_book, orderId, available: _available);
     notifyListeners();
     onDelivered?.call(orderId);
     return true;
@@ -95,7 +119,7 @@ class OrdersController extends ChangeNotifier {
   /// Swaps an order for the next one, if skipping is allowed right now.
   void skip(String orderId) {
     if (!canSkip) return;
-    _book = skipOrder(config, _book, orderId, _now());
+    _book = skipOrder(config, _book, orderId, _now(), available: _available);
     notifyListeners();
   }
 

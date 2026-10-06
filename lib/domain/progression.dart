@@ -76,6 +76,16 @@ bool canAffordTask(TaskModel task, int blessings) =>
 bool isChapterComplete(ChapterModel chapter, Set<String> completedTaskIds) =>
     nextTask(chapter, completedTaskIds) == null;
 
+/// The number of the chapter the story has reached: the first one with a
+/// task still to do, or the last chapter when everything is done. 1 if there
+/// are no chapters.
+int chapterReached(List<ChapterModel> chapters, Set<String> completedTaskIds) {
+  for (final chapter in chapters) {
+    if (!isChapterComplete(chapter, completedTaskIds)) return chapter.number;
+  }
+  return chapters.isEmpty ? 1 : chapters.last.number;
+}
+
 /// How many of [chapter]'s tasks are done.
 int tasksDone(ChapterModel chapter, Set<String> completedTaskIds) =>
     chapter.tasks.where((t) => completedTaskIds.contains(t.id)).length;

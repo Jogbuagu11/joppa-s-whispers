@@ -108,10 +108,15 @@ class StartingGenerator {
   final int col;
   final int row;
 
+  /// The chapter in which the player receives this generator (1 = from the
+  /// start of the game).
+  final int chapter;
+
   const StartingGenerator({
     required this.generatorId,
     required this.col,
     required this.row,
+    this.chapter = 1,
   });
 }
 
@@ -153,6 +158,7 @@ class StartingBoard {
           generatorId: (g as Map<String, dynamic>)['generator_id'] as String,
           col: g['col'] as int,
           row: g['row'] as int,
+          chapter: g['chapter'] as int? ?? 1,
         ),
     ],
     items: [

@@ -7,6 +7,7 @@ void checkStartingBoard(
   Map<String, dynamic> board, {
   required Set<String> generatorIds,
   required Set<String> itemIds,
+  Map<String, int> generatorUnlockChapters = const {},
   required Map<String, dynamic> economy,
   required List<String> problems,
 }) {
@@ -43,6 +44,20 @@ void checkStartingBoard(
       problems.add('Starting board: generator "$id" is placed more than once');
     }
     checkCell('generator $id', g);
+    final chapter = g['chapter'];
+    if (chapter != null && (chapter is! int || chapter < 1)) {
+      problems.add('Starting board: generator "$id" chapter must be 1 or more');
+    }
+    // The chapter a generator arrives in is written in two places; they
+    // must agree.
+    final unlock = generatorUnlockChapters[id];
+    final arrives = chapter is int ? chapter : 1;
+    if (unlock != null && unlock != arrives) {
+      problems.add(
+        'Starting board: generator "$id" arrives in chapter $arrives but '
+        'generators.json unlocks it in chapter $unlock',
+      );
+    }
   }
   for (final i
       in (board['items'] as List<dynamic>).cast<Map<String, dynamic>>()) {

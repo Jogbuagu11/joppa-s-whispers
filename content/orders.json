@@ -140,5 +140,269 @@
     "rewards": { "talents": 90, "blessings": 3 },
     "text": "Well now. Two loaves and two flatbreads for the widows' table, child. I forget much, but never them.",
     "scene_id": null
+  },
+  {
+    "id": "ch2_o_001",
+    "chapter": 2,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_04",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 2
+    },
+    "text": "Little loaf! A flatbread and a scoop of flour. A man can't sort rumor from truth on an empty belly.",
+    "scene_id": null
+  },
+  {
+    "id": "ch2_o_002",
+    "chapter": 2,
+    "character_id": "joy",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_02",
+        "count": 1
+      },
+      {
+        "item_id": "church_01",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 15,
+      "blessings": 2
+    },
+    "text": "An oil lamp and a clay lamp for the elder's window! It's all dark and I don't like it dark.",
+    "scene_id": null
+  },
+  {
+    "id": "ch2_o_003",
+    "chapter": 2,
+    "character_id": "amos",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "fruit_03",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 15,
+      "blessings": 2
+    },
+    "text": "Well now. The fever I can bear, child. It's the flock scattering that robs my sleep. A little peace.",
+    "scene_id": null
+  },
+  {
+    "id": "ch2_o_004",
+    "chapter": 2,
+    "character_id": "naomi",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_03",
+        "count": 1
+      },
+      {
+        "item_id": "church_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 25,
+      "blessings": 2
+    },
+    "text": "Hm. An empty room won't fill itself. One bench, one oil lamp. If they won't come, we'll still be here.",
+    "scene_id": null
+  },
+  {
+    "id": "ch2_o_005",
+    "chapter": 2,
+    "character_id": "zilpah",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_03",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 40,
+      "blessings": 2
+    },
+    "text": "A loaf and a little dough, dear. So loyal of you to bake for the elder. People do notice loyalty.",
+    "scene_id": null
+  },
+  {
+    "id": "ch2_o_006",
+    "chapter": 2,
+    "character_id": "caleb",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      },
+      {
+        "item_id": "church_03",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 40,
+      "blessings": 3
+    },
+    "text": "Mended a bench for the elder's room. Needs a second to match. And a loaf. Joy ate the last one.",
+    "scene_id": null
+  },
+  {
+    "id": "ch2_o_007",
+    "chapter": 2,
+    "character_id": "naomi",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "fruit_05",
+        "count": 1
+      },
+      {
+        "item_id": "fruit_01",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 3
+    },
+    "text": "Hm. Hannah takes the long way round, same as I did. Go gently, Naomi. Kindness first. Questions later.",
+    "scene_id": null
+  },
+  {
+    "id": "ch2_o_008",
+    "chapter": 2,
+    "character_id": "amos",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_04",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 45,
+      "blessings": 3
+    },
+    "text": "A bread basket and a loaf to fill it, child. The widows' table must not go bare on my account.",
+    "scene_id": null
+  },
+  {
+    "id": "ch2_o_009",
+    "chapter": 2,
+    "character_id": "joy",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "fruit_04",
+        "count": 1
+      },
+      {
+        "item_id": "fruit_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 3
+    },
+    "text": "Eli and Ben have a secret and it makes them sad. I want to make them laugh. But waiting is so hard!",
+    "scene_id": null
+  },
+  {
+    "id": "ch2_o_010",
+    "chapter": 2,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_04",
+        "count": 1
+      },
+      {
+        "item_id": "church_03",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_04",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 55,
+      "blessings": 3
+    },
+    "text": "A bench, a bread basket and a flatbread, little loaf. If the flock won't come to the house, I'll sit in it.",
+    "scene_id": null
+  },
+  {
+    "id": "ch2_o_011",
+    "chapter": 2,
+    "character_id": "amos",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_06",
+        "count": 1
+      },
+      {
+        "item_id": "church_04",
+        "count": 1
+      },
+      {
+        "item_id": "church_02",
+        "count": 2
+      }
+    ],
+    "rewards": {
+      "talents": 70,
+      "blessings": 3
+    },
+    "text": "Well now. A fig cake, a bread basket, two oil lamps. When the flock comes back, child, I mean to be ready.",
+    "scene_id": null
+  },
+  {
+    "id": "ch2_o_012",
+    "chapter": 2,
+    "character_id": "hannah",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "fruit_07",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 35,
+      "blessings": 3
+    },
+    "text": "The elder kept faith with me and never said my name. Now I must keep faith with him. Stand with me?",
+    "scene_id": null
   }
 ]

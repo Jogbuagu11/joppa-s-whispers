@@ -84,22 +84,63 @@ class OrderBook {
   const OrderBook({required this.active, required this.pending, this.lastSkip});
 }
 
-/// Starts a fresh book: the first [slots] orders show, the rest wait.
-OrderBook startOrders(List<String> orderIds, int slots) => OrderBook(
-  active: orderIds.take(slots).toList(),
-  pending: orderIds.skip(slots).toList(),
+/// Says whether an order may be shown yet. Orders belong to chapters, and a
+/// later chapter's orders wait until the story reaches it.
+typedef OrderAvailable = bool Function(String orderId);
+
+bool _all(String _) => true;
+
+/// Takes the first order in [pending] that may be shown, or null.
+String? _takeNext(List<String> pending, OrderAvailable available) {
+  final index = pending.indexWhere(available);
+  return index < 0 ? null : pending.removeAt(index);
+}
+
+/// Starts a fresh book: the first [slots] orders that may be shown take the
+/// cards, the rest wait.
+OrderBook startOrders(
+  List<String> orderIds,
+  int slots, {
+  OrderAvailable available = _all,
+}) => fillOrderCards(
+  OrderBook(active: const [], pending: orderIds),
+  slots,
+  available: available,
 );
 
-/// Removes a delivered order; the next waiting order takes its card.
-OrderBook completeOrder(OrderBook book, String orderId) {
+/// Fills empty cards (up to [slots]) with waiting orders that may be shown.
+/// Used when the story reaches a new chapter and its orders open up.
+OrderBook fillOrderCards(
+  OrderBook book,
+  int slots, {
+  OrderAvailable available = _all,
+}) {
+  final active = [...book.active];
+  final pending = [...book.pending];
+  while (active.length < slots) {
+    final next = _takeNext(pending, available);
+    if (next == null) break;
+    active.add(next);
+  }
+  return OrderBook(active: active, pending: pending, lastSkip: book.lastSkip);
+}
+
+/// Removes a delivered order; the next waiting order that may be shown takes
+/// its card.
+OrderBook completeOrder(
+  OrderBook book,
+  String orderId, {
+  OrderAvailable available = _all,
+}) {
   final index = book.active.indexOf(orderId);
   if (index < 0) return book;
   final active = [...book.active];
   final pending = [...book.pending];
-  if (pending.isEmpty) {
+  final next = _takeNext(pending, available);
+  if (next == null) {
     active.removeAt(index);
   } else {
-    active[index] = pending.removeAt(0);
+    active[index] = next;
   }
   return OrderBook(active: active, pending: pending, lastSkip: book.lastSkip);
 }
@@ -112,9 +153,16 @@ int skipCooldownRemaining(EconomyConfig config, OrderBook book, DateTime now) {
   return left < 0 ? 0 : left;
 }
 
-/// An order can be skipped when the cooldown is over and another is waiting.
-bool canSkipOrder(EconomyConfig config, OrderBook book, DateTime now) =>
-    book.pending.isNotEmpty && skipCooldownRemaining(config, book, now) == 0;
+/// An order can be skipped when the cooldown is over and another that may be
+/// shown is waiting.
+bool canSkipOrder(
+  EconomyConfig config,
+  OrderBook book,
+  DateTime now, {
+  OrderAvailable available = _all,
+}) =>
+    book.pending.any(available) &&
+    skipCooldownRemaining(config, book, now) == 0;
 
 /// Swaps [orderId] for the next waiting order and sends it to the back of the
 /// line. Returns the book unchanged if skipping is not allowed.
@@ -122,26 +170,32 @@ OrderBook skipOrder(
   EconomyConfig config,
   OrderBook book,
   String orderId,
-  DateTime now,
-) {
+  DateTime now, {
+  OrderAvailable available = _all,
+}) {
   final index = book.active.indexOf(orderId);
-  if (index < 0 || !canSkipOrder(config, book, now)) return book;
+  if (index < 0 || !canSkipOrder(config, book, now, available: available)) {
+    return book;
+  }
   final active = [...book.active];
   final pending = [...book.pending];
-  active[index] = pending.removeAt(0);
+  final next = _takeNext(pending, available);
+  if (next == null) return book;
+  active[index] = next;
   pending.add(orderId);
   return OrderBook(active: active, pending: pending, lastSkip: now);
 }
 
 /// Brings a saved order book in line with today's content: orders that no
 /// longer exist are dropped, orders added since the save join the back of the
-/// line, and empty cards are refilled, so cards can never run dry while
-/// orders remain. [allOrderIds] is every order in content, in story order.
+/// line, and empty cards are refilled with orders that may be shown, so cards
+/// never run dry while such orders remain. [allOrderIds] is every order in content, in story order.
 OrderBook reconcileOrderBook({
   required OrderBook saved,
   required Set<String> completed,
   required List<String> allOrderIds,
   required int slots,
+  OrderAvailable available = _all,
 }) {
   final known = allOrderIds.toSet();
   final seen = <String>{...completed};
@@ -154,8 +208,9 @@ OrderBook reconcileOrderBook({
   for (final id in allOrderIds) {
     if (seen.add(id)) pending.add(id);
   }
-  while (active.length < slots && pending.isNotEmpty) {
-    active.add(pending.removeAt(0));
-  }
-  return OrderBook(active: active, pending: pending, lastSkip: saved.lastSkip);
+  return fillOrderCards(
+    OrderBook(active: active, pending: pending, lastSkip: saved.lastSkip),
+    slots,
+    available: available,
+  );
 }

@@ -114,6 +114,8 @@ The board a brand-new player sees. Columns count 0–6 from the left, rows 0–8
   "items": [{ "item_id": "bakery_01", "col": 0, "row": 0 }]
 }
 ```
+- A generator entry may carry `"chapter": N`: it is not on a new game's board but arrives when the story reaches chapter N (at that cell, or the nearest free one). It must match the generator's `unlock_chapter` in `generators.json`.
+- Orders wait for their chapter: an order with `"chapter": N` is not dealt until every task of the earlier chapters is done. Each chapter's own orders must pay enough Blessings for its own tasks (the validator checks).
 
 ### Placeholder colours
 Each chain in `chains.json` also has `"placeholder_color": "#RRGGBB"`, the colour of its

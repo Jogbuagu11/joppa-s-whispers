@@ -197,5 +197,722 @@
       { "speaker": "naomi", "expression": "sad", "text": "Whose name, Elder?" },
       { "speaker": "amos", "expression": "neutral", "text": "Mine." }
     ]
+  },
+  {
+    "id": "ch2_s_01",
+    "background": "loc_well_morning",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Savta said the well remembers everything. Hm. It also repeats everything, loudly."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "neutral",
+        "text": "Every coin the widows had, dear. Gone. And only one man in Joppa kept the key to that chest."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "sad",
+        "text": "Elder Amos? He prayed over my boy when he had the fever."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "thinking",
+        "text": "Such a kind man. So forgetful, too. One does wonder what else he forgot to mention."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "thinking",
+        "text": "They say he was seen at the moneylender's gate. What's an elder want there?"
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "happy",
+        "text": "I accuse no one. I'm only saying what people are saying, dear."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "angry",
+        "text": "People said plenty about me, Zilpah. Not one of them asked me first."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "happy",
+        "text": "And we never did hear your side, did we? Careful, dear. Loyalty to a thief looks so poorly."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "This well is cracked from lip to rope. Somebody ought to mend it. Hm. I suppose I'm somebody."
+      }
+    ]
+  },
+  {
+    "id": "ch2_s_02",
+    "background": "loc_well_morning",
+    "lines": [
+      {
+        "speaker": "silas",
+        "expression": "surprised",
+        "text": "Little loaf? That's mortar on your sleeves, not flour. Have you changed trades?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "The lip is cracked clean through, Silas. One more winter and it falls in the water."
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "Forty years I've leaned on that stone. Now, that reminds me of the year the well ran salty—"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Silas. Hold this wedge."
+      },
+      {
+        "speaker": "silas",
+        "expression": "neutral",
+        "text": "Holding. It was the same year my cousin married a goatherd. Unrelated, mind you."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. The woman Joppa whispers about, mending the place it whispers. Savta would laugh."
+      },
+      {
+        "speaker": "silas",
+        "expression": "happy",
+        "text": "She'd laugh, then hand you more mortar. There. Sound as a millstone."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "The stone's the easy part. The rope's rotten too. And nobody's seen Elder Amos since yesterday."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "No lamp in his window last night. In forty years I've not seen that window dark."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Dark? Silas, mind the mortar. I'm going up there."
+      }
+    ]
+  },
+  {
+    "id": "ch2_s_03",
+    "background": "loc_amos_house",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Elder? The door was open. You're burning up. How long have you lain here alone?"
+      },
+      {
+        "speaker": "amos",
+        "expression": "neutral",
+        "text": "Well now. A day? Two? The fever keeps poor count, child."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Drink this. Slowly. Then tell me about the chest, and I'll tell the well to hush."
+      },
+      {
+        "speaker": "amos",
+        "expression": "thinking",
+        "text": "The chest is empty. That much is true. I'll not pretend otherwise."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Then where did it go? One word from you and this ends by noon."
+      },
+      {
+        "speaker": "amos",
+        "expression": "sad",
+        "text": "It is not only my word to give. There's another's shame bound up in it."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "angry",
+        "text": "They're calling you a thief, Amos!"
+      },
+      {
+        "speaker": "amos",
+        "expression": "happy",
+        "text": "Ha. An old vine gets called worse by the goats. It bears anyway."
+      },
+      {
+        "speaker": "amos",
+        "expression": "sad",
+        "text": "But I confess, child, I have no peace tonight. Not for my name. For the flock."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Hm. I kept a promise once, and it cost me dearly. I know that look. Rest. I'll stay."
+      }
+    ]
+  },
+  {
+    "id": "ch2_s_04",
+    "background": "loc_amos_house",
+    "lines": [
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "Nobody came, Naomi. It's meeting night and the room is all empty."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "No lamps lit, no bread broken. Three days of whispering, and a whole family scatters."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "Benches are split. Two legs gone on this one."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Can you mend them?"
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "Already measuring."
+      },
+      {
+        "speaker": "joy",
+        "expression": "happy",
+        "text": "I found the lamps! They're dusty. One has a spider. I named him Jonah."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Jonah can stay if he sits quietly. Trim the wicks, Joy. We're lighting every one."
+      },
+      {
+        "speaker": "silas",
+        "expression": "neutral",
+        "text": "And if nobody comes, little loaf? Folk don't like to sit in a house the well has judged."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Then we sit here ourselves. Savta lit her oven in the dark for fifty years. Someone always came."
+      },
+      {
+        "speaker": "amos",
+        "expression": "happy",
+        "text": "Well now. I hear benches. Is that my flock, or very organized thieves?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "Go back to sleep, Elder. It's only your family."
+      }
+    ]
+  },
+  {
+    "id": "ch2_s_05",
+    "background": "loc_well_morning",
+    "lines": [
+      {
+        "speaker": "zilpah",
+        "expression": "neutral",
+        "text": "A shepherd who can't account for the purse should lay down the staff. For his own good, dear."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "neutral",
+        "text": "He hasn't denied it. Three days now. An innocent man would shout."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "He has a fever, not a guilty tongue. He can barely lift a cup."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "thinking",
+        "text": "How convenient a fever can be. People are saying the flock needs a new elder by the Sabbath."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. The bucket stone rocks. Let them talk. I'll lift it and set it level."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "A potsherd, face down in the damp. Savta. You hid one even here."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "Half this town has decided a man is guilty before breakfast. I have done it too, God forgive me."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "\"He that answereth a matter before he heareth it, it is folly and shame unto him.\" (Proverbs 18:13)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "thinking",
+        "text": "Hear the whole matter, Naomi. Especially from the ones who aren't talking. — your Savta"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "The ones who aren't talking. Everyone at this well is talking, Savta."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "...So who isn't at the well?"
+      }
+    ]
+  },
+  {
+    "id": "ch2_s_06",
+    "background": "loc_well_dawn",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "You're early, Caleb. I meant to hang the rope before the well woke up and had opinions."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "Brought ship's line. Tarred. It won't rot."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "A boat builder's rope on a town well. It'll outlast us all."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "Someone's coming. The lane behind the potter's."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "A woman with two jars and her shawl pulled low. That's the widow Hannah. At this hour?"
+      },
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "Every dawn. Before the others. Since the new moon."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "She saw us. She's turned back, Caleb. With both jars empty."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "sad",
+        "text": "Folk who walk the long way round have a reason."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "The ones who aren't talking. Hm. A widow who'd sooner go thirsty than be seen."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Knot it tight. I'll leave a full jar at the end of her lane. No questions. Not yet."
+      }
+    ]
+  },
+  {
+    "id": "ch2_s_07",
+    "background": "loc_well_morning",
+    "lines": [
+      {
+        "speaker": "joy",
+        "expression": "happy",
+        "text": "I'm helping! I scrubbed the whole trough. And my tunic. And a goat, a little."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "The goat thanks you. You've been gone all morning. Where does a Joy go?"
+      },
+      {
+        "speaker": "joy",
+        "expression": "neutral",
+        "text": "Playing knucklebones with Eli and Ben. Hannah's boys. They cheat, but nicely."
+      },
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "The big boys said the elder is a thief. And Ben got so angry his ears went red."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Angry? What did Ben say, Joy? Exactly as he said it."
+      },
+      {
+        "speaker": "joy",
+        "expression": "neutral",
+        "text": "He said, 'Don't you call him that. The elder saved us.' Then Eli pulled him away quick."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Saved them. From what?"
+      },
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "I asked! Eli said it's a secret, and their mama cries when they say it."
+      },
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "Was it bad to tell you? At the well everybody tells everything."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "This once, little one, you carried something true. But we don't pour it in the well. It stays here."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "The elder saved us. And a mother who hides at dawn. Hm. I think I owe Hannah some bread."
+      }
+    ]
+  },
+  {
+    "id": "ch2_s_08",
+    "background": "loc_hannah_house",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Hannah? It's Naomi, the baker. I've no questions in this basket. Only bread."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "surprised",
+        "text": "You shouldn't be seen at my door. They'll say things."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "They already say things about me. One more won't crowd the pot."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "sad",
+        "text": "You left water by my lane. Three mornings. Nobody else even looked."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "I know what it is to take the long way round. I'm not here to drag anything out of you."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "sad",
+        "text": "My husband left a debt. The creditor came at the new moon. He came for Eli and Ben."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Your sons? Into servitude?"
+      },
+      {
+        "speaker": "hannah",
+        "expression": "sad",
+        "text": "For years. I ran to the elder in the night and begged. I had nothing. Nothing."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "thinking",
+        "text": "He paid it all by morning. From the chest. He said he'd put it back before anyone missed it."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "sad",
+        "text": "Then the fever took him, and the well took his name. And I hid, because I was ashamed."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "And he never once said your name. Not even to me."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "neutral",
+        "text": "He kept faith with me. I've kept none with him. Naomi... I don't know if I'm brave enough."
+      }
+    ]
+  },
+  {
+    "id": "ch2_s_09",
+    "background": "loc_well_morning",
+    "lines": [
+      {
+        "speaker": "silas",
+        "expression": "surprised",
+        "text": "Little loaf, look up from that bench. Tell me my old eyes aren't lying."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Elder Amos! On your own feet! You ought to be in bed!"
+      },
+      {
+        "speaker": "amos",
+        "expression": "happy",
+        "text": "Well now. The fever left in the night. It found me poor company. May I try your bench?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "You're its first sitter. Mind the left end, the pegs are fresh."
+      },
+      {
+        "speaker": "amos",
+        "expression": "neutral",
+        "text": "I owe you an answer, child. I'd have given it sooner, but the fever took my legs first."
+      },
+      {
+        "speaker": "amos",
+        "expression": "thinking",
+        "text": "This is a bill of sale. My vineyard plot, the one my father planted. Agreed before I fell ill."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Your vineyard? Amos, that's all the land you have."
+      },
+      {
+        "speaker": "amos",
+        "expression": "happy",
+        "text": "A vine is for giving fruit, child. This one gives it all at once. The chest will be full again."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Then show this at the well! One look and the whispering stops."
+      },
+      {
+        "speaker": "amos",
+        "expression": "sad",
+        "text": "And when they ask what I spent it on? I'll not buy my name back with another's shame."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. What if she wants to give it? Her own telling, her own choice."
+      },
+      {
+        "speaker": "amos",
+        "expression": "surprised",
+        "text": "...You know. Well now. Then it is hers to choose, and no one is to push her. Not even kindly."
+      }
+    ]
+  },
+  {
+    "id": "ch2_s_10",
+    "background": "loc_well_dawn",
+    "lines": [
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "Base course is the last of it. This stone's been weeping for years."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Then out it comes. A well that leaks at the root isn't mended, only dressed up."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "surprised",
+        "text": "Naomi. Something's mortared in behind it."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "A shard. Carved, not inked. She meant this one to last under water. Oh, Savta."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "I carved this one for the well because it is the loudest place in Joppa."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "\"A froward man soweth strife: and a whisperer separateth chief friends.\" (Proverbs 16:28)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "sad",
+        "text": "A rumor is a crack in a jar. It doesn't break all at once. It just leaks until nothing is left."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "Mend what you can. — your Savta"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Chief friends. Amos and his flock. Hannah and every woman at this well."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "Stone's ready to go back. You'll keep the shard?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "I'll keep it. Set the stone true, Caleb. Hannah said she'd come at noon."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "If her courage holds. Hm. Mend what you can."
+      }
+    ]
+  },
+  {
+    "id": "ch2_s_11",
+    "background": "loc_well_morning",
+    "lines": [
+      {
+        "speaker": "zilpah",
+        "expression": "neutral",
+        "text": "The square does look fine, dear. A pity a man's name can't be mortared so easily."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "sad",
+        "text": "Please. May I speak? I have never spoken at this well in my life."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "neutral",
+        "text": "A creditor came for my sons. I begged the elder in the night. He paid the debt from the chest."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "sad",
+        "text": "He told no one, to spare me. And I let you call him a thief, because I was ashamed. Forgive me."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "surprised",
+        "text": "He saved her boys? And we had him robbing widows..."
+      },
+      {
+        "speaker": "amos",
+        "expression": "neutral",
+        "text": "Well now. The chest is owed, and it will be paid. My vineyard is sold. Here is the bill."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "sad",
+        "text": "Elder, I said things. At this very stone. I'd take them back if words came back."
+      },
+      {
+        "speaker": "amos",
+        "expression": "happy",
+        "text": "Words don't, son. But you came back, and that's the better catch. There's nothing owed me."
+      },
+      {
+        "speaker": "amos",
+        "expression": "thinking",
+        "text": "I told you nothing, and silence leaves room for guessing. That part is mine. The rest I forgive, all of it."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Zilpah hasn't said a word. First time since I came home. She's holding her shawl very tight."
+      },
+      {
+        "speaker": "amos",
+        "expression": "neutral",
+        "text": "Zilpah. Come on meeting night, if you like. There's a bench mended, and room on it."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "She didn't answer. But she didn't leave, either. Hm. Mend what you can."
+      }
+    ]
+  },
+  {
+    "id": "ch2_s_12",
+    "background": "loc_harbor_dusk",
+    "lines": [
+      {
+        "speaker": "silas",
+        "expression": "happy",
+        "text": "A full basket and a full chest, little loaf! The elder's vineyard coin came in this morning."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "And the room was full last night. Joy counted twice, in case anyone had sneaked out."
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "Now, that reminds me of the year— hold. Who's that on the toll steps? That's no fisherman."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "angry",
+        "text": "Fine cloak. Roman toll seal on his belt. The new collector. Hide your catch, lads."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "angry",
+        "text": "They say this one counts every fin."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "That walk. I know that walk. No. No, it can't—"
+      },
+      {
+        "speaker": "silas",
+        "expression": "surprised",
+        "text": "Little loaf! Your basket! The bread's all over the dock!"
+      },
+      {
+        "speaker": "marcus",
+        "expression": "neutral",
+        "text": "Still dropping things when you're startled. Hello, Sister."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Marcus."
+      }
+    ]
   }
 ]

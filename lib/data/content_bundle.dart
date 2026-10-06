@@ -4,7 +4,9 @@ import 'package:whispers_of_joppa/data/content_validator.dart';
 
 /// The content format this build understands. A bundle with a higher format
 /// was made for a newer app and is ignored.
-const supportedContentFormat = 1;
+// Format 2: orders wait for their chapter, and a generator on the starting
+// board may name the chapter it arrives in. An older app cannot play that.
+const supportedContentFormat = 2;
 
 /// Every content file (`content/<name>.json`) a bundle must contain.
 const contentFileNames = [

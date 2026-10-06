@@ -3,6 +3,10 @@ import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/content_bundle.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
+import 'package:whispers_of_joppa/domain/models.dart';
+import 'package:whispers_of_joppa/domain/orders.dart';
+import 'package:whispers_of_joppa/domain/progression.dart';
+import 'package:whispers_of_joppa/domain/save_repair.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 
 final _log = Logger('SessionContent');
@@ -43,4 +47,28 @@ Future<({ContentBundle bundle, ContentLoader loader})> loadSessionContent(
     contentVersion: downgraded ? saved : bundle.version,
     downgraded: downgraded,
   );
+}
+
+/// A saved game made safe for the content now running: anything that
+/// content does not know, or that could not be on the board, is removed.
+SaveState repairedSave(SaveState loaded, ContentLoader loader) => sanitizeSave(
+  loaded,
+  itemIds: loader.items.keys.toSet(),
+  generatorIds: loader.generators.keys.toSet(),
+  orderIds: {for (final o in loader.orders) o.id},
+  taskIds: {
+    for (final c in loader.chapters)
+      for (final t in c.tasks) t.id,
+  },
+  cols: BoardState.cols,
+  rows: BoardState.rows,
+  maxManna: loader.economy.maxManna,
+);
+
+/// Which orders may be shown to a player who has done [completedTasks]:
+/// those of the chapter the story has reached, and earlier ones.
+OrderAvailable ordersOpenAt(ContentLoader loader, List<String> completedTasks) {
+  final reached = chapterReached(loader.chapters, completedTasks.toSet());
+  final chapterOf = {for (final o in loader.orders) o.id: o.chapter};
+  return (id) => (chapterOf[id] ?? 1) <= reached;
 }

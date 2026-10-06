@@ -22,6 +22,7 @@ import 'package:whispers_of_joppa/features/story/endings_tracker.dart';
 import 'package:whispers_of_joppa/features/story/story_controller.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
+import 'package:whispers_of_joppa/game/board/chapter_wiring.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 import 'package:whispers_of_joppa/game/board/new_game.dart';
 import 'package:whispers_of_joppa/game/board/session_content.dart';
@@ -105,21 +106,7 @@ class BoardSession {
 
     final loaded = await saveRepository.load();
     final fresh = newGameState(loader, startingMannaOverride);
-    final save = loaded == null
-        ? fresh
-        : sanitizeSave(
-            loaded,
-            itemIds: loader.items.keys.toSet(),
-            generatorIds: loader.generators.keys.toSet(),
-            orderIds: {for (final o in loader.orders) o.id},
-            taskIds: {
-              for (final c in loader.chapters)
-                for (final t in c.tasks) t.id,
-            },
-            cols: BoardGame.cols,
-            rows: BoardGame.rows,
-            maxManna: loader.economy.maxManna,
-          );
+    final save = loaded == null ? fresh : repairedSave(loaded, loader);
     _log.info(loaded == null ? 'Starting a new game' : 'Restored saved game');
     final (:contentVersion, :downgraded) = contentVersionFor(loaded, bundle);
 
@@ -168,6 +155,7 @@ class BoardSession {
               completed: save.completedOrders.toSet(),
               allOrderIds: [for (final o in loader.orders) o.id],
               slots: loader.economy.orderSlots,
+              available: ordersOpenAt(loader, save.completedTasks),
             ),
       completedOrders: save.completedOrders,
       startingTalents: save.talents,
@@ -204,6 +192,13 @@ class BoardSession {
       freeTapsAlreadyUsed: save.tutorialFreeTapsUsed,
     );
     wireTutorial(game: game, orders: orders, story: story, tutorial: tutorial);
+    wireChapters(
+      game: game,
+      orders: orders,
+      story: story,
+      boardGenerators: loader.startingBoard.generators,
+      generators: loader.generators,
+    );
 
     final ads = AdRewardsController(
       config: loader.economy,

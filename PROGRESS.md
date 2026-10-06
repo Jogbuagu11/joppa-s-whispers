@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 22 — Admin panel (built; needs Jennifer to sign in and try it). Milestones 14 and 16–21 are also built and awaiting her checks. Next to build: 23 — Chapters 2–6 (one chapter at a time).
+## Current milestone: 23 — Chapters 2–6, one at a time. Chapter 2 is built; Chapter 3 is next. Milestones 14 and 16–22 are built and awaiting Jennifer's checks.
 
 ---
 
@@ -31,7 +31,7 @@
 | 20 | Notifications | BUILT — not tagged: no real notification has been seen on a phone; push needs Jennifer's Apple push key |
 | 21 | Events system | BUILT — not tagged: the Joppa Boat Festival is live on the server (to 2026-10-27); Jennifer has not yet seen it on a phone |
 | 22 | Admin panel | BUILT — not tagged: Jennifer has not yet signed in and used it; push needs the Firebase key on the server |
-| 23 | Chapters 2–6 | Not started |
+| 23 | Chapters 2–6 | IN PROGRESS — Chapter 2 built (not tagged: Jennifer has not played it; no art for the well yet). Chapters 3–6 to do |
 | 24 | Polish & accessibility | Not started |
 | 25 | Release builds | Not started |
 
@@ -1088,6 +1088,78 @@ Assumptions to confirm / known gaps:
 Not verified: nobody has clicked through the admin page in a browser yet (its scripts
 were syntax-checked, its event checks tested, and every server permission it relies on
 tested directly).
+
+## Milestone 23, Chapter 2 "The Collection" — state (2026-10-06)
+
+BUILT, NOT TAGGED. Analyze clean, 573 unit tests (including a play-through of both
+chapters with the real rules), seventeen device tests on the iOS Simulator and Android
+Emulator (the new one, `chapter2_test`, starts from a finished Chapter 1). Nobody has
+played Chapter 2 by hand yet, and none of its pictures exist.
+
+Also on this date: Jennifer added art for The Word and Anointing Oil chains (14 items);
+processed and wired in. Every item chain now has art.
+
+What is built:
+- Chapter 2 content (content-writer, checked by the validator): 12 tasks at the town
+  well covering the story bible's 11 beats, 12 scenes, 12 orders (8 ordinary, 4
+  spiritual: Peace for Amos, Faithfulness for Hannah), the well with 7 areas to restore,
+  Letters 3 and 4 word for word, a new Chapter 1 ending that leads to the well, and a
+  Chapter 2 ending. Content is version 7.
+- Orders now wait for their chapter: Chapter 2's orders appear only when Chapter 1's
+  tasks are all done. Each chapter's own orders pay enough Blessings for its own tasks
+  (Chapter 1: 19 for 18; Chapter 2: 31 for 26, and it can be finished without Hannah's).
+- A new chapter brings its generator: the Elder's Chest (House Church chain) arrives on
+  the board when Chapter 2 is reached, at its home cell or the nearest free one; if the
+  board is full it arrives as soon as a cell opens. It comes at the level the player's
+  other generators have all reached (so a starter-pack owner gets it at level 2).
+- A game saved by an earlier build loads at any stage (mid Chapter 1, or Chapter 1
+  finished) and picks up from there.
+- Content format is now 2: an older app will refuse a version-7+ release instead of
+  misplaying it. **Do not publish content 7+ to the server expecting old builds to use
+  it; players need this build or newer.**
+
+Decisions / assumptions to confirm:
+- 12 tasks a chapter (the story bible imagines 30–40). Kept short and in step with
+  Chapter 1; easy to lengthen later with more tasks per beat.
+- The Elder's Chest arrives at the start of the chapter, not at beat 4 as the bible has it.
+- The "Imperishable" crown for Chapter 2 is not awarded: crowns are not built.
+- Players who already saw the old Chapter 1 ending will not see the reworded one.
+- A Chapter 1 order left unfinished waits behind Chapter 2's on the cards; the last
+  cards of a chapter cannot be skipped (nothing to swap them for).
+- No message announces the new generator; it simply appears.
+- Two lines were adjusted after review: the closing scene no longer hints that the new
+  toll collector informs to Rome (that rumour belongs to Chapter 3), and Amos owns his
+  silence without asking forgiveness for it ("That part is mine. The rest I forgive,
+  all of it.").
+
+For Jennifer's reviewer (content-writer's flags):
+- Zilpah calls Amos a "shepherd" who "should lay down the staff", wanting a new elder
+  "by the Sabbath" (ch2_s_05).
+- "Meeting night" and "no bread broken" for the believers' gathering (ch2_s_04).
+- Hannah's sons faced debt servitude "for years"; no number is given (ch2_s_08).
+- Small invented details: Amos's vineyard is "the one my father planted"; he was "seen
+  at the moneylender's gate"; Letter 4 is a carved shard behind the foundation stone.
+- The townsfolk at the well are voiced by the two dock-worker characters.
+
+Art missing for Chapter 2:
+- 14 well pictures: lip, bucket stone, rope, trough, bench, foundation and paving, each
+  "before" and "after" (`loc_well_<part>_before` / `_after`).
+- 4 scene backgrounds: the well in the morning, the well at dawn, Amos's house,
+  Hannah's house (plus the harbour at dusk from Chapter 1's list).
+- Marcus still has only a neutral portrait (he appears in the last scene).
+
+Review notes carried forward:
+- `wireChapters` and `BoardGame.addGenerator` are covered by the device test only (no
+  unit test builds a board); the "board full, generator waits" path is covered by the
+  rule's unit tests but not end to end.
+- Selling items and Esther's Basket are still not built, so the only way to free a cell
+  is to merge or deliver. A full board always holds a mergeable pair with today's
+  chains, so this cannot lock the game.
+- A finished chapter's location cannot be revisited.
+- Hannah's Faithfulness order needs 64 Manna of Fruit taps for 35 Talents and 3
+  Blessings: the poorest return in the game, by design the hardest and optional. Raise
+  its Blessings if it plays as a wall.
+- `board_session.dart` (295 lines) and `board_game.dart` (286) are near the size limit.
 
 ## First Android bundle for Google Play (2026-10-05)
 

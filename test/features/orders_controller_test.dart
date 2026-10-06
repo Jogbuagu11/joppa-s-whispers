@@ -30,17 +30,22 @@ class _FakeBoard implements BoardInventory {
   }
 }
 
-OrderModel _order(String id, String itemId, int count, int talents) =>
-    OrderModel(
-      id: id,
-      chapter: 1,
-      characterId: 'silas',
-      kind: 'literal',
-      items: [OrderItem(itemId: itemId, count: count)],
-      talents: talents,
-      blessings: 1,
-      text: '',
-    );
+OrderModel _order(
+  String id,
+  String itemId,
+  int count,
+  int talents, {
+  int chapter = 1,
+}) => OrderModel(
+  id: id,
+  chapter: chapter,
+  characterId: 'silas',
+  kind: 'literal',
+  items: [OrderItem(itemId: itemId, count: count)],
+  talents: talents,
+  blessings: 1,
+  text: '',
+);
 
 void main() {
   const config = EconomyConfig(
@@ -186,5 +191,49 @@ void main() {
     expect([for (final o in controller.activeOrders) o.id], ['a', 'b']);
     controller.skipAllowed = () => true;
     expect(controller.canSkip, isTrue);
+  });
+
+  group('orders wait for their chapter', () {
+    late int reached;
+    late OrdersController gated;
+    late _FakeBoard items;
+
+    setUp(() {
+      reached = 1;
+      items = _FakeBoard({'bakery_01': 2, 'bakery_02': 1, 'church_01': 1});
+      gated = OrdersController(
+        config: config,
+        board: items,
+        orders: [
+          _order('a', 'bakery_01', 2, 10),
+          _order('b', 'bakery_02', 1, 10),
+          _order('x', 'church_01', 1, 5, chapter: 2),
+        ],
+        clock: () => now,
+      )..chapterReached = (() => reached);
+    });
+
+    test('a later chapter\'s order does not take a card early', () {
+      expect(gated.deliver('a'), isTrue);
+      expect([for (final o in gated.activeOrders) o.id], ['b']);
+      // Nor can the one card left be skipped for it.
+      expect(gated.canSkip, isFalse);
+      gated.refill();
+      expect([for (final o in gated.activeOrders) o.id], ['b']);
+    });
+
+    test('reaching the chapter deals its orders', () {
+      gated.deliver('a');
+      reached = 2;
+      var told = 0;
+      gated.addListener(() => told++);
+      gated.refill();
+      expect([for (final o in gated.activeOrders) o.id], ['b', 'x']);
+      expect(told, 1);
+      // Nothing more to deal: listeners are not disturbed again.
+      gated.refill();
+      expect(told, 1);
+      expect(gated.deliver('x'), isTrue);
+    });
   });
 }

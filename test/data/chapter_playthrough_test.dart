@@ -36,10 +36,11 @@ void main() {
         for (final o in loader.orders.where((o) => o.chapter == chapter.number))
           o.id: o,
       };
-      // Chains with a generator on the board at the start of the game.
+      // Chains with a generator on the board by this chapter.
       final spawnable = {
         for (final g in loader.startingBoard.generators)
-          loader.generators[g.generatorId]?.chainId,
+          if (g.chapter <= chapter.number)
+            loader.generators[g.generatorId]?.chainId,
       };
       final freeCells =
           BoardState.cols * BoardState.rows -

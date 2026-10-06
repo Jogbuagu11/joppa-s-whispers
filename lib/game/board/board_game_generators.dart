@@ -1,7 +1,7 @@
 // Generator taps and placing spawned items.
 part of 'board_game.dart';
 
-extension _BoardGenerators on BoardGame {
+extension BoardGenerators on BoardGame {
   /// Places an item in the first empty non-generator cell.
   void placeItem(ItemModel item) {
     for (int c = 0; c < gridCols; c++) {
@@ -15,6 +15,37 @@ extension _BoardGenerators on BoardGame {
       }
     }
     _log.warning('No empty cell to place item ${item.itemId}');
+  }
+
+  /// Gives the player a new generator (a new chapter's), at [homeCol],
+  /// [homeRow] or the nearest free cell. Returns false, changing nothing, if
+  /// the board has no free cell; it can be tried again later.
+  bool addGenerator(GeneratorModel gen, int homeCol, int homeRow) {
+    if (generatorPlacements.any((p) => p.gen.generatorId == gen.generatorId)) {
+      return true;
+    }
+    final cell = cellForNewGenerator(
+      homeCol: homeCol,
+      homeRow: homeRow,
+      taken: {
+        for (final p in generatorPlacements) (p.col, p.row),
+        // Before the board is drawn the items are still the starting list.
+        if (_built)
+          for (final i in snapshotItems()) (i.col, i.row)
+        else
+          for (final i in startingItems) (i.col, i.row),
+      },
+      cols: gridCols,
+      rows: gridRows,
+    );
+    if (cell == null) return false;
+    final placement = (gen: gen, col: cell.col, row: cell.row);
+    generatorPlacements.add(placement);
+    if (_built) {
+      _showGenerator(placement);
+      _boardTouched();
+    }
+    return true;
   }
 
   void _onGeneratorTapped(String genId) {

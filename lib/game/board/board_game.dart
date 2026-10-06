@@ -10,6 +10,7 @@ import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
+import 'package:whispers_of_joppa/domain/unlocks.dart';
 import 'package:whispers_of_joppa/app/board_inventory.dart';
 import 'package:whispers_of_joppa/domain/board_grid.dart';
 import 'package:whispers_of_joppa/game/board/cell_component.dart';
@@ -152,6 +153,9 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   // item_id -> loaded picture, for items whose art file exists.
   final Map<String, ui.Image> _art = {};
 
+  // True once the cells, generators and starting items are in place.
+  bool _built = false;
+
   // Set of (col, row) positions occupied by generators.
   final Set<(int, int)> _generatorCellSet = {};
 
@@ -190,6 +194,7 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
         _art[start.item.itemId],
       );
     }
+    _built = true;
     _boardTouched();
   }
 
@@ -231,24 +236,22 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
     });
   }
 
-  void _buildGenerators() {
-    final cellSize = _cellSize;
-    final offsetX = (size.x - gridCols * cellSize) / 2;
-    final offsetY = (size.y - gridRows * cellSize) / 2;
+  void _buildGenerators() => generatorPlacements.forEach(_showGenerator);
 
-    for (final placement in generatorPlacements) {
-      _generatorCellSet.add((placement.col, placement.row));
-      final genComp = GeneratorComponent(
+  void _showGenerator(GeneratorPlacement placement) {
+    final cellSize = _cellSize;
+    _generatorCellSet.add((placement.col, placement.row));
+    add(
+      GeneratorComponent(
         generator: placement.gen,
         onTapped: _onGeneratorTapped,
         position: Vector2(
-          offsetX + placement.col * cellSize,
-          offsetY + placement.row * cellSize,
+          (size.x - gridCols * cellSize) / 2 + placement.col * cellSize,
+          (size.y - gridRows * cellSize) / 2 + placement.row * cellSize,
         ),
         cellSize: cellSize,
-      );
-      add(genComp);
-    }
+      ),
+    );
   }
 
   // Grey is the fallback when a chain has no placeholder colour in content.

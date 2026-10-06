@@ -102,7 +102,9 @@ void main() {
     );
 
     test('a release for a newer app is rejected', () async {
-      remote.publish(realContent(version: 2, format: 2));
+      remote.publish(
+        realContent(version: 2, format: supportedContentFormat + 1),
+      );
       expect(
         await repo.checkForUpdate(await repo.current()),
         ContentUpdate.rejected,
