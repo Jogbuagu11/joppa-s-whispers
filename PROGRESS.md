@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 13 — Esther's letters (done; next is 14 — Accounts + cloud save)
+## Current milestone: 14 — Accounts + cloud save (built; live sign-in still to be checked with Jennifer)
 
 ---
 
@@ -22,7 +22,7 @@
 | 11 | Restoration scenes | DONE (m11-working) |
 | 12 | Chapter 1 playable | DONE (m12-working) |
 | 13 | Esther's letters | DONE (m13-working) |
-| 14 | Accounts + cloud save | Not started |
+| 14 | Accounts + cloud save | BUILT — not tagged: real sign-in not yet verified |
 | 15 | Server-driven content | Not started |
 | 16 | IAP: buy & deliver | Not started |
 | 17 | IAP: restore & refunds | Not started |
@@ -484,6 +484,56 @@ Not in this milestone:
 - Letters for Chapters 2–6 come with those chapters (Milestone 23).
 - The Letter 1 scripture question (1 John vs the story bible's period rule) is still open.
 
+## Milestone 14 — state (2026-10-05)
+
+BUILT, NOT TAGGED. Analyze clean, 311 unit tests pass, eleven device tests pass on the iOS
+Simulator and Android Emulator. The account flow is tested end to end with stand-in
+sign-in and cloud services. **No real account has signed in yet**, so `m14-working` is
+not tagged until one has.
+
+What is built:
+- Account screen (person button, top-left of the board): email + password sign-in and
+  sign-up, Continue with Google, Continue with Apple (iPhone only), Sync now, Sign out,
+  Delete account (with a confirmation step).
+- Playing without an account still works exactly as before.
+- Cloud save in the Supabase `saves` table: checked at launch and at sign-in; new local
+  saves are uploaded while playing (at most every 20 seconds).
+- Sync rule (TECH_SPEC section 4): whichever side changed since the last sync wins; a new
+  phone with an unplayed game takes the account's game; if both moved on, the player is
+  shown both and chooses.
+- Account deletion calls the deployed `delete-account` function, then signs out.
+- Google client IDs are in `lib/app/config.dart` and `ios/Runner/Info.plist`.
+
+Live backend checked (read-only) on 2026-10-05:
+- Email, Google and Apple providers are ON. Sign-ups are allowed.
+- **Email confirmation is required**: a new email account must click the link in the
+  confirmation email before it can sign in.
+- The `saves` table and the `delete-account` function respond.
+
+Still needed before real sign-in can be verified:
+- **Email:** Jennifer creates an account in the app with a real address and clicks the
+  confirmation link (or turns off "Confirm email" in Supabase for testing).
+- **Google on Android:** Google Cloud needs an Android OAuth client for package
+  `com.whispersofjoppa.game` with this Mac's debug fingerprint (SHA-1)
+  `80:19:37:CF:28:68:3B:9A:BA:9F:CA:C9:E8:D4:0C:16:3D:B8:DF:6C`. The release and Play
+  signing fingerprints are added later (SETUP_CHECKLIST Phase 4/5).
+- **Google on iPhone:** should work as is; needs a real Google account to try.
+- **Apple:** needs the Apple Developer Program, the "Sign in with Apple" capability on
+  the App ID, and Jennifer's Team selected in Xcode. The entitlement is not added to the
+  project yet because adding it without a Team breaks device builds.
+
+Decisions:
+- Sign-in is optional and never shown at launch.
+- Apple and Google sign-in do not use a nonce (Supabase's "Skip nonce checks" is on for
+  Google); add one with the `crypto` package if wanted.
+- Signing out leaves the game on the phone.
+- Letters found are not stored separately in the cloud: they follow from task progress.
+
+Not in this milestone:
+- No password reset or "resend confirmation email" button.
+- Uploads are throttled, not guaranteed on app close; the next launch syncs.
+- The clock used for Manna and order-skip is still the phone's, not the server's.
+
 ## Decisions made for Jennifer (2026-10-05)
 
 Jennifer said: "you decide. you can continue on the milestones. dont ask permission".
@@ -524,8 +574,11 @@ beside the game with its history kept. A backup of the original is in the GitHub
 
 ## Waiting on Jennifer
 
+- Try real sign-in (see "Milestone 14 — state" for what each method needs).
 - In Vercel: Project → Settings → Build and Deployment → Root Directory → `web`, then redeploy.
-- Confirm the assumptions above (starting Manna; test AdMob ID on iOS; minimum iOS 15).
+- Decide the Letter 1 scripture question (1 John 4:18 vs the story bible's period rule).
+- Art still missing: Word and Oil item chains, all generators, bakehouse before/after
+  pictures, scene backgrounds, and a few portraits (listed under "Decisions made").
 
 Note: Android Studio is not installed on this Mac. Android is built with the command-line
 tools, a Temurin 21 JDK in `~/development/jdk`, and an emulator named `Pixel_Joppa`.
