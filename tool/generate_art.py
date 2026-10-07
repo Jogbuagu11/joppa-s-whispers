@@ -134,7 +134,7 @@ def main():
 
         if job.get('before_rules') and (redo or not os.path.exists(before)):
             prompt = (
-                job['style'] + '\n\n' + job['before_rules']
+                job['style'] + '\n\n' + view.get('before_rules', job['before_rules'])
                 + f"\n\nWhat is different in this view: {view['before']}" + note
             )
             data = generate(job['model'], prompt, [after], job['aspect'])
