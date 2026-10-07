@@ -1280,6 +1280,15 @@ Art needed for Chapter 4:
 - Optional: a weaving-room background with a loom.
 - The Loom generator is already in.
 
+## Bakehouse art (2026-10-06)
+
+- Jennifer added the 14 bakehouse before/after pictures (in the backgrounds folder, named
+  doorway / kneading / ovenwall; mapped to door / table / wall in `tool/art_names.json`
+  and moved to `assets_incoming/locations/`). The bakehouse and the well are complete.
+- Two extra wide views of the bakehouse (derelict, and restored with the oven lit) are
+  left unused in `assets_incoming/backgrounds/`.
+- No docks pictures were found (only the docks scene background from before).
+
 ## Generator art and build 4 (2026-10-06)
 
 - Jennifer had put the generator pictures in `assets/items` (named `gen_<name>_l<level>`):

@@ -4,7 +4,13 @@
     "loc_well_lip_after_20261006115228": "loc_well_lip_before",
     "loc_well_lip_after_20261006114922": "loc_well_lip_after",
     "loc_well_bucketstone_before": "loc_well_stone_before",
-    "loc_well_bucketstone_after": "loc_well_stone_after"
+    "loc_well_bucketstone_after": "loc_well_stone_after",
+    "loc_bakehouse_doorway_before": "loc_bakehouse_door_before",
+    "loc_bakehouse_doorway_after": "loc_bakehouse_door_after",
+    "loc_bakehouse_kneading_before": "loc_bakehouse_table_before",
+    "loc_bakehouse_kneading_after": "loc_bakehouse_table_after",
+    "loc_bakehouse_ovenwall_before": "loc_bakehouse_wall_before",
+    "loc_bakehouse_ovenwall_after": "loc_bakehouse_wall_after"
   },
   "backgrounds": {
     "Town_well_in_Joppa": "loc_well_morning",
