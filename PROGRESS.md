@@ -1345,8 +1345,11 @@ Decisions / assumptions to confirm:
 - The "Life" crown is not awarded (crowns not built). 12 tasks, as every chapter.
 - The Chapter 6 ending says "Season 2 is on its way."
 
-Art for Chapter 6: 14 watchtower pictures, generated for Jennifer's review (not yet in
-the game). The Scribe's Desk generator and all portraits (Jael, Lucius, Peter) exist.
+Art for Chapter 6: 14 watchtower pictures, generated, approved by Jennifer 2026-10-07
+and in the game (she approved them as they are: the beacon is an iron fire-basket in the
+wide views and a bronze bowl in the basin close-up). Build 7
+(`dist/whispers-of-joppa-1.0.0-7.aab`, in Downloads) has all six chapters and all art.
+Every picture the game refers to now exists except the optional Chief Collector portrait. The Scribe's Desk generator and all portraits (Jael, Lucius, Peter) exist.
 
 ## Milestone 23, Chapter 5 "Caleb's Boat" — state (2026-10-06)
 
