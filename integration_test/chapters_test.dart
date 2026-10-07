@@ -26,12 +26,14 @@ void main() {
     SavedGenerator(generatorId: 'gen_chest', level: 1, col: 3, row: 8),
     SavedGenerator(generatorId: 'gen_armor', level: 1, col: 5, row: 8),
     SavedGenerator(generatorId: 'gen_loom', level: 1, col: 1, row: 8),
+    SavedGenerator(generatorId: 'gen_press', level: 1, col: 0, row: 8),
   ];
   const cases = [
     (finished: 1, has: 2, brings: 'gen_chest', makes: 'church_', blocked: true),
     (finished: 2, has: 3, brings: 'gen_armor', makes: 'armor_', blocked: false),
     (finished: 3, has: 4, brings: 'gen_loom', makes: 'loom_', blocked: false),
     (finished: 4, has: 5, brings: 'gen_press', makes: 'oil_', blocked: false),
+    (finished: 5, has: 6, brings: 'gen_scribe', makes: 'word_', blocked: false),
   ];
 
   for (final c in cases) {

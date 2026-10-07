@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 23 — Chapters 2–6, one at a time. Chapters 2–5 are built; Chapter 6 (the last of Season 1) is next. Milestones 14 and 16–22 are built and awaiting Jennifer's checks.
+## Current milestone: 23 is built — all six chapters of Season 1 are written. Next to build: 24 — Polish & accessibility. Milestones 14 and 16–23 are built and awaiting Jennifer's checks.
 
 ---
 
@@ -31,7 +31,7 @@
 | 20 | Notifications | BUILT — not tagged: no real notification has been seen on a phone; push needs Jennifer's Apple push key |
 | 21 | Events system | BUILT — not tagged: the Joppa Boat Festival is live on the server (to 2026-10-27); Jennifer has not yet seen it on a phone |
 | 22 | Admin panel | BUILT — not tagged: Jennifer has not yet signed in and used it; push needs the Firebase key on the server |
-| 23 | Chapters 2–6 | IN PROGRESS — Chapters 2–5 built (not tagged: Jennifer has not played them). Chapter 6 to do |
+| 23 | Chapters 2–6 | BUILT — all of Season 1 (Chapters 1–6) is written. Not tagged: Jennifer has not played Chapters 2–6, and her reviewer has not read them |
 | 24 | Polish & accessibility | Not started |
 | 25 | Release builds | Not started |
 
@@ -1279,6 +1279,74 @@ Art needed for Chapter 4:
 - A Simon the Tanner portrait (neutral, happy, sad and thinking are used).
 - Optional: a weaving-room background with a loom.
 - The Loom generator is already in.
+
+## Milestone 23, Chapter 6 "The Gentile's Table" — state (2026-10-06)
+
+BUILT, NOT TAGGED. Season 1 is complete in content. Analyze clean, 586 unit tests (with
+a play-through of all six chapters); all seventeen device tests on the iOS Simulator; on
+the Android Emulator the chapter (five chapter changes), smoke, letters, scene and orders
+tests. Not played by hand. Content is version 11. NOT in build 6.
+
+What is built:
+- 12 tasks, one per beat, restoring the harbor watchtower (door, stairwell, watch room,
+  oil store, beacon basin, parapet, beacon), 12 scenes, 12 orders (7 ordinary, 5
+  spiritual incl. Faithfulness for Zilpah and Full Armor of God for Naomi), Letters 11
+  and 12 word for word, a Chapter 5 ending that leads on, and "Season 1 Complete".
+- The Scribe's Desk (The Word) arrives when Chapter 6 is reached. All seven generators
+  are now in play by the end of the season.
+- Exact lines kept: Lucius, "The bread woman!"; Zilpah, "I've told my last story about
+  another woman."; Esther, "She is alive. Go and find her."
+- Blessings: tasks cost 25, the first ten orders pay 27. The feast-cake order (152 taps)
+  and Naomi's Full Armor order (64 taps) are not needed to finish.
+
+How Acts 10–11 is handled (for Jennifer's reviewer — please read all of ch6_s_01, s_04,
+s_05, s_07, s_08, s_09, s_10 and s_11):
+- Peter speaks only in the first scene. He comes down himself (10:21, exact: "Behold, I
+  am he whom ye seek: what is the cause wherefore ye are come?"). Lucius speaks the
+  messengers' words (10:22, exact KJV, in two speech bubbles; Acts says "they said").
+  Peter lodges them (10:23).
+- Peter then tells the believers what he saw, from Acts 10:9–16 only, in the first
+  person (as he does in Acts 11:5–10), with the three quotations exact: "Rise, Peter;
+  kill, and eat." / "Not so, Lord; for I have never eaten any thing that is common or
+  unclean." / "What God hath cleansed, that call not thou common." He does not say what
+  it means (10:17). That he tells Joppa's believers before leaving is the story bible's
+  beat; Acts records him telling it in Jerusalem.
+- He leaves next morning with six brethren, Caleb and Marcus among them (10:23, 11:12;
+  the names are the story bible's). He does not appear again: Acts has him tarry in
+  Caesarea and then go up to Jerusalem.
+- Some believers worry that he is defiling himself ("This is an unlawful thing for us" —
+  compare 10:28, 11:2–3). This dispute in Joppa is the story bible's invention. Amos
+  does not rule on it: "I have no answer… We hear the whole matter first."
+- The six return and report in Acts' own words: kinsmen and near friends (10:24); "God
+  hath shewed me that I should not call any man common or unclean." (10:28); "Of a truth
+  I perceive that God is no respecter of persons." (10:34); "the Holy Ghost fell on all
+  them which heard the word" (10:44); "speak with tongues, and magnify God" (10:46);
+  "commanded them to be baptized in the name of the Lord" (10:48); "They prayed him to
+  tarry certain days" (10:48). Caleb's "Then he told them about Jesus." stands for
+  10:36–43. Nothing of sight or sound is added. (Acts 11:12 has the six with Peter in
+  Jerusalem later; here they come home first.)
+- Cornelius never appears. No new miracle, vision, angel, prophecy or healing. Tabitha
+  has one ordinary line at the feast (her first since she was raised).
+- The story bible's fiction, kept as personal testimony: Naomi and her husband Eliab
+  sent bread each week to Cornelius's gate for the city's poor (compare 10:2), namelessly;
+  Eliab was "of the Way" and asked her to keep it from his family; Jael, his mother,
+  named it Naomi's sin and put her out. Cornelius sends wheat and oil for the widows'
+  table. A steward's visit brings Jael to Joppa; Naomi forgives her: "I forgive you,
+  Jael. I don't feel it yet. I'm saying it anyway."
+- The feast: Joppa's believers and four of Cornelius's household at one table. No sermon,
+  blessing or rite; Amos sets his prepared word aside. Letter 12 speaks of "the Lord's
+  table" (story bible wording) and Naomi answers, "It was, Savta. Yesterday."
+- Letter 11 puts "The Lord said" before Matthew 6:14 (a Gospel not yet written in AD 40;
+  a saying passed along, as with Letters 1, 5 and 9).
+
+Decisions / assumptions to confirm:
+- Letter 12 unlocks at the LAST task, not at beat 11, so the keepsake book cannot show
+  "She is alive. Go and find her." before the final scene plays.
+- The "Life" crown is not awarded (crowns not built). 12 tasks, as every chapter.
+- The Chapter 6 ending says "Season 2 is on its way."
+
+Art for Chapter 6: 14 watchtower pictures, generated for Jennifer's review (not yet in
+the game). The Scribe's Desk generator and all portraits (Jael, Lucius, Peter) exist.
 
 ## Milestone 23, Chapter 5 "Caleb's Boat" — state (2026-10-06)
 

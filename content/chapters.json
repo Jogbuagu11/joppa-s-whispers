@@ -596,5 +596,125 @@
         "letter_id": null
       }
     ]
+  },
+  {
+    "id": "ch6",
+    "number": 6,
+    "title": "The Gentile's Table",
+    "location_id": "watchtower",
+    "unlocks_chains": [
+      "word"
+    ],
+    "crown_id": null,
+    "tasks": [
+      {
+        "id": "ch6_t_01",
+        "beat": 1,
+        "title": "Bake for the Caesarea guests",
+        "cost_blessings": 2,
+        "scene_id": "ch6_s_01",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch6_t_02",
+        "beat": 2,
+        "title": "Carry bread to Simon's guests",
+        "cost_blessings": 2,
+        "scene_id": "ch6_s_02",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch6_t_03",
+        "beat": 3,
+        "title": "Take bread through the market",
+        "cost_blessings": 2,
+        "scene_id": "ch6_s_03",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch6_t_04",
+        "beat": 4,
+        "title": "Pack bread for the road north",
+        "cost_blessings": 2,
+        "scene_id": "ch6_s_04",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch6_t_05",
+        "beat": 5,
+        "title": "Unbar the watchtower door",
+        "cost_blessings": 2,
+        "scene_id": "ch6_s_05",
+        "restores_area": "watchtower_door",
+        "letter_id": null
+      },
+      {
+        "id": "ch6_t_06",
+        "beat": 6,
+        "title": "Sweep the tower stairwell",
+        "cost_blessings": 2,
+        "scene_id": "ch6_s_06",
+        "restores_area": "watchtower_stairwell",
+        "letter_id": "letter_11"
+      },
+      {
+        "id": "ch6_t_07",
+        "beat": 7,
+        "title": "Air out the watch room",
+        "cost_blessings": 2,
+        "scene_id": "ch6_s_07",
+        "restores_area": "watchtower_watchroom",
+        "letter_id": null
+      },
+      {
+        "id": "ch6_t_08",
+        "beat": 8,
+        "title": "Shelve the tower's oil jars",
+        "cost_blessings": 2,
+        "scene_id": "ch6_s_08",
+        "restores_area": "watchtower_oilstore",
+        "letter_id": null
+      },
+      {
+        "id": "ch6_t_09",
+        "beat": 9,
+        "title": "Reseat the beacon basin",
+        "cost_blessings": 2,
+        "scene_id": "ch6_s_09",
+        "restores_area": "watchtower_basin",
+        "letter_id": null
+      },
+      {
+        "id": "ch6_t_10",
+        "beat": 10,
+        "title": "Mend the parapet for the feast",
+        "cost_blessings": 2,
+        "scene_id": "ch6_s_10",
+        "restores_area": "watchtower_parapet",
+        "letter_id": null
+      },
+      {
+        "id": "ch6_t_11",
+        "beat": 11,
+        "title": "Light the harbor beacon",
+        "cost_blessings": 3,
+        "scene_id": "ch6_s_11",
+        "restores_area": "watchtower_beacon",
+        "letter_id": null
+      },
+      {
+        "id": "ch6_t_12",
+        "beat": 12,
+        "title": "Read the last of the letter",
+        "cost_blessings": 2,
+        "scene_id": "ch6_s_12",
+        "restores_area": null,
+        "letter_id": "letter_12"
+      }
+    ]
   }
 ]

@@ -1200,5 +1200,273 @@
     },
     "text": "A horn of oil, Naomi. Good oil. Some things are worth doing right. ...Bring it yourself, if you would.",
     "scene_id": null
+  },
+  {
+    "id": "ch6_o_001",
+    "chapter": 6,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_04",
+        "count": 2
+      }
+    ],
+    "rewards": {
+      "talents": 40,
+      "blessings": 2
+    },
+    "text": "Two flatbreads, little loaf. Travelers come down that north road hungry. Esther never let one pass the door.",
+    "scene_id": null
+  },
+  {
+    "id": "ch6_o_002",
+    "chapter": 6,
+    "character_id": "joy",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "word_01",
+        "count": 1
+      },
+      {
+        "item_id": "fruit_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 15,
+      "blessings": 2
+    },
+    "text": "A reed pen, please! I'm going to write my WHOLE name. It only has three letters. And something glad to go with it!",
+    "scene_id": null
+  },
+  {
+    "id": "ch6_o_003",
+    "chapter": 6,
+    "character_id": "hannah",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_02",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_04",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 2
+    },
+    "text": "An oil lamp and a flatbread, Naomi. A visitor shouldn't find a dark doorway or an empty table in Joppa.",
+    "scene_id": null
+  },
+  {
+    "id": "ch6_o_004",
+    "chapter": 6,
+    "character_id": "amos",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "word_02",
+        "count": 1
+      },
+      {
+        "item_id": "word_01",
+        "count": 1
+      },
+      {
+        "item_id": "fruit_03",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 3
+    },
+    "text": "Well now. A pen, an ink pot and a little peace, child. I mean to write down what happens here. Slowly.",
+    "scene_id": null
+  },
+  {
+    "id": "ch6_o_005",
+    "chapter": 6,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_02",
+        "count": 2
+      },
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 45,
+      "blessings": 3
+    },
+    "text": "Two oil lamps and a loaf, little loaf. That tower stair is black as a pot. My knees want a light and a bribe.",
+    "scene_id": null
+  },
+  {
+    "id": "ch6_o_006",
+    "chapter": 6,
+    "character_id": "marcus",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_05",
+        "count": 2
+      },
+      {
+        "item_id": "loom_04",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 70,
+      "blessings": 3
+    },
+    "text": "Two loaves and a length of cloth, Nomi. Road bread wants wrapping. I learned that the hungry way.",
+    "scene_id": null
+  },
+  {
+    "id": "ch6_o_007",
+    "chapter": 6,
+    "character_id": "demas",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "word_03",
+        "count": 2
+      },
+      {
+        "item_id": "word_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 40,
+      "blessings": 3
+    },
+    "text": "Two sheets of papyrus and an ink pot, baker. I tell only true things now, and they want writing down before I improve them.",
+    "scene_id": null
+  },
+  {
+    "id": "ch6_o_008",
+    "chapter": 6,
+    "character_id": "hannah",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "loom_05",
+        "count": 1
+      },
+      {
+        "item_id": "church_04",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 70,
+      "blessings": 3
+    },
+    "text": "A tunic, a bread basket and a loaf, Naomi. No guest of Joppa's widows goes home empty-handed. Not while we can sew.",
+    "scene_id": null
+  },
+  {
+    "id": "ch6_o_009",
+    "chapter": 6,
+    "character_id": "zilpah",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "fruit_07",
+        "count": 1
+      },
+      {
+        "item_id": "word_01",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 40,
+      "blessings": 3
+    },
+    "text": "Forty years I carried tales, dear. I'd sooner keep faith with one friend. And a reed pen. I'm learning my letters.",
+    "scene_id": null
+  },
+  {
+    "id": "ch6_o_010",
+    "chapter": 6,
+    "character_id": "caleb",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_03",
+        "count": 2
+      },
+      {
+        "item_id": "church_05",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 55,
+      "blessings": 3
+    },
+    "text": "Two benches and a table, Naomi. A long one. ...There's always one more coming than you planned for.",
+    "scene_id": null
+  },
+  {
+    "id": "ch6_o_011",
+    "chapter": 6,
+    "character_id": "amos",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_08",
+        "count": 1
+      },
+      {
+        "item_id": "church_05",
+        "count": 1
+      },
+      {
+        "item_id": "church_04",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 85,
+      "blessings": 3
+    },
+    "text": "Well now. A feast cake, a table and a bread basket, child. I have never yet seen a table that was too long.",
+    "scene_id": null
+  },
+  {
+    "id": "ch6_o_012",
+    "chapter": 6,
+    "character_id": "naomi",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "armor_07",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 35,
+      "blessings": 3
+    },
+    "text": "Hm. Some doors take more than a strong arm to open. I'll want everything I've been given for this one.",
+    "scene_id": null
   }
 ]

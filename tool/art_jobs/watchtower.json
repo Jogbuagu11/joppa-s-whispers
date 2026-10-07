@@ -1,0 +1,66 @@
+{
+  "folder": "watchtower",
+  "kind": "locations",
+  "model": "gemini-3-pro-image",
+  "aspect": "9:16",
+  "style_references": [
+    "assets/locations/loc_docks_lantern_after.jpg",
+    "assets/locations/loc_well_lip_after.jpg",
+    "assets/locations/bg_loc_watchtower.jpg"
+  ],
+  "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork and gentle texture, like a premium illustrated story game. NOT 3D, not a 3D render, not a photo, not anime, not flat vector, not cartoon. Soft painted edges, no thick black outlines. Warm soft Mediterranean sunlight from the upper left, gentle shadows. Palette: sand #E8D3A9, cream #F5EBD7, terracotta #C0643B, olive #7A7A3A, cedar brown #5A3E2B, sea blue #2F7F9E, indigo #2E3A6B, gold #D9A441. Avoid neon, pure black, and cold gray-blue.",
+  "scene": "The place: the old stone harbour watchtower of Joppa around AD 40, standing on the rocks at the harbour mouth, the same square crenellated sandstone tower seen in the distance in the first attached picture and shown in the third attached picture. A simple working tower with a fire beacon on top to guide fishing boats home. This picture is one close view of that tower.",
+  "after_rules": "RULES: Tallest portrait format (9:16), full scene edge to edge. No text, no letters, no signs, no watermark. No people, no animals in the foreground. Camera at a standing adult's eye height. First-century Mediterranean only: wood, rope, stone, clay, iron; nothing modern (no glass lanterns, no metal cleats, no plastic). This is the RESTORED state: bright warm daylight, sturdy repaired wood, neatly coiled ropes, swept stone, mended wood, clean oil jars, a tower made ready to burn its light again.",
+  "before_rules": "Edit the attached picture into its NEGLECTED state from before it was restored. Keep exactly the same camera angle, framing, layout and background so the two pictures line up perfectly; change only the condition of things. A tower shut up and dark for two years: salt-stained stone, drifted sand, cobwebs, gull feathers, rust on iron, broken or missing woodwork, dry weeds in cracks, muted faded colours, gray hazy light. Neglected, not scary. No text, no people, no animals.",
+  "views": [
+    {
+      "id": "door",
+      "label": "1 Door",
+      "game": "loc_watchtower_door",
+      "after": "the tower's heavy wooden door at the top of a few stone steps on the rocks, standing open, oiled and mended, sea behind",
+      "before": "door barred shut with a weathered beam, wood split and grey, sand and weeds on the steps"
+    },
+    {
+      "id": "stairwell",
+      "label": "2 Stairwell",
+      "game": "loc_watchtower_stairwell",
+      "after": "inside, the narrow stone spiral stairwell, swept clean, lit by small clay lamps in wall niches and a shaft of daylight from a slit window",
+      "before": "stairwell dark and dusty, cobwebs across it, sand and fallen stones on the steps, niches empty"
+    },
+    {
+      "id": "watchroom",
+      "label": "3 Watch room",
+      "game": "loc_watchtower_watchroom",
+      "after": "the small watch room: a stool, a low table with a loaf and a water jar, a woven mat, an open window looking over the harbour",
+      "before": "room musty and abandoned, shutter hanging, stool overturned, table bare and dusty, cobwebs"
+    },
+    {
+      "id": "oilstore",
+      "label": "4 Oil store",
+      "game": "loc_watchtower_oilstore",
+      "after": "the oil store: a stone alcove with wooden shelves holding rows of sealed clay oil jars and a bronze dipper",
+      "before": "shelves collapsed, jars cracked or empty and on their sides, dust and cobwebs"
+    },
+    {
+      "id": "basin",
+      "label": "5 Beacon basin",
+      "game": "loc_watchtower_basin",
+      "after": "on the tower top, the great bronze fire basin of the beacon set upright and firm on its stone stand, still dark and crusted inside, not yet cleaned or lit, with the sea beyond",
+      "before": "the basin tipped off its stand and lying on its side on the stone roof, stand cracked"
+    },
+    {
+      "id": "parapet",
+      "label": "6 Parapet",
+      "game": "loc_watchtower_parapet",
+      "after": "the crenellated stone parapet around the tower top, stones reset and whole, a coil of rope and a bench, wide view of the harbour and town",
+      "before": "parapet with fallen and missing stones, gaps, loose blocks on the roof, weeds"
+    },
+    {
+      "id": "beacon",
+      "label": "7 Beacon lit",
+      "game": "loc_watchtower_beacon",
+      "after": "the beacon burning at dusk: a bright steady fire in the scoured bronze basin on the tower top, warm glow on the stones, deep blue evening sky and sea, lamplit town below",
+      "before": "the same view at dusk with the basin cold, dark and empty, no fire, the tower top in shadow (keep the evening sky)"
+    }
+  ]
+}

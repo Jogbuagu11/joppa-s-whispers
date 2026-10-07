@@ -26,7 +26,13 @@
   {
     "chapter_id": "ch5",
     "title": "Chapter 5 Complete",
-    "body": "The house is built and Caleb's name is clear. But men from Caesarea are at the tanner's gate, and one of them knows Naomi's face. The next chapter is still rising. The story continues soon.",
+    "body": "The house is built and Caleb's name is clear. But men from Caesarea are at the tanner's gate, and one of them knows Naomi's face. Peter is coming down the stair.",
+    "button": "Open the gate"
+  },
+  {
+    "chapter_id": "ch6",
+    "title": "Season 1 Complete",
+    "body": "The beacon burns again, and the table was long enough for everyone. But somewhere in Tyre, Naomi has a sister. Her story is not finished. Season 2 is on its way.",
     "button": "Keep baking"
   }
 ]

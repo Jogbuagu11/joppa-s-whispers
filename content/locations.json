@@ -203,5 +203,53 @@
         "after": "loc_church_table_after"
       }
     ]
+  },
+  {
+    "id": "watchtower",
+    "name": "The harbor watchtower",
+    "areas": [
+      {
+        "id": "watchtower_door",
+        "name": "Tower door",
+        "before": "loc_watchtower_door_before",
+        "after": "loc_watchtower_door_after"
+      },
+      {
+        "id": "watchtower_stairwell",
+        "name": "Stairwell",
+        "before": "loc_watchtower_stairwell_before",
+        "after": "loc_watchtower_stairwell_after"
+      },
+      {
+        "id": "watchtower_watchroom",
+        "name": "Watch room",
+        "before": "loc_watchtower_watchroom_before",
+        "after": "loc_watchtower_watchroom_after"
+      },
+      {
+        "id": "watchtower_oilstore",
+        "name": "Oil store",
+        "before": "loc_watchtower_oilstore_before",
+        "after": "loc_watchtower_oilstore_after"
+      },
+      {
+        "id": "watchtower_basin",
+        "name": "Beacon basin",
+        "before": "loc_watchtower_basin_before",
+        "after": "loc_watchtower_basin_after"
+      },
+      {
+        "id": "watchtower_parapet",
+        "name": "Parapet",
+        "before": "loc_watchtower_parapet_before",
+        "after": "loc_watchtower_parapet_after"
+      },
+      {
+        "id": "watchtower_beacon",
+        "name": "Beacon fire",
+        "before": "loc_watchtower_beacon_before",
+        "after": "loc_watchtower_beacon_after"
+      }
+    ]
   }
 ]

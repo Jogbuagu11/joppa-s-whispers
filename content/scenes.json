@@ -3145,5 +3145,797 @@
         "text": "He knows my face. I can see it. Oh, not here. Not now."
       }
     ]
+  },
+  {
+    "id": "ch6_s_01",
+    "background": "loc_tanner_gate_noon",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Simon has one foot on the stair, and Peter is already coming down it. Nobody fetched him."
+      },
+      {
+        "speaker": "peter",
+        "expression": "neutral",
+        "text": "Behold, I am he whom ye seek: what is the cause wherefore ye are come?"
+      },
+      {
+        "speaker": "lucius",
+        "expression": "neutral",
+        "text": "Cornelius the centurion, a just man, and one that feareth God, and of good report among all the nation of the Jews,"
+      },
+      {
+        "speaker": "lucius",
+        "expression": "neutral",
+        "text": "was warned from God by an holy angel to send for thee into his house, and to hear words of thee."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Peter has called them in to lodge the night. Three guests from Caesarea, Simon. I'll bake. Don't argue."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Word runs up the hill, and soon Simon's yard is full of believers. Peter tells us what he saw on the roof."
+      },
+      {
+        "speaker": "peter",
+        "expression": "neutral",
+        "text": "About the sixth hour I went up to pray. I became very hungry, and I fell into a trance."
+      },
+      {
+        "speaker": "peter",
+        "expression": "neutral",
+        "text": "I saw heaven opened, and a vessel like a great sheet, knit at the four corners, let down to the earth."
+      },
+      {
+        "speaker": "peter",
+        "expression": "neutral",
+        "text": "In it were all manner of fourfooted beasts, wild beasts, creeping things and fowls of the air. And a voice: \"Rise, Peter; kill, and eat.\""
+      },
+      {
+        "speaker": "peter",
+        "expression": "neutral",
+        "text": "I said, \"Not so, Lord; for I have never eaten any thing that is common or unclean.\""
+      },
+      {
+        "speaker": "peter",
+        "expression": "thinking",
+        "text": "And the voice again: \"What God hath cleansed, that call not thou common.\" This was done thrice, and the vessel was received up into heaven."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "He stops there. He doesn't say what it means, and nobody asks. And the servant from Caesarea keeps looking my way."
+      }
+    ]
+  },
+  {
+    "id": "ch6_s_02",
+    "background": "loc_tanner_gate_noon",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Bread for your guests, Simon. Wheat loaves. They've walked a day's road. I'll set the basket down and g—"
+      },
+      {
+        "speaker": "lucius",
+        "expression": "surprised",
+        "text": "The bread woman!"
+      },
+      {
+        "speaker": "lucius",
+        "expression": "happy",
+        "text": "Every week at my master's gate, with the baskets. I carried them in myself. It is you."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Hm. ...That was another city, and a while ago. Please. Not out here at the gate."
+      },
+      {
+        "speaker": "lucius",
+        "expression": "thinking",
+        "text": "Then the baskets stopped, and no one in Caesarea would tell us why. Is your husband well?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Eliab died. A fever. I came home to Joppa after."
+      },
+      {
+        "speaker": "lucius",
+        "expression": "sad",
+        "text": "I did not know. I am sorry. And I have said too much at a stranger's gate. Forgive me."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "surprised",
+        "text": "Hear that? The centurion's man knows our baker. Every week, he said. At a Roman officer's house."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "thinking",
+        "text": "So the Caesarea tale had a root after all. Roman friends. Demas had it right the first time."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "One sentence would end it. But it was Eliab's secret before it was mine, and I gave him my word."
+      },
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "Those men went off to the market very fast. Naomi, is 'bread woman' a bad thing to be?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "No, little one. But by morning it'll be a story with my name in it. Hm. I know how this one goes."
+      }
+    ]
+  },
+  {
+    "id": "ch6_s_03",
+    "background": "loc_market",
+    "lines": [
+      {
+        "speaker": "dockworker",
+        "expression": "happy",
+        "text": "Demas! Gather us close! The bread woman of Caesarea and her Roman officer. You had it first. Tell it again!"
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "I told that one off the road's word, friends, and never asked her. I'll not tell it twice."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "thinking",
+        "text": "Zilpah, then. You always know. What was she doing at that house every week?"
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "neutral",
+        "text": "I've told my last story about another woman."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "surprised",
+        "text": "You? Not a word? There's a man at the tanner's who knows her face!"
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "thinking",
+        "text": "Then ask him what he knows, dear. Or ask her. I've nothing to add. I used to add a great deal."
+      },
+      {
+        "speaker": "demas",
+        "expression": "neutral",
+        "text": "I tell what's true now, and only with leave. Baker. Is there a true one you'd have me tell?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Hm. Not yet, Demas. It isn't only mine to tell."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "neutral",
+        "text": "Not yet, she says. If there was nothing in it, she'd say so. Wouldn't she?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "They'll tell it without him. A tale doesn't need a teller. I learned that in Caesarea."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "happy",
+        "text": "Walk to the well with me, dear. Let them see who you're standing with. That much I can do."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "thinking",
+        "text": "Nomi. Peter goes to Caesarea at first light, and brothers from Joppa go with him. I'm one. So is Caleb."
+      }
+    ]
+  },
+  {
+    "id": "ch6_s_04",
+    "background": "loc_tanner_gate_noon",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Morning already. Road bread for ten: Peter, the three from Caesarea, and six of ours. Hold the basket, Joy."
+      },
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "Papa and Marcus and four more. Papa never went anywhere, and now he goes everywhere. I don't like it."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "Her bundle. She'll stay with you, if you'll have her. ...The keel will keep."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "She gets the flour-sack bed and the corner piece. Go on. I'll mind them both, girl and keel."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "thinking",
+        "text": "Come with us, Nomi. Whatever they say of you up there, say your piece to their faces."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "It's brothers going, not a baker. And I've no piece I'm free to say. Not even to you, Marcus."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "The market has a tale about you again. ...I don't listen at the market."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "Hm. I know you don't. Mind the road, Caleb."
+      },
+      {
+        "speaker": "lucius",
+        "expression": "neutral",
+        "text": "I will say no more unless you bid me. But my master will ask after the bread woman. What do I tell him?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Tell him she still bakes."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Peter takes his loaf with a word of thanks and is first through the gate. Ten on the north road. I stay."
+      },
+      {
+        "speaker": "simon",
+        "expression": "sad",
+        "text": "First a tanner's roof, now a Roman's door. Listen to the street, Naomi. They've started already."
+      }
+    ]
+  },
+  {
+    "id": "ch6_s_05",
+    "background": "loc_church_inside",
+    "lines": [
+      {
+        "speaker": "dockworker",
+        "expression": "angry",
+        "text": "He's gone to eat under a Gentile's roof, Elder. A Roman's! And six of ours walking in behind him."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "thinking",
+        "text": "A Jew doesn't sit at that table. My father taught me so, and his taught him. Peter knows it better than I do."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "sad",
+        "text": "He prayed, and Tabitha stood up. I don't doubt him. But I don't understand this, and it frightens me."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "thinking",
+        "text": "Folk held their noses at the tanner's house too, dear. I was one of them. I've stopped trusting my nose."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "sad",
+        "text": "A smell is one thing. This is an unlawful thing for us. If he's defiled himself, what are we, who break bread with him?"
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "neutral",
+        "text": "And our baker kept company with that same house. The servant said as much at the gate."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Say what you like of me. I've heard it before. But those six are your own brothers. Wait for them."
+      },
+      {
+        "speaker": "amos",
+        "expression": "thinking",
+        "text": "Well now. I have no answer. And I'll not bake one out of my own flour just to quiet the room."
+      },
+      {
+        "speaker": "amos",
+        "expression": "neutral",
+        "text": "Six of ours will come home with eyes and ears. We hear the whole matter first. Till then, one bench. Grumbling allowed."
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "Now, that reminds me of the year half the fleet wouldn't speak to the other half. Over a net. A poor year."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Half the room on one bench, half on the other, and Amos between like a tent pole. I can't mend this by talking."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "But the watchtower's been dark since the night Leah died, and its door is still barred. That, I can open."
+      }
+    ]
+  },
+  {
+    "id": "ch6_s_06",
+    "background": "loc_watchtower",
+    "lines": [
+      {
+        "speaker": "joy",
+        "expression": "happy",
+        "text": "It's SO dark in here! And a hundred stairs! I counted nine, and then a gull looked at me."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "Two years dark, little loaf. The beacon blew out the night of the storm. Nobody's had the heart to light it since."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Then we start at the bottom. Sand out of the stair, gulls out of the watch room. The fire comes last."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "neutral",
+        "text": "I'll haul, baker. I said hard things on that bench, and I've not unsaid them. But I can carry a bucket."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "Hm. Grumbling's allowed. The elder said so. Take the top steps."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Silas. A shard, wedged behind the fourth stair. Savta climbed up here too? On those knees?"
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "With the keeper's bread, every week. Now, that reminds me— no. Read it, little loaf. Read it."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "Someday the person who hurt you most will stand at your door. You will want to shut it."
+      },
+      {
+        "speaker": "esther",
+        "expression": "sad",
+        "text": "I did, once, and I regretted it for thirty years."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "The Lord said, \"For if ye forgive men their trespasses, your heavenly Father will also forgive you.\" (Matthew 6:14)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "Open the door, Naomi. — your Savta"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Thirty years, Savta. Whose door did you shut? ...And who is ever going to stand at mine?"
+      }
+    ]
+  },
+  {
+    "id": "ch6_s_07",
+    "background": "loc_church_inside",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Joy saw them from the watch room: six on the north road, walking fast. Now every bench is full and nobody breathes."
+      },
+      {
+        "speaker": "amos",
+        "expression": "neutral",
+        "text": "Well now. Sit, brothers. You've Caesarea's dust on you. Tell us what you saw. Only what you saw."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "neutral",
+        "text": "Cornelius was waiting for us. He had called together his kinsmen and near friends. The house was full."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "thinking",
+        "text": "Peter told them, and I have his words: \"God hath shewed me that I should not call any man common or unclean.\""
+      },
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "And this: \"Of a truth I perceive that God is no respecter of persons.\" Then he told them about Jesus."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "neutral",
+        "text": "While he was still speaking, the Holy Ghost fell on all them which heard the word."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "surprised",
+        "text": "On them? On a Roman's household?"
+      },
+      {
+        "speaker": "marcus",
+        "expression": "neutral",
+        "text": "We heard them speak with tongues, and magnify God. And Peter commanded them to be baptized in the name of the Lord."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "We six were astonished. I've no other word. They prayed him to tarry certain days. We came home to tell you."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "sad",
+        "text": "Then I was too quick, Elder. I said a Jew doesn't sit at that table, before I'd heard one word of it."
+      },
+      {
+        "speaker": "amos",
+        "expression": "happy",
+        "text": "Well now. You said it to our faces and stayed on the bench, son. That's worry, not whispering. All forgiven."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "thinking",
+        "text": "Nomi. Lucius is half a day behind us with a loaded cart. He asked the way to the bread woman's door."
+      }
+    ]
+  },
+  {
+    "id": "ch6_s_08",
+    "background": "loc_market",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "The crews filled the tower's oil shelf by noon. I came up for wicks. Why is there a Caesarea cart in the market?"
+      },
+      {
+        "speaker": "lucius",
+        "expression": "neutral",
+        "text": "Baker. My master Cornelius sends wheat and oil to Joppa, for your widows' table. He asks nothing for it."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "thinking",
+        "text": "That's him. The one who knew her at the gate. Ask him, then. What was our baker to that house?"
+      },
+      {
+        "speaker": "lucius",
+        "expression": "neutral",
+        "text": "I spoke carelessly at a gate once. I will answer only if she bids me."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. I gave my word I would never tell it. I never said you couldn't. Only what you saw, Lucius."
+      },
+      {
+        "speaker": "lucius",
+        "expression": "neutral",
+        "text": "My master gives much alms to the people. Each week she and her husband sent bread to his gate for the city's poor."
+      },
+      {
+        "speaker": "lucius",
+        "expression": "thinking",
+        "text": "No name on the baskets. She never came past the gate. Her husband was of the Way, and asked us to tell no one."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "surprised",
+        "text": "Bread for the poor? That's the whole of it? One word would have cleared you, baker! Why not say it?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Eliab's family despised Romans. He asked me to keep it from them, and I promised. Then he died. So I kept it."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "sad",
+        "text": "I ran to the market with it that night, baker. Fast as I could go. I'm sorry for it."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "You said sorry to my face. That's more than Caesarea did. Forgiven. Carry a sack of that wheat to Hannah's."
+      },
+      {
+        "speaker": "lucius",
+        "expression": "thinking",
+        "text": "One thing more. A woman rode with our cart from Caesarea. She would not come into the market. She asked for you."
+      }
+    ]
+  },
+  {
+    "id": "ch6_s_09",
+    "background": "loc_watchtower",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "The basin is back on its stand. I came up to be alone with it. And there's a shadow in the door I unbarred."
+      },
+      {
+        "speaker": "jael",
+        "expression": "neutral",
+        "text": "Naomi. A child said the baker was in the tower. I have not come in. I will not, unless you say so."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "angry",
+        "text": "Jael. You put my bundle in the street before the mourning was out. It's a long road to stand in a doorway."
+      },
+      {
+        "speaker": "jael",
+        "expression": "sad",
+        "text": "The centurion's steward came to my house. He asked after the bread woman. He told me whose bread it was."
+      },
+      {
+        "speaker": "jael",
+        "expression": "sad",
+        "text": "My son fed the poor at that gate, and I never knew him. You kept his secret. I named it your sin, in every house."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "One sentence would have ended it, any day I chose. Do you know what it cost me to keep quiet?"
+      },
+      {
+        "speaker": "jael",
+        "expression": "neutral",
+        "text": "Everything you had. I know, because I took it. I will not make it small. It was false, and I said it. Forgive me."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Savta shut a door once, and was sorry for thirty years. Hm. My hand is on this one. It would be so easy."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "...I forgive you, Jael. I don't feel it yet. I'm saying it anyway. Come in out of the wind."
+      },
+      {
+        "speaker": "jael",
+        "expression": "sad",
+        "text": "Then tell me about my son. The part of him I did not know."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Sit, then. It's a long telling, and I only do it over bread."
+      },
+      {
+        "speaker": "joy",
+        "expression": "happy",
+        "text": "Naomi! Elder Amos says everybody eats together tomorrow, Caesarea folk and all! The table's going on the HARBOR!"
+      }
+    ]
+  },
+  {
+    "id": "ch6_s_10",
+    "background": "loc_feast_table",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "Forty loaves of Caesarea wheat, six fig cakes, and one feast cake that nearly beat me. Somebody take the far end!"
+      },
+      {
+        "speaker": "silas",
+        "expression": "happy",
+        "text": "Three tables end to end and a door off its hinges for a fourth. Esther always said we'd want a longer one."
+      },
+      {
+        "speaker": "lucius",
+        "expression": "thinking",
+        "text": "We are four from my master's house. We will stand, if that is easier for Joppa. We did not come to trouble you."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "neutral",
+        "text": "You'll sit. Here, by me. I said a Jew doesn't sit at that table. Sit at this one, and let me pass you the bread."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "happy",
+        "text": "Jael, is it? Sit by me, dear. I know every soul on this harbor, and I shan't tell you a thing about one of them."
+      },
+      {
+        "speaker": "jael",
+        "expression": "thinking",
+        "text": "I have never sat down with fishermen in my life. ...Is this my son's wife's bread? Then I will learn."
+      },
+      {
+        "speaker": "tabitha",
+        "expression": "happy",
+        "text": "Sit down, child. You have been on your feet since before dawn."
+      },
+      {
+        "speaker": "joy",
+        "expression": "happy",
+        "text": "I can see the WHOLE table from the tower parapet! A hundred and two people and a goat. The goat isn't sitting."
+      },
+      {
+        "speaker": "amos",
+        "expression": "happy",
+        "text": "Well now. I had a word ready. I've looked down this table, and I find I don't need it. Eat, all of you."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "happy",
+        "text": "Nomi. Jael asked me for the salt and called me 'young man'. I believe that was her being warm."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "Parapet's sound. One job left up there. ...I'd like to be standing by you when it's lit."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "Hm. Then stand close. Tomorrow at dusk I scour that basin, and we see if this harbor remembers how to burn."
+      }
+    ]
+  },
+  {
+    "id": "ch6_s_11",
+    "background": "loc_watchtower",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Dusk. Half of Joppa is on the rocks below and the oil is waiting. One job first: two years of crust out of this basin."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Caleb. Under the crust, pressed flat to the bottom. A shard. Savta, you climbed all the way up here?"
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "Last winter, little loaf. She said the basin wanted looking at. I held her basket and asked no questions. For once."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "\"For mine house shall be called an house of prayer for all people.\" (Isaiah 56:7)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "happy",
+        "text": "I always believed the Lord's table would be long enough for everyone."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "It was, Savta. Yesterday. You'd have counted the loaves and found me two short."
+      },
+      {
+        "speaker": "esther",
+        "expression": "thinking",
+        "text": "Now, the hardest thing."
+      },
+      {
+        "speaker": "joy",
+        "expression": "happy",
+        "text": "Naomi! The oil's in! Everybody's waiting in the dark! Elder Amos says YOU light it. Come ON!"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "The hardest thing can wait for one flame. Into my sleeve, Savta. Give me the torch, Caleb."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "happy",
+        "text": "It's caught. ...Look at the water, Naomi. It's lit clear out to the ridge."
+      },
+      {
+        "speaker": "silas",
+        "expression": "happy",
+        "text": "Hear them on the rocks! Now, that reminds me of— no. It doesn't remind me of anything. Look at that."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Two years dark, and now every boat can see its way home. And in my sleeve, a hardest thing I haven't read."
+      }
+    ]
+  },
+  {
+    "id": "ch6_s_12",
+    "background": "loc_rooftop_night",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Savta's rooftop, where Silas first showed me her prayer corner. The beacon burns across the water. Now. The rest."
+      },
+      {
+        "speaker": "esther",
+        "expression": "sad",
+        "text": "You had a sister. Miriam."
+      },
+      {
+        "speaker": "esther",
+        "expression": "sad",
+        "text": "She was taken to Tyre when you were too small to remember, and your mother made me swear never to speak of it."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "She is alive. Go and find her. — your Savta"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "A sister. ...I had a sister, and nobody in this whole talking town ever said her name."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "surprised",
+        "text": "Nomi? You've gone white as flour. What's on that shard?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Read it. She's yours as much as mine. Miriam. Taken to Tyre when I was too small to remember."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "sad",
+        "text": "A promise. This family and its promises. ...Nomi. It says she's alive."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Savta kept a promise her whole life, and carried this alone. I can't even be angry. I know that road."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "The Leah's keel is true. Planked, she'd make Tyre. ...When you're ready."
+      },
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "Is Miriam nice? Does she know about honey cake? Somebody should TELL her about honey cake."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Twelve letters, Savta, and you kept this one for last. Miriam. Whoever you are tonight... there's a light on in Joppa."
+      }
+    ]
   }
 ]
