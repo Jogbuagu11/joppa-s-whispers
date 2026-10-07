@@ -29,7 +29,9 @@
     "Wooden_boat_shed_at_night": "loc_boat_shed_night",
     "Ancient_stone_watchtower": "loc_watchtower",
     "Feast_table_at_sunset_harbor": "loc_feast_table",
-    "Rooftop_view_of_Mediterranean_sea": "loc_rooftop_day"
+    "Rooftop_view_of_Mediterranean_sea": "loc_rooftop_day",
+    "Outside_the_bakehouse": "loc_bakehouse_outside",
+    "Rooftop_at_night": "loc_rooftop_night"
   },
   "generators": {
     "gen_desk": "gen_scribe"

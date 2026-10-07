@@ -1,0 +1,66 @@
+{
+  "folder": "tanner",
+  "kind": "locations",
+  "model": "gemini-3-pro-image",
+  "aspect": "9:16",
+  "style_references": [
+    "assets/locations/loc_well_lip_after.jpg",
+    "assets/locations/loc_bakehouse_door_after.jpg",
+    "assets/locations/bg_loc_tanner_rooftop_noon.jpg"
+  ],
+  "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork and gentle texture, like a premium illustrated story game. NOT 3D, not a 3D render, not a photo, not anime, not flat vector, not cartoon. Soft painted edges, no thick black outlines. Warm soft Mediterranean sunlight from the upper left, gentle shadows. Palette: sand #E8D3A9, cream #F5EBD7, terracotta #C0643B, olive #7A7A3A, cedar brown #5A3E2B, sea blue #2F7F9E, indigo #2E3A6B, gold #D9A441. Avoid neon, pure black, and cold gray-blue.",
+  "scene": "The place: the house of Simon the tanner, by the sea in Joppa around AD 40 (Acts 10:6). A modest flat-roofed stone house of pale sandstone with a small walled courtyard, standing a little apart on the shore, the sea visible beyond. The third attached picture is this house's rooftop: match its stone, awning cloth and setting. This picture is one close view of that house. A tanner works leather, but show nothing unpleasant: no carcasses, no vats of liquid; at most clean hides and cloth drying.",
+  "after_rules": "RULES: Tallest portrait format (9:16), full scene edge to edge. No text, no letters, no signs, no watermark. No people, no animals in the foreground. Camera at a standing adult's eye height. First-century Mediterranean only: wood, rope, stone, clay, iron; nothing modern (no glass lanterns, no metal cleats, no plastic). This is the RESTORED state: bright warm daylight, sturdy repaired wood, neatly coiled ropes, swept stone, mended wood, clean cloth, clay pots of herbs, a humble house made ready to welcome a guest.",
+  "before_rules": "Edit the attached picture into its NEGLECTED state from before it was put in order. Keep exactly the same camera angle, framing, layout and background so the two pictures line up perfectly; change only the condition of things. A house people avoid: dust and blown sand, weeds between stones, cracked plaster, broken or missing woodwork, cobwebs, dry leaves, muted faded colours, gray hazy light. Neglected, not scary, not dirty in any disgusting way. No text, no people, no animals.",
+  "views": [
+    {
+      "id": "courtyard",
+      "label": "Courtyard",
+      "game": "loc_tanner_courtyard",
+      "after": "the small walled courtyard, swept clean, with a bench, water jars and a potted olive tree, the gate open to the sea",
+      "before": "courtyard drifted with sand and dry leaves, weeds, a broken bench, jars overturned"
+    },
+    {
+      "id": "guestroom",
+      "label": "Guest room",
+      "game": "loc_tanner_guestroom",
+      "after": "a simple guest room inside: a low wooden bed with a clean woven blanket, a sleeping mat, a small window with sunlight, a clay lamp in a wall niche",
+      "before": "room shut up and dusty, bed frame bare and broken, cobwebs, shutter hanging loose, lamp niche empty"
+    },
+    {
+      "id": "cistern",
+      "label": "Cistern",
+      "game": "loc_tanner_cistern",
+      "after": "the stone cistern and wash trough in the yard, full of clear water, with a wooden bucket and a clay dipper",
+      "before": "cistern cracked and choked with leaves and sand, trough dry, bucket split"
+    },
+    {
+      "id": "racks",
+      "label": "Drying racks",
+      "game": "loc_tanner_racks",
+      "after": "the wooden drying racks in the yard, sturdy, with clean undyed tunics and lengths of cloth hung to dry in the sea breeze",
+      "before": "racks fallen and broken, a few stiff old hides and rags on the ground"
+    },
+    {
+      "id": "doorstep",
+      "label": "Doorstep",
+      "game": "loc_tanner_doorstep",
+      "after": "the front doorstep and wooden door of the house: a broad stone step set level, door mended and oiled, a clay pot of herbs beside it",
+      "before": "stone step cracked and tilted, door weathered and hanging crooked, weeds, sand drifted against it"
+    },
+    {
+      "id": "rooftop",
+      "label": "Rooftop",
+      "game": "loc_tanner_rooftop",
+      "after": "the flat rooftop, swept, with a woven mat, a striped cloth awning on wooden poles and a view of the sea, exactly as in the third attached picture but a closer view",
+      "before": "awning torn and fallen, poles broken, roof littered with leaves and blown sand, no mat"
+    },
+    {
+      "id": "lamp",
+      "label": "Gate lamp",
+      "game": "loc_tanner_lamp",
+      "after": "the courtyard gate with a small clay oil lamp burning in a stone niche beside it, warm light, early evening sky",
+      "before": "niche empty and sooty, lamp broken on the ground, gate sagging"
+    }
+  ]
+}

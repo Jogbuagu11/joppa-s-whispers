@@ -10,9 +10,9 @@ NOWHERE else: nothing reaches the game until Jennifer approves it (then
 tool/accept_art.py files it for the art pipeline).
 
 The key is read from .env (GOOGLE_AI_API_KEY) and is never printed.
-A "restoration" job makes each view twice: the restored "after" picture
+A view with "after"/"before" is made twice: the restored "after" picture
 first, then that exact picture edited into its neglected "before" state, so
-the two line up.
+the two line up. A view with "prompt" is a single picture.
 """
 import base64
 import json
@@ -97,9 +97,24 @@ def main():
             if anchor is None and os.path.exists(first):
                 anchor = first
             continue
+        note = f"\n\nChange requested by the art director: {redo}" if redo else ''
+        if 'prompt' in view:
+            # A single picture (an item, a generator, a background).
+            single = os.path.join(out_dir, f"{view['label']}.png")
+            if redo or not os.path.exists(single):
+                extra = [os.path.join(ROOT, r) for r in view.get('references', [])]
+                prompt = (
+                    job['style'] + '\n\n' + job.get('rules', '')
+                    + f"\n\nThis picture: {view['prompt']}" + note
+                    + '\n\nThe attached pictures show the art style to match exactly.'
+                )
+                data = generate(job['model'], prompt, refs + extra, view.get('aspect', job['aspect']))
+                with open(single, 'wb') as f:
+                    f.write(data)
+                print('made', os.path.basename(single), flush=True)
+            continue
         after = os.path.join(out_dir, f"{view['label']} - after.png")
         before = os.path.join(out_dir, f"{view['label']} - before.png")
-        note = f"\n\nChange requested by the art director: {redo}" if redo else ''
 
         if redo or not os.path.exists(after):
             same = [anchor] if anchor else []

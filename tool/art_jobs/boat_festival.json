@@ -1,0 +1,74 @@
+{
+  "folder": "boat-festival",
+  "kind": "items",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "style_references": [
+    "assets/items/item_bakery_05.jpg",
+    "assets/items/item_loom_05.jpg",
+    "assets/items/item_church_03.jpg"
+  ],
+  "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork, like a premium illustrated merge game. NOT 3D, not a photo, not anime, not flat vector. Soft painted edges, no thick black outlines. Warm soft light from the upper left with a gentle soft shadow beneath the object. Palette: sand, cream, terracotta, olive, cedar brown, sea blue, indigo, gold.",
+  "rules": "RULES: Square picture (1:1). ONE single object, centred, filling about 80 percent of the frame, on a plain soft light-gray background exactly like the attached item pictures. No text, no letters, no numbers, no labels, no watermark, no border, no people. First-century Mediterranean only (around AD 40): wood, rope, linen, pitch, bronze nails; nothing modern.",
+  "views": [
+    {
+      "id": "boat_01",
+      "label": "1 Cedar log",
+      "game": "item_boat_01",
+      "prompt": "a single short cedar log, bark partly on, freshly cut ends showing pale reddish wood"
+    },
+    {
+      "id": "boat_02",
+      "label": "2 Sawn plank",
+      "game": "item_boat_02",
+      "prompt": "two or three freshly sawn pale cedar planks stacked neatly"
+    },
+    {
+      "id": "boat_03",
+      "label": "3 Keel",
+      "game": "item_boat_03",
+      "prompt": "the wooden keel of a small boat: one long curved timber with stem and stern posts rising at each end, resting on two wooden blocks"
+    },
+    {
+      "id": "boat_04",
+      "label": "4 Planked hull",
+      "game": "item_boat_04",
+      "prompt": "a small fishing boat hull under construction: planks fitted edge to edge forming the shell, still pale raw wood, no ribs visible, resting on wooden blocks"
+    },
+    {
+      "id": "boat_05",
+      "label": "5 Ribbed hull",
+      "game": "item_boat_05",
+      "prompt": "the same small boat hull seen from above at an angle, now with curved oak ribs fitted inside the planked shell, resting on wooden blocks"
+    },
+    {
+      "id": "boat_06",
+      "label": "6 Sealed hull",
+      "game": "item_boat_06",
+      "prompt": "the same small boat hull, finished and coated dark with pitch on the outside, clean wood inside, resting on wooden blocks"
+    },
+    {
+      "id": "boat_07",
+      "label": "7 Mast and sail",
+      "game": "item_boat_07",
+      "prompt": "a wooden mast with a furled cream linen sail and coiled rope, standing upright on a small wooden base"
+    },
+    {
+      "id": "boat_08",
+      "label": "8 Festival boat",
+      "game": "item_boat_08",
+      "prompt": "a finished small wooden fishing boat with mast and a cream linen sail, decorated for a festival with garlands of flowers and green leaves and strips of coloured cloth along its sides; no painted eyes on the prow, no symbols, no text"
+    },
+    {
+      "id": "boatyard",
+      "label": "Caleb's Boatyard (generator)",
+      "game": "gen_boatyard_l1",
+      "kind": "generators",
+      "references": [
+        "assets/generators/gen_chest_l2.jpg",
+        "assets/generators/gen_armor_l1.jpg"
+      ],
+      "prompt": "a small boat-builder's workbench and timber rack: a sturdy wooden bench with an adze, a mallet and a hand saw laid on it, cedar logs and planks stacked beside it, a coil of rope. It is the thing a player taps to get boat-building materials, drawn like the last two attached generator pictures."
+    }
+  ]
+}

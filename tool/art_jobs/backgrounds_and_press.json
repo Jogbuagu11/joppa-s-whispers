@@ -1,0 +1,41 @@
+{
+  "folder": "backgrounds-and-press",
+  "kind": "backgrounds",
+  "model": "gemini-3-pro-image",
+  "aspect": "9:16",
+  "style_references": [
+    "assets/locations/loc_bakehouse_door_after.jpg",
+    "assets/locations/bg_loc_bakehouse_inside.jpg"
+  ],
+  "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork and gentle texture, like a premium illustrated story game. NOT 3D, not a 3D render, not a photo, not anime, not flat vector, not cartoon. Soft painted edges, no thick black outlines. Warm soft Mediterranean sunlight from the upper left, gentle shadows. Palette: sand #E8D3A9, cream #F5EBD7, terracotta #C0643B, olive #7A7A3A, cedar brown #5A3E2B, sea blue #2F7F9E, indigo #2E3A6B, gold #D9A441. Avoid neon, pure black, and cold gray-blue.",
+  "rules": "RULES: full scene edge to edge. No text, no letters, no signs, no watermark. No people, no animals. First-century Mediterranean only (Joppa, around AD 40); nothing modern. Leave the lower third fairly calm and uncluttered, because a speech box is drawn over it.",
+  "views": [
+    {
+      "id": "bakehouse_outside",
+      "label": "Outside the bakehouse",
+      "game": "Outside_the_bakehouse",
+      "prompt": "Tallest portrait format (9:16). The outside of Esther's bakehouse on a narrow stone street in Joppa by day: a small old stone building with a wooden door and wooden window shutters, closed up for some months, a few weeds at the doorstep, a clay oven chimney, the harbour glimpsed down the street. Quiet and a little sad, but warm light: a place about to be reopened. The first attached picture is this same doorway after repair: match the building's stone and door."
+    },
+    {
+      "id": "rooftop_night",
+      "label": "Rooftop at night",
+      "game": "Rooftop_at_night",
+      "references": [
+        "assets/locations/bg_loc_rooftop_day.jpg"
+      ],
+      "prompt": "Tallest portrait format (9:16). Edit the LAST attached picture (a rooftop by day) into the same rooftop at night: exactly the same view, layout and objects, but under a deep indigo sky with stars and a low moon over the sea, a few warm lamp-lit windows in the town below, and one small clay oil lamp glowing on the rooftop. Calm and prayerful. Keep it readable, not too dark."
+    },
+    {
+      "id": "press_l3",
+      "label": "Olive Press level 3",
+      "game": "gen_press_l3",
+      "kind": "generators",
+      "aspect": "1:1",
+      "references": [
+        "assets/generators/gen_press_l2.jpg",
+        "assets/generators/gen_press_l4.jpg"
+      ],
+      "prompt": "Square picture (1:1). ONE object centred on a plain soft light-gray background: an olive press for a merge game, at upgrade level 3. The last two attached pictures are the same olive press at level 2 and level 4: paint the step in between, a little larger and finer than level 2 and a little plainer than level 4, in exactly the same style, angle and lighting. No text, no numbers, no labels."
+    }
+  ]
+}
