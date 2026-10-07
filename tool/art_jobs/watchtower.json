@@ -60,7 +60,7 @@
       "label": "7 Beacon lit",
       "game": "loc_watchtower_beacon",
       "after": "the beacon burning at dusk: a bright steady fire in the scoured bronze basin on the tower top, warm glow on the stones, deep blue evening sky and sea, lamplit town below",
-      "before": "the same view at dusk with the basin cold, dark and empty, no fire, the tower top in shadow (keep the evening sky)"
+      "before": "the SAME tower in the SAME good repair as the attached picture (clean mended stone, sound door, tidy steps, no cobwebs, no cracks, no ruin): the only difference is that the beacon on top is cold, dark and empty with no fire and no glow, so the tower top and the stones are in evening shadow. Keep the same dusk sky and lamplit town. Ignore the general instruction about neglect for this picture."
     }
   ]
 }
