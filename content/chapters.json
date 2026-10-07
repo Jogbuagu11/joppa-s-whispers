@@ -476,5 +476,125 @@
         "letter_id": null
       }
     ]
+  },
+  {
+    "id": "ch5",
+    "number": 5,
+    "title": "Caleb's Boat",
+    "location_id": "church",
+    "unlocks_chains": [
+      "oil"
+    ],
+    "crown_id": null,
+    "tasks": [
+      {
+        "id": "ch5_t_01",
+        "beat": 1,
+        "title": "Carry Caleb's tools home",
+        "cost_blessings": 2,
+        "scene_id": "ch5_s_01",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch5_t_02",
+        "beat": 2,
+        "title": "Lay Esther's cornerstone",
+        "cost_blessings": 2,
+        "scene_id": "ch5_s_02",
+        "restores_area": "church_cornerstone",
+        "letter_id": null
+      },
+      {
+        "id": "ch5_t_03",
+        "beat": 3,
+        "title": "Carry bread through the market",
+        "cost_blessings": 2,
+        "scene_id": "ch5_s_03",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch5_t_04",
+        "beat": 4,
+        "title": "Draw water for the mortar",
+        "cost_blessings": 2,
+        "scene_id": "ch5_s_04",
+        "restores_area": "church_walls",
+        "letter_id": null
+      },
+      {
+        "id": "ch5_t_05",
+        "beat": 5,
+        "title": "Ask Silas about the storm",
+        "cost_blessings": 2,
+        "scene_id": "ch5_s_05",
+        "restores_area": null,
+        "letter_id": null
+      },
+      {
+        "id": "ch5_t_06",
+        "beat": 6,
+        "title": "Uncover Caleb's old boat",
+        "cost_blessings": 2,
+        "scene_id": "ch5_s_06",
+        "restores_area": null,
+        "letter_id": "letter_09"
+      },
+      {
+        "id": "ch5_t_07",
+        "beat": 7,
+        "title": "Fetch cedar for the doorway",
+        "cost_blessings": 2,
+        "scene_id": "ch5_s_07",
+        "restores_area": "church_doorway",
+        "letter_id": null
+      },
+      {
+        "id": "ch5_t_08",
+        "beat": 8,
+        "title": "Raise the roof beams",
+        "cost_blessings": 2,
+        "scene_id": "ch5_s_08",
+        "restores_area": "church_roof",
+        "letter_id": null
+      },
+      {
+        "id": "ch5_t_09",
+        "beat": 9,
+        "title": "Set out the benches",
+        "cost_blessings": 2,
+        "scene_id": "ch5_s_09",
+        "restores_area": "church_benches",
+        "letter_id": null
+      },
+      {
+        "id": "ch5_t_10",
+        "beat": 10,
+        "title": "Fill and light the lamps",
+        "cost_blessings": 2,
+        "scene_id": "ch5_s_10",
+        "restores_area": "church_lamps",
+        "letter_id": null
+      },
+      {
+        "id": "ch5_t_11",
+        "beat": 10,
+        "title": "Lay the long table",
+        "cost_blessings": 3,
+        "scene_id": "ch5_s_11",
+        "restores_area": "church_table",
+        "letter_id": "letter_10"
+      },
+      {
+        "id": "ch5_t_12",
+        "beat": 11,
+        "title": "Take bread to Simon's gate",
+        "cost_blessings": 2,
+        "scene_id": "ch5_s_12",
+        "restores_area": null,
+        "letter_id": null
+      }
+    ]
   }
 ]

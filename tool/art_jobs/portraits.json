@@ -172,6 +172,60 @@
         "assets/characters/char_demas_neutral.jpg"
       ],
       "prompt": "Edit the LAST attached picture. It is the same man, Demas the marketplace storyteller: keep his face, hair, beard, clothes, framing and white background exactly the same. Change only his expression and gesture to show: delighted and theatrical, a broad charming smile, one hand opened to his audience."
+    },
+    {
+      "id": "tobiah_neutral",
+      "label": "Tobiah - neutral",
+      "game": "char_tobiah_neutral",
+      "references": [
+        "assets/characters/char_demas_neutral.jpg"
+      ],
+      "prompt": "Tobiah, a fisherman of about thirty and the younger brother of the man in the LAST attached picture (Demas): a clear family likeness in the face, but leaner, quieter and plainer, with none of his brother's showmanship. Short dark hair and beard, a faded undyed work tunic with a rope belt, bare feet, a coil of new-twisted rope in one hand (he is a rope-maker now; no fishing net). He carries himself like a man who keeps his head down. Expression: calm, guarded, neutral, mouth closed."
+    },
+    {
+      "id": "tobiah_happy",
+      "label": "Tobiah - happy",
+      "game": "char_tobiah_happy",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Tobiah - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: a small, grateful smile."
+    },
+    {
+      "id": "tobiah_sad",
+      "label": "Tobiah - sad",
+      "game": "char_tobiah_sad",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Tobiah - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: sorrowful and ashamed, eyes lowered."
+    },
+    {
+      "id": "tobiah_angry",
+      "label": "Tobiah - angry",
+      "game": "char_tobiah_angry",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Tobiah - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: angry and pained, brows down, jaw set (not frightening)."
+    },
+    {
+      "id": "tobiah_surprised",
+      "label": "Tobiah - surprised",
+      "game": "char_tobiah_surprised",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Tobiah - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: surprised, eyebrows raised, mouth slightly open."
+    },
+    {
+      "id": "tobiah_thinking",
+      "label": "Tobiah - thinking",
+      "game": "char_tobiah_thinking",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Tobiah - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: thoughtful and troubled, one hand at the back of his neck, eyes aside."
     }
   ]
 }

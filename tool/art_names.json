@@ -31,7 +31,8 @@
     "Feast_table_at_sunset_harbor": "loc_feast_table",
     "Rooftop_view_of_Mediterranean_sea": "loc_rooftop_day",
     "Outside_the_bakehouse": "loc_bakehouse_outside",
-    "Rooftop_at_night": "loc_rooftop_night"
+    "Rooftop_at_night": "loc_rooftop_night",
+    "Tanners_gate_at_noon": "loc_tanner_gate_noon"
   },
   "generators": {
     "gen_desk": "gen_scribe"

@@ -2358,5 +2358,792 @@
         "text": "And across the street, in my new lamplight, Demas. He heard it all. He saw me look. He looked away."
       }
     ]
+  },
+  {
+    "id": "ch5_s_01",
+    "background": "loc_boatyard",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Three days and no mallet, no saw. I could always hear Caleb's yard from my oven. Now I only hear gulls."
+      },
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "Papa just sits by the old boat under the sailcloth. He won't even sharpen things. He loves sharpening things."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Caleb. You left your tools on Simon's step. I oiled the chisels. Badly, I expect."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "neutral",
+        "text": "Set them anywhere."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Hm. A half-planked boat on the slip and the shavings gone grey. Whose is she?"
+      },
+      {
+        "speaker": "caleb",
+        "expression": "sad",
+        "text": "A fisherman's, up the coast. He'll wait."
+      },
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "I only asked Peter because of Tabitha. Was it a bad thing to ask, Papa?"
+      },
+      {
+        "speaker": "caleb",
+        "expression": "sad",
+        "text": "No. ...It wasn't bad to ask."
+      },
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "He didn't say yes. He didn't say no. He just got down low and looked at me."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Some things I can't mend with bread, little one. I'll leave a loaf anyway. And I'll come back tomorrow."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "That old boat was on my slip with a sprung plank. I knew it was. ...Leave the loaf, Naomi."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "A sprung plank. He's never said that much about her. And he said it like a man confessing."
+      }
+    ]
+  },
+  {
+    "id": "ch5_s_02",
+    "background": "loc_well_morning",
+    "lines": [
+      {
+        "speaker": "amos",
+        "expression": "happy",
+        "text": "Well now. Forty at my table last night and nine more on the stair. Ben sat in the window like a pigeon."
+      },
+      {
+        "speaker": "hannah",
+        "expression": "happy",
+        "text": "Since Tabitha, Elder, they keep coming. We can't turn them away for want of a floor."
+      },
+      {
+        "speaker": "amos",
+        "expression": "neutral",
+        "text": "No more we can. The potter has given the empty plot above the well. We'll build a house for the meeting."
+      },
+      {
+        "speaker": "amos",
+        "expression": "thinking",
+        "text": "And the hill presses are running. We'll want oil, child. For the lamps, and for the day the door opens."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "happy",
+        "text": "Silas's crew will haul the stone. I'm told I carry well, for a man who can't saw straight."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "neutral",
+        "text": "My bangles will buy the roof timber, dear. Nobody's to make a remark about it. Least of all me."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "A whole town building. Hm. And the best pair of hands in Joppa sitting idle in a silent yard."
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "Esther picked the first stone years back, little loaf. It's sat under Amos's fig tree ever since."
+      },
+      {
+        "speaker": "amos",
+        "expression": "thinking",
+        "text": "She said, 'When the room's too small, start with this.' There's a plug of clay sealed in its side."
+      },
+      {
+        "speaker": "silas",
+        "expression": "neutral",
+        "text": "And she said, 'Not till the lamps are lit, Silas.' I asked what was in it. She told me to mind my nets."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "That sounds like her. Then it stays sealed. Ease it down, Marcus. There. Square to the sea."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "One stone on bare ground. Savta, what did you put inside it?"
+      }
+    ]
+  },
+  {
+    "id": "ch5_s_03",
+    "background": "loc_market",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Bread for the wall crew, coming through. Mind the basket. ...Why is half the market standing still?"
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "thinking",
+        "text": "The boat builder's girl asked Peter for her mother back, and her father walked out. Why would a man do that, Demas?"
+      },
+      {
+        "speaker": "demas",
+        "expression": "neutral",
+        "text": "Gather close, friends, gather close! You ask why a man walks out. I only tell what the harbor told me."
+      },
+      {
+        "speaker": "demas",
+        "expression": "thinking",
+        "text": "Two years back. A storm coming in. A cargo promised up the coast, and good silver waiting on it."
+      },
+      {
+        "speaker": "demas",
+        "expression": "neutral",
+        "text": "And a boat on his own slip that he knew was leaking. Did he take the oars himself? He sent his wife."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "surprised",
+        "text": "Leah? Out in that sea, for silver? And her with a little one at home..."
+      },
+      {
+        "speaker": "demas",
+        "expression": "surprised",
+        "text": "Did I say he meant her harm? I said a boat, a storm and a purse! A teller only tells. You do the adding up."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "angry",
+        "text": "And that's the man to cut roof beams for a house of prayer? I'd want cleaner hands on it."
+      },
+      {
+        "speaker": "zilpah",
+        "expression": "neutral",
+        "text": "Don't look at me, dear. Has anyone here asked Caleb? Anyone at all?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "angry",
+        "text": "They say you've told this tale for two years, Demas. You tell it louder today. Why today?"
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "A crowd asks, baker, and a teller answers. That is all. Good day to you. Good day, friends!"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "His hand shook on his staff. And the tale is already halfway to the well. Joy plays at the well."
+      }
+    ]
+  },
+  {
+    "id": "ch5_s_04",
+    "background": "loc_well_morning",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Two more jars and the mortar crew can finish the east wall. Joy? You've stopped skipping. You never stop."
+      },
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "The big girls were talking by the trough. They stopped when they saw me. But I have very good ears."
+      },
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "They said Papa knew the boat was leaky. They said he sent Mama out in it anyway, to get silver."
+      },
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "Did Papa kill Mama?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Oh, Joy. Put the jar down. Come here."
+      },
+      {
+        "speaker": "joy",
+        "expression": "angry",
+        "text": "Don't say 'Hm'! Everybody says 'Hm' and 'we don't answer.' I'm asking! I'm eight and I'm ASKING!"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "No 'Hm.' I wasn't here that night, so I won't tell you what I don't know. That's how tales get started."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Here's what I do know. Your papa mended my shutters for nothing and walked to Lydda for a friend."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "A man like that doesn't trade anyone for silver. I'd stake my oven on it."
+      },
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "Then why won't he say so? If it isn't true, why doesn't he just SAY?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "I don't know, little one. But somebody was on that beach. I'm going to find them, and I'm going to ask."
+      },
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "Ask Silas. He remembers everything. Even the fish that swam backward."
+      }
+    ]
+  },
+  {
+    "id": "ch5_s_05",
+    "background": "loc_bakehouse_inside",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "She cried herself out on the flour sacks. Asleep now, with her fist round that little wooden boat."
+      },
+      {
+        "speaker": "silas",
+        "expression": "neutral",
+        "text": "You sent for me, little loaf. And you've not offered bread first. So it's a hard thing."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "The night Leah died. You were on the beach, Silas. You're on the beach every night of your life."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "I was."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "No fish swimming backward? No cousin and a goatherd?"
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "Not for this one. I've walked round this one for two years. Give me a moment."
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "The wind came round all at once. We were hauling boats up the shingle, every hand. Caleb right beside me."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Caleb was beside you? On the beach, hauling? Then he never sent—"
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "He had a rope over his shoulder and his back to the water. He never saw her go. I did."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "You saw Leah. And you've said nothing in two years?"
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "By morning the town had its tale, and I had an old man's eyes in the rain. I let that be reason enough."
+      },
+      {
+        "speaker": "silas",
+        "expression": "thinking",
+        "text": "It wasn't. Come down to Caleb's yard, to the old boat. I'll say the rest there, where I owe it."
+      }
+    ]
+  },
+  {
+    "id": "ch5_s_06",
+    "background": "loc_harbor_storm",
+    "lines": [
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "The beacon had blown out. Black as a pot. Then lightning, and I saw a skiff out by the ridge, keel up."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "A man clinging to it. And nearer in, one boat already off the slip and into the surf. One pair of oars."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Leah."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "Nobody sent her. I saw no one with her. She saw him before any of us, and she was already rowing."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "I shouted. The wind took it. She rowed straight at that skiff, little loaf. Straight at it."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "Then the dark shut. I never saw if she reached him. At first light this boat came in. Empty."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "And Caleb hauled it up here, put a sailcloth over it, and never touched it again."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Silas. Under the gunwale, here. Letters cut into the wood, small and deep. That's Savta's hand."
+      },
+      {
+        "speaker": "esther",
+        "expression": "sad",
+        "text": "I saw Leah go out that night. I have never told anyone, because nobody asked me, and the town preferred its story."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "The Lord said, \"Greater love hath no man than this, that a man lay down his life for his friends.\" (John 15:13)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "She did. Don't let them bury her twice. — your Savta"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "She went out for somebody, Savta. Who was he? And where has he been for two years?"
+      }
+    ]
+  },
+  {
+    "id": "ch5_s_07",
+    "background": "loc_docks",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Cedar for the doorposts, Marcus. Mind the end. And tell me: who lost a skiff the night of the great storm?"
+      },
+      {
+        "speaker": "marcus",
+        "expression": "thinking",
+        "text": "Before my time, Nomi. But a lost boat leaves a hole on the beach. Ask the men who moored beside it."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "thinking",
+        "text": "Only one skiff went that night. Young Tobiah's. He came in over the rocks by himself, half drowned."
+      },
+      {
+        "speaker": "dockworker2",
+        "expression": "neutral",
+        "text": "Never fished again. Sold his nets. He twists rope out past the north beach and keeps to himself."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "And nobody asked how he got off an upturned skiff in that sea? Alone?"
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "sad",
+        "text": "...He said he swam. We'd a woman to mourn that week, baker. Nobody was counting skiffs."
+      },
+      {
+        "speaker": "silas",
+        "expression": "sad",
+        "text": "Tobiah's. I knew it, and never set the two side by side. Little loaf... that boy has an older brother."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "Demas."
+      },
+      {
+        "speaker": "marcus",
+        "expression": "thinking",
+        "text": "The man who tells the tale about Caleb. And his own brother was in the water that night?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "His hand shook on his staff. Hm. I won't add that up for him. I'll hear it from Tobiah first."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Take the cedar up without me. I've a loaf, and a long walk to the north beach."
+      }
+    ]
+  },
+  {
+    "id": "ch5_s_08",
+    "background": "loc_harbor_dusk",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Tobiah? I'm Naomi, the baker. I left a roof half raised to walk out here. I've bread, and one question."
+      },
+      {
+        "speaker": "tobiah",
+        "expression": "neutral",
+        "text": "I know who you are. It's the storm you're asking about. I've waited two years for someone to ask."
+      },
+      {
+        "speaker": "tobiah",
+        "expression": "sad",
+        "text": "I'd gone out late for one more cast. The squall turned me over by the ridge. I held on to the keel."
+      },
+      {
+        "speaker": "tobiah",
+        "expression": "sad",
+        "text": "Lightning showed me the beach, and my brother on it. I called his name until I had no voice."
+      },
+      {
+        "speaker": "tobiah",
+        "expression": "sad",
+        "text": "Leah had a boat at the slip. She shouted to him to take an oar. He stood where he was. The lightning showed me that too."
+      },
+      {
+        "speaker": "tobiah",
+        "expression": "thinking",
+        "text": "So she came alone. She got me over the side. She said I weighed more than a tunny. She was laughing."
+      },
+      {
+        "speaker": "tobiah",
+        "expression": "sad",
+        "text": "Then the sea put us on the ridge. I came ashore. She did not."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "And you never told it. Not to Caleb. Not to anyone."
+      },
+      {
+        "speaker": "tobiah",
+        "expression": "sad",
+        "text": "I'd have had to say my brother left me. And that a better soul died in my place. I was ashamed of both."
+      },
+      {
+        "speaker": "tobiah",
+        "expression": "thinking",
+        "text": "I'm alive because of her, and I've hidden with it like a thief. Does her girl know she was brave?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Not yet. She will. But I have to see your brother first. Not with a crowd, Tobiah. Alone."
+      },
+      {
+        "speaker": "tobiah",
+        "expression": "sad",
+        "text": "Baker. Go gently. He's all the family I have."
+      }
+    ]
+  },
+  {
+    "id": "ch5_s_09",
+    "background": "loc_boat_shed_night",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "The benches are set in the new house, Demas. I counted the places. I didn't expect to find you in a boat shed."
+      },
+      {
+        "speaker": "demas",
+        "expression": "neutral",
+        "text": "A teller needs quiet to polish a tale, baker. Gather close, why don't you... No. What do you want?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Nothing you have to give me. I walked to the north beach yesterday. I broke bread with Tobiah."
+      },
+      {
+        "speaker": "demas",
+        "expression": "surprised",
+        "text": "...Ah."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "I haven't told Caleb. I haven't told the well. I came to you first, and I came alone."
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "He called my name. Did he tell you that? I still hear it. Every night, over the wind."
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "I had the rope in my hands. I can't swim, baker. I looked at that water and my legs would not go."
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "She went. A woman with a child at home went out for my brother, and I stood there and watched."
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "By morning they wanted a reason she was dead. I couldn't give them mine. So I gave them Caleb."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "And you've told it ever since, so nobody would think to ask for the other one."
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "Two years I've run from one night. I'm tired, Naomi. I am so tired. What do I do?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "I can't say it for you. But a little girl is asking about her father. And tomorrow there's a bench with room."
+      }
+    ]
+  },
+  {
+    "id": "ch5_s_10",
+    "background": "loc_church_inside",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Every lamp lit and every bench full. Caleb is by the door with Joy, not sitting. And Demas came. With Tobiah."
+      },
+      {
+        "speaker": "amos",
+        "expression": "happy",
+        "text": "Well now. A roof over us, and every beam of it given. Before we give thanks, has anyone a word to—"
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "I have, Elder. If you'll let me stand."
+      },
+      {
+        "speaker": "dockworker",
+        "expression": "happy",
+        "text": "Demas! A tale for the new house! Gather us close, then!"
+      },
+      {
+        "speaker": "demas",
+        "expression": "neutral",
+        "text": "No. Stay where you are, friends. No tale. I'll say it plain, and I'll say it once."
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "Two years ago my brother Tobiah was drowning off the ridge. I stood on the beach. I was afraid, and I did not go."
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "Leah went. Nobody sent her. She saved my brother, and she was lost on the rocks."
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "The tale about Caleb and the silver is a lie. I made it. I told it for two years. I told it while these walls went up."
+      },
+      {
+        "speaker": "demas",
+        "expression": "sad",
+        "text": "Caleb. Joy. I've no right to ask you for anything. I am asking. Forgive me."
+      },
+      {
+        "speaker": "tobiah",
+        "expression": "sad",
+        "text": "The boat held, Caleb. That plank never gave. She got me into it, and it held all the way to the rocks."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "Caleb hasn't moved. His hands are shut tight. Joy is looking up at him. So is the whole room."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "sad",
+        "text": "Two years, Demas. ...She'd have gone for anyone. That was Leah. ...I forgive you."
+      }
+    ]
+  },
+  {
+    "id": "ch5_s_11",
+    "background": "loc_church_inside",
+    "lines": [
+      {
+        "speaker": "joy",
+        "expression": "thinking",
+        "text": "So nobody sent Mama. She saw somebody drowning and she just went? All by herself?"
+      },
+      {
+        "speaker": "joy",
+        "expression": "sad",
+        "text": "I asked Peter to bring her back. She isn't back. But now I know who she was. That's something. Isn't it?"
+      },
+      {
+        "speaker": "caleb",
+        "expression": "sad",
+        "text": "It's a great deal. She was the bravest one on that beach. You have her chin."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Amos has the oil. A little on the doorpost. A little on Savta's stone. His hands are steadier than mine."
+      },
+      {
+        "speaker": "amos",
+        "expression": "neutral",
+        "text": "\"Except the LORD build the house, they labour in vain that build it.\" (Psalm 127:1)"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "The lamps are lit, Silas. That was her word. The plug comes away whole. A shard, dry as the day she sealed it."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "The sea took a great deal from this town. It does not get the last word."
+      },
+      {
+        "speaker": "esther",
+        "expression": "neutral",
+        "text": "\"When thou passest through the waters, I will be with thee; and through the rivers, they shall not overflow thee.\" (Isaiah 43:2)"
+      },
+      {
+        "speaker": "esther",
+        "expression": "happy",
+        "text": "Build anyway. Love anyway. Bake anyway. — your Savta"
+      },
+      {
+        "speaker": "caleb",
+        "expression": "thinking",
+        "text": "There's cedar left from the roof. Enough for a keel. ...I'll lay it tomorrow. I know her name."
+      },
+      {
+        "speaker": "joy",
+        "expression": "happy",
+        "text": "LEAH! It's Leah, isn't it, Papa? I'll paint it on. I can spell it. Mostly."
+      },
+      {
+        "speaker": "caleb",
+        "expression": "happy",
+        "text": "She'll want a launching loaf, Naomi. If you'd bake it. ...If you'd come."
+      }
+    ]
+  },
+  {
+    "id": "ch5_s_12",
+    "background": "loc_tanner_rooftop_noon",
+    "lines": [
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "A keel laid and a launching loaf promised. I said yes before he'd finished asking. Not a word at the well, Simon."
+      },
+      {
+        "speaker": "simon",
+        "expression": "happy",
+        "text": "I'm a tanner. Nobody asks me for news. Is that basket for my house?"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "neutral",
+        "text": "Barley, still warm. It's past noon. Is Peter in?"
+      },
+      {
+        "speaker": "simon",
+        "expression": "neutral",
+        "text": "Up on the roof to pray, since noon. I've not liked to call him down."
+      },
+      {
+        "speaker": "joy",
+        "expression": "happy",
+        "text": "Naomi! Demas is in the market telling about Mama! The true one! He asked Papa first if he could!"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "happy",
+        "text": "He asked first. Hm. Did you hear that, Savta?"
+      },
+      {
+        "speaker": "simon",
+        "expression": "surprised",
+        "text": "Someone's at my gate. Nobody knocks at my gate. Three men with the road's dust on them. One's a soldier."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "thinking",
+        "text": "Not Joppa men. Those are Caesarea cloaks. I'd know that weave anywhere. I wish I didn't."
+      },
+      {
+        "speaker": "lucius",
+        "expression": "neutral",
+        "text": "We have come from Caesarea. Is Simon, who is surnamed Peter, lodged here?"
+      },
+      {
+        "speaker": "simon",
+        "expression": "neutral",
+        "text": "He is. He's up on the roof. Wait here, friends, and I'll—"
+      },
+      {
+        "speaker": "naomi",
+        "expression": "surprised",
+        "text": "The servant in front has stopped listening. He's looking past Simon. He's looking straight at me."
+      },
+      {
+        "speaker": "naomi",
+        "expression": "sad",
+        "text": "He knows my face. I can see it. Oh, not here. Not now."
+      }
+    ]
   }
 ]

@@ -1,0 +1,66 @@
+{
+  "folder": "house-church",
+  "kind": "locations",
+  "model": "gemini-3-pro-image",
+  "aspect": "9:16",
+  "style_references": [
+    "assets/locations/loc_well_lip_after.jpg",
+    "assets/locations/loc_bakehouse_door_after.jpg",
+    "assets/locations/bg_loc_church_inside.jpg"
+  ],
+  "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork and gentle texture, like a premium illustrated story game. NOT 3D, not a 3D render, not a photo, not anime, not flat vector, not cartoon. Soft painted edges, no thick black outlines. Warm soft Mediterranean sunlight from the upper left, gentle shadows. Palette: sand #E8D3A9, cream #F5EBD7, terracotta #C0643B, olive #7A7A3A, cedar brown #5A3E2B, sea blue #2F7F9E, indigo #2E3A6B, gold #D9A441. Avoid neon, pure black, and cold gray-blue.",
+  "scene": "The place: a simple meeting house that the believers of Joppa are building for themselves around AD 40, on a small plot above the town well, the sea in the distance. Pale local sandstone walls, cedar roof beams, a flat roof, an earth and flagstone floor. It is a plain first-century house for meeting, eating and praying together: NO cross, NO altar, NO pulpit, NO steeple, NO stained glass, NO religious symbols of any kind. The third attached picture shows the mood of its interior. This picture is one close view of that house.",
+  "after_rules": "RULES: Tallest portrait format (9:16), full scene edge to edge. No text, no letters, no signs, no watermark. No people, no animals. Camera at a standing adult's eye height. First-century Mediterranean only: stone, timber, clay, rope, linen; nothing modern. This is the FINISHED state of this part of the new house: freshly built, clean new stone and pale new wood, bright warm daylight, a welcoming feel.",
+  "before_rules": "Edit the attached picture into its EARLIER state, before this part was built. Keep exactly the same camera angle, framing and background so the two pictures line up perfectly. Show the same spot as a building site: bare levelled ground or unfinished work, stacked cut stone, timber and tools waiting (mallet, chisel, plumb line, baskets of mortar, coiled rope), wooden scaffolding or marker stakes where things will go. Hopeful, not ruined: fresh materials, daylight, no decay, no cobwebs, no weeds. No text, no people, no animals.",
+  "views": [
+    {
+      "id": "cornerstone",
+      "label": "1 Cornerstone",
+      "game": "loc_church_cornerstone",
+      "after": "the corner of the foundation with a large, carefully cut cornerstone set in place, the first courses of wall rising from it",
+      "before": "only a levelled corner of ground marked with stakes and string, the big cornerstone lying nearby on rollers, not yet set"
+    },
+    {
+      "id": "walls",
+      "label": "2 Walls",
+      "game": "loc_church_walls",
+      "after": "the pale stone walls built to full height, neatly mortared, seen from outside with a window opening",
+      "before": "walls only knee high, loose blocks stacked beside them, a trough of mortar and a water jar"
+    },
+    {
+      "id": "doorway",
+      "label": "3 Doorway",
+      "game": "loc_church_doorway",
+      "after": "the finished doorway with a cedar lintel and a new plank door standing open, a stone step",
+      "before": "a bare gap in the wall with no lintel or door, cedar timbers leaning ready beside it"
+    },
+    {
+      "id": "roof",
+      "label": "4 Roof beams",
+      "game": "loc_church_roof",
+      "after": "looking up inside at the finished roof: stout cedar beams with reed matting and plaster above",
+      "before": "open sky above the walls, a few beams laid across, wooden scaffolding and rope hoists"
+    },
+    {
+      "id": "benches",
+      "label": "5 Benches",
+      "game": "loc_church_benches",
+      "after": "the inside with rows of simple new wooden benches along the walls and a swept floor",
+      "before": "the same room empty, bare floor, planks and trestles stacked ready to become benches"
+    },
+    {
+      "id": "lamps",
+      "label": "6 Lamps",
+      "game": "loc_church_lamps",
+      "after": "a wall with small stone niches, each holding a lit clay oil lamp, warm glow",
+      "before": "the same wall with empty unlit niches, a basket of unlit clay lamps and an oil flask on the floor"
+    },
+    {
+      "id": "table",
+      "label": "7 Long table",
+      "game": "loc_church_table",
+      "after": "a long plain wooden table laid for a shared meal with loaves, clay cups and bowls, benches either side",
+      "before": "the same space with only trestles and loose table planks, nothing laid"
+    }
+  ]
+}

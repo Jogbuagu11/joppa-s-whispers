@@ -36,6 +36,16 @@
         "assets/generators/gen_press_l4.jpg"
       ],
       "prompt": "Square picture (1:1). ONE object centred on a plain soft light-gray background: an olive press for a merge game, at upgrade level 3. The last two attached pictures are the same olive press at level 2 and level 4: paint the step in between, a little larger and finer than level 2 and a little plainer than level 4, in exactly the same style, angle and lighting. No text, no numbers, no labels."
+    },
+    {
+      "id": "tanner_gate",
+      "label": "Tanner's gate at noon",
+      "game": "Tanners_gate_at_noon",
+      "references": [
+        "assets/locations/loc_tanner_lamp_after.jpg",
+        "assets/locations/loc_tanner_courtyard_after.jpg"
+      ],
+      "prompt": "Tallest portrait format (9:16). The courtyard gate of Simon the tanner's house by the sea in Joppa, seen from just inside the courtyard looking out through the open wooden gate to the bright street and the sea beyond, at high noon: short shadows, strong warm light. The flat rooftop of the house with its striped awning is visible above the wall at the top of the picture. The last two attached pictures are this same gate and courtyard: match their stone, wood and lamp niche."
     }
   ]
 }

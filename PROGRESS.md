@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 23 — Chapters 2–6, one at a time. Chapters 2–4 are built; Chapter 5 is next. Milestones 14 and 16–22 are built and awaiting Jennifer's checks.
+## Current milestone: 23 — Chapters 2–6, one at a time. Chapters 2–5 are built; Chapter 6 (the last of Season 1) is next. Milestones 14 and 16–22 are built and awaiting Jennifer's checks.
 
 ---
 
@@ -31,7 +31,7 @@
 | 20 | Notifications | BUILT — not tagged: no real notification has been seen on a phone; push needs Jennifer's Apple push key |
 | 21 | Events system | BUILT — not tagged: the Joppa Boat Festival is live on the server (to 2026-10-27); Jennifer has not yet seen it on a phone |
 | 22 | Admin panel | BUILT — not tagged: Jennifer has not yet signed in and used it; push needs the Firebase key on the server |
-| 23 | Chapters 2–6 | IN PROGRESS — Chapters 2, 3 and 4 built (not tagged: Jennifer has not played them). Chapters 5–6 to do |
+| 23 | Chapters 2–6 | IN PROGRESS — Chapters 2–5 built (not tagged: Jennifer has not played them). Chapter 6 to do |
 | 24 | Polish & accessibility | Not started |
 | 25 | Release builds | Not started |
 
@@ -1279,6 +1279,60 @@ Art needed for Chapter 4:
 - A Simon the Tanner portrait (neutral, happy, sad and thinking are used).
 - Optional: a weaving-room background with a loom.
 - The Loom generator is already in.
+
+## Milestone 23, Chapter 5 "Caleb's Boat" — state (2026-10-06)
+
+BUILT, NOT TAGGED. Analyze clean, 585 unit tests (with a play-through of all five
+chapters); all seventeen device tests on the iOS Simulator; on the Android Emulator the
+chapter, smoke, scene and orders tests (content-only change since the last full Android
+run). Not played by hand. Content is version 10. NOT in build 5.
+
+What is built:
+- 12 tasks building the house for the church (cornerstone, walls, doorway, roof,
+  benches, lamps, table), 12 scenes, 12 orders (7 ordinary, 5 spiritual incl. Love for
+  Joy, Goodness for Demas, Horn of Oil for Caleb), Letters 9 and 10 word for word, a
+  Chapter 4 ending that leads to Caleb, and a Chapter 5 ending.
+- The Olive Press (Anointing Oil) arrives when Chapter 5 is reached.
+- Exact line kept: Joy, "Did Papa kill Mama?" The rumour is shown being told by Demas
+  before it is undone. Leah is never shown and never speaks; her death is not graphic.
+- Blessings: tasks cost 25; the first nine orders already pay 25, so the Demas and
+  Caleb orders are optional.
+
+Decisions / invented details to confirm:
+- Demas cannot swim and froze on the beach; his guilt became the tale about Caleb.
+- Caleb has blamed himself for a sprung plank on the boat Leah took; Tobiah tells him it
+  held — it was the rocks.
+- Silas saw her go that night and has kept silent, doubting his own eyes.
+- Tobiah gave up fishing, twists rope past the north beach, and told people he swam in.
+- The watchtower beacon had blown out that night (it is relit in Chapter 6).
+- Esther chose the cornerstone years ago and sealed Letter 10 in it; the potter gave the
+  plot; Zilpah's bangles paid for the roof timber.
+- A purpose-built meeting house around AD 40 is early historically; it is the story
+  bible's own beat and is kept plain (no cross, altar, pulpit).
+- The "Glory" crown is not awarded (crowns not built). The location screen says
+  "restored" although this house is being built.
+
+For Jennifer's reviewer:
+- Peter does not speak in this chapter. He is mentioned when Joy recalls her question
+  ("He didn't say yes. He didn't say no. He just got down low and looked at me.") and in
+  ch5_s_11 ("I asked Peter to bring her back. She isn't back. But now I know who she
+  was."). Nobody says he could or could not, and "why Tabitha and not Mama" is left
+  unanswered on purpose.
+- The closing scene follows Acts 10:7, 9, 17–18: past noon, Peter "up on the roof to
+  pray, since noon"; three men at the gate, one a soldier; Lucius: "We have come from
+  Caesarea. Is Simon, who is surnamed Peter, lodged here?" No vision, no Cornelius by
+  name, no "bread woman". The servant's name (Lucius) is the story bible's invention.
+  Chapter 6 must have Peter come down himself (Acts 10:21).
+- Amos anoints the doorpost and the cornerstone with oil and says only Psalm 127:1
+  (first clause, KJV). Anointing a building is not in Acts (compare Genesis 28:18).
+- John 15:13 in Letter 9 (John's Gospel not yet written in AD 40; a saying passed
+  along, as with Letters 1 and 5). Isaiah 43:2 in Letter 10 sits beside a drowning.
+- Romance: Caleb asks Naomi to bake the launching loaf, "If you'd come."; she says yes.
+
+Art for Chapter 5 (generated for Jennifer's review, not yet in the game):
+- 14 pictures of the house church as "not yet built" / "built" pairs; a tanner's-gate
+  background for the closing scene (it uses the rooftop picture until approved);
+  six Tobiah portraits (with a coil of rope, not a net).
 
 ## App icons, more portraits, store art (2026-10-06)
 

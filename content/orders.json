@@ -932,5 +932,273 @@
     },
     "text": "Forty years my tongue has run ahead of me, dear. I should like, for once, to catch it up.",
     "scene_id": null
+  },
+  {
+    "id": "ch5_o_001",
+    "chapter": 5,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_04",
+        "count": 2
+      }
+    ],
+    "rewards": {
+      "talents": 40,
+      "blessings": 2
+    },
+    "text": "Two flatbreads, little loaf. The lads are hauling stone for the new house and I am overseeing. Hungry work.",
+    "scene_id": null
+  },
+  {
+    "id": "ch5_o_002",
+    "chapter": 5,
+    "character_id": "joy",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "fruit_01",
+        "count": 1
+      },
+      {
+        "item_id": "oil_01",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 10,
+      "blessings": 2
+    },
+    "text": "Papa's gone quiet again. I love him anyway. Lots. And one olive, please. Papa likes olives.",
+    "scene_id": null
+  },
+  {
+    "id": "ch5_o_003",
+    "chapter": 5,
+    "character_id": "hannah",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_01",
+        "count": 2
+      },
+      {
+        "item_id": "bakery_04",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 3
+    },
+    "text": "Two clay lamps and a flatbread, Naomi. My boys are mixing mortar for the new house until dark.",
+    "scene_id": null
+  },
+  {
+    "id": "ch5_o_004",
+    "chapter": 5,
+    "character_id": "amos",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_03",
+        "count": 1
+      },
+      {
+        "item_id": "church_02",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 50,
+      "blessings": 3
+    },
+    "text": "Well now. A bench, an oil lamp and a loaf, child. My little room held twenty. We are well past twenty.",
+    "scene_id": null
+  },
+  {
+    "id": "ch5_o_005",
+    "chapter": 5,
+    "character_id": "naomi",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "oil_03",
+        "count": 1
+      },
+      {
+        "item_id": "fruit_03",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 3
+    },
+    "text": "Hm. A flask of oil for the lamps, and a little peace to go with it. Building a house is loud work.",
+    "scene_id": null
+  },
+  {
+    "id": "ch5_o_006",
+    "chapter": 5,
+    "character_id": "zilpah",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "loom_05",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 50,
+      "blessings": 3
+    },
+    "text": "A tunic and a loaf, dear. For the mason's boy. I'm told I may give a thing now without a remark attached.",
+    "scene_id": null
+  },
+  {
+    "id": "ch5_o_007",
+    "chapter": 5,
+    "character_id": "marcus",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_03",
+        "count": 2
+      },
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 55,
+      "blessings": 3
+    },
+    "text": "Two benches and a loaf, Nomi. I can't saw straight, so I carry. Carrying, it turns out, I can do.",
+    "scene_id": null
+  },
+  {
+    "id": "ch5_o_008",
+    "chapter": 5,
+    "character_id": "amos",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "oil_04",
+        "count": 1
+      },
+      {
+        "item_id": "oil_03",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 35,
+      "blessings": 3
+    },
+    "text": "Well now. A flask for the lamps and a small vial besides, child. A new house should smell of oil, not only sawdust.",
+    "scene_id": null
+  },
+  {
+    "id": "ch5_o_009",
+    "chapter": 5,
+    "character_id": "silas",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "bakery_06",
+        "count": 1
+      },
+      {
+        "item_id": "church_04",
+        "count": 1
+      },
+      {
+        "item_id": "church_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 60,
+      "blessings": 3
+    },
+    "text": "A fig cake, a bread basket and a lamp, little loaf. Esther always said a house isn't a house till it's fed.",
+    "scene_id": null
+  },
+  {
+    "id": "ch5_o_010",
+    "chapter": 5,
+    "character_id": "demas",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "fruit_06",
+        "count": 1
+      },
+      {
+        "item_id": "oil_02",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 40,
+      "blessings": 3
+    },
+    "text": "No crowd today, baker. I can make a whole market laugh. Being good is harder work, and I've had less practice.",
+    "scene_id": null
+  },
+  {
+    "id": "ch5_o_011",
+    "chapter": 5,
+    "character_id": "hannah",
+    "kind": "literal",
+    "items": [
+      {
+        "item_id": "church_05",
+        "count": 1
+      },
+      {
+        "item_id": "church_04",
+        "count": 1
+      },
+      {
+        "item_id": "bakery_05",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 70,
+      "blessings": 3
+    },
+    "text": "A table for breaking bread, a basket, and a loaf to go in it, Naomi. The widows mean to lay the first meal.",
+    "scene_id": null
+  },
+  {
+    "id": "ch5_o_012",
+    "chapter": 5,
+    "character_id": "caleb",
+    "kind": "spiritual",
+    "items": [
+      {
+        "item_id": "oil_06",
+        "count": 1
+      }
+    ],
+    "rewards": {
+      "talents": 30,
+      "blessings": 3
+    },
+    "text": "A horn of oil, Naomi. Good oil. Some things are worth doing right. ...Bring it yourself, if you would.",
+    "scene_id": null
   }
 ]

@@ -20,7 +20,13 @@
   {
     "chapter_id": "ch4",
     "title": "Chapter 4 Complete",
-    "body": "Joppa is full of wonder. But Joy's question hangs in the air, and Caleb has walked out without a word. The next chapter is still rising. The story continues soon.",
+    "body": "Joppa is full of wonder. But Joy's question hangs in the air, Caleb has walked out without a word, and his boatyard has gone quiet. Naomi picks up his tools and follows.",
+    "button": "Go to Caleb"
+  },
+  {
+    "chapter_id": "ch5",
+    "title": "Chapter 5 Complete",
+    "body": "The house is built and Caleb's name is clear. But men from Caesarea are at the tanner's gate, and one of them knows Naomi's face. The next chapter is still rising. The story continues soon.",
     "button": "Keep baking"
   }
 ]

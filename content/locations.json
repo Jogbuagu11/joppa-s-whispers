@@ -155,5 +155,53 @@
         "after": "loc_tanner_lamp_after"
       }
     ]
+  },
+  {
+    "id": "church",
+    "name": "The house church",
+    "areas": [
+      {
+        "id": "church_cornerstone",
+        "name": "Cornerstone",
+        "before": "loc_church_cornerstone_before",
+        "after": "loc_church_cornerstone_after"
+      },
+      {
+        "id": "church_walls",
+        "name": "Walls",
+        "before": "loc_church_walls_before",
+        "after": "loc_church_walls_after"
+      },
+      {
+        "id": "church_doorway",
+        "name": "Doorway",
+        "before": "loc_church_doorway_before",
+        "after": "loc_church_doorway_after"
+      },
+      {
+        "id": "church_roof",
+        "name": "Roof beams",
+        "before": "loc_church_roof_before",
+        "after": "loc_church_roof_after"
+      },
+      {
+        "id": "church_benches",
+        "name": "Benches",
+        "before": "loc_church_benches_before",
+        "after": "loc_church_benches_after"
+      },
+      {
+        "id": "church_lamps",
+        "name": "Lamp niches",
+        "before": "loc_church_lamps_before",
+        "after": "loc_church_lamps_after"
+      },
+      {
+        "id": "church_table",
+        "name": "Long table",
+        "before": "loc_church_table_before",
+        "after": "loc_church_table_after"
+      }
+    ]
   }
 ]
