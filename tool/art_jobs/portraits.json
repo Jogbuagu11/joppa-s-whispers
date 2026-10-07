@@ -1,0 +1,177 @@
+{
+  "folder": "portraits",
+  "kind": "characters",
+  "model": "gemini-3-pro-image",
+  "aspect": "9:16",
+  "style_references": [
+    "assets/characters/char_silas_neutral.jpg",
+    "assets/characters/char_marcus_neutral.jpg",
+    "assets/characters/char_caleb_neutral.jpg"
+  ],
+  "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork and gentle texture, like a premium illustrated story game. Exactly the style of the attached character pictures. NOT 3D, not a photo, not anime, not cartoon. Warm soft light from the upper left.",
+  "rules": "RULES: Tallest portrait format (9:16). ONE person, full body from head to bare or sandalled feet, standing, centred, facing the viewer, on a plain pure white background with no shadow on the wall and no scenery, exactly like the attached character pictures. No text, no watermark. Joppa on the Mediterranean coast around AD 40: a Jewish working man of the period, olive-brown skin, simple homespun tunic; nothing modern, no jewellery, no halo.",
+  "views": [
+    {
+      "id": "dockworker_neutral",
+      "label": "Dock Worker - neutral",
+      "game": "char_dockworker_neutral",
+      "prompt": "A sturdy harbour porter of about forty: broad shoulders, sun-browned, short dark beard, short dark hair with a cloth headband, a rough sleeveless undyed tunic belted with rope, bare feet, a coil of thick rope over one shoulder. Expression: calm and neutral, mouth closed."
+    },
+    {
+      "id": "dockworker_angry",
+      "label": "Dock Worker - angry",
+      "game": "char_dockworker_angry",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Dock Worker - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: angry and indignant, brows down, jaw set (not frightening)."
+    },
+    {
+      "id": "dockworker_sad",
+      "label": "Dock Worker - sad",
+      "game": "char_dockworker_sad",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Dock Worker - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: sorrowful, brows drawn together, eyes lowered a little."
+    },
+    {
+      "id": "dockworker_surprised",
+      "label": "Dock Worker - surprised",
+      "game": "char_dockworker_surprised",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Dock Worker - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: surprised, eyebrows raised, mouth slightly open."
+    },
+    {
+      "id": "dockworker_thinking",
+      "label": "Dock Worker - thinking",
+      "game": "char_dockworker_thinking",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Dock Worker - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: thoughtful, one hand raised to his beard or chin, eyes looking aside."
+    },
+    {
+      "id": "dockworker_happy",
+      "label": "Dock Worker - happy",
+      "game": "char_dockworker_happy",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Dock Worker - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: a warm, open smile, eyes crinkled."
+    },
+    {
+      "id": "dockworker2_neutral",
+      "label": "Dock Worker 2 - neutral",
+      "game": "char_dockworker2_neutral",
+      "prompt": "A lean young fisherman's hand of about twenty-five: short dark hair, a thin first beard, a plain faded blue knee-length tunic with the sleeves rolled, bare feet, carrying a round woven basket on his hip. Expression: calm and neutral, mouth closed."
+    },
+    {
+      "id": "dockworker2_angry",
+      "label": "Dock Worker 2 - angry",
+      "game": "char_dockworker2_angry",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Dock Worker 2 - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: angry and indignant, brows down, jaw set (not frightening)."
+    },
+    {
+      "id": "dockworker2_sad",
+      "label": "Dock Worker 2 - sad",
+      "game": "char_dockworker2_sad",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Dock Worker 2 - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: sorrowful, brows drawn together, eyes lowered a little."
+    },
+    {
+      "id": "dockworker2_surprised",
+      "label": "Dock Worker 2 - surprised",
+      "game": "char_dockworker2_surprised",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Dock Worker 2 - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: surprised, eyebrows raised, mouth slightly open."
+    },
+    {
+      "id": "dockworker2_thinking",
+      "label": "Dock Worker 2 - thinking",
+      "game": "char_dockworker2_thinking",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Dock Worker 2 - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: thoughtful, one hand raised to his beard or chin, eyes looking aside."
+    },
+    {
+      "id": "dockworker2_happy",
+      "label": "Dock Worker 2 - happy",
+      "game": "char_dockworker2_happy",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Dock Worker 2 - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: a warm, open smile, eyes crinkled."
+    },
+    {
+      "id": "simon_neutral",
+      "label": "Simon the Tanner - neutral",
+      "game": "char_simon_neutral",
+      "prompt": "Simon the tanner, about fifty-five: a weathered, gentle, humble face, grey-streaked beard and hair, strong stained working hands, a plain brown tunic under a worn leather apron, simple sandals. He stands a little apart, as a man used to being avoided, but kindly. Expression: calm and neutral, mouth closed."
+    },
+    {
+      "id": "simon_happy",
+      "label": "Simon the Tanner - happy",
+      "game": "char_simon_happy",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Simon the Tanner - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: a warm, open smile, eyes crinkled."
+    },
+    {
+      "id": "simon_sad",
+      "label": "Simon the Tanner - sad",
+      "game": "char_simon_sad",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Simon the Tanner - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: sorrowful, brows drawn together, eyes lowered a little."
+    },
+    {
+      "id": "simon_thinking",
+      "label": "Simon the Tanner - thinking",
+      "game": "char_simon_thinking",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Simon the Tanner - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: thoughtful, one hand raised to his beard or chin, eyes looking aside."
+    },
+    {
+      "id": "simon_angry",
+      "label": "Simon the Tanner - angry",
+      "game": "char_simon_angry",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Simon the Tanner - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: angry and indignant, brows down, jaw set (not frightening)."
+    },
+    {
+      "id": "simon_surprised",
+      "label": "Simon the Tanner - surprised",
+      "game": "char_simon_surprised",
+      "references": [
+        "/Users/mini/Downloads/WhispersofJoppa-art-review/portraits/Simon the Tanner - neutral.png"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man: keep his face, hair, beard, age, body, clothes, the things he carries, the framing and the white background exactly the same. Change only his facial expression (and, if natural, a small change of hands or posture) to show: surprised, eyebrows raised, mouth slightly open."
+    },
+    {
+      "id": "demas_happy",
+      "label": "Demas - happy",
+      "game": "char_demas_happy",
+      "references": [
+        "assets/characters/char_demas_neutral.jpg"
+      ],
+      "prompt": "Edit the LAST attached picture. It is the same man, Demas the marketplace storyteller: keep his face, hair, beard, clothes, framing and white background exactly the same. Change only his expression and gesture to show: delighted and theatrical, a broad charming smile, one hand opened to his audience."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "folder": "store-and-icon",
+  "kind": "ui",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "style_references": [
+    "assets/ui/app_icon.png",
+    "assets/locations/bg_loc_harbor_dusk.jpg"
+  ],
+  "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork, like a premium illustrated story game, matching the attached pictures. NOT 3D, not a photo, not anime.",
+  "rules": "RULES: No text, no letters, no logo, no watermark, no border.",
+  "views": [
+    {
+      "id": "feature",
+      "label": "Play Store feature graphic",
+      "game": "store_feature_graphic",
+      "prompt": "A wide banner (16:9) for a mobile story game set in Joppa around AD 40. On the right third, the woman from the first attached picture (Naomi: blue head covering, holding a small lit clay oil lamp, one finger to her lips as if sharing a secret), from the waist up. Behind her and filling the left two thirds, the harbour town of Joppa at dusk exactly as in the second attached picture: stone houses on the hill, fishing boats, warm lamplit windows, calm sea, indigo and gold sky. Keep the left-centre area calm and uncluttered, because a title will be placed there later."
+    },
+    {
+      "id": "notif",
+      "label": "Notification icon (source)",
+      "game": "notification_icon_source",
+      "aspect": "1:1",
+      "prompt": "A very simple app notification glyph: a flat solid pure-white silhouette of a small ancient clay oil lamp with one small flame, centred, on a solid pure-black background. One solid shape, no shading, no gradients, no outline, no details inside the shape, thick and bold so it reads at tiny sizes. Ignore the painterly style for this one: flat icon only."
+    }
+  ]
+}
