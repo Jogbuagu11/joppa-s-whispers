@@ -1280,6 +1280,23 @@ Art needed for Chapter 4:
 - Optional: a weaving-room background with a loom.
 - The Loom generator is already in.
 
+## App icons, more portraits, store art (2026-10-06)
+
+- `tool/make_app_icons.py <picture>` (Jennifer asked for a Python script) makes every
+  icon size from the one app-icon picture: iOS set, classic and modern (adaptive)
+  Android icons, plus `dist/store/play_icon_512.png` and `app_store_icon_1024.png`.
+  Checked on the emulator: the launcher shows Naomi's face in a circle. Her source
+  picture is 921 px; 1024 or larger would be a little sharper.
+- Jennifer's own portraits filed: Amos sad, Esther happy, Naomi happy (they were in
+  the top of `assets_incoming`, named differently).
+- Generated and WAITING FOR HER APPROVAL in `~/Downloads/WhispersofJoppa-art-review/`
+  (not in the game): `portraits/` — Dock Worker, Dock Worker 2 and Simon the Tanner,
+  six expressions each, and Demas happy; `store-and-icon/` — a Play Store banner (no
+  title text on it yet) and the notification icon glyph (a white clay lamp).
+- Still to do after approval: turn the glyph into Android notification icon files and
+  use it; store screenshots (real captures; Apple needs a 6.9-inch simulator) —
+  Milestone 25.
+
 ## Generated art and build 5 (2026-10-06)
 
 - Jennifer asked whether Claude could generate the missing pictures itself. She supplied
