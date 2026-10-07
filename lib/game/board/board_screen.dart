@@ -42,6 +42,9 @@ part 'board_screen_routes.dart';
 
 final _log = Logger('BoardScreen');
 
+/// Phones shorter than this (in points) get the lower bars above the board.
+const double shortPhoneHeight = 720;
+
 /// The main game board screen — hosts the Flame merge board.
 class BoardScreen extends StatefulWidget {
   const BoardScreen({
@@ -123,6 +126,8 @@ class _BoardScreenState extends State<BoardScreen>
   Widget build(BuildContext context) {
     final session = _session;
     final error = _error;
+    // A short phone: the bars above the board give it more room.
+    final compact = MediaQuery.sizeOf(context).height < shortPhoneHeight;
     final Widget body;
     if (error != null) {
       body = Center(
@@ -149,6 +154,7 @@ class _BoardScreenState extends State<BoardScreen>
                   ListenableBuilder(
                     listenable: session.tutorial,
                     builder: (context, _) => WalletChips(
+                      compact: compact,
                       controller: session.orders,
                       pearls: session.purchases.pearlsListenable,
                       // No purchase offers during the tutorial (GDD 11).
@@ -206,6 +212,7 @@ class _BoardScreenState extends State<BoardScreen>
                 items: session.game.itemCatalog,
                 characterNames: session.characterNames,
                 placeholderColors: session.game.chainPlaceholderColors,
+                compact: compact,
               ),
             ),
             TutorialBanner(

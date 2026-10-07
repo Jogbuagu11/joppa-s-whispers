@@ -6,6 +6,8 @@ import 'package:whispers_of_joppa/domain/orders.dart';
 
 const _gold = Color(0xFFD4802A);
 const _cream = Color(0xFFF3E6C8);
+const _textSize = 9.5;
+const _textLineHeight = 1.2;
 
 class OrderCard extends StatelessWidget {
   const OrderCard({
@@ -19,7 +21,12 @@ class OrderCard extends StatelessWidget {
     required this.canSkip,
     required this.onDeliver,
     required this.onSkip,
+    this.compact = false,
   });
+
+  /// On a short phone the card is lower: fewer lines of the request, no
+  /// reward line (tapping the request shows it all).
+  final bool compact;
 
   final OrderModel order;
   final String characterName;
@@ -95,24 +102,54 @@ class OrderCard extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Expanded(
-            child: Text(
-              order.text,
-              maxLines: 6,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: _cream, fontSize: 9.5, height: 1.2),
+            // Tapping the request shows all of it.
+            child: Semantics(
+              button: true,
+              child: GestureDetector(
+                key: Key('order_text_${order.id}'),
+                behavior: HitTestBehavior.opaque,
+                onTap: () => _showDetails(context),
+                child: LayoutBuilder(
+                  builder: (context, box) {
+                    // Only whole lines: a long request ends in "…", never in
+                    // a line cut in half.
+                    final lineHeight =
+                        MediaQuery.textScalerOf(context).scale(_textSize) *
+                        _textLineHeight;
+                    final lines = (box.maxHeight / lineHeight).floor();
+                    return Text(
+                      order.text,
+                      maxLines: lines < 1 ? 1 : lines,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: _cream,
+                        fontSize: _textSize,
+                        height: _textLineHeight,
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [for (final wanted in order.items) _wantedItem(wanted)],
+          // Three wanted items are wider than a card on a narrow phone:
+          // they shrink to fit instead of spilling over its edge.
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [for (final wanted in order.items) _wantedItem(wanted)],
+            ),
           ),
           const SizedBox(height: 3),
-          Text(
-            '+${order.talents} Talents  +${order.blessings} ✦',
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: _cream, fontSize: 9),
-          ),
-          const SizedBox(height: 3),
+          if (!compact) ...[
+            Text(
+              _rewardLine,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: _cream, fontSize: 9),
+            ),
+            const SizedBox(height: 3),
+          ],
           Row(
             children: [
               Expanded(
@@ -153,6 +190,37 @@ class OrderCard extends StatelessWidget {
       ),
     );
   }
+
+  String get _rewardLine => '+${order.talents} Talents  +${order.blessings} ✦';
+
+  /// The whole request and its reward, in a small window.
+  Future<void> _showDetails(BuildContext context) => showDialog<void>(
+    context: context,
+    builder: (context) => AlertDialog(
+      key: const Key('order_details'),
+      backgroundColor: const Color(0xFF2A1F08),
+      title: Text(characterName, style: const TextStyle(color: _gold)),
+      // However long the request, it can be scrolled.
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(order.text, style: const TextStyle(color: _cream)),
+            const SizedBox(height: 12),
+            Text(_rewardLine, style: const TextStyle(color: _gold)),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          key: const Key('order_details_close'),
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Close', style: TextStyle(color: _gold)),
+        ),
+      ],
+    ),
+  );
 
   Widget _wantedItem(OrderItem wanted) {
     final item = items[wanted.itemId];

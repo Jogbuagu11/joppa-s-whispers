@@ -12,7 +12,11 @@ class OrdersBar extends StatelessWidget {
     required this.items,
     required this.characterNames,
     required this.placeholderColors,
+    this.compact = false,
   });
+
+  /// Lower cards, for a short phone.
+  final bool compact;
 
   final OrdersController controller;
   final Map<String, ItemModel> items;
@@ -27,7 +31,7 @@ class OrdersBar extends StatelessWidget {
         final orders = controller.activeOrders;
         final counts = controller.board.itemCounts();
         return SizedBox(
-          height: 178,
+          height: compact ? 136 : 178,
           child: Row(
             children: [
               for (final order in orders)
@@ -46,6 +50,7 @@ class OrdersBar extends StatelessWidget {
                       canSkip: controller.canSkip,
                       onDeliver: () => controller.deliver(order.id),
                       onSkip: () => controller.skip(order.id),
+                      compact: compact,
                     ),
                   ),
                 ),
@@ -64,7 +69,11 @@ class WalletChips extends StatelessWidget {
     required this.controller,
     this.pearls,
     this.onOpenShop,
+    this.compact = false,
   });
+
+  /// Tighter chips, for a short phone.
+  final bool compact;
 
   final OrdersController controller;
 
@@ -84,14 +93,14 @@ class WalletChips extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _chip('Talents', controller.talents, const Key('talents_count')),
-          const SizedBox(height: 4),
+          SizedBox(height: compact ? 2 : 4),
           _chip(
             'Blessings',
             controller.blessings,
             const Key('blessings_count'),
           ),
           if (pearls case final pearls?) ...[
-            const SizedBox(height: 4),
+            SizedBox(height: compact ? 2 : 4),
             ValueListenableBuilder<int>(
               valueListenable: pearls,
               builder: (context, count, _) => GestureDetector(
@@ -107,7 +116,7 @@ class WalletChips extends StatelessWidget {
   }
 
   Widget _chip(String label, int value, Key key) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+    padding: EdgeInsets.symmetric(horizontal: 10, vertical: compact ? 1 : 4),
     decoration: BoxDecoration(
       color: const Color(0xFF2A1F08),
       borderRadius: BorderRadius.circular(10),

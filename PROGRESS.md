@@ -1147,9 +1147,25 @@ tested directly).
   `~/Downloads/WhispersofJoppa-store-art/screenshots/`. No captions or marketing text on
   them. Jennifer has not yet looked at them.
 - Fixed on the way: the phone's clock and battery were drawn dark on the dark board.
-- Seen on the way, not fixed: on a short 16:9 phone (iPhone SE size) the bars above the
-  board take so much room that the board is small; and a long order request is cut off
-  mid-line on its card. Both are candidates for a layout pass before launch.
+- Seen on the way and fixed in the layout pass below: a small board on short phones, and
+  order requests cut off mid-line.
+
+## Layout pass (2026-10-07) — asked for by Jennifer
+
+- **Order requests end cleanly.** A card shows only whole lines of the request and ends
+  in "…"; tapping the request opens a small window with all of it and the reward.
+- **Short phones get a bigger board.** On a screen under 720 points tall (iPhone SE and
+  similar) the order cards are lower (136 instead of 178 points; the reward line moves
+  into the tap-to-read window) and the Talents/Blessings/Pearls chips are tighter. On an
+  iPhone SE the board cells grow by about a third.
+- Three wanted items now shrink to fit a narrow card instead of spilling over its edge
+  (found by the reviewer; 13 orders ask for three items).
+- Assumptions to confirm: the 720-point threshold; hiding the reward line on short
+  phones; no visible "more" hint on the request (it is simply tappable).
+- Reviewer's notes carried forward: no test checks that the board screen itself switches
+  to the lower bars under 720 points (checked by eye on an iPhone SE simulator); the
+  word "Close" joins "Deliver"/"Skip" as an interface label written in code.
+- Board screenshot retaken; both store sets refreshed.
 
 ## Assumptions to confirm (added in Milestone 24)
 - **Text grows to 1.3× at most.** GDD 16 says text "scales with the phone's text-size
