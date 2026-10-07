@@ -1,0 +1,65 @@
+{
+  "folder": "docks",
+  "model": "gemini-3-pro-image",
+  "aspect": "9:16",
+  "style_references": [
+    "assets/locations/loc_well_lip_after.jpg",
+    "assets/locations/loc_well_rope_after.jpg",
+    "assets/locations/bg_loc_docks.jpg"
+  ],
+  "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork and gentle texture, like a premium illustrated story game. NOT 3D, not a 3D render, not a photo, not anime, not flat vector, not cartoon. Soft painted edges, no thick black outlines. Warm soft Mediterranean sunlight from the upper left, gentle shadows. Palette: sand #E8D3A9, cream #F5EBD7, terracotta #C0643B, olive #7A7A3A, cedar brown #5A3E2B, sea blue #2F7F9E, indigo #2E3A6B, gold #D9A441. Avoid neon, pure black, and cold gray-blue.",
+  "scene": "The place: the fishing docks in Joppa's harbor around AD 40. One weathered wooden dock on stone footings, with rocky shore, clear blue water, small wooden fishing boats, and a stone watchtower on the rocks in the distance. This picture is one close view of that dock.",
+  "after_rules": "RULES: Tallest portrait format (9:16), full scene edge to edge. No text, no letters, no signs, no watermark. No people, no animals in the foreground. Camera at a standing adult's eye height. First-century Mediterranean only: wood, rope, stone, clay, iron; nothing modern (no glass lanterns, no metal cleats, no plastic). This is the RESTORED state: bright warm daylight, sturdy repaired wood, neatly coiled ropes, baskets of fish, a busy welcoming feel.",
+  "before_rules": "Edit the attached picture into its NEGLECTED state from before it was repaired. Keep exactly the same camera angle, framing, layout and background so the two pictures line up perfectly; change only the condition of things. Rotten and broken wood, frayed ropes, seaweed and debris, empty baskets, muted faded colours, gray hazy light. Neglected, not scary. No text, no people, no animals.",
+  "views": [
+    {
+      "id": "posts",
+      "label": "Mooring posts",
+      "game": "loc_docks_posts",
+      "after": "the wooden mooring posts with ropes and a small fishing boat tied up",
+      "before": "posts leaning and split, ropes frayed, no boat"
+    },
+    {
+      "id": "planking",
+      "label": "Dock planking",
+      "game": "loc_docks_planking",
+      "after": "the wooden dock planking stretching out over the water",
+      "before": "missing and rotten planks, gaps showing the water"
+    },
+    {
+      "id": "slipway",
+      "label": "Slipway",
+      "game": "loc_docks_slipway",
+      "after": "the stone slipway where boats are hauled up from the water",
+      "before": "stones cracked, covered in seaweed and debris"
+    },
+    {
+      "id": "table",
+      "label": "Fish table",
+      "game": "loc_docks_table",
+      "after": "the wooden fish table where the catch is sorted, with baskets and a knife",
+      "before": "table collapsed, baskets torn, empty"
+    },
+    {
+      "id": "racks",
+      "label": "Net racks",
+      "game": "loc_docks_racks",
+      "after": "the wooden net racks with fishing nets hung to dry",
+      "before": "racks fallen, nets torn and tangled on the ground"
+    },
+    {
+      "id": "lantern",
+      "label": "Lantern post",
+      "game": "loc_docks_lantern",
+      "after": "the lantern post at the end of the dock with a clay lamp in an iron cage, softly lit",
+      "before": "post leaning, lamp broken and dark"
+    },
+    {
+      "id": "netbox",
+      "label": "Silas's net box",
+      "game": "loc_docks_netbox",
+      "after": "Silas's old wooden net box, painted and carved, with folded nets inside",
+      "before": "lid broken, wood faded and cracked, nets rotting"
+    }
+  ]
+}
