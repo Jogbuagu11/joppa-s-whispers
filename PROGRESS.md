@@ -1329,9 +1329,10 @@ For Jennifer's reviewer:
   along, as with Letters 1 and 5). Isaiah 43:2 in Letter 10 sits beside a drowning.
 - Romance: Caleb asks Naomi to bake the launching loaf, "If you'd come."; she says yes.
 
-Art for Chapter 5 (generated for Jennifer's review, not yet in the game):
+Art for Chapter 5 (generated, approved by Jennifer 2026-10-06, now in the game; build 6
+`dist/whispers-of-joppa-1.0.0-6.aab` has Chapters 1–5 and all of it):
 - 14 pictures of the house church as "not yet built" / "built" pairs; a tanner's-gate
-  background for the closing scene (it uses the rooftop picture until approved);
+  background, now used by the closing scene;
   six Tobiah portraits (with a coil of rope, not a net).
 
 ## App icons, more portraits, store art (2026-10-06)
