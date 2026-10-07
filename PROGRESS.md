@@ -1280,6 +1280,31 @@ Art needed for Chapter 4:
 - Optional: a weaving-room background with a loom.
 - The Loom generator is already in.
 
+## Generated art and build 5 (2026-10-06)
+
+- Jennifer asked whether Claude could generate the missing pictures itself. She supplied
+  a Google AI Studio key (in `.env` as `GOOGLE_AI_API_KEY`, never in git; billing had to
+  be switched on first) and her Google Flow prompt. Tools: `tool/generate_art.py` (makes
+  pictures into `~/Downloads/WhispersofJoppa-art-review/<job>/` ONLY), 
+  `tool/art_overview.dart` (one overview picture per folder), `tool/accept_art.py`
+  (files approved pictures into `assets_incoming/`). Job files with every prompt are in
+  `tool/art_jobs/`. Model: gemini-3-pro-image, with her own pictures attached as style
+  references; each "before" is the "after" picture edited, so pairs line up.
+- Rule agreed with Jennifer: nothing generated goes into the game until she has looked
+  at it and said yes. She keeps the character portraits for herself.
+- Approved and in the game: 14 docks pictures; 14 tanner's-house pictures; the 8 Boat
+  Festival items and Caleb's Boatyard; backgrounds "outside the bakehouse" and "rooftop
+  at night" (her daytime rooftop turned to night); Olive Press level 3.
+- The Boat Festival items now name their art, in `content/events.json` and in the live
+  `events` row (older builds simply show placeholders).
+- Every location (bakehouse, well, docks, tanner's house), every scene background in
+  use, every item and every generator level now has art.
+- Bundle `dist/whispers-of-joppa-1.0.0-5.aab` (build 5: Chapters 1–4 and all this art)
+  replaces build 4 in Downloads.
+- Art still missing: portraits (Naomi, Esther and Demas happy; Amos sad; Dock Worker;
+  Simon the Tanner; optional Chief Collector) — Jennifer is doing these; the Android
+  notification icon; store screenshots and the Play feature graphic.
+
 ## Bakehouse art (2026-10-06)
 
 - Jennifer added the 14 bakehouse before/after pictures (in the backgrounds folder, named

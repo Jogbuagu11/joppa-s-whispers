@@ -18,49 +18,57 @@
             "tier": 1,
             "item_id": "boat_01",
             "name": "Cedar log",
-            "sell": 1
+            "sell": 1,
+            "asset": "assets/items/item_boat_01.jpg"
           },
           {
             "tier": 2,
             "item_id": "boat_02",
             "name": "Sawn plank",
-            "sell": 2
+            "sell": 2,
+            "asset": "assets/items/item_boat_02.jpg"
           },
           {
             "tier": 3,
             "item_id": "boat_03",
             "name": "Keel",
-            "sell": 4
+            "sell": 4,
+            "asset": "assets/items/item_boat_03.jpg"
           },
           {
             "tier": 4,
             "item_id": "boat_04",
             "name": "Planked hull",
-            "sell": 8
+            "sell": 8,
+            "asset": "assets/items/item_boat_04.jpg"
           },
           {
             "tier": 5,
             "item_id": "boat_05",
             "name": "Ribbed hull",
-            "sell": 15
+            "sell": 15,
+            "asset": "assets/items/item_boat_05.jpg"
           },
           {
             "tier": 6,
             "item_id": "boat_06",
             "name": "Sealed hull",
-            "sell": 30
+            "sell": 30,
+            "asset": "assets/items/item_boat_06.jpg"
           },
           {
             "tier": 7,
             "item_id": "boat_07",
             "name": "Mast and sail",
-            "sell": 60
+            "sell": 60,
+            "asset": "assets/items/item_boat_07.jpg"
           },
           {
             "tier": 8,
             "item_id": "boat_08",
             "name": "Festival boat",
-            "sell": 120
+            "sell": 120,
+            "asset": "assets/items/item_boat_08.jpg"
           }
         ]
       },
