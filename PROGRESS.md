@@ -1134,6 +1134,23 @@ tested directly).
 - Carried forward: `event_screen.dart` is at 294 lines — split it on the next change.
   No test presses a generator with zero Manna *and* checks the "empty" sound.
 
+## Store screenshots (2026-10-07) — first part of Milestone 25
+
+- `tool/take_store_screenshots.sh "iPhone 17 Pro Max" apple-6.9` stages the game's real
+  screens from a made-up late-game save (`integration_test/store_shots.dart`, not part of
+  the test suite) and photographs each from the simulator with a tidy 9:41 status bar.
+- Six pictures: board, watchtower restoration, a story scene (Jael), Esther's letters,
+  the Boat Festival board, one letter open.
+- Apple set: 1320×2868 (the required 6.9-inch size). Google Play set: the same pictures
+  trimmed to 1320×2640 (Play allows at most 2:1) with the status bar cut off.
+- Both are in `dist/store/screenshots/` and copied to
+  `~/Downloads/WhispersofJoppa-store-art/screenshots/`. No captions or marketing text on
+  them. Jennifer has not yet looked at them.
+- Fixed on the way: the phone's clock and battery were drawn dark on the dark board.
+- Seen on the way, not fixed: on a short 16:9 phone (iPhone SE size) the bars above the
+  board take so much room that the board is small; and a long order request is cut off
+  mid-line on its card. Both are candidates for a layout pass before launch.
+
 ## Assumptions to confirm (added in Milestone 24)
 - **Text grows to 1.3× at most.** GDD 16 says text "scales with the phone's text-size
   setting"; past 1.3× the bars around the board run out of room on small phones. A larger
@@ -1630,6 +1647,9 @@ beside the game with its history kept. A backup of the original is in the GitHub
 - Never force-push this repo again.
 
 ## Waiting on Jennifer
+
+- Look at the store screenshots in `Downloads/WhispersofJoppa-store-art/screenshots/` and
+  say which to keep, drop or retake.
 
 - Milestone 24 check (build 8): on a phone with the sound up, tap a generator, merge two
   items and deliver an order — listen and feel. Then tap the gear, turn Sound off, then

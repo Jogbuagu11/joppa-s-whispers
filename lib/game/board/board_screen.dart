@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/cloud_save_store.dart';
 import 'package:whispers_of_joppa/domain/cloud_sync.dart';
@@ -217,10 +218,14 @@ class _BoardScreenState extends State<BoardScreen>
         ),
       );
     }
-    return Scaffold(
-      key: const Key('board_screen'),
-      backgroundColor: const Color(0xFF1A1205),
-      body: body,
+    // The board is dark: the phone's clock and battery are drawn light.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        key: const Key('board_screen'),
+        backgroundColor: const Color(0xFF1A1205),
+        body: body,
+      ),
     );
   }
 }
