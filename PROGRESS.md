@@ -1167,6 +1167,27 @@ tested directly).
   word "Close" joins "Deliver"/"Skip" as an interface label written in code.
 - Board screenshot retaken; both store sets refreshed.
 
+## iPhone signing attempt and build 9 (2026-10-07) — Milestone 25, in progress
+
+- Jennifer gave her Apple Team ID (already set in the Xcode project). A signed **archive**
+  builds on this Mac from the command line with her App Store Connect key (xcodebuild
+  `-allowProvisioningUpdates` with the key from `.env`); Apple made a development
+  certificate for it ("Created via API").
+- The **store export fails**: "Cloud signing permission error / No signing certificate
+  iOS Distribution". Her key does not have the Admin role, which Apple requires for
+  cloud-managed distribution signing. Nothing was uploaded.
+- Ways forward (Jennifer to choose): (a) make a new App Store Connect API key with the
+  **Admin** role and give Claude the file; or (b) open Xcode → Settings → Accounts and
+  sign in with her Apple ID, so Xcode can make the distribution certificate itself.
+- `ios/ExportOptions.plist` holds the export settings (App Store Connect, export only).
+- Also: the name under the iPhone icon is now "Whispers of Joppa" (was "Whispers Of
+  Joppa"), and the app declares it uses only standard encryption
+  (`ITSAppUsesNonExemptEncryption = false`), so Apple does not ask at every upload.
+- **Build 9** (`dist/whispers-of-joppa-1.0.0-9.aab`, in Downloads) has Milestone 24 and
+  the layout pass; its release build was opened on the Android emulator.
+- iPhone still needs before TestFlight: Sign in with Apple and push entitlements,
+  real AdMob ids, the tracking/consent prompts, Crashlytics symbol upload.
+
 ## Assumptions to confirm (added in Milestone 24)
 - **Text grows to 1.3× at most.** GDD 16 says text "scales with the phone's text-size
   setting"; past 1.3× the bars around the board run out of room on small phones. A larger
@@ -1663,6 +1684,9 @@ beside the game with its history kept. A backup of the original is in the GitHub
 - Never force-push this repo again.
 
 ## Waiting on Jennifer
+
+- iPhone store signing: either a new App Store Connect API key with the Admin role, or
+  sign in to Xcode (Settings → Accounts) with her Apple ID. See "iPhone signing attempt".
 
 - Look at the store screenshots in `Downloads/WhispersofJoppa-store-art/screenshots/` and
   say which to keep, drop or retake.
