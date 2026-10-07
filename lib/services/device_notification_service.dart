@@ -26,7 +26,7 @@ class DeviceNotificationService implements NotificationService {
   Future<void> _init() => _ready ??= () async {
     await _local.initialize(
       settings: const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings('ic_notification'),
         // Never ask for permission here: the game asks at its own moment.
         iOS: DarwinInitializationSettings(
           requestAlertPermission: false,

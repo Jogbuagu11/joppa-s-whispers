@@ -38,7 +38,8 @@ List<String> itemsMissingArt(
   return missing;
 }
 
-final _characterName = RegExp(r'^char_([a-z]+)_([a-z]+)$');
+// A character id may end in a digit (dockworker2).
+final _characterName = RegExp(r'^char_([a-z]+[0-9]*)_([a-z]+)$');
 
 /// Common misspellings in raw art names -> the spelling the game uses.
 const _expressionFixes = {

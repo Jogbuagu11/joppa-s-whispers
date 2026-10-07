@@ -160,4 +160,12 @@ void main() {
       );
     });
   });
+
+  test('a character id may end in a digit', () {
+    expect(
+      characterAssetBaseName('char_dockworker2_neutral.png'),
+      'char_dockworker2_neutral',
+    );
+    expect(characterAssetBaseName('char_2pac_neutral.png'), isNull);
+  });
 }

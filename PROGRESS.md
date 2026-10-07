@@ -1289,12 +1289,18 @@ Art needed for Chapter 4:
   picture is 921 px; 1024 or larger would be a little sharper.
 - Jennifer's own portraits filed: Amos sad, Esther happy, Naomi happy (they were in
   the top of `assets_incoming`, named differently).
-- Generated and WAITING FOR HER APPROVAL in `~/Downloads/WhispersofJoppa-art-review/`
-  (not in the game): `portraits/` — Dock Worker, Dock Worker 2 and Simon the Tanner,
+- Generated, then APPROVED by Jennifer and now in the game / store folder: `portraits/` — Dock Worker, Dock Worker 2 and Simon the Tanner,
   six expressions each, and Demas happy; `store-and-icon/` — a Play Store banner (no
   title text on it yet) and the notification icon glyph (a white clay lamp).
-- Still to do after approval: turn the glyph into Android notification icon files and
-  use it; store screenshots (real captures; Apple needs a 6.9-inch simulator) —
+- The notification icon is made by `tool/make_notification_icon.dart` (white shape,
+  five sizes, with a keep-rule for release builds) and is what notifications now use.
+  Store art is in `dist/store/` and copied to `~/Downloads/WhispersofJoppa-store-art/`:
+  Play icon 512, App Store icon 1024, Play feature graphic 1024×500 (no title text).
+- Build 5 (`dist/whispers-of-joppa-1.0.0-5.aab`, in Downloads) has Chapters 1–4 and all
+  the art; its release build was installed on the emulator and opened.
+- Every character who speaks now has portraits except the Chief Collector (optional)
+  and Tobiah (Chapter 5).
+- Still to do: store screenshots (real captures; Apple needs a 6.9-inch simulator) —
   Milestone 25.
 
 ## Generated art and build 5 (2026-10-06)
