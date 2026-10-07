@@ -1,7 +1,9 @@
-// The notification switches, and the one-time in-game question that comes
-// before the phone's own permission prompt.
+// The settings screen (sound, vibration, tier numbers and the notification
+// switches), and the one-time in-game question that comes before the
+// phone's own permission prompt.
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
+import 'package:whispers_of_joppa/features/settings/comfort_controller.dart';
 import 'package:whispers_of_joppa/features/settings/notifications_controller.dart';
 
 const _gold = Color(0xFFD4802A);
@@ -13,7 +15,11 @@ class NotificationSettingsScreen extends StatelessWidget {
     super.key,
     required this.controller,
     required this.content,
+    this.comfort,
   });
+
+  /// Sound, vibration and tier numbers. Null leaves those switches out.
+  final ComfortController? comfort;
 
   final NotificationsController controller;
   final NotificationContent content;
@@ -31,11 +37,36 @@ class NotificationSettingsScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: ListenableBuilder(
-          listenable: controller,
+          listenable: Listenable.merge([controller, comfort]),
           builder: (context, _) {
             final prefs = controller.prefs;
+            final comfort = this.comfort;
             return ListView(
               children: [
+                if (comfort != null) ...[
+                  _switch(
+                    'sound',
+                    text,
+                    comfort.prefs.sound,
+                    comfort.setSound,
+                    prefix: 'comfort',
+                  ),
+                  _switch(
+                    'haptics',
+                    text,
+                    comfort.prefs.haptics,
+                    comfort.setHaptics,
+                    prefix: 'comfort',
+                  ),
+                  _switch(
+                    'tier_numbers',
+                    text,
+                    comfort.prefs.tierNumbers,
+                    comfort.setTierNumbers,
+                    prefix: 'comfort',
+                  ),
+                  const Divider(color: Color(0xFF3A2A0C)),
+                ],
                 if (controller.blockedByPhone)
                   Padding(
                     padding: const EdgeInsets.all(16),
@@ -70,9 +101,10 @@ class NotificationSettingsScreen extends StatelessWidget {
     String key,
     Map<String, String> text,
     bool value,
-    Future<void> Function(bool) onChanged,
-  ) => SwitchListTile(
-    key: Key('notify_$key'),
+    Future<void> Function(bool) onChanged, {
+    String prefix = 'notify',
+  }) => SwitchListTile(
+    key: Key('${prefix}_$key'),
     value: value,
     onChanged: onChanged,
     activeThumbColor: _gold,

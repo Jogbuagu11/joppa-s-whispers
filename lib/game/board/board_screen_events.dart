@@ -40,6 +40,7 @@ mixin _BoardEvents on _BoardRoutes {
             saveGame: session.saver.saveNow,
             markGameChanged: session.saver.markChanged,
             repository: widget.eventProgress,
+            comfort: widget.comfort,
           ),
         ),
       );
@@ -57,6 +58,7 @@ mixin _BoardEvents on _BoardRoutes {
     final session = _session;
     if (session == null || _popupOpen || !mounted) return;
     _popupOpen = true;
+    widget.comfort?.cue(GameCue.empty);
     _events?.outOfEnergy();
     await showOutOfMannaPopup(context, session.manna, ads: session.ads);
     _popupOpen = false;

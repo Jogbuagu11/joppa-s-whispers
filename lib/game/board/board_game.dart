@@ -66,6 +66,9 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   /// cost nothing.
   void Function({required bool wasFree})? onGeneratorSpawn;
 
+  /// Whether every item shows its tier number (the player's choice).
+  bool showTierNumbers = false;
+
   /// When this returns true, generator taps cost nothing (tutorial).
   bool Function()? freeGeneratorTaps;
 

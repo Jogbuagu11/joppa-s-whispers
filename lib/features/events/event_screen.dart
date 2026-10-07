@@ -10,6 +10,8 @@ import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/events.dart';
 import 'package:whispers_of_joppa/features/events/event_controller.dart';
+import 'package:whispers_of_joppa/features/settings/comfort_controller.dart';
+import 'package:whispers_of_joppa/game/board/board_feedback.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
@@ -31,7 +33,11 @@ class EventScreen extends StatefulWidget {
     required this.saveGame,
     required this.markGameChanged,
     this.repository,
+    this.comfort,
   });
+
+  /// Sounds, vibration and tier numbers. Null (in tests) means none.
+  final ComfortController? comfort;
 
   final EventModel event;
   final EconomyConfig economy;
@@ -60,6 +66,7 @@ class _EventScreenState extends State<EventScreen> {
   BoardGame? _game;
   Timer? _clock;
   VoidCallback? _keep;
+  VoidCallback? _quiet;
 
   @override
   void initState() {
@@ -123,6 +130,10 @@ class _EventScreenState extends State<EventScreen> {
         (itemId: i.itemId, col: i.col, row: i.row),
     ];
     game.onMerged = (item) => controller.onMerged(item.tier);
+    final comfort = widget.comfort;
+    if (comfort != null) {
+      _quiet = attachFeedback(comfort, game, rewards: controller.justPaid);
+    }
     // Every change to the board is kept, so leaving loses nothing.
     void keep() {
       widget.markGameChanged();
@@ -134,6 +145,7 @@ class _EventScreenState extends State<EventScreen> {
     controller.justPaid.addListener(_announce);
     await game.loadArt();
     if (!mounted) {
+      _quiet?.call();
       controller.dispose();
       return;
     }
@@ -176,6 +188,7 @@ class _EventScreenState extends State<EventScreen> {
     _clock?.cancel();
     final controller = _controller;
     final keep = _keep;
+    _quiet?.call();
     if (controller != null) {
       if (keep != null) _game?.boardChanged.removeListener(keep);
       controller.justPaid.removeListener(_announce);

@@ -6,6 +6,12 @@ const _textLimits = {
   'come_back': {'title': 40, 'body': 110},
   'settings': {
     'title': 30,
+    'sound': 40,
+    'sound_hint': 90,
+    'haptics': 40,
+    'haptics_hint': 90,
+    'tier_numbers': 40,
+    'tier_numbers_hint': 90,
     'reminders': 40,
     'reminders_hint': 90,
     'events': 40,

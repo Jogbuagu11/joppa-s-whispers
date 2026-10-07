@@ -6,6 +6,7 @@ import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
 import 'package:whispers_of_joppa/features/shop/shop_screen.dart';
 import 'package:whispers_of_joppa/services/purchase_backend.dart';
 
+import '../support/comfort_fakes.dart';
 import '../support/store_fakes.dart';
 
 const _products = {
@@ -92,6 +93,14 @@ void main() {
     );
     // The price shown is the store's.
     expect(find.text(r'$0.99'), findsNWidgets(2));
+  });
+
+  testWidgets('fits a small phone at the largest text size', (tester) async {
+    useLargestText(tester);
+    await show(tester);
+    expect(tester.takeException(), isNull);
+    await buy(tester, 'pearls_tier1');
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('buying adds the Pearls and says so', (tester) async {

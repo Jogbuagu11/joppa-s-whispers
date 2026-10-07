@@ -5,19 +5,23 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:whispers_of_joppa/app/cloud_sync.dart';
 import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/data/cloud_save_store.dart';
+import 'package:whispers_of_joppa/data/comfort_prefs_repository.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/data/notification_prefs_repository.dart';
 import 'package:whispers_of_joppa/data/supabase_remote_events.dart';
 import 'package:whispers_of_joppa/data/supabase_remote_content.dart';
+import 'package:whispers_of_joppa/domain/comfort.dart';
 import 'package:whispers_of_joppa/data/sync_base_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
+import 'package:whispers_of_joppa/features/settings/comfort_controller.dart';
 import 'package:whispers_of_joppa/features/settings/notifications_controller.dart';
 import 'package:whispers_of_joppa/services/ad_service.dart';
 import 'package:whispers_of_joppa/services/analytics_service.dart';
 import 'package:whispers_of_joppa/services/google_rewarded_ads.dart';
+import 'package:whispers_of_joppa/services/device_feedback_player.dart';
 import 'package:whispers_of_joppa/services/device_notification_service.dart';
 import 'package:whispers_of_joppa/services/in_app_purchase_store.dart';
 import 'package:whispers_of_joppa/services/purchase_backend.dart';
@@ -58,6 +62,12 @@ class WhispersApp extends ConsumerWidget {
     tokens: SupabaseDeviceTokens(Supabase.instance.client),
   );
 
+  // Sound, vibration and tier numbers, each with its own switch.
+  static final ComfortController _comfort = ComfortController(
+    player: DeviceFeedbackPlayer(),
+    repository: ComfortPrefsRepository(),
+  );
+
   // Events: from the server, with the app's own file as the fallback.
   static final EventsRepository _events = EventsRepository(
     loadBundled: loadBundledEvents,
@@ -95,6 +105,12 @@ class WhispersApp extends ConsumerWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF8B6914)),
         useMaterial3: true,
       ),
+      // Words follow the phone's text-size setting, up to the largest size
+      // the screens around the board have room for.
+      builder: (context, child) => MediaQuery.withClampedTextScaling(
+        maxScaleFactor: maxTextScale,
+        child: child ?? const SizedBox.shrink(),
+      ),
       home: accountsEnabled
           ? BoardScreen(
               cloud: _cloud,
@@ -104,6 +120,7 @@ class WhispersApp extends ConsumerWidget {
               analytics: analytics,
               notifications: _notifications,
               events: _events,
+              comfort: _comfort,
             )
           : const BoardScreen(),
     );

@@ -19,6 +19,9 @@ mixin _BoardState on State<BoardScreen> {
 
   /// True while the event board is open over this one.
   bool _eventOpen = false;
+
+  /// Stops this game's sounds and vibrations; null when there are none.
+  VoidCallback? _quiet;
 }
 
 mixin _BoardRoutes on _BoardState {
@@ -71,6 +74,21 @@ mixin _BoardRoutes on _BoardState {
       )
       ..start();
     unawaited(shop.resume());
+  }
+
+  /// Sounds and vibrations for this game, and its tier numbers.
+  void _attachComfort(BoardSession session) {
+    final comfort = widget.comfort;
+    if (comfort == null) return;
+    _quiet?.call();
+    _quiet = attachFeedback(
+      comfort,
+      session.game,
+      orders: session.orders,
+      story: session.story,
+      rewards: session.ads.tallyChanged,
+    );
+    unawaited(comfort.load());
   }
 
   /// The letters button: opens the keepsake book.

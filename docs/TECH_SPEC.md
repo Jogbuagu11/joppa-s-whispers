@@ -285,7 +285,7 @@ Never send personal data in events.
 **Rules:**
 - Ask permission after Chapter 1 task 5 with an in-game explainer first, never on first launch (iOS only lets you ask once).
 - Android 13+ requires the `POST_NOTIFICATIONS` permission; same timing.
-- Settings has separate toggles: reminders, events, new chapters.
+- Settings has separate toggles: reminders, events, new chapters. The same screen also holds Sound, Vibration and "Numbers on items" (Milestone 24), kept on the phone in `comfort.json`.
 - Max 1 push per day per player; no notifications 9 pm–9 am in the player's time zone.
 - Pushes are sent by a Supabase Edge Function using the FCM HTTP v1 API, triggered from the admin panel or on a schedule. The Firebase service account key lives only in Edge Function secrets.
 - As built (Milestone 22): `send-push` accepts only a signed-in admin, sends to the `events` or `chapters` topic, and the database (`reserve_push`) allows one push per 24 hours for the whole game. Per-player sending, scheduled pushes and time-zone quiet hours are not built.

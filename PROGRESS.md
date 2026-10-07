@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 23 is built — all six chapters of Season 1 are written. Next to build: 24 — Polish & accessibility. Milestones 14 and 16–23 are built and awaiting Jennifer's checks.
+## Current milestone: 24 is built — sound, vibration, text size and numbers on items. Next to build: 25 — Release builds. Milestones 14 and 16–24 are built and awaiting Jennifer's checks.
 
 ---
 
@@ -32,7 +32,7 @@
 | 21 | Events system | BUILT — not tagged: the Joppa Boat Festival is live on the server (to 2026-10-27); Jennifer has not yet seen it on a phone |
 | 22 | Admin panel | BUILT — not tagged: Jennifer has not yet signed in and used it; push needs the Firebase key on the server |
 | 23 | Chapters 2–6 | BUILT — all of Season 1 (Chapters 1–6) is written. Not tagged: Jennifer has not played Chapters 2–6, and her reviewer has not read them |
-| 24 | Polish & accessibility | Not started |
+| 24 | Polish & accessibility | BUILT — not tagged: Jennifer has not yet heard the sounds or felt the vibration on a real phone |
 | 25 | Release builds | Not started |
 
 ---
@@ -1089,6 +1089,64 @@ Not verified: nobody has clicked through the admin page in a browser yet (its sc
 were syntax-checked, its event checks tested, and every server permission it relies on
 tested directly).
 
+## Milestone 24 — state (2026-10-07)
+
+**What it does**
+- **Sound:** six soft chimes — an item appears, a merge, an order delivered, a task done,
+  out of Manna, a reward (an ad's Manna or an event prize). They are made by arithmetic
+  in `tool/make_sounds.py` (plucked notes on a gentle five-note scale), so they are ours
+  outright: no samples, no licences. Run the script again to retune them. They play over
+  the player's own music, and on an iPhone they obey the silent switch.
+- **Vibration:** a light, medium or firm tap for the same moments.
+- **Settings:** the bell button is now a gear. The screen has Sound, Vibration and
+  "Numbers on items" above the three notification switches. Each is separate (GDD 16) and
+  remembered on the phone (`comfort.json`, not part of the saved game or the account).
+- **Numbers on items:** off by default. When on, every item shows its level in a small
+  dark disc in its corner, on the main board and the event board.
+- **Text size:** the game's words follow the phone's text-size setting up to 1.3× the
+  usual size. Tested at that size on a small (320-point) phone: shop, account, letters,
+  location, task bar, settings, and the whole board screen on both simulators.
+- Content is now version 12 (the new settings wording is in `content/notifications.json`).
+
+**How it is built**
+- Rules in `lib/domain/comfort.dart`; choices kept by `lib/data/comfort_prefs_repository.dart`;
+  `lib/features/settings/comfort_controller.dart` is the one place the game asks for a
+  sound or vibration; `lib/services/device_feedback_player.dart` is the real speaker and
+  motor (a small pool of ready players per sound, via the already-pinned `flame_audio`);
+  `lib/game/board/board_feedback.dart` listens to a board the same way analytics does.
+- No package was added or upgraded.
+
+**Checks**
+- `flutter analyze` clean; unit tests pass; `integration_test/comfort_test.dart` (switches
+  with stand-ins at double text size, plus one real sound loaded and played on the device)
+  passes on the iPhone simulator and the Android emulator.
+
+- The app was opened on both: the iPhone simulator (board with numbers on, checked by
+  eye) and the signed release build on the Android emulator (board reached, a generator
+  tapped). All 18 device tests pass on both.
+- **Build 8** (`dist/whispers-of-joppa-1.0.0-8.aab`, copied to Downloads) includes this
+  milestone.
+
+**Reviewer's notes (code-reviewer, 2026-10-07)**
+- Fixed before commit: every sound left a player behind (now pooled); the sound setting
+  was re-applied on every play (now once); an event merge that won a reward played two
+  sounds at once (now the reward alone); the badge text was laid out every frame.
+- Carried forward: `event_screen.dart` is at 294 lines — split it on the next change.
+  No test presses a generator with zero Manna *and* checks the "empty" sound.
+
+## Assumptions to confirm (added in Milestone 24)
+- **Text grows to 1.3× at most.** GDD 16 says text "scales with the phone's text-size
+  setting"; past 1.3× the bars around the board run out of room on small phones. A larger
+  limit needs those bars redesigned.
+- **"Readable without colour" is met by the real art plus the optional numbers.** GDD 16
+  asks for a distinct silhouette per tier — that is a property of Jennifer's pictures.
+  The numbers switch is the code's part; it is off by default so her art shows clean.
+- **Dialogue auto-advance (GDD 16) is not built.** It is not in the Milestone 24 row;
+  say if it should be added before launch.
+- **No background music.** Only short effects; music would need a track Jennifer owns.
+- The four new settings labels were written directly (short interface labels, no story
+  text), not by the content-writer.
+
 ## Milestone 23, Chapter 2 "The Collection" — state (2026-10-06)
 
 BUILT, NOT TAGGED. Analyze clean, 573 unit tests (including a play-through of both
@@ -1572,6 +1630,11 @@ beside the game with its history kept. A backup of the original is in the GitHub
 - Never force-push this repo again.
 
 ## Waiting on Jennifer
+
+- Milestone 24 check (build 8): on a phone with the sound up, tap a generator, merge two
+  items and deliver an order — listen and feel. Then tap the gear, turn Sound off, then
+  Vibration off, then "Numbers on items" on, and look at the board. Say if any sound is
+  unpleasant or too loud; they are easy to retune.
 
 **To do next (added 2026-10-05, for 2026-10-06) — Google Play, after the first bundle upload:**
 - Milestone 22: sign in at https://joppa-s-whispers.vercel.app/admin/index.html with the

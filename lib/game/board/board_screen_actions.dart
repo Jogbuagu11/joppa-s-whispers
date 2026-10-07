@@ -14,6 +14,7 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
   @override
   void dispose() {
     _lifecycle?.dispose();
+    _quiet?.call();
     _events?.detach();
     widget.shop?.detach();
     // Saves any unsaved change, then stops the timers.
@@ -25,6 +26,7 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
     final manna = _session?.manna;
     if (manna == null || _popupOpen || !mounted) return;
     _popupOpen = true;
+    widget.comfort?.cue(GameCue.empty);
     _events?.outOfEnergy();
     await showOutOfMannaPopup(context, manna, ads: _session?.ads);
     _popupOpen = false;
@@ -145,6 +147,7 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
     setState(() => _session = null);
     // Stop the old session saving over the new game, then write the new one.
     old.saver.onSaved = null;
+    _quiet?.call();
     _events?.detach();
     widget.shop?.detach();
     await old.discard();
@@ -208,6 +211,7 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
         (_events ??= GameAnalytics(analytics)).attach(session);
       }
       _attachShop(session);
+      _attachComfort(session);
       session.ads.service = widget.ads;
       widget.cloud?.blockUploads = session.downgraded;
       session.saver.onSaved = (state) => widget.cloud?.afterLocalSave(state);

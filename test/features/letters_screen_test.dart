@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/domain/letters.dart';
 import 'package:whispers_of_joppa/features/letters/letters_screen.dart';
 
+import '../support/comfort_fakes.dart';
+
 const _letters = [
   LetterModel(
     id: 'letter_01',
@@ -46,6 +48,15 @@ void main() {
     await tester.tap(find.byKey(const Key('letter_tile_letter_01')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('letter_reader')), findsNothing);
+  });
+
+  testWidgets('fits a small phone at the largest text size', (tester) async {
+    useLargestText(tester);
+    await _show(tester, {'letter_01'});
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.byKey(const Key('letter_tile_letter_01')));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('a found letter shows its title and opens in full', (

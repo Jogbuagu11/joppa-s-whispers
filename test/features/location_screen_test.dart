@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/features/restoration/location_screen.dart';
 
+import '../support/comfort_fakes.dart';
+
 LocationModel _location(int areas) => LocationModel(
   id: 'bakehouse',
   name: "Esther's Bakehouse",
@@ -54,6 +56,12 @@ void main() {
     expect(_text(tester, 'area_state_area_1'), 'Not yet');
     expect(find.byKey(const ValueKey('loc_area_2_after')), findsOneWidget);
     expect(find.byKey(const ValueKey('loc_area_1_before')), findsOneWidget);
+  });
+
+  testWidgets('fits a small phone at the largest text size', (tester) async {
+    useLargestText(tester);
+    await _show(tester, restored: {'area_2'});
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('a delivered picture fills its card', (tester) async {

@@ -20,7 +20,13 @@
     "body": "Silas has a story half told, and Esther's rooftop is just as you left it. Come by whenever you like."
   },
   "settings": {
-    "title": "Notifications",
+    "title": "Settings",
+    "sound": "Sound",
+    "sound_hint": "Soft chimes when you merge, deliver an order or finish a task.",
+    "haptics": "Vibration",
+    "haptics_hint": "A small tap you can feel when something happens on the board.",
+    "tier_numbers": "Numbers on items",
+    "tier_numbers_hint": "Shows each item's level in its corner, so matching pairs are easier to spot.",
     "reminders": "Gentle reminders",
     "reminders_hint": "When your Manna is full, or a rare note after a few days away.",
     "events": "Event news",

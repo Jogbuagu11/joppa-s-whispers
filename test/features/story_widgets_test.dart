@@ -8,6 +8,8 @@ import 'package:whispers_of_joppa/features/story/task_bar.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_banner.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 
+import '../support/comfort_fakes.dart';
+
 void main() {
   testWidgets('the tutorial banner shows each hint and its Got it button', (
     tester,
@@ -96,10 +98,14 @@ void main() {
     expect(find.byKey(const Key('chapter_ending')), findsNothing);
   });
 
-  for (final width in [320.0, 360.0]) {
-    testWidgets('the task bar fits a ${width.toInt()}pt-wide phone', (
-      tester,
-    ) async {
+  for (final (width, largeText) in [
+    (320.0, false),
+    (360.0, false),
+    (320.0, true),
+  ]) {
+    testWidgets('the task bar fits a ${width.toInt()}pt-wide phone'
+        '${largeText ? ' at the largest text size' : ''}', (tester) async {
+      if (largeText) useLargestText(tester);
       tester.view.physicalSize = Size(width, 640);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);

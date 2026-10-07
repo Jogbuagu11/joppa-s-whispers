@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/features/settings/account_screen.dart';
 import 'package:whispers_of_joppa/features/settings/save_choice_dialog.dart';
 
+import '../support/comfort_fakes.dart';
 import '../support/fakes.dart';
 
 void main() {
@@ -60,6 +61,13 @@ void main() {
     ]) {
       expect(find.byKey(Key(key)), findsOneWidget, reason: key);
     }
+  });
+
+  testWidgets('fits a small phone at the largest text size', (tester) async {
+    useLargestText(tester);
+    await show(tester);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('Apple is hidden where it is not available', (tester) async {

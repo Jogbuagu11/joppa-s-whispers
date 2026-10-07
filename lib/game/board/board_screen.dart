@@ -16,7 +16,10 @@ import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/events.dart';
 import 'package:whispers_of_joppa/features/events/event_screen.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
+import 'package:whispers_of_joppa/domain/comfort.dart';
 import 'package:whispers_of_joppa/features/settings/account_screen.dart';
+import 'package:whispers_of_joppa/features/settings/comfort_controller.dart';
+import 'package:whispers_of_joppa/game/board/board_feedback.dart';
 import 'package:whispers_of_joppa/features/settings/notification_settings_screen.dart';
 import 'package:whispers_of_joppa/features/settings/notifications_controller.dart';
 import 'package:whispers_of_joppa/features/restoration/location_screen.dart';
@@ -54,7 +57,12 @@ class BoardScreen extends StatefulWidget {
     this.notifications,
     this.events,
     this.eventProgress,
+    this.comfort,
   });
+
+  /// Sounds, vibration and tier numbers. Null (in tests) means a silent
+  /// game with no such switches.
+  final ComfortController? comfort;
 
   /// The player's account and cloud save. Null (in tests, or if the backend
   /// is not set up) hides the account button and keeps the game local.
@@ -165,7 +173,7 @@ class _BoardScreenState extends State<BoardScreen>
                       tooltip: _notificationContent?.settingsText['title'],
                       visualDensity: VisualDensity.compact,
                       icon: const Icon(
-                        Icons.notifications_none,
+                        Icons.settings_outlined,
                         color: Color(0xFFD4802A),
                       ),
                     ),

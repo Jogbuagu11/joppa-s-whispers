@@ -33,7 +33,7 @@ mixin _BoardNotifications on _BoardRoutes {
     if (yes != null) await notifications.answer(yes: yes);
   }
 
-  /// The bell button: opens the notification switches.
+  /// The settings button: sound, vibration and notification switches.
   Future<void> _openNotificationSettings() async {
     final notifications = widget.notifications;
     final content = _notificationContent;
@@ -45,6 +45,7 @@ mixin _BoardNotifications on _BoardRoutes {
           builder: (_) => NotificationSettingsScreen(
             controller: notifications,
             content: content,
+            comfort: widget.comfort,
           ),
         ),
       );
