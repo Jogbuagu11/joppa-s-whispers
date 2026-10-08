@@ -1188,6 +1188,21 @@ tested directly).
 - iPhone still needs before TestFlight: Sign in with Apple and push entitlements,
   real AdMob ids, the tracking/consent prompts, Crashlytics symbol upload.
 
+## Real AdMob ids — iPhone (2026-10-07)
+
+- Jennifer supplied her iPhone AdMob ids. The iPhone **app id** is now in
+  `ios/Runner/Info.plist`. The real **Rewarded** unit is in `tool/release_defines.json`;
+  store builds must be made with `--dart-define-from-file=tool/release_defines.json`.
+  Without it (tests, simulator runs, everyday builds) the game keeps Google's test ads,
+  so nobody taps a real ad while testing — AdMob can suspend an account for that.
+- She listed two similar units, "Reward" (…/5371260995) and "Rewarded" (…/1511907036).
+  **Assumption to confirm:** "Rewarded" is the plain Rewarded format the game uses; if
+  it is really a "Rewarded interstitial", ads will not load and the other id is the one.
+- Her Banner, Interstitial, Native and App-open units are not used: the design is
+  rewarded ads only, never forced (GDD, CLAUDE.md).
+- Still needed: the **Android** AdMob app id and Rewarded unit; the iPhone tracking
+  prompt and consent message (UMP); `app-ads.txt` on the website.
+
 ## Assumptions to confirm (added in Milestone 24)
 - **Text grows to 1.3× at most.** GDD 16 says text "scales with the phone's text-size
   setting"; past 1.3× the bars around the board run out of room on small phones. A larger
@@ -1684,6 +1699,9 @@ beside the game with its history kept. A backup of the original is in the GitHub
 - Never force-push this repo again.
 
 ## Waiting on Jennifer
+
+- AdMob: the Android app id and Android Rewarded ad unit id; and confirm which of the two
+  iPhone units ("Reward" or "Rewarded") is the plain Rewarded format.
 
 - iPhone store signing: either a new App Store Connect API key with the Admin role, or
   sign in to Xcode (Settings → Accounts) with her Apple ID. See "iPhone signing attempt".
