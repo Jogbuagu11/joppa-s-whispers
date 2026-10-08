@@ -1200,8 +1200,12 @@ tested directly).
   it is really a "Rewarded interstitial", ads will not load and the other id is the one.
 - Her Banner, Interstitial, Native and App-open units are not used: the design is
   rewarded ads only, never forced (GDD, CLAUDE.md).
-- Still needed: the **Android** AdMob app id and Rewarded unit; the iPhone tracking
-  prompt and consent message (UMP); `app-ads.txt` on the website.
+- Android ids added the same day: app id in `AndroidManifest.xml`, the "Rewarded" unit
+  (…/2441845322) in `tool/release_defines.json`. **Build 10** is the first bundle made
+  with the real ad units (`--dart-define-from-file=tool/release_defines.json`); the same
+  "Reward" vs "Rewarded" question applies (…/9841733904 is the other one).
+- Still needed: the iPhone tracking prompt and consent message (UMP); `app-ads.txt` on
+  the website.
 
 ## Assumptions to confirm (added in Milestone 24)
 - **Text grows to 1.3× at most.** GDD 16 says text "scales with the phone's text-size
@@ -1700,8 +1704,10 @@ beside the game with its history kept. A backup of the original is in the GitHub
 
 ## Waiting on Jennifer
 
-- AdMob: the Android app id and Android Rewarded ad unit id; and confirm which of the two
-  iPhone units ("Reward" or "Rewarded") is the plain Rewarded format.
+- AdMob: confirm that the units named "Rewarded" (iPhone …/1511907036, Android
+  …/2441845322) are the plain Rewarded format, not "Rewarded interstitial".
+- Build 10 shows REAL ads: when testing it, do not tap an ad. Better, add your phone as
+  a test device in AdMob (Settings → Test devices) first.
 
 - iPhone store signing: either a new App Store Connect API key with the Admin role, or
   sign in to Xcode (Settings → Accounts) with her Apple ID. See "iPhone signing attempt".
