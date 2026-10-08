@@ -74,6 +74,7 @@
 | sign_in_with_apple | 8.2.0 |
 | google_sign_in | 7.2.0 |
 | logging | 1.3.0 |
+| url_launcher | 6.3.3 |
 
 ## Assumptions to confirm
 
@@ -1239,6 +1240,26 @@ tested directly).
 - Content is version 13 (one new settings label). **Build 11** has all of this.
 - Not verified: the real consent flow has only been compiled and wired — no device test
   can show Google's message until it exists in her AdMob account.
+
+## Policies and in-game links (2026-10-07) — Jennifer: "you generate all the privacy and policy"
+
+- The website's Privacy Policy, Terms, Support and Delete Account pages (drafted earlier
+  with the site) were corrected to match what the game really does: where the Account
+  button, Restore purchases, notification switches and Ad privacy choices are; what a
+  refund removes; what the cloud save holds; what stays only on the phone. The reviewer
+  checked each claim against the code. Dated 7 October 2026.
+- **Not legal advice:** these were written by Claude, not a lawyer. They name California
+  law and no company name or postal address; Jennifer should have them read before the
+  public launch and add her legal business name if she has one.
+- Settings now has **Help & support, Privacy Policy, Terms of Service** rows that open
+  the website pages (`url_launcher` 6.3.3, already in the lock file, made a direct
+  dependency). Content is version 14. **Build 12** has them.
+- Jennifer approved the tracking-prompt wording, confirmed the "Rewarded" units are the
+  plain Rewarded format, and will sign in to Xcode for iPhone signing.
+- Still hers to do, in the AdMob website (Claude has no access to it): Privacy &
+  messaging → create and publish the European regulations message and the IDFA
+  explainer for both apps, with the privacy policy URL
+  https://www.whispersofjoppa.com/privacy.
 
 ## Assumptions to confirm (added in Milestone 24)
 - **Text grows to 1.3× at most.** GDD 16 says text "scales with the phone's text-size

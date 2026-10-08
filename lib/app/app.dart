@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:whispers_of_joppa/app/config.dart';
 import 'package:whispers_of_joppa/app/cloud_sync.dart';
 import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/data/cloud_save_store.dart';
@@ -27,6 +32,8 @@ import 'package:whispers_of_joppa/services/in_app_purchase_store.dart';
 import 'package:whispers_of_joppa/services/purchase_backend.dart';
 import 'package:whispers_of_joppa/services/supabase_auth_service.dart';
 import 'package:whispers_of_joppa/services/supabase_device_tokens.dart';
+
+final _log = Logger('App');
 
 class WhispersApp extends ConsumerWidget {
   const WhispersApp({super.key});
@@ -90,6 +97,27 @@ class WhispersApp extends ConsumerWidget {
     );
   }
 
+  /// Opens one of the game's web pages in the phone's browser.
+  static void _openPage(String page) {
+    final url = switch (page) {
+      'privacy' => AppConfig.privacyUrl,
+      'terms' => AppConfig.termsUrl,
+      'support' => AppConfig.supportUrl,
+      _ => null,
+    };
+    if (url == null) {
+      _log.warning('No web page called "$page"');
+      return;
+    }
+    unawaited(
+      launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication).then((
+        opened,
+      ) {
+        if (!opened) _log.warning('Could not open $url');
+      }, onError: (Object e) => _log.warning('Could not open $url: $e')),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Lock portrait orientation
@@ -121,6 +149,7 @@ class WhispersApp extends ConsumerWidget {
               notifications: _notifications,
               events: _events,
               comfort: _comfort,
+              onOpenPage: _openPage,
             )
           : const BoardScreen(),
     );

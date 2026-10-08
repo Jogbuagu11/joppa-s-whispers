@@ -13,6 +13,11 @@ class AppConfig {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpbmN2dWJjc25xemplZnpzaWZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExNDQxMDUsImV4cCI6MjEwNjcyMDEwNX0.hUOLkC_F_iV3-aH4X3zO9uGc9eTS7Q4W4agQOOv9RNk',
   );
 
+  // The game's public web pages, opened from Settings.
+  static const String privacyUrl = 'https://www.whispersofjoppa.com/privacy';
+  static const String termsUrl = 'https://www.whispersofjoppa.com/terms';
+  static const String supportUrl = 'https://www.whispersofjoppa.com/support';
+
   // Google Sign-In client IDs (public identifiers, safe in the app).
   // The iOS one must also be in ios/Runner/Info.plist (GIDClientID + URL scheme).
   static const String googleIosClientId =

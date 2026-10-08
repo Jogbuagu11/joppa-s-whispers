@@ -20,6 +20,9 @@ const _textLimits = {
     'chapters_hint': 90,
     'blocked': 160,
     'ad_privacy': 40,
+    'page_support': 40,
+    'page_privacy': 40,
+    'page_terms': 40,
   },
 };
 

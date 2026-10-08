@@ -47,6 +47,7 @@ mixin _BoardNotifications on _BoardRoutes {
             content: content,
             comfort: widget.comfort,
             ads: widget.ads,
+            onOpenPage: widget.onOpenPage,
           ),
         ),
       );

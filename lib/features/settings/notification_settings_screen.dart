@@ -18,7 +18,12 @@ class NotificationSettingsScreen extends StatelessWidget {
     required this.content,
     this.comfort,
     this.ads,
+    this.onOpenPage,
   });
+
+  /// Opens one of the game's web pages (privacy, terms, support) by its
+  /// name; null leaves those rows out.
+  final void Function(String page)? onOpenPage;
 
   /// Ads. Where the player has ad privacy choices to change, a row for
   /// them is shown; null (or no such choices) leaves it out.
@@ -97,6 +102,19 @@ class NotificationSettingsScreen extends StatelessWidget {
                 ),
                 if (ads case final ads?)
                   _AdPrivacyRow(ads: ads, label: text['ad_privacy'] ?? ''),
+                if (onOpenPage case final open?) ...[
+                  const Divider(color: Color(0xFF3A2A0C)),
+                  for (final page in const ['support', 'privacy', 'terms'])
+                    ListTile(
+                      key: Key('page_$page'),
+                      onTap: () => open(page),
+                      title: Text(
+                        text['page_$page'] ?? '',
+                        style: const TextStyle(color: _cream),
+                      ),
+                      trailing: const Icon(Icons.open_in_new, color: _gold),
+                    ),
+                ],
               ],
             );
           },

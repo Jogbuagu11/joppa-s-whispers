@@ -103,5 +103,8 @@ const testNotificationContent = NotificationContent(
     'chapters_hint': 'Chapters',
     'blocked': 'Turned off on this phone',
     'ad_privacy': 'Ad privacy choices',
+    'page_support': 'Help & support',
+    'page_privacy': 'Privacy Policy',
+    'page_terms': 'Terms of Service',
   },
 );

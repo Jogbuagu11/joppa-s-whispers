@@ -62,7 +62,12 @@ class BoardScreen extends StatefulWidget {
     this.events,
     this.eventProgress,
     this.comfort,
+    this.onOpenPage,
   });
+
+  /// Opens one of the game's web pages ("privacy", "terms", "support").
+  /// Null (in tests) leaves those rows out of Settings.
+  final void Function(String page)? onOpenPage;
 
   /// Sounds, vibration and tier numbers. Null (in tests) means a silent
   /// game with no such switches.

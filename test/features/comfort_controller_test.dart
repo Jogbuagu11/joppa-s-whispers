@@ -158,4 +158,32 @@ void main() {
     await tester.pump();
     expect(ads.privacyShown, 1);
   });
+
+  testWidgets('help, privacy and terms rows open their pages', (tester) async {
+    tester.view.physicalSize = const Size(320, 568);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    useLargestText(tester);
+    final opened = <String>[];
+    await tester.pumpWidget(
+      MaterialApp(
+        home: NotificationSettingsScreen(
+          controller: NotificationsController(
+            service: FakeNotificationService(),
+            repository: tempPrefsRepository(),
+          ),
+          content: testNotificationContent,
+          onOpenPage: opened.add,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    for (final page in ['support', 'privacy', 'terms']) {
+      await tester.ensureVisible(find.byKey(Key('page_$page')));
+      await tester.tap(find.byKey(Key('page_$page')));
+    }
+    expect(opened, ['support', 'privacy', 'terms']);
+    expect(find.text('Privacy Policy'), findsOneWidget);
+  });
 }
