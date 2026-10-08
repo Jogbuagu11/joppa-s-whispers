@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/app/config.dart';
+import 'package:whispers_of_joppa/services/ad_consent.dart';
 import 'package:whispers_of_joppa/services/ad_service.dart';
 
 final _log = Logger('Ads');
@@ -14,6 +15,13 @@ const _rewardGrace = Duration(seconds: 1);
 const _appearWait = Duration(seconds: 10);
 
 class GoogleRewardedAds implements AdService {
+  /// Asks whether ads may be requested (showing the consent message if one
+  /// is due). Tests pass their own.
+  final Future<bool> Function() _consent;
+
+  GoogleRewardedAds({Future<bool> Function()? consent})
+    : _consent = consent ?? gatherAdConsent;
+
   final ValueNotifier<bool> _ready = ValueNotifier<bool>(false);
   RewardedAd? _ad;
   bool _started = false;
@@ -37,11 +45,20 @@ class GoogleRewardedAds implements AdService {
 
   Future<void> _initAndLoad() async {
     try {
+      // No ad is requested until the consent service says it may be.
+      if (!await _consent()) {
+        _log.info('Ads not requested: consent not given or not known');
+        // Not for ever: the next start() (the player coming back to the
+        // game, say) asks again.
+        _started = false;
+        return;
+      }
       await MobileAds.instance.initialize();
       _load();
     } on Object catch (e) {
       // No ads is never a reason to stop the game.
       _log.warning('Ads could not start: $e');
+      _started = false;
     }
   }
 
@@ -82,6 +99,12 @@ class GoogleRewardedAds implements AdService {
       ),
     );
   }
+
+  @override
+  Future<bool> privacyOptionsRequired() => adPrivacyOptionsRequired();
+
+  @override
+  Future<void> showPrivacyOptions() => showAdPrivacyOptions();
 
   @override
   Future<bool> showRewarded() async {

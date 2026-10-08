@@ -70,6 +70,17 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
     } finally {
       _busy = false;
     }
+    _startAdsWhenQuiet();
+  }
+
+  /// Lets ads begin loading (which may first show a consent message), but
+  /// only at a quiet moment: the tutorial over and nothing open over the
+  /// board. Called when the game opens, when the player returns, and after
+  /// each story task.
+  void _startAdsWhenQuiet() {
+    if (!mounted || _busy || _popupOpen || _eventOpen) return;
+    if (!(ModalRoute.of(context)?.isCurrent ?? true)) return;
+    _session?.ads.startWhenAllowed();
   }
 
   /// Shows the closing message of a finished chapter, once.
@@ -175,6 +186,7 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
       unawaited(_loadEvent());
       _events?.sessionStarted();
       unawaited(widget.shop?.resume());
+      _startAdsWhenQuiet();
     } else if (state == AppLifecycleState.paused) {
       _events?.sessionEnded();
     }
@@ -247,6 +259,7 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
       await _showPendingEnding();
       // A signed-in player's game is checked against their account.
       if (widget.cloud?.signedIn ?? false) await _syncWithAccount();
+      _startAdsWhenQuiet();
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e.toString());

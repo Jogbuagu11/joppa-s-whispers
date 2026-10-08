@@ -1204,8 +1204,41 @@ tested directly).
   (…/2441845322) in `tool/release_defines.json`. **Build 10** is the first bundle made
   with the real ad units (`--dart-define-from-file=tool/release_defines.json`); the same
   "Reward" vs "Rewarded" question applies (…/9841733904 is the other one).
-- Still needed: the iPhone tracking prompt and consent message (UMP); `app-ads.txt` on
-  the website.
+- The consent step and `app-ads.txt` followed the same day (see "Ad consent" below).
+
+## Ad consent, iPhone capabilities, app-ads.txt (2026-10-07) — Milestone 25, in progress
+
+- **Consent before ads.** `lib/services/ad_consent.dart` asks Google's consent service
+  (UMP, part of the already-pinned ads package) before any ad is requested, and shows
+  Google's consent message where one is due. Deliberately strict: if the consent service
+  does not say "ads may be requested", the game requests none.
+  **This means no real ads will load until Jennifer creates the messages in AdMob →
+  Privacy & messaging** (a European regulations message and, for iPhone, an IDFA
+  explainer), for both the iPhone and Android apps.
+- **Never during the tutorial, and only at a quiet moment.** Ads (and so any consent
+  message) start once the tutorial is over and nothing is open over the board: when the
+  game opens, when the player returns to it, or after a story task. If consent could not
+  be checked (offline, say), the next such moment tries again.
+- Because the app can now ask to track (iPhone), the App Store **privacy answers** must
+  declare tracking for advertising when Jennifer fills them in.
+- Reviewer's notes carried forward: no test proves the board picks those moments (the
+  controller and the ad service halves are each tested); if Android rebuilds the screen
+  while Google's message is open, ads wait for the next launch.
+- **Settings → "Ad privacy choices"** appears only for players the consent rules apply
+  to, and reopens Google's choices (required by Google for those players).
+- iPhone: the tracking explanation (`NSUserTrackingUsageDescription`) is in Info.plist —
+  wording to confirm: "Allowing this lets the optional ads you choose to watch be more
+  relevant to you. The game plays the same either way." Apple's SKAdNetwork id list is
+  not added yet.
+- iPhone: `ios/Runner/Runner.entitlements` now gives the app **Sign in with Apple** and
+  **push notifications**; the signed archive builds with both (Apple updated the app's
+  profile through the API key). Push still needs her APNs key in Firebase.
+- `web/public/app-ads.txt` now carries the AdMob line; it goes live at
+  whispersofjoppa.com/app-ads.txt with the next website deploy. In AdMob the app's store
+  listing must point at that website for the check to pass.
+- Content is version 13 (one new settings label). **Build 11** has all of this.
+- Not verified: the real consent flow has only been compiled and wired — no device test
+  can show Google's message until it exists in her AdMob account.
 
 ## Assumptions to confirm (added in Milestone 24)
 - **Text grows to 1.3× at most.** GDD 16 says text "scales with the phone's text-size
@@ -1703,6 +1736,9 @@ beside the game with its history kept. A backup of the original is in the GitHub
 - Never force-push this repo again.
 
 ## Waiting on Jennifer
+
+- **AdMob → Privacy & messaging:** create and publish the European regulations message
+  and the IDFA explainer message for both apps. Until then build 11+ shows no ads at all.
 
 - AdMob: confirm that the units named "Rewarded" (iPhone …/1511907036, Android
   …/2441845322) are the plain Rewarded format, not "Rewarded interstitial".

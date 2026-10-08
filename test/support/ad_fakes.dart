@@ -25,6 +25,16 @@ class FakeAdService implements AdService {
   @override
   void start() => starts++;
 
+  /// Whether this player has ad privacy choices to change.
+  bool privacyRequired = false;
+  int privacyShown = 0;
+
+  @override
+  Future<bool> privacyOptionsRequired() async => privacyRequired;
+
+  @override
+  Future<void> showPrivacyOptions() async => privacyShown++;
+
   @override
   Future<bool> showRewarded() async {
     shown++;

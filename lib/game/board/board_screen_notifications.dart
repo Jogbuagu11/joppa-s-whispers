@@ -46,6 +46,7 @@ mixin _BoardNotifications on _BoardRoutes {
             controller: notifications,
             content: content,
             comfort: widget.comfort,
+            ads: widget.ads,
           ),
         ),
       );

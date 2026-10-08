@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
 import 'package:whispers_of_joppa/features/settings/comfort_controller.dart';
 import 'package:whispers_of_joppa/features/settings/notifications_controller.dart';
+import 'package:whispers_of_joppa/services/ad_service.dart';
 
 const _gold = Color(0xFFD4802A);
 const _ink = Color(0xFF1A1205);
@@ -16,7 +17,12 @@ class NotificationSettingsScreen extends StatelessWidget {
     required this.controller,
     required this.content,
     this.comfort,
+    this.ads,
   });
+
+  /// Ads. Where the player has ad privacy choices to change, a row for
+  /// them is shown; null (or no such choices) leaves it out.
+  final AdService? ads;
 
   /// Sound, vibration and tier numbers. Null leaves those switches out.
   final ComfortController? comfort;
@@ -89,6 +95,8 @@ class NotificationSettingsScreen extends StatelessWidget {
                   prefs.chapters,
                   controller.setChapters,
                 ),
+                if (ads case final ads?)
+                  _AdPrivacyRow(ads: ads, label: text['ad_privacy'] ?? ''),
               ],
             );
           },
@@ -155,5 +163,45 @@ Future<bool?> showNotificationExplainer(
         ),
       ],
     ),
+  );
+}
+
+/// "Ad privacy choices": shown only to players who have such choices.
+class _AdPrivacyRow extends StatefulWidget {
+  const _AdPrivacyRow({required this.ads, required this.label});
+
+  final AdService ads;
+  final String label;
+
+  @override
+  State<_AdPrivacyRow> createState() => _AdPrivacyRowState();
+}
+
+class _AdPrivacyRowState extends State<_AdPrivacyRow> {
+  // Asked once, not at every repaint.
+  late final Future<bool> _required = widget.ads.privacyOptionsRequired();
+  bool _open = false;
+
+  Future<void> _show() async {
+    if (_open) return;
+    _open = true;
+    try {
+      await widget.ads.showPrivacyOptions();
+    } finally {
+      _open = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<bool>(
+    future: _required,
+    builder: (context, required) => required.data ?? false
+        ? ListTile(
+            key: const Key('ad_privacy'),
+            onTap: _show,
+            title: Text(widget.label, style: const TextStyle(color: _cream)),
+            trailing: const Icon(Icons.chevron_right, color: _gold),
+          )
+        : const SizedBox.shrink(),
   );
 }

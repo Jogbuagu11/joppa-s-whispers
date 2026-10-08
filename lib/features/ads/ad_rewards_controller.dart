@@ -49,8 +49,16 @@ class AdRewardsController extends ChangeNotifier {
     _service?.ready.removeListener(notifyListeners);
     _service = value;
     value?.ready.addListener(notifyListeners);
-    value?.start();
     notifyListeners();
+  }
+
+  /// Starts loading ads once the tutorial is over, and not before: starting
+  /// can bring up a consent message, which must never greet a new player.
+  /// The board calls this at quiet moments (nothing else open). Safe to
+  /// call often; a start that could not get consent is tried again.
+  void startWhenAllowed() {
+    if (_disposed || !tutorialOver()) return;
+    _service?.start();
   }
 
   /// Whether to show the "watch an ad" choice: only when an ad is loaded and

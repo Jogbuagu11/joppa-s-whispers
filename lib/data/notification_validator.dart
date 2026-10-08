@@ -19,6 +19,7 @@ const _textLimits = {
     'chapters': 40,
     'chapters_hint': 90,
     'blocked': 160,
+    'ad_privacy': 40,
   },
 };
 

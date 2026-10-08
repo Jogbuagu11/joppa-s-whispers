@@ -6,6 +6,7 @@ import 'package:whispers_of_joppa/domain/comfort.dart';
 import 'package:whispers_of_joppa/features/settings/notification_settings_screen.dart';
 import 'package:whispers_of_joppa/features/settings/notifications_controller.dart';
 
+import '../support/ad_fakes.dart';
 import '../support/comfort_fakes.dart';
 import '../support/notification_fakes.dart';
 
@@ -118,5 +119,43 @@ void main() {
     expect(on('comfort_sound'), isFalse);
     expect(on('comfort_haptics'), isTrue);
     expect(on('comfort_tier_numbers'), isTrue);
+  });
+
+  testWidgets('ad privacy choices show only for players who have them', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 568);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final ads = FakeAdService();
+    Future<void> show() async {
+      await tester.pumpWidget(
+        MaterialApp(
+          // A fresh screen each time, so it asks the ad service again.
+          key: UniqueKey(),
+          home: NotificationSettingsScreen(
+            controller: NotificationsController(
+              service: FakeNotificationService(),
+              repository: tempPrefsRepository(),
+            ),
+            content: testNotificationContent,
+            ads: ads,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    await show();
+    expect(find.byKey(const Key('ad_privacy')), findsNothing);
+
+    ads.privacyRequired = true;
+    await show();
+    expect(tester.takeException(), isNull);
+    expect(find.text('Ad privacy choices'), findsOneWidget);
+    await tester.ensureVisible(find.byKey(const Key('ad_privacy')));
+    await tester.tap(find.byKey(const Key('ad_privacy')));
+    await tester.pump();
+    expect(ads.privacyShown, 1);
   });
 }

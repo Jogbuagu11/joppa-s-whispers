@@ -121,8 +121,29 @@ void main() {
     expect(await c.watchForManna(), isTrue);
   });
 
-  test('attaching starts the service; the saved count is restored', () {
+  test('ads do not start (so no consent message) during the tutorial', () {
+    tutorialOver = false;
+    final c = make();
+    expect(service.starts, 0);
+    c.startWhenAllowed();
+    expect(service.starts, 0);
+    // The tutorial ends: now they may start.
+    tutorialOver = true;
+    c.startWhenAllowed();
+    expect(service.starts, 1);
+  });
+
+  test('a closed game never starts ads', () {
+    final c = make()..dispose();
+    c.startWhenAllowed();
+    expect(service.starts, 0);
+  });
+
+  test('ads start only when asked; the saved count is restored', () {
     final c = make(tally: const AdTally(day: '2026-10-05', mannaAds: 2));
+    // Attaching alone starts nothing: the board picks a quiet moment.
+    expect(service.starts, 0);
+    c.startWhenAllowed();
     expect(service.starts, 1);
     expect(c.mannaAdsLeft, 0);
     expect(c.mannaAdOffered, isFalse);

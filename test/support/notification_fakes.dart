@@ -102,5 +102,6 @@ const testNotificationContent = NotificationContent(
     'chapters': 'New chapters',
     'chapters_hint': 'Chapters',
     'blocked': 'Turned off on this phone',
+    'ad_privacy': 'Ad privacy choices',
   },
 );
