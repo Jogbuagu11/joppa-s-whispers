@@ -89,6 +89,17 @@ extension _BoardDrag on BoardGame {
     _dragOriginCell = null;
   }
 
+  /// Puts an item being dragged back in its cell, so that nothing done to
+  /// the board meanwhile (a delivery, a sale, a use) can be undone by
+  /// letting go of it.
+  void _putBackDragged() {
+    final dragging = _dragging;
+    final origin = _dragOriginCell;
+    if (dragging != null && origin != null) {
+      _snapBack(dragging, origin, dragging.item);
+    }
+  }
+
   void _snapBack(ItemComponent dragging, CellComponent origin, ItemModel item) {
     dragging.removeFromParent();
     origin.setItem(item, _colorFor(item), _art[item.itemId]);

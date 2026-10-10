@@ -79,9 +79,23 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   /// The time (tests pass their own).
   final DateTime Function() now;
 
-  /// Called when an item that can be used is tapped; [use] uses it (and
-  /// returns false if it could not be used). The screen asks first.
-  void Function(ItemModel item, bool Function() use)? onUsableItemTapped;
+  /// Called when an item that can be used or sold is tapped. [use] and
+  /// [sell] do it (null if that is not possible for this item) and return
+  /// false if the item was no longer there. The screen asks first.
+  void Function(ItemModel item, {bool Function()? use, bool Function()? sell})?
+  onItemAsked;
+
+  /// Called with an item just sold, to pay for it.
+  void Function(ItemModel item)? onSold;
+
+  /// Chains no generator makes (rare finds, gifts): always sellable.
+  Set<String> sideChains = const {};
+
+  /// Whether an order on show asks for this item (so it is not for sale).
+  bool Function(String itemId)? wantedByOrder;
+
+  /// False while rare drops are held back (the tutorial).
+  bool Function()? rareDrops;
 
   /// The generator boosts there are (weakest first), which of them the
   /// player has unlocked, and the one switched on (0 = none, 1 = the first…).
@@ -122,11 +136,7 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   bool removeItems(Map<String, int> counts) {
     // An item being dragged is put back first, so it cannot be delivered and
     // then dropped back onto the board.
-    final dragging = _dragging;
-    final origin = _dragOriginCell;
-    if (dragging != null && origin != null) {
-      _snapBack(dragging, origin, dragging.item);
-    }
+    _putBackDragged();
     final cells = cellsToRemove(_board, counts);
     if (cells == null) {
       _log.warning('Board does not hold $counts; nothing removed');

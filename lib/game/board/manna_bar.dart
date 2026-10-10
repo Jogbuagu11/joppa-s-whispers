@@ -13,8 +13,16 @@ class MannaBar extends StatelessWidget {
     required this.controller,
     this.width,
     this.boostLabel,
+    this.boostOn = false,
+    this.boostHint = '',
     this.onBoost,
   });
+
+  /// What the chip is, for screen readers (with `{boost}` for its label).
+  final String boostHint;
+
+  /// Whether a boost is switched on (the chip is lit).
+  final bool boostOn;
 
   /// The generator boost switched on ("×1", "×2"…); null hides the chip
   /// (the player has no boost yet). Tapping the chip calls [onBoost].
@@ -128,7 +136,7 @@ class MannaBar extends StatelessWidget {
                   const SizedBox(width: 4),
                   Semantics(
                     button: true,
-                    label: label,
+                    label: boostHint.replaceAll('{boost}', label),
                     child: GestureDetector(
                       key: const Key('boost_chip'),
                       behavior: HitTestBehavior.opaque,
@@ -139,9 +147,9 @@ class MannaBar extends StatelessWidget {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           // Lit while a boost is on.
-                          color: label == '×1'
-                              ? const Color(0xFF4A3716)
-                              : GamePalette.talents,
+                          color: boostOn
+                              ? GamePalette.talents
+                              : const Color(0xFF4A3716),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Text(
@@ -149,9 +157,9 @@ class MannaBar extends StatelessWidget {
                           key: const Key('boost_label'),
                           textScaler: TextScaler.noScaling,
                           style: TextStyle(
-                            color: label == '×1'
-                                ? GamePalette.muted
-                                : GamePalette.backgroundBottom,
+                            color: boostOn
+                                ? GamePalette.backgroundBottom
+                                : GamePalette.muted,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),

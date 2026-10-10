@@ -66,6 +66,10 @@ extension BoardGenerators on BoardGame {
     // Collect any Manna that is already due before deciding.
     manna.tick();
     final free = freeGeneratorTaps?.call() ?? false;
+    // Boost is for generators that cost Manna, and never in the tutorial.
+    // With too little Manna for the boosted price but enough for an
+    // ordinary tap, the tap is an ordinary one.
+    final boost = free ? GeneratorBoost.none : boostFor(gen);
     final result = resolveGeneratorTap(
       gen: gen,
       manna: manna.manna,
@@ -73,14 +77,11 @@ extension BoardGenerators on BoardGame {
       levels: generatorLevels[genId],
       chains: chainData,
       costOverride: free || !rules.costsManna ? 0 : null,
-      // Boost is for generators that cost Manna, and never in the tutorial.
-      boost: rules.costsManna && !free ? activeBoost : GeneratorBoost.none,
-      // No surprises during the tutorial's free taps.
+      boost: boost,
+      // No surprises during the tutorial.
       rare: switch (gen.rareChainId) {
-        final String chain when !free => RareDrop(
-          chainId: chain,
-          chance: gen.rareChance,
-        ),
+        final String chain when !free && (rareDrops?.call() ?? true) =>
+          RareDrop(chainId: chain, chance: gen.rareChance),
         _ => null,
       },
     );
@@ -132,5 +133,14 @@ extension BoardGenerators on BoardGame {
       );
     }
     _boardTouched();
+  }
+
+  /// The boost the next paid tap of [gen] gets: the one switched on, if the
+  /// generator costs Manna and there is Manna enough for the boosted price;
+  /// otherwise none (so the tap is an ordinary one, at the ordinary price).
+  GeneratorBoost boostFor(GeneratorModel gen) {
+    final wanted = activeBoost;
+    final affordable = manna.manna >= gen.energyCost * wanted.mannaTimes;
+    return gen.rules.costsManna && affordable ? wanted : GeneratorBoost.none;
   }
 }

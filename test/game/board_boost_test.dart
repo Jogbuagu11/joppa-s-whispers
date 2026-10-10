@@ -153,6 +153,26 @@ void main() {
     expect(game.boost.value, 0);
   });
 
+  test('with too little Manna for the boosted price a tap is an ordinary '
+      'one, not a refusal', () async {
+    level = 40;
+    final game = await board();
+    game
+      ..cycleBoost()
+      ..cycleBoost();
+    tap(game);
+    tap(game);
+    expect(manna.manna, 2);
+    // The tile says what the next tap will really cost.
+    expect(game.generatorLabel(_pantry), '1M');
+    // 2 Manna cannot pay for 4x, but it can pay for a plain tap.
+    tap(game);
+    expect(manna.manna, 1);
+    expect(made(game)..sort(), ['g1', 'g3', 'g3']);
+    // The boost itself stays switched on for when there is Manna again.
+    expect(game.boost.value, 2);
+  });
+
   test(
     'a saved boost the player no longer has is simply not applied',
     () async {

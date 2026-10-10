@@ -83,7 +83,7 @@
     {
       "level": 15,
       "feature": "boost_2x",
-      "name": "Generator boost (2x)",
+      "name": "Boost: tap ×1 on the Manna bar for ×2",
       "available": true,
       "boost": {
         "manna_times": 2,
@@ -99,7 +99,7 @@
     {
       "level": 40,
       "feature": "boost_4x",
-      "name": "Generator boost (4x)",
+      "name": "Boost: now up to ×4",
       "available": true,
       "boost": {
         "manna_times": 4,

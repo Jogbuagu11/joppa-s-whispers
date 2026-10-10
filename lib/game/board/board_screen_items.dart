@@ -61,15 +61,39 @@ mixin _BoardItems on _BoardRoutes {
     );
   }
 
-  /// A usable item was tapped. A Manna jar is used only if the player says
-  /// so (it can be kept for later); an hourglass explains itself.
-  Future<void> _askToUse(ItemModel item, bool Function() use) async {
+  /// Connects the board to the screen: asking before an item is used or
+  /// sold, paying for a sale, and the generator boosts that open at their
+  /// levels (EXPANSION 19.2).
+  void _wireBoard(BoardSession session) {
+    final boosts = session.levels.config.boosts;
+    session.game
+      ..onItemAsked = _askAboutItem
+      ..onSold = ((item) => session.orders.addTalents(item.sell))
+      ..wantedByOrder = ((id) => session.orders.activeOrders.any(
+        (order) => order.items.any((wanted) => wanted.itemId == id),
+      ))
+      ..boosts = [for (final u in boosts) ?u.boost]
+      ..boostUnlocked = (i) =>
+          i < boosts.length && session.levels.level >= boosts[i].level;
+  }
+
+  /// An item that can be used or sold was tapped. Nothing happens unless
+  /// the player says so: a Manna jar can be kept for later, and a sale
+  /// cannot be undone. An hourglass explains itself.
+  Future<void> _askAboutItem(
+    ItemModel item, {
+    bool Function()? use,
+    bool Function()? sell,
+  }) async {
+    final session = _session;
+    if (_busy || _syncing || _popupOpen || !mounted) return;
     final effect = item.use;
-    if (effect == null || _busy || _popupOpen || !mounted) return;
     final text = _boardText;
+    String fill(String key, String name, int value) =>
+        (text[key] ?? '').replaceAll('{$name}', '$value');
     _popupOpen = true;
     try {
-      final yes = await showDialog<bool>(
+      final choice = await showDialog<String>(
         context: context,
         builder: (context) => AlertDialog(
           key: const Key('use_item'),
@@ -78,29 +102,38 @@ mixin _BoardItems on _BoardRoutes {
             item.name,
             style: const TextStyle(color: Color(0xFFD4802A)),
           ),
-          content: Text(
-            effect.givesManna
-                ? (text['use_manna'] ?? '').replaceAll(
-                    '{manna}',
-                    '${effect.manna}',
-                  )
-                : text['hourglass_hint'] ?? '',
-            key: const Key('use_item_effect'),
-            style: const TextStyle(color: Color(0xFFF3E5C8)),
-          ),
+          content: effect == null
+              ? null
+              : Text(
+                  effect.givesManna
+                      ? fill('use_manna', 'manna', effect.manna)
+                      : text['hourglass_hint'] ?? '',
+                  key: const Key('use_item_effect'),
+                  style: const TextStyle(color: Color(0xFFF3E5C8)),
+                ),
+          actionsOverflowAlignment: OverflowBarAlignment.end,
           actions: [
             TextButton(
               key: const Key('use_item_keep'),
-              onPressed: () => Navigator.of(context).pop(false),
+              onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                (effect.givesManna ? text['keep'] : text['ok']) ?? '',
+                (use == null && sell == null ? text['ok'] : text['keep']) ?? '',
                 style: const TextStyle(color: Color(0xFFF3E5C8)),
               ),
             ),
-            if (effect.givesManna)
+            if (sell != null)
+              TextButton(
+                key: const Key('use_item_sell'),
+                onPressed: () => Navigator.of(context).pop('sell'),
+                child: Text(
+                  fill('sell', 'talents', item.sell),
+                  style: const TextStyle(color: Color(0xFFE9B44C)),
+                ),
+              ),
+            if (use != null)
               TextButton(
                 key: const Key('use_item_use'),
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () => Navigator.of(context).pop('use'),
                 child: Text(
                   text['use'] ?? '',
                   style: const TextStyle(color: Color(0xFFD4802A)),
@@ -109,7 +142,10 @@ mixin _BoardItems on _BoardRoutes {
           ],
         ),
       );
-      if (yes ?? false) use();
+      // The game may have been swapped for the cloud's meanwhile.
+      if (!identical(session, _session)) return;
+      if (choice == 'use') use?.call();
+      if (choice == 'sell') sell?.call();
     } finally {
       _popupOpen = false;
     }

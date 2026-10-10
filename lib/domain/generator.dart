@@ -136,13 +136,17 @@ GeneratorTapResult resolveGeneratorTap({
     (l) => l.level == gen.level,
     orElse: () => levels.first,
   );
-  // Now and then the rare chain's first item comes instead.
+  // Now and then the rare chain comes instead: its first item, or higher
+  // under a boost, so a boosted tap is never worse for being lucky.
   if (rare != null && rng.nextDouble() < rare.chance) {
-    final rareId = resolveSpawnedItemId(rare.chainId, 1, chains);
+    final rareTop = chains[rare.chainId]?.maxTier ?? 1;
+    final wanted = 1 + boost.tierBonus;
+    final rareTier = wanted > rareTop ? rareTop : wanted;
+    final rareId = resolveSpawnedItemId(rare.chainId, rareTier, chains);
     if (rareId != null) {
       return GeneratorTapResult.spawn(
         itemId: rareId,
-        tier: 1,
+        tier: rareTier,
         mannaAfter: manna - cost,
       );
     }

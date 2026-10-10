@@ -51,7 +51,7 @@ extension BoardGeneratorTypes on BoardGame {
   String generatorLabel(GeneratorModel gen) {
     final rules = gen.rules;
     if (rules.kind == GeneratorKind.standard) {
-      return '${gen.energyCost * activeBoost.mannaTimes}M';
+      return '${gen.energyCost * boostFor(gen).mannaTimes}M';
     }
     final timer = _timerFor(gen);
     final wait = secondsToWait(rules, timer, now());
@@ -160,23 +160,64 @@ extension BoardGeneratorTypes on BoardGame {
 
   void _onItemTapped(int col, int row) {
     final item = _board[col][row];
-    if (item == null || item.use == null) return;
-    onUsableItemTapped?.call(item, () => useItemAt(col, row));
+    if (item == null) return;
+    final usable = item.use?.givesManna ?? false;
+    final sellable = canSell(item);
+    if (item.use == null && !sellable) return;
+    onItemAsked?.call(
+      item,
+      use: usable ? () => useItemAt(col, row, only: item) : null,
+      sell: sellable ? () => sellItemAt(col, row, only: item) : null,
+    );
+  }
+
+  /// Whether [item] can be sold from the board: anything from a side chain
+  /// (rare finds, gifts) and anything that cannot be merged any further, so
+  /// nothing can ever be stuck on the board for good. Never something an
+  /// order on show is asking for, and never with nobody to pay for it.
+  bool canSell(ItemModel item) {
+    if (item.sell <= 0 || onSold == null) return false;
+    if (wantedByOrder?.call(item.itemId) ?? false) return false;
+    final top = chainData[item.chainId]?.maxTier;
+    return sideChains.contains(item.chainId) ||
+        (top != null && item.tier >= top);
+  }
+
+  /// Sells the item in ([col], [row]): it leaves the board and is paid for.
+  /// Returns false, changing nothing, if it is no longer there to sell (or
+  /// the cell now holds something other than [only]).
+  bool sellItemAt(int col, int row, {ItemModel? only}) {
+    final item = _itemToTake(col, row, only);
+    if (item == null || !canSell(item)) return false;
+    _board[col][row] = null;
+    _cells[col][row].clearItem();
+    onSold?.call(item);
+    _boardTouched();
+    return true;
   }
 
   /// Uses the Manna item in ([col], [row]): it leaves the board and its
   /// Manna is added (over the bar if need be). Returns false, changing
-  /// nothing, if that cell no longer holds such an item.
-  bool useItemAt(int col, int row) {
-    if (col < 0 || col >= gridCols || row < 0 || row >= gridRows) return false;
-    final item = _board[col][row];
-    final use = item?.use;
+  /// nothing, if that cell no longer holds such an item (or holds something
+  /// other than [only]).
+  bool useItemAt(int col, int row, {ItemModel? only}) {
+    final use = _itemToTake(col, row, only)?.use;
     if (use == null || !use.givesManna) return false;
     _board[col][row] = null;
     _cells[col][row].clearItem();
     manna.add(use.manna);
     _boardTouched();
     return true;
+  }
+
+  /// The item in ([col], [row]) if it may be taken off the board: any drag
+  /// is ended first (a lifted item goes back to its cell), and if [only] is
+  /// given the cell must still hold exactly that item.
+  ItemModel? _itemToTake(int col, int row, ItemModel? only) {
+    if (col < 0 || col >= gridCols || row < 0 || row >= gridRows) return null;
+    _putBackDragged();
+    final item = _board[col][row];
+    return only == null || identical(item, only) ? item : null;
   }
 
   /// An hourglass let go over a generator: if that generator is waiting,

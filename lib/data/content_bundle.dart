@@ -115,6 +115,8 @@ const boardTextKeys = [
   'keep',
   'hourglass_hint',
   'ok',
+  'sell',
+  'boost_hint',
   // Not words: the picture behind everything above the board.
   'header_background',
   // The first-launch welcome.

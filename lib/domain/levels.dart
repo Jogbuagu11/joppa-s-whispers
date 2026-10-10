@@ -109,10 +109,11 @@ class LevelsConfig {
 
   int get maxLevel => steps.isEmpty ? 1 : steps.last.level;
 
-  /// The generator boosts there are, weakest first.
+  /// The generator boosts in the game, weakest first (one marked not yet
+  /// available is left out, like any other feature held back).
   List<FeatureUnlock> get boosts => [
     for (final u in unlocks)
-      if (u.boost != null) u,
+      if (u.boost != null && u.available) u,
   ]..sort((a, b) => a.level.compareTo(b.level));
 
   /// The level a player with [xp] has reached. Everyone starts at level 1.

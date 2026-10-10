@@ -108,6 +108,7 @@ void wireTutorial({
 }) {
   game
     ..freeGeneratorTaps = (() => tutorial.freeManna)
+    ..rareDrops = (() => tutorial.isOver)
     ..onMerge = (() =>
         tutorial.handle(const TutorialEvent(TutorialTrigger.merge)))
     ..onGeneratorSpawn = ({required bool wasFree}) {

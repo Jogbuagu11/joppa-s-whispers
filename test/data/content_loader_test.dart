@@ -135,6 +135,17 @@ void main() {
     expect(board['gen_olive_tree']?.chapter, 5);
   });
 
+  test('chains no generator makes are known as side chains', () {
+    final chains = (_read('chains') as List<dynamic>)
+        .cast<Map<String, dynamic>>();
+    expect(loader.sideChains, {
+      for (final c in chains)
+        if (c['generator_id'] == null) c['id'],
+    });
+    expect(loader.sideChains, containsAll(['honey', 'dye', 'golden']));
+    expect(loader.sideChains, isNot(contains('bakery')));
+  });
+
   test('a generator can override the tap cost', () {
     final generators = _read('generators') as List<dynamic>;
     final first = Map<String, dynamic>.of(

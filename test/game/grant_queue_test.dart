@@ -202,10 +202,12 @@ void main() {
         ..placeItem(_jar)
         ..placeItem(_fig);
       final asked = <String>[];
-      bool Function()? use;
-      game.onUsableItemTapped = (item, doIt) {
+      bool Function()? doUse;
+      game.onItemAsked = (item, {use, sell}) {
         asked.add(item.itemId);
-        use = doIt;
+        doUse = use;
+        // Nothing here has a selling price.
+        expect(sell, isNull);
       };
       // Every cell reports a tap the same way; only the jar's leads anywhere.
       for (final cell in game.children.whereType<CellComponent>()) {
@@ -213,7 +215,7 @@ void main() {
       }
       expect(asked, ['jar']);
       expect(manna.manna, 95);
-      expect(use?.call(), isTrue);
+      expect(doUse?.call(), isTrue);
       expect(manna.manna, 110);
     },
   );

@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 26 — Generator types is built, and the board was restyled with Jennifer on the simulator (approved 2026-10-10). Next to build: 27 — Boost & rare chains. Milestones 14 and 16–26 are built and awaiting Jennifer's real-phone checks. Release builds are now milestone 40.
+## Current milestone: 27 — Boost & rare chains is built (2026-10-10). Next to build: 28 — Board extras. Milestones 14 and 16–27 are built and awaiting Jennifer's real-phone checks. Release builds are now milestone 40.
 ---
 
 ## Milestone status
@@ -34,7 +34,7 @@
 | 24 | Polish & accessibility | BUILT — not tagged: Jennifer has not yet heard the sounds or felt the vibration on a real phone |
 | 25 | Player levels & XP | BUILT — not tagged: Jennifer has not yet seen it on a phone |
 | 26 | Generator types | BUILT — not tagged: Jennifer has not yet played it; new tiles have no art |
-| 27 | Boost & rare chains | Not started |
+| 27 | Boost & rare chains | BUILT — not tagged: Jennifer has not yet played it; the new items have no approved art yet |
 | 28 | Board extras | Not started |
 | 29 | Chance features | Not started |
 | 30 | Offers & pop-ups | Not started |
@@ -1394,6 +1394,63 @@ Where it stands (she has seen each step; the last one is not yet approved):
   build opens on the emulator through the title screen and welcome to the board.
   **Build 14** (`dist/whispers-of-joppa-1.0.0-14.aab`, in Downloads) has Milestone 26 and
   all of this. Store screenshots retaken with the new look.
+
+## Milestone 27 — state (2026-10-10)
+
+**What it does** (EXPANSION 19.2, 19.3)
+- **Generator boost.** From player level 15 the Manna bar carries a small chip reading
+  ×1. Tapping it switches to ×2 (each generator tap costs twice the Manna and gives an
+  item one tier higher); from level 40 a further tap gives ×4 (four times the Manna,
+  two tiers higher); one more tap turns it off. The generator tiles show the boosted
+  price. The choice is saved with the game. Boost never applies to the tutorial's free
+  taps or to generators that cost no Manna (charged, free, temporary). With too little
+  Manna for the boosted price but enough for a plain tap, the tap is a plain one.
+- **Rare finds.** Three generators now and then (1 tap in 10) give something from a rare
+  chain instead: Grandma's Pantry → **Honey** (4 tiers), Tabitha's Loom → **Dyes**
+  (4 tiers), the Olive Press → **Golden vessels** (3 tiers). They merge like anything
+  else, and a rare find under a boost is lifted the same way. None during the tutorial.
+- **Selling from the board** (added after the code review, so rare finds can never clog
+  the board): tapping a rare find, a gift item (hourglass, Manna jar) or any item at the
+  top of its chain asks "Keep / Sell for N Talents". The price is the item's `sell`
+  number in `content/chains.json`. Ordinary items that can still be merged are not for
+  sale by tap, and neither is anything an order on show is asking for.
+- Content is version 25. The save gained one optional field (`boost`), no new version.
+
+**Checks**
+- `flutter analyze` clean; unit tests pass (`test/domain/generator_boost_test.dart`,
+  `test/game/board_boost_test.dart`, `test/game/board_sell_test.dart`);
+  `integration_test/boost_test.dart` (no chip before level 15; ×2 costs double and gives
+  a second-tier item; remembered after a restart; a rare find is kept or sold).
+
+**Reviewer's notes (code-reviewer, 2026-10-10)**
+- Fixed: rare finds had no way off the board (selling added); an unaffordable boosted
+  tap showed "out of Manna" although a plain tap was affordable; a rare find under boost
+  came at tier 1 for the boosted price; a boost marked not available in `levels.json`
+  was still offered; the level-up message now says where the boost is; a generator's
+  rare chain may not be its own chain; no rare finds in the tutorial; the art tool no
+  longer leaves a mislabelled file behind if a conversion fails.
+- Second review (same day), fixed: an item lifted with one finger could be sold (or a
+  Manna jar used) with another and then dropped back, for free Talents or Manna — a
+  sale or use now ends any drag first; nothing is sold with nobody to pay; an item an
+  order on show wants is not offered for sale; the Keep/Sell question is not asked
+  while a cloud check is under way, and its answer is ignored if the game was swapped
+  meanwhile; a sale takes only the very item that was asked about; a generator tile
+  shows the plain price when the boosted one cannot be paid; the chip's screen-reader
+  words come from `content/board_text.json` (`boost_hint`).
+- Not changed: `docs/GDD.md` says "any item can be sold" at tier × 2 Talents. That needs
+  the basket/sell design; see the assumptions below.
+- Carried forward: `content_loader.dart` 295, `board_session.dart` 298,
+  `account_screen.dart` 295, `content_validator.dart` 292, `event_screen.dart` 291,
+  `board_game.dart` 288, `save_state.dart` 288 lines — split each before adding to it.
+
+## Assumptions to confirm (added in Milestone 27)
+- Levels 15 and 40 for the boosts, the 1-in-10 chance, which three generators have a
+  rare chain, and every selling price are my starting numbers; all are in `content/`.
+- No order asks for a rare item yet. EXPANSION says they are "worth more in orders and
+  events": for now their worth is their selling price; orders and events that ask for
+  them come with the milestones that build those rewards.
+- Selling is offered only where nothing else can be done with an item (top tier) or for
+  side-chain items. A general "sell anything" (and the basket) is not built.
 
 ## Milestone 26 — state (2026-10-10)
 

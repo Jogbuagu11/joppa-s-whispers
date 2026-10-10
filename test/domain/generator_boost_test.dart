@@ -131,6 +131,37 @@ void main() {
     },
   );
 
+  test('a rare find under a boost is lifted like any other item, and never '
+      'past the top of its chain', () {
+    const rare = RareDrop(chainId: 'honey', chance: 1);
+    final two = _tap(boost: _two, rare: rare);
+    expect(two.itemId, 'h2');
+    expect(two.tier, 2);
+    expect(two.mannaAfter, 8);
+    final four = _tap(boost: _four, rare: rare);
+    expect(four.itemId, 'h2');
+    expect(four.mannaAfter, 6);
+  });
+
+  test('a boost held back in the levels file is not offered', () {
+    Map<String, dynamic> unlock(int level, int times, {required bool on}) => {
+      'level': level,
+      'feature': 'boost_$times',
+      'name': 'Boost',
+      'available': on,
+      'boost': {'manna_times': times, 'tier_bonus': 1},
+    };
+    final levels = LevelsConfig.fromJson({
+      'xp_per_task_by_chapter': <String, dynamic>{},
+      'xp_per_task_default': 1,
+      'levels': [
+        {'level': 2, 'xp': 10},
+      ],
+      'unlocks': [unlock(40, 4, on: false), unlock(15, 2, on: true)],
+    });
+    expect([for (final b in levels.boosts) b.level], [15]);
+  });
+
   test('rare drops are read from content, and checked', () {
     expect(RareDrop.fromJson(null), isNull);
     expect(RareDrop.fromJson({'chain_id': 'honey'}), isNull);
@@ -149,6 +180,18 @@ void main() {
     expect(check({'chain_id': 'honey', 'chance': 0}), isNotEmpty);
     expect(check({'chain_id': 'honey', 'chance': 0.9}), isNotEmpty);
     expect(check('often'), isNotEmpty);
+    // A generator's rare chain is never its own chain.
+    final own = <String>[];
+    checkRareDrop(
+      'g',
+      {
+        'chain_id': 'honey',
+        'rare': {'chain_id': 'honey', 'chance': 0.1},
+      },
+      {'honey'},
+      own,
+    );
+    expect(own, isNotEmpty);
   });
 
   test('the real game: 2x opens at level 15 and 4x at level 40; three '

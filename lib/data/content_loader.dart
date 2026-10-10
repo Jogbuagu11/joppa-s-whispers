@@ -30,6 +30,9 @@ class ContentLoader {
   /// chain_id -> ARGB colour used for placeholder tiles until real art exists.
   final Map<String, int> chainPlaceholderColors = {};
 
+  /// Chains no generator of their own makes (rare finds and gifts).
+  final Set<String> sideChains = {};
+
   /// generator_id -> GeneratorLevelData list
   final Map<String, List<GeneratorLevelData>> generatorLevels = {};
 
@@ -230,6 +233,7 @@ class ContentLoader {
 
       final color = parseHexColor(chain['placeholder_color'] as String?);
       if (color != null) chainPlaceholderColors[chainId] = color;
+      if (chain['generator_id'] == null) sideChains.add(chainId);
     }
   }
 
@@ -247,6 +251,7 @@ class ContentLoader {
         );
       }).toList();
       final rules = GeneratorRules.fromJson(gen);
+      final rare = RareDrop.fromJson(gen['rare']);
       generators[genId] = GeneratorModel(
         generatorId: genId,
         chainId: gen['chain_id'] as String,
@@ -258,8 +263,8 @@ class ContentLoader {
             : 0,
         name: gen['name'] as String,
         rules: rules,
-        rareChainId: RareDrop.fromJson(gen['rare'])?.chainId,
-        rareChance: RareDrop.fromJson(gen['rare'])?.chance ?? 0,
+        rareChainId: rare?.chainId,
+        rareChance: rare?.chance ?? 0,
       );
     }
   }

@@ -44,12 +44,20 @@ def image_part(path):
 
 def save_png(path, data):
     """Writes a picture as a real .png, whatever format Google sent it in
-    (it sometimes sends a JPEG), so every later tool can read it."""
-    with open(path, 'wb') as f:
+    (it sometimes sends a JPEG), so every later tool can read it. Uses
+    macOS's own `sips`; nothing is left behind if the conversion fails."""
+    if data.startswith(b'\x89PNG'):
+        with open(path, 'wb') as f:
+            f.write(data)
+        return
+    raw = path + '.raw'
+    with open(raw, 'wb') as f:
         f.write(data)
-    if not data.startswith(b'\x89PNG'):
-        subprocess.run(['sips', '-s', 'format', 'png', path, '--out', path],
+    try:
+        subprocess.run(['sips', '-s', 'format', 'png', raw, '--out', path],
                        check=True, capture_output=True)
+    finally:
+        os.remove(raw)
 
 
 def generate(model, prompt, images, aspect):

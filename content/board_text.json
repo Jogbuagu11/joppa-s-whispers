@@ -9,5 +9,7 @@
   "welcome_body": "Before you begin: by tapping Play you agree to our Terms of Service and Privacy Policy.",
   "welcome_terms": "Terms of Service",
   "welcome_privacy": "Privacy Policy",
-  "welcome_play": "Play"
+  "welcome_play": "Play",
+  "sell": "Sell for {talents} Talents",
+  "boost_hint": "Generator boost {boost}"
 }

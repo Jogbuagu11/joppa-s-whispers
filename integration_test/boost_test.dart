@@ -1,5 +1,5 @@
 // Milestone 27: from level 15 the Manna pill carries a boost chip; with 2x
-// on, a generator tap costs twice the Manna.
+// on, a generator tap costs twice the Manna. Rare finds can be sold.
 import 'dart:convert';
 
 import 'package:flame/game.dart';
@@ -37,6 +37,90 @@ void main() {
     // Safe: the board widget was just found, and it always has its game.
     return game!;
   }
+
+  /// The middle of board cell ([col], [row]) on the screen.
+  Offset cellCentre(WidgetTester tester, int col, int row) {
+    final rect = tester.getRect(find.byType(GameWidget<BoardGame>));
+    final byWidth = rect.width / BoardGame.cols;
+    final byHeight = rect.height / BoardGame.rows;
+    final cell = (byWidth < byHeight ? byWidth : byHeight) - 2;
+    return Offset(
+      rect.left + (rect.width - BoardGame.cols * cell) / 2 + (col + 0.5) * cell,
+      rect.top + (rect.height - BoardGame.rows * cell) / 2 + (row + 0.5) * cell,
+    );
+  }
+
+  testWidgets('a rare find can be kept or sold for Talents', (tester) async {
+    final chains = (await _content('chains') as List<dynamic>)
+        .cast<Map<String, dynamic>>();
+    final honey =
+        (chains.firstWhere((c) => c['id'] == 'honey')['tiers'] as List<dynamic>)
+            .cast<Map<String, dynamic>>()
+            .first;
+    final id = honey['item_id'] as String;
+    final price = honey['sell'] as int;
+    await SaveRepository().save(
+      SaveState(
+        items: [SavedItem(itemId: id, col: 3, row: 4)],
+        generators: const [
+          SavedGenerator(generatorId: 'gen_pantry', level: 1, col: 2, row: 8),
+        ],
+        manna: 60,
+        mannaLastRegen: DateTime.now(),
+        talents: 7,
+        blessings: 0,
+        activeOrders: const [],
+        pendingOrders: const [],
+        completedOrders: const [],
+        completedTasks: const [],
+        tutorialStep: tutorialFinished,
+        lastOrderSkip: null,
+      ),
+    );
+    final game = await open(tester, const Key('sell'));
+    String talents() =>
+        tester.widget<Text>(find.byKey(const Key('talents_count'))).data ?? '';
+    expect(talents(), '7');
+
+    // Tapping it asks; "keep" changes nothing.
+    await tester.tapAt(cellCentre(tester, 3, 4));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.byKey(const Key('use_item')), findsOneWidget);
+    expect(find.byKey(const Key('use_item_use')), findsNothing);
+    await tester.tap(find.byKey(const Key('use_item_keep')));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(game.itemCounts()[id], 1);
+    expect(talents(), '7');
+
+    // Lifted by a finger and sold meanwhile: it goes, paid for once, and
+    // letting go does not bring it back.
+    final finger = await tester.startGesture(cellCentre(tester, 3, 4));
+    await tester.pump(const Duration(milliseconds: 100));
+    await finger.moveBy(const Offset(0, -30));
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(game.sellItemAt(3, 4), isTrue);
+    await finger.up();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(game.itemCounts()[id], isNull);
+    expect(talents(), '${7 + price}');
+    expect(game.sellItemAt(3, 4), isFalse);
+    game.placeItem(game.itemCatalog[id] ?? (throw StateError('no $id')));
+    await tester.pump(const Duration(milliseconds: 300));
+    final again = game.snapshotItems().single;
+
+    // Selling takes it off the board and pays its price.
+    await tester.tapAt(cellCentre(tester, again.col, again.row));
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.tap(find.byKey(const Key('use_item_sell')));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(tester.takeException(), isNull);
+    expect(game.itemCounts()[id], isNull);
+    expect(talents(), '${7 + price * 2}');
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 3));
+    await SaveRepository().clear();
+  });
 
   testWidgets('before level 15 there is no boost chip', (tester) async {
     await SaveRepository().clear();
@@ -91,23 +175,10 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(text('boost_label'), '×1');
 
-    // Where the pantry is drawn.
-    final board = find.byType(GameWidget<BoardGame>);
     final pantry = game.generatorPlacements.firstWhere(
       (p) => p.gen.generatorId == 'gen_pantry',
     );
-    final rect = tester.getRect(board);
-    final byWidth = rect.width / BoardGame.cols;
-    final byHeight = rect.height / BoardGame.rows;
-    final cell = (byWidth < byHeight ? byWidth : byHeight) - 2;
-    final centre = Offset(
-      rect.left +
-          (rect.width - BoardGame.cols * cell) / 2 +
-          (pantry.col + 0.5) * cell,
-      rect.top +
-          (rect.height - BoardGame.rows * cell) / 2 +
-          (pantry.row + 0.5) * cell,
-    );
+    final centre = cellCentre(tester, pantry.col, pantry.row);
 
     // The usual tap first.
     await tester.tapAt(centre);
@@ -119,18 +190,18 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     expect(text('boost_label'), '×2');
     expect(game.generatorLabel(pantry.gen), '${cost * 2}M');
-    final before = game.snapshotItems().length;
+    final before = {for (final i in game.snapshotItems()) (i.col, i.row)};
     await tester.tapAt(centre);
     await tester.pump(const Duration(milliseconds: 400));
     expect(text('manna_count'), '${60 - cost - cost * 2}/$max');
-    expect(game.snapshotItems().length, before + 1);
-    // The item is above the first tier (or, one time in ten, the rare
-    // chain's first).
-    final newest = game.snapshotItems().map((i) => i.itemId).toList();
-    expect(
-      newest.any((id) => id.startsWith('honey_') || !id.endsWith('_01')),
-      isTrue,
-    );
+    // Exactly one new item, and it is above the first tier (of the
+    // pantry's chain or, one time in ten, of its rare chain).
+    final added = [
+      for (final i in game.snapshotItems())
+        if (!before.contains((i.col, i.row))) i.itemId,
+    ];
+    expect(added, hasLength(1));
+    expect(added.single.endsWith('_02'), isTrue, reason: added.single);
 
     // 4x is not open yet: the next tap of the chip turns boost off.
     await tester.tap(find.byKey(const Key('boost_chip')));

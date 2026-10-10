@@ -88,22 +88,24 @@ BoardGame buildSessionGame({
   // A saved game that lost a generator gets it back from the start board.
   final saved = withMissingGenerators(save, fresh.generators);
   return BoardGame(
-    itemCatalog: loader.items,
-    chainData: loader.chains,
-    generatorLevels: loader.generatorLevels,
-    generatorPlacements: [
-      for (final g in saved)
-        if (loader.generators[g.generatorId] case final gen?)
-          (gen: gen.atLevel(g.level), col: g.col, row: g.row),
-    ],
-    generatorTimers: {for (final g in saved) g.generatorId: ?g.timer},
-    startingItems: [
-      for (final i in save.items)
-        if (loader.items[i.itemId] case final item?)
-          (item: item, col: i.col, row: i.row),
-    ],
-    chainPlaceholderColors: loader.chainPlaceholderColors,
-    manna: manna,
-    onOutOfManna: onOutOfManna,
-  )..boost.value = save.boost;
+      itemCatalog: loader.items,
+      chainData: loader.chains,
+      generatorLevels: loader.generatorLevels,
+      generatorPlacements: [
+        for (final g in saved)
+          if (loader.generators[g.generatorId] case final gen?)
+            (gen: gen.atLevel(g.level), col: g.col, row: g.row),
+      ],
+      generatorTimers: {for (final g in saved) g.generatorId: ?g.timer},
+      startingItems: [
+        for (final i in save.items)
+          if (loader.items[i.itemId] case final item?)
+            (item: item, col: i.col, row: i.row),
+      ],
+      chainPlaceholderColors: loader.chainPlaceholderColors,
+      manna: manna,
+      onOutOfManna: onOutOfManna,
+    )
+    ..boost.value = save.boost
+    ..sideChains = loader.sideChains;
 }

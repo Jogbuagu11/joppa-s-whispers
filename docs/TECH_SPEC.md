@@ -189,14 +189,16 @@ Spiritual orders set `"kind": "spiritual"` and a `scene_id` that plays on comple
 - `tutorial.json`: first-session hints in order: id, speaker, text, `done_when` (`merge`, `generator_tap`, `order_delivered` + id, `task_done` + id, or `tap`), `free_manna`
 - `endings.json`: the message shown when a chapter's last task is done: chapter_id, title, body, button
 - Generators (Milestone 26): a `generators.json` entry may add `type` (`standard`, `charged`, `free`, `temporary`) with `charges` + `cooldown_seconds`, `interval_seconds` + `max_waiting`, or `taps`. A `starting_board.json` generator may add `level` (the player level it waits for). A chain tier may add `use`: `{manna}` or `{skip_seconds}` / `{skip_all}`; a chain of such gift items has no `generator_id`. `levels.json` levels may add `items` and `generator` (temporary only). Rules: `lib/domain/generator_types.dart`.
-- `board_text.json`: the few words used on the board (`use_manna`, `use`, `keep`, `hourglass_hint`, `ok`).
+- `board_text.json`: the few words used on the board (`use_manna`, `use`, `keep`, `hourglass_hint`, `ok`, `sell` with `{talents}`, `boost_hint` with `{boost}`).
+- Boost and rare chains (Milestone 27): a `levels.json` unlock may add `boost`: `{manna_times, tier_bonus}` (offered only if `available`); a `generators.json` entry may add `rare`: `{chain_id, chance}` (chance above 0, at most 0.5; never its own chain). A rare chain has no `generator_id`. Rules: `resolveGeneratorTap` in `lib/domain/generator.dart`.
+- Selling from the board: an item with a `sell` price can be sold by tapping it if its chain has no `generator_id` or it is the top tier of its chain, unless an order on show asks for it (`BoardGame.canSell`).
 - `levels.json` (Milestone 25): `xp_per_task_by_chapter`, `xp_per_task_default`, `levels` (`level`, total `xp` to reach it, `talents` reward), `unlocks` (`level`, `feature`, `name`, `available`), and the `text` of the badge and level-up message. Checked by `lib/data/level_validator.dart`.
 
 ## 4. Save data
 - Local save file: `save.json` in the app documents folder, written after every meaningful action (debounced 2 seconds) and on app pause.
 - Contents: board cells, basket, currencies, Manna and last-regen timestamp, chapter/task progress, discovered items, letters found, crowns, settings, save version.
 - `save_version` field + migration functions for every format change. Never break an existing save.
-- Optional fields added within version 7: a generator's `timer` (`left`, `at`) and `pending_grants` (gifts waiting for room, as `item:<id>` / `gen:<id>`).
+- Optional fields added within version 7: a generator's `timer` (`left`, `at`), `pending_grants` (gifts waiting for room, as `item:<id>` / `gen:<id>`) and `boost` (the generator boost switched on; 0 = none).
 - Current format: version 7. Version 6 added the day's rewarded-ad count; version 7 added `level_rewarded` (the last player level whose rewards were given; XP is not saved, it is worked out from the tasks done). Earlier: Version 2 added `completed_orders`; version 3 added `completed_tasks`; version 4 added the tutorial position, free taps used, chapter endings seen and the content version; version 5 added Pearls, applied store transactions and owned one-time products. Migrations live in `migrateSave` in `lib/domain/save_state.dart`.
 - Cloud save (Milestone 14): same JSON stored in Supabase `saves` table. On conflict, keep the save with more progress and ask the player only if both have progressed.
 

@@ -232,13 +232,7 @@ mixin _BoardScreenActions
       }
       _attachShop(session);
       _attachComfort(session);
-      session.game.onUsableItemTapped = _askToUse;
-      // Generator boosts open at their levels (EXPANSION 19.2).
-      final boosts = session.levels.config.boosts;
-      session.game
-        ..boosts = [for (final u in boosts) ?u.boost]
-        ..boostUnlocked = (i) =>
-            i < boosts.length && session.levels.level >= boosts[i].level;
+      _wireBoard(session);
       session.ads.service = widget.ads;
       widget.cloud?.blockUploads = session.downgraded;
       session.saver.onSaved = (state) => widget.cloud?.afterLocalSave(state);

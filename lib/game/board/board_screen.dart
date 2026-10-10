@@ -201,6 +201,8 @@ class _BoardScreenState extends State<BoardScreen>
                         boostLabel: session.game.hasBoost
                             ? '×${session.game.activeBoost.mannaTimes}'
                             : null,
+                        boostOn: session.game.boost.value > 0,
+                        boostHint: _boardText['boost_hint'] ?? '',
                         onBoost: session.game.cycleBoost,
                       ),
                     ),

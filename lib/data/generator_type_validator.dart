@@ -85,6 +85,9 @@ void checkRareDrop(
       'Generator $id: rare chain "${rare['chain_id']}" does not exist',
     );
   }
+  if (rare['chain_id'] == gen['chain_id']) {
+    problems.add('Generator $id: its rare chain must not be its own chain');
+  }
   final chance = rare['chance'];
   if (chance is! num || chance <= 0 || chance > 0.5) {
     problems.add('Generator $id: rare chance must be above 0 and at most 0.5');
