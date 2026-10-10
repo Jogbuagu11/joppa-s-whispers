@@ -122,7 +122,7 @@ class BubbleController extends ChangeNotifier {
     if (drawn == null) return;
     // A mystery bubble starts from the plain item; its lift is drawn when
     // it is kept.
-    final mystery = _isMystery();
+    final mystery = _isMystery(merged);
     final held = mystery ? merged : drawn;
     _bubbles.add(
       Bubble(
@@ -186,9 +186,15 @@ class BubbleController extends ChangeNotifier {
   /// pops at the next tick.
   void release(int id) => _held.remove(id);
 
-  bool _isMystery() {
+  /// Whether a bubble for [merged] is a mystery one. Only an item with
+  /// room above it for every lift on the list can be: what the player is
+  /// shown must be what can really come out.
+  bool _isMystery(ItemModel merged) {
     final mystery = this.mystery;
-    return mystery != null && _random.nextDouble() < mystery.share;
+    if (mystery == null) return false;
+    final top = chains[merged.chainId]?.maxTier ?? 0;
+    if (merged.tier + mystery.largestLift > top) return false;
+    return _random.nextDouble() < mystery.share;
   }
 
   void _keep(Bubble bubble) {

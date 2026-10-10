@@ -1,5 +1,6 @@
 // The player's Pearls and the record of which purchases are already in the
-// game. Pearls only ever arrive here from purchases the server has confirmed.
+// game. Bought Pearls only ever arrive here from purchases the server has
+// confirmed; small amounts are also won in play (earnPearls).
 import 'package:flutter/foundation.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/domain/refunds.dart';

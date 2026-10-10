@@ -28,64 +28,70 @@ class GameDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = this.title;
     final content = this.content;
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 24),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 380),
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: _emblemSize / 2),
-              decoration: BoxDecoration(
-                color: GamePalette.panel,
-                borderRadius: BorderRadius.circular(22),
-                border: Border.all(color: GamePalette.gold, width: 2.5),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0xB3000000),
-                    blurRadius: 24,
-                    offset: Offset(0, 10),
-                  ),
-                ],
-              ),
-              // A second, finer line inside the frame.
-              child: Container(
-                margin: const EdgeInsets.all(4),
+    // Announced to screen readers as a pop-up when it opens.
+    return Semantics(
+      namesRoute: true,
+      explicitChildNodes: true,
+      child: Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 24),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 380),
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: _emblemSize / 2),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: GamePalette.panelEdge),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _Header(title: title),
-                    if (content != null)
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(18, 14, 18, 6),
-                          child: DefaultTextStyle.merge(
-                            style: const TextStyle(
-                              color: _cream,
-                              fontSize: 15,
-                              height: 1.35,
-                            ),
-                            textAlign: TextAlign.center,
-                            child: content,
-                          ),
-                        ),
-                      ),
-                    if (actions.isNotEmpty) _Buttons(actions: actions),
+                  color: GamePalette.panel,
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(color: GamePalette.gold, width: 2.5),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0xB3000000),
+                      blurRadius: 24,
+                      offset: Offset(0, 10),
+                    ),
                   ],
                 ),
+                // A second, finer line inside the frame.
+                child: Container(
+                  margin: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: GamePalette.panelEdge),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _Header(title: title),
+                      if (content != null)
+                        Flexible(
+                          // However much there is to say, it can be scrolled.
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.fromLTRB(18, 14, 18, 6),
+                            child: DefaultTextStyle.merge(
+                              style: const TextStyle(
+                                color: _cream,
+                                fontSize: 15,
+                                height: 1.35,
+                              ),
+                              textAlign: TextAlign.center,
+                              child: content,
+                            ),
+                          ),
+                        ),
+                      if (actions.isNotEmpty) _Buttons(actions: actions),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            _Emblem(icon: icon),
-          ],
+              _Emblem(icon: icon),
+            ],
+          ),
         ),
       ),
     );

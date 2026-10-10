@@ -236,9 +236,11 @@ class SaveState {
           json['pending_grants'] as List<dynamic>? ?? const [],
         ),
         boost: json['boost'] as int? ?? 0,
-        extras: Map<String, dynamic>.of(
-          json['extras'] as Map<String, dynamic>? ?? const {},
-        ),
+        // Anything that is not a set of records counts as none.
+        extras: switch (json['extras']) {
+          final Map<String, dynamic> records => Map.of(records),
+          _ => const {},
+        },
       );
     } on TypeError catch (e) {
       throw FormatException('Save file is missing or has a wrong field: $e');

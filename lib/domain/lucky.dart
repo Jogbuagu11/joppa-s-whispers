@@ -74,6 +74,12 @@ class MysteryBubble {
     : share = (json['share'] as num).toDouble(),
       _lifts = _steps(json['lifts'], 'tiers');
 
+  /// The most tiers a mystery bubble can lift its item.
+  int get largestLift => _lifts.fold<int>(
+    0,
+    (most, step) => step.amount > most ? step.amount : most,
+  );
+
   /// How many tiers above the merged item the hidden item is.
   int draw({Random? random}) => _draw(_lifts, random);
 

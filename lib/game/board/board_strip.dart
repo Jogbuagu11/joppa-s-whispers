@@ -67,6 +67,7 @@ class BoardStrip extends StatefulWidget {
 class _BoardStripState extends State<BoardStrip> {
   final ScrollController _scroll = ScrollController();
   bool _placed = false;
+  int _columns = 1;
   bool _couldDo = false;
   int _ready = 0;
 
@@ -183,6 +184,16 @@ class _BoardStripState extends State<BoardStrip> {
               // Three order cards fill the row exactly; the story card is
               // the width of one of them.
               final card = (width - 2 * _gap) / 3;
+              // A button arriving later (an event, the wheel) widens the
+              // menu: a row resting on the orders is put back on them.
+              final columns = (_buttons.length + 2) ~/ 3;
+              if (_placed && columns != _columns && !_atStart) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (!mounted || !_scroll.hasClients) return;
+                  _scroll.jumpTo(_scroll.position.maxScrollExtent);
+                });
+              }
+              _columns = columns;
               if (!_placed) {
                 // Once laid out: start on the orders, or on the story card
                 // if its task is already waiting to be done.
@@ -211,7 +222,10 @@ class _BoardStripState extends State<BoardStrip> {
                       SizedBox(
                         // Three buttons to a column.
                         width: _menuWidth * ((_buttons.length + 2) ~/ 3),
-                        child: _menu(),
+                        child: StripMenu(
+                          buttons: _buttons,
+                          columnWidth: _menuWidth,
+                        ),
                       ),
                       const SizedBox(width: _gap),
                       SizedBox(
@@ -253,20 +267,6 @@ class _BoardStripState extends State<BoardStrip> {
         ),
       ],
     ),
-  );
-
-  /// The round buttons at the far left, three to a column.
-  Widget _menu() => Row(
-    children: [
-      for (var i = 0; i < _buttons.length; i += 3)
-        SizedBox(
-          width: _menuWidth,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: _buttons.skip(i).take(3).toList(),
-          ),
-        ),
-    ],
   );
 
   List<Widget> get _buttons => [

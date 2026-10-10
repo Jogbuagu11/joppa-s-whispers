@@ -173,9 +173,12 @@ void main() {
     await wait(30);
     await shot('9_wheel_prize');
     await tapKey('wheel_prize_ok');
-    await tester.drag(find.byType(ListView).first, const Offset(0, -500));
+    await tester.ensureVisible(find.byKey(const Key('jar_buy_golden')));
     await wait();
     await shot('10_wheel_lower');
+    await tapKey('jar_buy_treasure');
+    await shot('11_buy_jar');
+    await tapKey('jar_buy_no');
 
     await tester.pumpWidget(const SizedBox());
     await wait(30);

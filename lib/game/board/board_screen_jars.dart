@@ -92,8 +92,9 @@ mixin _BoardJars on _BoardBubbles {
           ),
           content: SizedBox(
             width: double.maxFinite,
-            child: ListView(
-              shrinkWrap: true,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 OddsList(title: text['jar_holds'] ?? '', odds: jar.odds),
               ],

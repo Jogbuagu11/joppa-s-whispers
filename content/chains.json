@@ -221,25 +221,29 @@
         "tier": 1,
         "item_id": "honey_01",
         "name": "Honeycomb",
-        "sell": 12
+        "sell": 12,
+        "asset": "assets/items/item_honey_01.jpg"
       },
       {
         "tier": 2,
         "item_id": "honey_02",
         "name": "Honey jar",
-        "sell": 30
+        "sell": 30,
+        "asset": "assets/items/item_honey_02.jpg"
       },
       {
         "tier": 3,
         "item_id": "honey_03",
         "name": "Honey pot",
-        "sell": 70
+        "sell": 70,
+        "asset": "assets/items/item_honey_03.jpg"
       },
       {
         "tier": 4,
         "item_id": "honey_04",
         "name": "Honeyed feast platter",
-        "sell": 160
+        "sell": 160,
+        "asset": "assets/items/item_honey_04.jpg"
       }
     ]
   },
@@ -254,25 +258,29 @@
         "tier": 1,
         "item_id": "dye_01",
         "name": "Purple dye shell",
-        "sell": 14
+        "sell": 14,
+        "asset": "assets/items/item_dye_01.jpg"
       },
       {
         "tier": 2,
         "item_id": "dye_02",
         "name": "Dye pot",
-        "sell": 34
+        "sell": 34,
+        "asset": "assets/items/item_dye_02.jpg"
       },
       {
         "tier": 3,
         "item_id": "dye_03",
         "name": "Purple cloth",
-        "sell": 80
+        "sell": 80,
+        "asset": "assets/items/item_dye_03.jpg"
       },
       {
         "tier": 4,
         "item_id": "dye_04",
         "name": "Royal purple robe",
-        "sell": 180
+        "sell": 180,
+        "asset": "assets/items/item_dye_04.jpg"
       }
     ]
   },
@@ -287,19 +295,22 @@
         "tier": 1,
         "item_id": "golden_01",
         "name": "Golden olive",
-        "sell": 16
+        "sell": 16,
+        "asset": "assets/items/item_golden_01.jpg"
       },
       {
         "tier": 2,
         "item_id": "golden_02",
         "name": "Golden oil",
-        "sell": 40
+        "sell": 40,
+        "asset": "assets/items/item_golden_02.jpg"
       },
       {
         "tier": 3,
         "item_id": "golden_03",
         "name": "Golden lamp",
-        "sell": 95
+        "sell": 95,
+        "asset": "assets/items/item_golden_03.jpg"
       }
     ]
   },
@@ -315,6 +326,7 @@
         "item_id": "knife_01",
         "name": "Splitting knife",
         "sell": 15,
+        "asset": "assets/items/item_knife_01.jpg",
         "use": { "split": true }
       }
     ]
@@ -331,6 +343,7 @@
         "item_id": "thread_01",
         "name": "Golden Thread",
         "sell": 25,
+        "asset": "assets/items/item_thread_01.jpg",
         "use": { "wild": true }
       }
     ]
@@ -347,6 +360,7 @@
         "item_id": "breadjar_01",
         "name": "Sealed bread jar",
         "sell": 3,
+        "asset": "assets/items/item_breadjar_01.jpg",
         "use": { "opens_with": "bakery", "gives": "manna_jar_02" }
       }
     ]
@@ -363,6 +377,7 @@
         "item_id": "fruitjar_01",
         "name": "Sealed fruit jar",
         "sell": 3,
+        "asset": "assets/items/item_fruitjar_01.jpg",
         "use": { "opens_with": "fruit", "gives": "hourglass_02" }
       }
     ]

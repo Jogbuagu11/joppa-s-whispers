@@ -12,7 +12,7 @@
       {
         "id": "manna_20",
         "name": "20 Manna",
-        "weight": 28,
+        "weight": 27,
         "manna": 20
       },
       {
@@ -109,7 +109,12 @@
     "mystery_name": "Mystery bubble",
     "lucky_plain": "No extra lift",
     "mystery_same": "{name}, as it is",
-    "mystery_any": "The item"
+    "mystery_any": "The item",
+    "free_only_note": "(free spins only)",
+    "jar_buy_title": "Buy a {name}?",
+    "jar_buy_yes": "Buy for {pearls} Pearls",
+    "jar_buy_no": "Not now",
+    "pearls_have": "You have {pearls} Pearls"
   },
   "jars": {
     "clay_every_orders": 4,

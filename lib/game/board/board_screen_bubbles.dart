@@ -73,8 +73,9 @@ mixin _BoardBubbles on _BoardWheel {
           ),
           content: SizedBox(
             width: double.maxFinite,
-            child: ListView(
-              shrinkWrap: true,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
                   (text['bubble_body'] ?? '').replaceAll(

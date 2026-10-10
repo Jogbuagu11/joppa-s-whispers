@@ -43,6 +43,14 @@ class JarShop extends StatelessWidget {
             fontSize: 16,
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.only(top: 2, bottom: 4),
+          child: Text(
+            (text['pearls_have'] ?? '').replaceAll('{pearls}', '$have'),
+            key: const Key('jar_shop_pearls'),
+            style: const TextStyle(color: GamePalette.muted, fontSize: 13),
+          ),
+        ),
         for (final jar in jars)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
@@ -80,7 +88,7 @@ class JarShop extends StatelessWidget {
                   ),
                   // Greyed out without the Pearls for it.
                   onPressed: have >= (jar.pearlPrice ?? 0)
-                      ? () => onBuy(jar)
+                      ? () => _confirm(context, jar)
                       : null,
                   child: Text(
                     (text['jar_buy'] ?? '').replaceAll(
@@ -97,6 +105,40 @@ class JarShop extends StatelessWidget {
   );
 }
 
+extension on JarShop {
+  /// Asks before any Pearls are spent, with what the jar may hold in view.
+  Future<void> _confirm(BuildContext context, JarKind jar) async {
+    final name = names[jar.id] ?? '';
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (context) => GameDialog(
+        key: const Key('jar_buy_dialog'),
+        icon: Icons.inventory_2,
+        title: Text((text['jar_buy_title'] ?? '').replaceAll('{name}', name)),
+        content: OddsList(title: text['jar_holds'] ?? '', odds: jar.odds),
+        actions: [
+          TextButton(
+            key: const Key('jar_buy_no'),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(text['jar_buy_no'] ?? ''),
+          ),
+          FilledButton(
+            key: const Key('jar_buy_yes'),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              (text['jar_buy_yes'] ?? '').replaceAll(
+                '{pearls}',
+                '${jar.pearlPrice}',
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (yes ?? false) onBuy(jar);
+  }
+}
+
 /// Shows what a kind of jar may hold, each with its chance.
 Future<void> showJarOdds(
   BuildContext context, {
@@ -111,8 +153,9 @@ Future<void> showJarOdds(
     title: Text(title, style: const TextStyle(color: GamePalette.gold)),
     content: SizedBox(
       width: double.maxFinite,
-      child: ListView(
-        shrinkWrap: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           OddsList(title: text['jar_holds'] ?? '', odds: jar.odds),
           Padding(

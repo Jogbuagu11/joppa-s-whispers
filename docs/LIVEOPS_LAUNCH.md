@@ -47,7 +47,7 @@ These follow the biblical feast calendar, which fits the setting. Their dates mo
 - **Screenshots (6–8):** board with merges, Naomi + Esther's letter, a story scene, before/after restoration, a character portrait lineup, an event board.
 - **Preview video:** 15–30 seconds, recorded from the game's auto-play demo mode.
 - **Keywords:** Christian games, Bible games, merge games, story games, faith, church, family-friendly.
-- **Age rating:** expected 4+/Everyone; complete both store questionnaires honestly (mentions of death and grief must be declared).
+- **Age rating:** no longer 4+/Everyone since the chance features (Milestone 29): declare simulated gambling (infrequent/mild) and random paid items (yes), expect about 12+; complete both store questionnaires honestly (mentions of death and grief must be declared).
 
 ## 6. Marketing to the faith audience
 - **Church networks:** women's ministries, Bible study groups, church newsletters. A one-page "share with your group" flyer.

@@ -140,6 +140,7 @@ mixin _BoardWheel on _BoardItems {
             controller: wheel,
             text: _chanceText,
             below: _jarShop(session),
+            pearlsChanged: session.purchases,
             moreOdds: [
               if (_luckyBoost case final lucky?)
                 (

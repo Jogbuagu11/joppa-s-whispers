@@ -83,16 +83,22 @@ Prize? drawPrize(List<Prize> prizes, {required bool paid, Random? random}) {
   return odds.last.prize;
 }
 
-/// A chance as the player reads it: "12.5%", "3%", "0.4%".
+/// A chance as the player reads it: "25%", "12.5%", "0.99%". Never shown
+/// as nothing: the smallest is "under 0.01%".
 String formatChance(double chance) {
   final percent = chance * 100;
-  final whole = percent == percent.roundToDouble();
-  final text = percent.toStringAsFixed(whole ? 0 : (percent < 1 ? 2 : 1));
-  return '$text%';
+  if (percent > 0 && percent < 0.01) return 'under 0.01%';
+  if (percent < 1) return '${percent.toStringAsFixed(2)}%';
+  // To one decimal place; a whole number is written without it.
+  final tenths = (percent * 10).round();
+  return tenths % 10 == 0 ? '${tenths ~/ 10}%' : '${tenths / 10}%';
 }
 
 /// Whether random rewards may be bought (with Pearls) where the player is.
 /// [countryCode] is the two-letter country of the phone's region setting;
-/// [blocked] the countries whose law forbids paid random items.
+/// [blocked] the countries whose law forbids paid random items. A phone
+/// that does not say where it is gets the careful answer: no.
 bool paidChanceAllowed(String? countryCode, Set<String> blocked) =>
-    countryCode == null || !blocked.contains(countryCode.toUpperCase());
+    countryCode != null &&
+    countryCode.length == 2 &&
+    !blocked.contains(countryCode.toUpperCase());

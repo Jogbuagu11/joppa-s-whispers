@@ -67,13 +67,22 @@ void main() {
     expect(formatChance(0.03), '3%');
     expect(formatChance(0.004), '0.40%');
     expect(formatChance(2 / 3), '66.7%');
+    // Sums that do not come out even are still written evenly.
+    expect(formatChance(0.07), '7%');
+    expect(formatChance(0.28), '28%');
+    expect(formatChance(1 / 101), '0.99%');
+    expect(formatChance(1), '100%');
+    // Never written as nothing.
+    expect(formatChance(0.00001), 'under 0.01%');
   });
 
   test('paid chance is off only in the countries listed', () {
     expect(paidChanceAllowed('BE', {'BE'}), isFalse);
     expect(paidChanceAllowed('be', {'BE'}), isFalse);
     expect(paidChanceAllowed('US', {'BE'}), isTrue);
-    expect(paidChanceAllowed(null, {'BE'}), isTrue);
+    // A phone that does not say where it is gets the careful answer.
+    expect(paidChanceAllowed(null, {'BE'}), isFalse);
+    expect(paidChanceAllowed('', {'BE'}), isFalse);
   });
 
   group('the wheel', () {
@@ -158,6 +167,8 @@ void main() {
       expect(paid, isNotEmpty);
       expect(paid.every((o) => o.prize.pearls == 0), isTrue);
       expect(rules.prizes.every((p) => p.givesSomething), isTrue);
+      // The chances come out as round numbers a player can check.
+      expect(rules.prizes.fold<int>(0, (sum, p) => sum + p.weight), 100);
     });
   });
 
@@ -208,6 +219,12 @@ void main() {
         chanceProblems(null, chainsJson: const [], generatorsJson: const []),
         isNotEmpty,
       );
+    });
+
+    test('a Pearl spin cannot win a jar that may hold Pearls', () {
+      expect(check((c) => first(c)['items'] = ['clayjar_01']), isNotEmpty);
+      // A jar that holds none is fine.
+      expect(check((c) => first(c)['items'] = ['treasurejar_01']), isEmpty);
     });
 
     test('Pearls can never be won on a paid try', () {

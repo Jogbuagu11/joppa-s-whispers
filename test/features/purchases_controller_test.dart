@@ -104,6 +104,25 @@ void main() {
     },
   );
 
+  test('Pearls won in play are added and saved like any others; nothing '
+      'or less than nothing adds nothing', () {
+    final purse = make(pearls: 5);
+    var told = 0;
+    purse.addListener(() => told++);
+    purse.earnPearls(3);
+    expect(purse.pearls, 8);
+    expect(purse.pearlsListenable.value, 8);
+    expect(told, 1);
+    purse
+      ..earnPearls(0)
+      ..earnPearls(-4);
+    expect(purse.pearls, 8);
+    expect(told, 1);
+    // Won Pearls are no purchase: nothing is recorded as bought.
+    expect(purse.appliedTransactions, isEmpty);
+    purse.dispose();
+  });
+
   test('spendPearls takes Pearls only when there are enough', () {
     c.applyConfirmed([_p('t1', 'pearls_tier1')]);
     expect(c.spendPearls(60), isFalse);

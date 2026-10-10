@@ -160,7 +160,16 @@ void main() {
     expect(find.byKey(const Key('jar_odds_panel')), findsOneWidget);
     await tester.tap(find.byKey(const Key('odds_close')));
     await settle(tester);
+    // Buying asks first; "not now" spends nothing.
     await tester.tap(find.byKey(const Key('jar_buy_treasure')));
+    await settle(tester);
+    expect(find.byKey(const Key('jar_buy_dialog')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('jar_buy_no')));
+    await settle(tester);
+    expect(game.itemCounts()['treasurejar_01'], isNull);
+    await tester.tap(find.byKey(const Key('jar_buy_treasure')));
+    await settle(tester);
+    await tester.tap(find.byKey(const Key('jar_buy_yes')));
     await settle(tester);
     await tester.pageBack();
     await settle(tester);

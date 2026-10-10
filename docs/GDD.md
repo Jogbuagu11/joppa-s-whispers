@@ -84,7 +84,7 @@ Notes:
 | **Talents** | Soft currency (coins) | Widow's mite → Silver coin → Talent → Bag of talents. Tap to collect. |
 | **Pearls of Great Price** | Premium currency (Matt. 13:45) | Bought with real money; small amounts earned in play |
 | **Blessings** ✦ | Story currency. Earned from orders, spent on story tasks. | Not purchasable |
-| **Jars of Clay** | Reward containers (2 Cor. 4:7) | Clay jar → Treasure jar → Golden chest. Contents are shown before opening (no surprise paid contents). |
+| **Jars of Clay** | Reward containers (2 Cor. 4:7) | Clay jar → Treasure jar → Golden chest. What a jar may hold, and the chance of each, is shown before it is opened or bought (EXPANSION 20.4 replaced "no surprise paid contents"; a jar that is sold never holds Pearls). |
 | **The Five Crowns** | Chapter-milestone collection, not merged | Imperishable (Ch. 1–2), Rejoicing (Ch. 3), Righteousness (Ch. 4), Glory (Ch. 5), Life (Ch. 6) |
 
 ## 8. Orders
@@ -140,7 +140,7 @@ No paywall, no ads, no purchase offers during the tutorial.
 All values live in `content/economy.json`, never in code.
 
 ## 13. Monetization
-**Principles:** paid items always show exactly what you get; no paid random boxes; no purchases offered in the tutorial; ads always optional.
+**Principles:** no purchases offered in the tutorial; ads always optional; every random reward, paid or free, shows its odds before the player buys, spins or opens (EXPANSION 20.4, which replaced "no paid random boxes"); Pearls are never the prize of anything paid for with Pearls; no paid random rewards in countries that forbid them.
 
 | Product | Details (starting prices, tune later) |
 |---|---|

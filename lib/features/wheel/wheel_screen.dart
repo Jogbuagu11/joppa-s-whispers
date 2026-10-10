@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_app_bar.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
+import 'package:whispers_of_joppa/domain/chance.dart';
 import 'package:whispers_of_joppa/domain/wheel.dart';
 import 'package:whispers_of_joppa/features/wheel/wheel_controller.dart';
 import 'package:whispers_of_joppa/features/wheel/wheel_odds.dart';
@@ -17,7 +18,12 @@ class WheelScreen extends StatefulWidget {
     required this.text,
     this.below,
     this.moreOdds = const [],
+    this.pearlsChanged,
   });
+
+  /// Fires when the player's Pearls change (a jar bought below), so the
+  /// Pearl spin's button keeps up.
+  final Listenable? pearlsChanged;
 
   /// The game's other chances, for the odds panel.
   final List<OddsSection> moreOdds;
@@ -48,6 +54,25 @@ class _WheelScreenState extends State<WheelScreen>
   bool _spinning = false;
 
   WheelController get _wheel => widget.controller;
+
+  /// True when the only spin to be had now is one for Pearls: the wheel
+  /// and its list then show that spin's prizes, not the free spin's.
+  bool get _onlyPearlSpins =>
+      !_spinning &&
+      _wheel.freeSpins == 0 &&
+      !_wheel.adSpinOffered &&
+      _wheel.pearlSpinPrice != null;
+
+  /// The prizes drawn on the wheel and listed under it. It does not change
+  /// while the wheel is turning.
+  List<PrizeOdds> _shown = const [];
+  List<PrizeOdds> get _shownOdds {
+    if (!_spinning || _shown.isEmpty) {
+      _shown = _onlyPearlSpins ? _wheel.paidOdds : _wheel.freeOdds;
+    }
+    return _shown;
+  }
+
   String _t(String key) => widget.text[key] ?? '';
 
   @override
@@ -63,7 +88,7 @@ class _WheelScreenState extends State<WheelScreen>
       final prize = await _wheel.spin(kind);
       if (prize == null || !mounted) return;
       // Turn so that the prize's slice comes to rest under the pointer.
-      final odds = _wheel.freeOdds;
+      final odds = _shownOdds;
       final index = odds.indexWhere((o) => o.prize.id == prize.id);
       final rest = index < 0 ? 0.0 : 1 - sliceMiddle(odds, index);
       _from = _to;
@@ -83,52 +108,56 @@ class _WheelScreenState extends State<WheelScreen>
     appBar: gameAppBar(Text(_t('wheel_title'))),
     body: SafeArea(
       child: ListenableBuilder(
-        listenable: _wheel,
-        builder: (context, _) => ListView(
+        listenable: Listenable.merge([_wheel, widget.pearlsChanged]),
+        builder: (context, _) => SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-          children: [
-            _panel(
-              Column(
-                children: [
-                  Center(child: _wheelPicture()),
-                  const SizedBox(height: 14),
-                  ..._buttons(),
-                  Align(
-                    child: TextButton(
-                      key: const Key('wheel_see_odds'),
-                      onPressed: () => showWheelOdds(
-                        context,
-                        text: widget.text,
-                        free: _wheel.freeOdds,
-                        // No Pearl spins here: nothing to show for them.
-                        paid: _wheel.paidAllowed ? _wheel.paidOdds : const [],
-                        more: widget.moreOdds,
-                      ),
-                      child: Text(
-                        _t('see_odds'),
-                        style: const TextStyle(
-                          color: GamePalette.talents,
-                          decoration: TextDecoration.underline,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _panel(
+                Column(
+                  children: [
+                    Center(child: _wheelPicture()),
+                    const SizedBox(height: 14),
+                    ..._buttons(),
+                    Align(
+                      child: TextButton(
+                        key: const Key('wheel_see_odds'),
+                        onPressed: () => showWheelOdds(
+                          context,
+                          text: widget.text,
+                          free: _wheel.freeOdds,
+                          // No Pearl spins here: nothing to show for them.
+                          paid: _wheel.paidAllowed ? _wheel.paidOdds : const [],
+                          more: widget.moreOdds,
+                        ),
+                        child: Text(
+                          _t('see_odds'),
+                          style: const TextStyle(
+                            color: GamePalette.talents,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            _panel(
-              OddsList(
-                title: _t('odds_free'),
-                odds: _wheel.freeOdds,
-                numbered: true,
-              ),
-            ),
-            if (widget.below case final below?) ...[
               const SizedBox(height: 12),
-              _panel(below),
+              _panel(
+                OddsList(
+                  title: _t(_onlyPearlSpins ? 'odds_paid' : 'odds_free'),
+                  odds: _shownOdds,
+                  numbered: true,
+                  freeOnlyNote: _t('free_only_note'),
+                ),
+              ),
+              if (widget.below case final below?) ...[
+                const SizedBox(height: 12),
+                _panel(below),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     ),
@@ -167,7 +196,7 @@ class _WheelScreenState extends State<WheelScreen>
             child: CustomPaint(
               key: const Key('wheel'),
               size: const Size.square(264),
-              painter: WheelPainter(_wheel.freeOdds),
+              painter: WheelPainter(_shownOdds),
             ),
           ),
         ),

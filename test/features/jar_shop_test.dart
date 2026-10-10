@@ -20,6 +20,10 @@ const _text = {
   'jar_holds': 'It holds one of these:',
   'odds_note': 'Drawn by exactly these chances.',
   'close': 'Close',
+  'jar_buy_title': 'Buy a {name}?',
+  'jar_buy_yes': 'Buy for {pearls} Pearls',
+  'jar_buy_no': 'Not now',
+  'pearls_have': 'You have {pearls} Pearls',
 };
 
 void main() {
@@ -68,8 +72,21 @@ void main() {
     pearls.value = 15;
     await tester.pump();
     expect(buy().onPressed, isNotNull);
+    // Buying asks first, with what the jar may hold in view.
     await tester.tap(find.byKey(const Key('jar_buy_treasure')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('jar_buy_dialog')), findsOneWidget);
+    expect(find.text('Buy a Treasure Jar?'), findsOneWidget);
+    expect(find.byKey(const Key('odds_manna')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('jar_buy_no')));
+    await tester.pumpAndSettle();
+    expect(bought, isEmpty);
+    await tester.tap(find.byKey(const Key('jar_buy_treasure')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('jar_buy_yes')));
+    await tester.pumpAndSettle();
     expect(bought, ['treasure']);
+    expect(find.text('You have 15 Pearls'), findsOneWidget);
     pearls.dispose();
   });
 }

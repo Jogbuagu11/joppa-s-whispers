@@ -1399,7 +1399,7 @@ Where it stands (she has seen each step; the last one is not yet approved):
 - Her words: "clear cache. then fix the css on the spin wheel. make sure pop up modals
   are enhanced design not too basic and plain."
 - Cache cleared (`flutter clean`; the app removed from both simulators).
-- Every pop-up in the game (17 of them) now uses one shared design,
+- Every pop-up in the game (13 of them) now uses one shared design,
   `lib/app/game_dialog.dart`: a framed wood panel, a round emblem set into the top edge,
   the title on a lighter band with a small flourish, rounded buttons with the main one
   filled gold.
@@ -1450,6 +1450,27 @@ Where it stands (she has seen each step; the last one is not yet approved):
   `wheel_screen_test.dart`, `jar_shop_test.dart`); device tests
   `integration_test/wheel_test.dart` and `jars_test.dart`, plus mystery bubbles in
   `bubbles_test.dart` and the lucky boost in `boost_test.dart`.
+
+**Reviewer's notes (code-reviewer, 2026-10-10)**
+- Fixed: a mystery bubble on an item near the top of its chain showed chances that could
+  not come true (now only items with room for every lift on the list get one); when
+  only a Pearl spin is left the wheel and its list show the Pearl spin's prizes, and a
+  prize that no Pearl spin gives is marked "(free spins only)"; a Pearl spin can no
+  longer be given a jar that may hold Pearls (content check); chances are written evenly
+  ("7%", never "7.0%" or "0.00%") and the wheel's weights add up to 100; a phone that
+  does not say what country it is in gets no paid chance; buying a jar asks first, with
+  what it may hold in view, and the Pearl balance is shown; pop-ups scroll if their
+  words are long and are announced to screen readers; the row above the board keeps its
+  place when a fourth button arrives; a damaged `extras` no longer spoils a save;
+  `earnPearls` is tested.
+- For Jennifer to weigh: at the ×4 boost a lucky ×5 lifts an item ten tiers (straight to
+  the top of its chain) on about one boosted tap in a hundred, and ×3 six tiers on
+  three in a hundred. The "Lucky!" message can name a lift bigger than the chain had
+  room for.
+- Known and left: changing the phone's date gives another free spin (as it already
+  gives Manna); the country is the phone's region setting, which a player can change —
+  the store account's country would be the stronger test; a clay jar is counted by
+  orders delivered, which must be revisited when orders can repeat (Milestone 36).
 
 ## Assumptions to confirm (added in Milestone 29)
 - **Not a lawyer's opinion.** I built what the app stores and the laws I know of ask

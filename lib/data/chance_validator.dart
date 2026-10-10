@@ -1,5 +1,6 @@
 // Checks content/chance.json (the Blessing Wheel and other chance rewards).
 // Pure Dart.
+import 'package:whispers_of_joppa/data/jar_validator.dart';
 
 /// Words every chance.json must carry.
 const chanceTextKeys = [
@@ -29,6 +30,11 @@ const chanceTextKeys = [
   'mystery_same',
   'mystery_any',
   'lucky_plain',
+  'free_only_note',
+  'jar_buy_title',
+  'jar_buy_yes',
+  'jar_buy_no',
+  'pearls_have',
   'mystery_name',
 ];
 
@@ -86,14 +92,18 @@ List<String> chanceProblems(
       temporaryGeneratorIds: temporary,
       problems: problems,
     );
-    _checkJars(
+    checkJars(
       json['jars'] as Map<String, dynamic>,
       chainsJson,
       itemIds: itemIds,
       temporary: temporary,
+      paidPrizes: [
+        for (final p in wheel['prizes'] as List<dynamic>? ?? const [])
+          if ((p as Map<String, dynamic>)['free_only'] != true) p,
+      ],
       problems: problems,
     );
-    _checkSteps(
+    checkSteps(
       'Lucky boost',
       (json['lucky_boost'] as Map<String, dynamic>)['steps'],
       'times',
@@ -105,7 +115,7 @@ List<String> chanceProblems(
     if (share is! num || share < 0 || share > 1) {
       problems.add('Mystery bubble: share must be between 0 and 1');
     }
-    _checkSteps(
+    checkSteps(
       'Mystery bubble',
       mystery['lifts'],
       'tiers',
@@ -197,99 +207,5 @@ void checkPrizes(
   }
   if (paidWeight == 0) {
     problems.add('$what: no prize is left for a paid try');
-  }
-}
-
-void _checkJars(
-  Map<String, dynamic> jars,
-  Object? chainsJson, {
-  required Set<Object?> itemIds,
-  required Set<Object?> temporary,
-  required List<String> problems,
-}) {
-  final every = jars['clay_every_orders'];
-  if (every is! int || every < 0) {
-    problems.add('Jars: clay_every_orders must be a whole number, 0 or more');
-  }
-  final kinds = jars['kinds'] as Map<String, dynamic>;
-  // item_id -> the kind of jar its "use" says it is.
-  final jarItems = {
-    for (final chain in chainsJson as List<dynamic>)
-      for (final tier
-          in (chain as Map<String, dynamic>)['tiers'] as List<dynamic>)
-        if ((tier as Map<String, dynamic>)['use'] case {
-          'jar': final Object kind,
-        })
-          tier['item_id']: kind,
-  };
-  for (final unknown in jarItems.entries) {
-    if (!kinds.containsKey(unknown.value)) {
-      problems.add(
-        'Item ${unknown.key}: "${unknown.value}" is not a kind of jar',
-      );
-    }
-  }
-  final order = kinds[jars['order_jar']];
-  if (order is! Map<String, dynamic> || order['pearl_price'] != null) {
-    problems.add('Jars: order_jar must be a kind of jar that is not for sale');
-  }
-  for (final entry in kinds.entries) {
-    final kind = entry.value as Map<String, dynamic>;
-    final what = 'Jar "${entry.key}"';
-    if (jarItems[kind['item']] != entry.key) {
-      problems.add('$what: its item must be an item whose use is this jar');
-    }
-    final price = kind['pearl_price'];
-    if (price != null && (price is! int || price < 1)) {
-      problems.add('$what: pearl_price must be 1 or more');
-    }
-    checkPrizes(
-      what,
-      kind['prizes'],
-      itemIds: itemIds,
-      temporaryGeneratorIds: temporary,
-      problems: problems,
-    );
-    for (final prize in kind['prizes'] as List<dynamic>? ?? const []) {
-      final items = (prize as Map<String, dynamic>)['items'] as List<dynamic>?;
-      // A jar in a jar would be a second draw nobody was shown the odds of.
-      if (items != null && items.any(jarItems.containsKey)) {
-        problems.add('$what: a jar cannot hold another jar');
-      }
-      // A jar that can be bought never holds Pearls at all.
-      if (price != null && prize['pearls'] != null) {
-        problems.add('$what: a jar that is sold cannot hold Pearls');
-      }
-    }
-  }
-}
-
-/// Checks a list of outcomes (each a number under [key], and a weight): each number
-/// at least [least] and used once, the first being the plain outcome.
-void _checkSteps(
-  String what,
-  Object? steps,
-  String key, {
-  required int least,
-  required List<String> problems,
-}) {
-  if (steps is! List<dynamic> || steps.isEmpty) {
-    problems.add('$what: has no outcomes');
-    return;
-  }
-  final seen = <Object?>{};
-  for (final entry in steps) {
-    final step = entry as Map<String, dynamic>;
-    final amount = step[key];
-    final weight = step['weight'];
-    if (amount is! int || amount < least || amount > 9 || !seen.add(amount)) {
-      problems.add('$what: $key "$amount" must be $least to 9, used once');
-    }
-    if (weight is! int || weight < 1) {
-      problems.add('$what: every weight must be 1 or more');
-    }
-  }
-  if ((steps.first as Map<String, dynamic>)[key] != least) {
-    problems.add('$what: the first outcome must be the plain one ($least)');
   }
 }

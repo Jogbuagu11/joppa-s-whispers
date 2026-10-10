@@ -91,7 +91,7 @@ Some generators occasionally drop a rare chain (about 10%), worth more in orders
 - Earned from events, wheel, and jars; bought with Pearls.
 
 ### 20.4 Chance-based rewards (casino-style)
-All odds are published in a tappable "See odds" panel on every one of these, as Apple and Google require. Paid random items are switched off in countries that ban them (currently Belgium; the list lives in `economy.json`).
+All odds are published in a tappable "See odds" panel on every one of these, as Apple and Google require. (As built, Milestone 29: the wheel, jars, lucky boost, mystery bubbles and the country list are all in one file, `content/chance.json`, and outcomes are drawn on the phone; see PROGRESS.md.) Paid random items are switched off in countries that ban them (currently Belgium; the list lives in `economy.json`).
 | Feature | How it works |
 |---|---|
 | **Blessing Wheel** | One free spin a day, one more per ad, extra spins for Pearls (cost rises per spin each day). Prizes: Manna, Talents, Pearls, hourglasses, generators, a jackpot Golden Jar. |

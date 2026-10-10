@@ -12,7 +12,11 @@ class OddsList extends StatelessWidget {
     required this.title,
     required this.odds,
     this.numbered = false,
+    this.freeOnlyNote = '',
   });
+
+  /// Written after a prize that is only ever given for a free try.
+  final String freeOnlyNote;
 
   final String title;
   final List<PrizeOdds> odds;
@@ -63,7 +67,10 @@ class OddsList extends StatelessWidget {
               ],
               Expanded(
                 child: Text(
-                  odds[i].prize.name,
+                  // A prize that no Pearl spin can give says so.
+                  odds[i].prize.freeOnly && freeOnlyNote.isNotEmpty
+                      ? '${odds[i].prize.name} $freeOnlyNote'
+                      : odds[i].prize.name,
                   textAlign: TextAlign.left,
                   style: const TextStyle(color: Color(0xFFF3E5C8)),
                 ),
@@ -114,10 +121,15 @@ Future<void> showWheelOdds(
     ),
     content: SizedBox(
       width: double.maxFinite,
-      child: ListView(
-        shrinkWrap: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          OddsList(title: text['odds_free'] ?? '', odds: free),
+          OddsList(
+            title: text['odds_free'] ?? '',
+            odds: free,
+            freeOnlyNote: text['free_only_note'] ?? '',
+          ),
           if (paid.isNotEmpty)
             OddsList(
               key: const Key('odds_paid'),

@@ -44,3 +44,29 @@ class StripButton extends StatelessWidget {
     ),
   );
 }
+
+/// The round buttons at the far left of the row, three to a column.
+class StripMenu extends StatelessWidget {
+  const StripMenu({
+    super.key,
+    required this.buttons,
+    required this.columnWidth,
+  });
+
+  final List<Widget> buttons;
+  final double columnWidth;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      for (var i = 0; i < buttons.length; i += 3)
+        SizedBox(
+          width: columnWidth,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: buttons.skip(i).take(3).toList(),
+          ),
+        ),
+    ],
+  );
+}
