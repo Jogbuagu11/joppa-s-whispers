@@ -27,6 +27,13 @@ class ItemComponent extends PositionComponent with HasGameReference<BoardGame> {
 
   static final _artPaint = Paint()..filterQuality = FilterQuality.medium;
 
+  /// Resizes the tile when the board is given a different amount of room.
+  void fit(Vector2 newSize) {
+    size = newSize;
+    // The badge was laid out for the old size.
+    _badgeText = null;
+  }
+
   @override
   void render(Canvas canvas) {
     final rect = Rect.fromLTWH(0, 0, size.x, size.y);

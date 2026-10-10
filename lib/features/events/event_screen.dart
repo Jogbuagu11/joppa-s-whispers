@@ -229,7 +229,7 @@ class _EventScreenState extends State<EventScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 12),
-                        child: MannaBar(controller: widget.manna),
+                        child: MannaBar(controller: widget.manna, width: 170),
                       ),
                     ],
                   ),

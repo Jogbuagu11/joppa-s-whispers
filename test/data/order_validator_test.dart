@@ -74,6 +74,15 @@ void main() {
     });
   });
 
+  test('a character colour must look like #RRGGBB', () {
+    final good = validContent();
+    firstOf(good, 'characters')['color'] = '#C9785A';
+    expect(checkContent(good), isEmpty);
+    final bad = validContent();
+    firstOf(bad, 'characters')['color'] = 'terracotta';
+    expect(checkContent(bad), contains(contains('color must look like')));
+  });
+
   test('a scene_id that is not text is reported', () {
     final c = validContent();
     firstOf(c, 'orders')['scene_id'] = 5;

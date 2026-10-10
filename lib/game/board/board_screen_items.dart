@@ -31,6 +31,11 @@ mixin _BoardItems on _BoardRoutes {
     };
   }
 
+  /// character_id -> their colour and portrait framing, from the content
+  /// being played.
+  Map<String, CharacterLook> get _characterLooks =>
+      characterLooks(_session?.contentBundle.files['characters']);
+
   /// A usable item was tapped. A Manna jar is used only if the player says
   /// so (it can be kept for later); an hourglass explains itself.
   Future<void> _askToUse(ItemModel item, bool Function() use) async {

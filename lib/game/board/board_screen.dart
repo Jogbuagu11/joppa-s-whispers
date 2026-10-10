@@ -7,6 +7,7 @@ import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/cloud_save_store.dart';
 import 'package:whispers_of_joppa/domain/cloud_sync.dart';
 import 'package:whispers_of_joppa/app/game_analytics.dart';
+import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
@@ -29,10 +30,12 @@ import 'package:whispers_of_joppa/features/restoration/location_screen.dart';
 import 'package:whispers_of_joppa/features/story/scene_screen.dart';
 import 'package:whispers_of_joppa/features/shop/shop_screen.dart';
 import 'package:whispers_of_joppa/features/story/chapter_ending.dart';
+import 'package:whispers_of_joppa/features/story/face_portrait.dart';
 import 'package:whispers_of_joppa/features/story/task_bar.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_banner.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
+import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
 import 'package:whispers_of_joppa/game/board/board_top_bar.dart';
 import 'package:whispers_of_joppa/services/ad_service.dart';
@@ -46,8 +49,23 @@ part 'board_screen_routes.dart';
 
 final _log = Logger('BoardScreen');
 
-/// Phones shorter than this (in points) get the lower bars above the board.
-const double shortPhoneHeight = 720;
+/// How the space under the bars is shared: the board is a 7 by 9 grid as
+/// wide as the screen if the height allows; the order cards get the rest,
+/// never less than their smallest size nor more than their largest.
+({double cards, double board}) shareHeight({
+  required double width,
+  required double height,
+}) {
+  const gap = 6.0;
+  final fullWidth = width * BoardGame.rows / BoardGame.cols;
+  final most = height - orderCardsMinHeight - gap;
+  final board = fullWidth < most ? fullWidth : (most < 0 ? 0.0 : most);
+  final left = height - board - gap;
+  final cards = left > orderCardsMaxHeight
+      ? orderCardsMaxHeight
+      : (left < orderCardsMinHeight ? orderCardsMinHeight : left);
+  return (cards: cards, board: board);
+}
 
 /// The main game board screen — hosts the Flame merge board.
 class BoardScreen extends StatefulWidget {
@@ -136,8 +154,6 @@ class _BoardScreenState extends State<BoardScreen>
   Widget build(BuildContext context) {
     final session = _session;
     final error = _error;
-    // A short phone: the bars above the board give it more room.
-    final compact = MediaQuery.sizeOf(context).height < shortPhoneHeight;
     final Widget body;
     if (error != null) {
       body = Center(
@@ -156,12 +172,11 @@ class _BoardScreenState extends State<BoardScreen>
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+              padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
               child: BoardTopBar(
                 wallet: ListenableBuilder(
                   listenable: session.tutorial,
                   builder: (context, _) => WalletChips(
-                    compact: compact,
                     controller: session.orders,
                     pearls: session.purchases.pearlsListenable,
                     // No purchase offers during the tutorial (GDD 11).
@@ -196,22 +211,57 @@ class _BoardScreenState extends State<BoardScreen>
                     ? _eventBanner(event)
                     : const SizedBox.shrink(),
               ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: OrdersBar(
-                controller: session.orders,
-                items: session.game.itemCatalog,
-                characterNames: session.characterNames,
-                placeholderColors: session.game.chainPlaceholderColors,
-                compact: compact,
-              ),
-            ),
             TutorialBanner(
               controller: session.tutorial,
               characterNames: session.characterNames,
               availableAssets: session.assetPaths,
+              looks: _characterLooks,
             ),
-            Expanded(child: GameWidget(game: session.game)),
+            // The board comes first: it is as wide as the screen whenever
+            // the height allows, and the order cards take what is left
+            // (within their limits).
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, box) {
+                  final (:cards, :board) = shareHeight(
+                    width: box.maxWidth,
+                    height: box.maxHeight,
+                  );
+                  // On a very short screen the cards keep their least size
+                  // and anything that does not fit is cut off, not an error.
+                  return ClipRect(
+                    child: OverflowBox(
+                      alignment: Alignment.topCenter,
+                      minHeight: 0,
+                      maxHeight: box.maxHeight > cards + 6
+                          ? box.maxHeight
+                          : cards + 6,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: OrdersBar(
+                              controller: session.orders,
+                              items: session.game.itemCatalog,
+                              characterNames: session.characterNames,
+                              placeholderColors:
+                                  session.game.chainPlaceholderColors,
+                              looks: _characterLooks,
+                              height: cards,
+                            ),
+                          ),
+                          const Spacer(),
+                          SizedBox(
+                            height: board,
+                            child: GameWidget(game: session.game),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       );
@@ -221,7 +271,7 @@ class _BoardScreenState extends State<BoardScreen>
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         key: const Key('board_screen'),
-        backgroundColor: const Color(0xFF1A1205),
+        backgroundColor: GamePalette.background,
         body: body,
       ),
     );

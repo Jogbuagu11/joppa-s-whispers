@@ -1,5 +1,6 @@
 // The tutorial hint shown above the board.
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/features/story/face_portrait.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';
 import 'package:whispers_of_joppa/domain/tutorial.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
@@ -14,7 +15,11 @@ class TutorialBanner extends StatelessWidget {
     required this.controller,
     required this.characterNames,
     required this.availableAssets,
+    this.looks = const {},
   });
+
+  /// character_id -> their portrait framing, from content.
+  final Map<String, CharacterLook> looks;
 
   final TutorialController controller;
   final Map<String, String> characterNames;
@@ -46,16 +51,14 @@ class TutorialBanner extends StatelessWidget {
               if (portrait != null)
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: ClipOval(
-                    child: SizedBox(
-                      width: 34,
-                      height: 34,
-                      child: Image.asset(
-                        portrait,
-                        fit: BoxFit.cover,
-                        alignment: const Alignment(0, -0.85),
-                      ),
-                    ),
+                  child: FacePortrait(
+                    asset: portrait,
+                    size: 54,
+                    name: controller.current?.speaker ?? '',
+                    ring: _gold,
+                    zoom:
+                        looks[controller.current?.speaker]?.zoom ??
+                        defaultFaceZoom,
                   ),
                 ),
               Expanded(

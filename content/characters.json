@@ -1,96 +1,116 @@
 [
   {
     "id": "naomi",
+    "color": "#C9785A",
     "name": "Naomi",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "esther",
+    "color": "#D9B36C",
     "name": "Grandma Esther",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "caleb",
+    "color": "#6F8FA8",
     "name": "Caleb",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "joy",
+    "color": "#D99A8B",
+    "face_zoom": 1.5,
     "name": "Joy",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "zilpah",
+    "color": "#9A7A9E",
     "name": "Zilpah",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "amos",
+    "color": "#B8864B",
     "name": "Elder Amos",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "marcus",
+    "color": "#7F9A6B",
     "name": "Marcus",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "demas",
+    "color": "#9C9484",
     "name": "Demas",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "silas",
+    "color": "#5F9A96",
     "name": "Silas",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "hannah",
+    "color": "#A7B56B",
     "name": "Hannah",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "jael",
+    "color": "#8C6A8E",
     "name": "Jael",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "lucius",
+    "color": "#C9A94E",
     "name": "Lucius",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "tabitha",
+    "color": "#7FA3B5",
     "name": "Tabitha",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "peter",
+    "color": "#B5905F",
     "name": "Peter",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "simon",
+    "color": "#A89650",
     "name": "Simon the Tanner",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "tobiah",
+    "color": "#6E9C84",
     "name": "Tobiah",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "dockworker",
+    "color": "#8A97A3",
     "name": "Dock Worker",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "dockworker2",
+    "color": "#A68B74",
     "name": "Dock Worker",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   },
   {
     "id": "collector",
+    "color": "#B36A5E",
     "name": "Chief Collector",
     "expressions": ["neutral", "happy", "sad", "angry", "surprised", "thinking"]
   }

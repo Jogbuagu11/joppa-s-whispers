@@ -9,6 +9,7 @@ import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
 import 'package:whispers_of_joppa/features/story/story_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_top_bar.dart';
+import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
 import '../support/comfort_fakes.dart';
@@ -61,7 +62,7 @@ void main() {
           MaterialApp(
             home: Scaffold(
               body: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
                 child: BoardTopBar(
                   wallet: WalletChips(
                     controller: orders,
@@ -70,14 +71,10 @@ void main() {
                   level: LevelBadge(controller: levels),
                   onAccount: () => opened++,
                   onSettings: () => opened++,
-                  // The Manna bar is a fixed 170 points wide. (The real one
-                  // cannot be used here: the test font's letters are far
-                  // wider than the game's, and its own words would not fit.)
-                  manna: const SizedBox(
-                    key: Key('manna_count'),
-                    width: 170,
-                    height: 62,
-                  ),
+                  // The Manna bar takes the width that is left over. (The real
+                  // one cannot be used here: the test font's letters are far
+                  // wider than the game's.)
+                  manna: const SizedBox(key: Key('manna_count'), height: 56),
                 ),
               ),
             ),
@@ -91,12 +88,43 @@ void main() {
           expect(part.left, greaterThanOrEqualTo(row.left - 0.01), reason: key);
           expect(part.right, lessThanOrEqualTo(row.right + 0.01), reason: key);
         }
-        // And the buttons still work when the row has shrunk.
+        // And the buttons work.
         await tester.tap(find.byKey(const Key('account_button')));
         await tester.tap(find.byKey(const Key('notifications_button')));
         expect(opened, 2);
       });
     }
+  }
+
+  // The Manna bar by itself, as narrow as it ever gets (a 320pt phone with
+  // both buttons) and at the width the event screen gives it.
+  for (final width in [146.0, 170.0]) {
+    testWidgets('the Manna bar fits ${width.toInt()}pt at the largest text '
+        'size with a full count', (tester) async {
+      useLargestText(tester);
+      final manna = MannaController(config: _economy, startingManna: 100);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: width,
+                child: MannaBar(controller: manna),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      final bar = tester.getRect(find.byType(MannaBar));
+      final count = tester.getRect(find.byKey(const Key('manna_count')));
+      expect(count.right, lessThanOrEqualTo(bar.right));
+      expect(count.left, greaterThanOrEqualTo(bar.left));
+      // Spending below the cap shows the countdown, which must fit too.
+      manna.setAfterSpend(7);
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+    });
   }
 }
 

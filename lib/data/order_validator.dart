@@ -13,6 +13,17 @@ void checkOrdersAndCharacters({
 }) {
   final characterIds = <String>{};
   for (final character in characters) {
+    final zoom = character['face_zoom'];
+    if (zoom != null && (zoom is! num || zoom < 1 || zoom > 4)) {
+      problems.add('Character ${character['id']}: face_zoom must be 1 to 4');
+    }
+    final color = character['color'];
+    if (color != null &&
+        (color is! String || !RegExp(r'^#[0-9a-fA-F]{6}$').hasMatch(color))) {
+      problems.add(
+        'Character ${character['id']}: color must look like #RRGGBB',
+      );
+    }
     final id = character['id'];
     if (id is! String || !_idPattern.hasMatch(id)) {
       problems.add('Character id "$id" must be lowercase snake_case');

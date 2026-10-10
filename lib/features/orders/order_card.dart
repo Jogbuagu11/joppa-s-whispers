@@ -1,13 +1,19 @@
-// One order card: who is asking, what they want, the reward and the buttons.
+// One order card: who is asking (their face), what they want, a line or two
+// of what they say, and the Deliver button. It fits whatever height it is
+// given; tapping the words shows the whole request and its reward.
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/data/asset_names.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
+import 'package:whispers_of_joppa/features/story/face_portrait.dart';
 
-const _gold = Color(0xFFD4802A);
 const _cream = Color(0xFFF3E6C8);
-const _textSize = 9.5;
+const _textSize = 10.0;
 const _textLineHeight = 1.2;
+
+/// The most lines of a request shown on the card itself.
+const _maxLines = 2;
 
 class OrderCard extends StatelessWidget {
   const OrderCard({
@@ -21,12 +27,12 @@ class OrderCard extends StatelessWidget {
     required this.canSkip,
     required this.onDeliver,
     required this.onSkip,
-    this.compact = false,
+    this.characterColor,
+    this.faceZoom = defaultFaceZoom,
   });
 
-  /// On a short phone the card is lower: fewer lines of the request, no
-  /// reward line (tapping the request shows it all).
-  final bool compact;
+  /// How far the portrait is zoomed in on this character's face.
+  final double faceZoom;
 
   final OrderModel order;
   final String characterName;
@@ -44,57 +50,52 @@ class OrderCard extends StatelessWidget {
   final VoidCallback onDeliver;
   final VoidCallback onSkip;
 
+  /// The character's own colour, from content.
+  final Color? characterColor;
+
   @override
   Widget build(BuildContext context) {
+    final theirs = characterColor ?? GamePalette.person;
     return Container(
       key: Key('order_card_${order.id}'),
-      padding: const EdgeInsets.all(6),
+      padding: const EdgeInsets.fromLTRB(6, 6, 6, 5),
       decoration: BoxDecoration(
-        color: const Color(0xFF2A1F08),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: canDeliver ? _gold : const Color(0xFF5C3D0D)),
+        color: GamePalette.panel,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: canDeliver ? GamePalette.ready : theirs.withValues(alpha: 0.7),
+          width: canDeliver ? 2 : 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
-              ClipOval(
-                child: SizedBox(
-                  width: 26,
-                  height: 26,
-                  child: Image.asset(
-                    'assets/characters/'
-                    '${portraitBaseName(order.characterId, 'neutral')}.jpg',
-                    fit: BoxFit.cover,
-                    // Portraits are tall; show the face, not the feet.
-                    alignment: const Alignment(0, -0.85),
-                    // A character with no portrait yet shows their initial.
-                    errorBuilder: (context, error, stack) => ColoredBox(
-                      color: _gold,
-                      child: Center(
-                        child: Text(
-                          characterName.isEmpty ? '?' : characterName[0],
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+              Semantics(
+                label: characterName,
+                child: FacePortrait(
+                  asset:
+                      'assets/characters/'
+                      '${portraitBaseName(order.characterId, 'neutral')}.jpg',
+                  // Three wanted items need the room more than the face.
+                  size: order.items.length > 2 ? 40 : 54,
+                  zoom: faceZoom,
+                  name: characterName,
+                  ring: theirs,
                 ),
               ),
               const SizedBox(width: 4),
+              // Three wanted items are wider than the space beside the
+              // face on a narrow phone: they shrink to fit.
               Expanded(
-                child: Text(
-                  characterName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: _gold,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (final wanted in order.items) _wantedItem(wanted),
+                    ],
                   ),
                 ),
               ),
@@ -102,7 +103,7 @@ class OrderCard extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Expanded(
-            // Tapping the request shows all of it.
+            // Tapping the words shows all of them, and the reward.
             child: Semantics(
               button: true,
               child: GestureDetector(
@@ -111,15 +112,16 @@ class OrderCard extends StatelessWidget {
                 onTap: () => _showDetails(context),
                 child: LayoutBuilder(
                   builder: (context, box) {
-                    // Only whole lines: a long request ends in "…", never in
-                    // a line cut in half.
+                    // Only whole lines: a long request ends in "…", never
+                    // in a line cut in half.
                     final lineHeight =
                         MediaQuery.textScalerOf(context).scale(_textSize) *
                         _textLineHeight;
-                    final lines = (box.maxHeight / lineHeight).floor();
+                    final fits = (box.maxHeight / lineHeight).floor();
+                    if (fits < 1) return const SizedBox.shrink();
                     return Text(
                       order.text,
-                      maxLines: lines < 1 ? 1 : lines,
+                      maxLines: fits > _maxLines ? _maxLines : fits,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: _cream,
@@ -132,47 +134,41 @@ class OrderCard extends StatelessWidget {
               ),
             ),
           ),
-          // Three wanted items are wider than a card on a narrow phone:
-          // they shrink to fit instead of spilling over its edge.
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [for (final wanted in order.items) _wantedItem(wanted)],
-            ),
-          ),
-          const SizedBox(height: 3),
-          if (!compact) ...[
-            Text(
-              _rewardLine,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: _cream, fontSize: 9),
-            ),
-            const SizedBox(height: 3),
-          ],
           Row(
             children: [
               Expanded(
                 child: SizedBox(
-                  height: 24,
+                  height: 26,
                   child: FilledButton(
                     key: Key('order_deliver_${order.id}'),
                     onPressed: canDeliver ? onDeliver : null,
                     style: FilledButton.styleFrom(
-                      backgroundColor: _gold,
-                      disabledBackgroundColor: const Color(0xFF3A2A10),
+                      backgroundColor: GamePalette.ready,
+                      disabledBackgroundColor: GamePalette.panelLight,
                       padding: EdgeInsets.zero,
                     ),
-                    child: const Text(
-                      'Deliver',
-                      style: TextStyle(fontSize: 11, color: Colors.black),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        'Deliver',
+                        maxLines: 1,
+                        softWrap: false,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          // Dark on green: easy to read.
+                          color: canDeliver
+                              ? GamePalette.backgroundBottom
+                              : GamePalette.muted,
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
               if (canSkip)
                 SizedBox(
-                  height: 24,
+                  height: 26,
                   width: 34,
                   child: TextButton(
                     key: Key('order_skip_${order.id}'),
@@ -198,8 +194,11 @@ class OrderCard extends StatelessWidget {
     context: context,
     builder: (context) => AlertDialog(
       key: const Key('order_details'),
-      backgroundColor: const Color(0xFF2A1F08),
-      title: Text(characterName, style: const TextStyle(color: _gold)),
+      backgroundColor: GamePalette.panel,
+      title: Text(
+        characterName,
+        style: const TextStyle(color: GamePalette.level),
+      ),
       // However long the request, it can be scrolled.
       content: SingleChildScrollView(
         child: Column(
@@ -208,7 +207,10 @@ class OrderCard extends StatelessWidget {
           children: [
             Text(order.text, style: const TextStyle(color: _cream)),
             const SizedBox(height: 12),
-            Text(_rewardLine, style: const TextStyle(color: _gold)),
+            Text(
+              _rewardLine,
+              style: const TextStyle(color: GamePalette.talents),
+            ),
           ],
         ),
       ),
@@ -216,7 +218,10 @@ class OrderCard extends StatelessWidget {
         TextButton(
           key: const Key('order_details_close'),
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close', style: TextStyle(color: _gold)),
+          child: const Text(
+            'Close',
+            style: TextStyle(color: GamePalette.level),
+          ),
         ),
       ],
     ),
@@ -237,19 +242,22 @@ class OrderCard extends StatelessWidget {
           )
         : Image.asset(asset, fit: BoxFit.cover);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 2),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: SizedBox(width: 26, height: 26, child: picture),
+            borderRadius: BorderRadius.circular(5),
+            child: SizedBox(width: 30, height: 30, child: picture),
           ),
           Text(
             '$have/${wanted.count}',
             key: Key('order_have_${order.id}_${wanted.itemId}'),
             style: TextStyle(
               fontSize: 9,
-              color: have >= wanted.count ? const Color(0xFF8BC34A) : _cream,
+              height: 1.2,
+              fontWeight: FontWeight.bold,
+              color: have >= wanted.count ? GamePalette.ready : _cream,
             ),
           ),
         ],

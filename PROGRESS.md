@@ -1275,6 +1275,42 @@ tested directly).
   explainer for both apps, with the privacy policy URL
   https://www.whispersofjoppa.com/privacy.
 
+## Board restyle (2026-10-10) — asked for by Jennifer, in several rounds on the simulator
+
+What she said, in order: "bland; larger avatars, more colors" → (first try, blue/violet
+jewel colours) "it looks like an ad now; more like before but not bland" → "remove the
+gradients" → "the board needs to be the width of the screen" → "avatar photos cropped in
+more, remove the names, shorter text" → "fix the top row… the design isn't good" →
+"avatars need to be bigger; fix Joy's avatar".
+**Lesson: keep the look warm, period and understated — flat wood and gold, no bright or
+cool colours, no gradients. Show her on the simulator early.**
+
+Where it stands (she has seen each step; the last one is not yet approved):
+- One palette, `lib/app/game_palette.dart`: flat dark wood, gold, parchment cream, with
+  quiet accents (Talents gold, Blessings olive, Pearls pearl, Manna honey, "ready" olive).
+- **Top row:** a single 36-point row — level disc, Manna pill (count, wait, thin bar),
+  Talents, Blessings and Pearls pills (icon + number, no words), account and settings
+  buttons. On phones narrower than 372 points the three currencies drop to a second row.
+- **Board:** as wide as the screen whenever the height allows (`shareHeight` in
+  `board_screen.dart`); the order cards take what is left, 110–132 points. The board now
+  re-fits itself when its space changes (`board_game_layout.dart`), e.g. a hint ending.
+- **Order cards:** a large face (54 points; 40 when three items are wanted) zoomed in on
+  the head, the wanted items beside it, at most two lines of the request, Deliver (olive
+  when ready). No name and no reward line on the card: tapping the words shows the whole
+  request, the name and the reward.
+- **Faces:** `FacePortrait` zooms the full-length portraits in on the head. Each
+  character's ring colour and zoom are in `content/characters.json` (`color`,
+  `face_zoom`; Joy, a child, uses 1.5). Content version 20.
+- The tutorial hint sits above the order cards, with a 54-point face.
+- Reviewer's notes carried forward: on short phones (iPhone SE) the board cannot be
+  full width — there is not the height; with three wanted items the item pictures are
+  small on narrow phones; `board_game.dart` (291 lines) and `event_screen.dart` (294)
+  need splitting before their next change; other screens (shop, settings, letters,
+  location, event, story) still have the older look.
+- Checks so far: analyzer clean, unit tests pass, five device tests pass on the iPhone
+  simulator. **The full device run on both devices is still owed** (for this and for
+  Milestone 26's last fixes) — it was interrupted repeatedly by design changes.
+
 ## Milestone 26 — state (2026-10-10)
 
 **What it does** (EXPANSION 19.1, 19.4, 19.5)

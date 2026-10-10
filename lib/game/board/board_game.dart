@@ -24,6 +24,7 @@ import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 part 'board_game_art.dart';
 part 'board_game_drag.dart';
 part 'board_game_generator_types.dart';
+part 'board_game_layout.dart';
 part 'board_game_generators.dart';
 
 final _log = Logger('BoardGame');
@@ -185,7 +186,8 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
        now = clock ?? DateTime.now;
 
   @override
-  Color backgroundColor() => const Color(0xFF1A1205);
+  // See-through: the screen behind the board shows between the tiles.
+  Color backgroundColor() => const Color(0x00000000);
 
   @override
   Future<void> onLoad() async {
@@ -212,8 +214,6 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
 
   void _buildCells() {
     final cellSize = _cellSize;
-    final offsetX = (size.x - gridCols * cellSize) / 2;
-    final offsetY = (size.y - gridRows * cellSize) / 2;
 
     _cells = List.generate(gridCols, (c) {
       return List.generate(gridRows, (r) {
@@ -221,7 +221,7 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
           col: c,
           row: r,
           cellSize: cellSize,
-          position: Vector2(offsetX + c * cellSize, offsetY + r * cellSize),
+          position: _cellPosition(c, r, cellSize),
           onItemTapped: _onItemTapped,
         );
         add(cell);
@@ -241,10 +241,7 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
         onTapped: _onGeneratorTapped,
         label: () => generatorLabel(placement.gen),
         art: () => _generatorArtFor(placement.gen.generatorId),
-        position: Vector2(
-          (size.x - gridCols * cellSize) / 2 + placement.col * cellSize,
-          (size.y - gridRows * cellSize) / 2 + placement.row * cellSize,
-        ),
+        position: _cellPosition(placement.col, placement.row, cellSize),
         cellSize: cellSize,
       ),
     );
@@ -258,6 +255,12 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
     final maxW = size.x / gridCols;
     final maxH = size.y / gridRows;
     return (maxW < maxH ? maxW : maxH) - 2;
+  }
+
+  @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    _relayout();
   }
 
   @override

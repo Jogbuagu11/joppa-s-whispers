@@ -34,7 +34,7 @@ class GeneratorComponent extends PositionComponent with TapCallbacks {
   );
 
   // Name wrapped to the tile width so long names stay inside the tile.
-  late final TextPainter _namePainter;
+  late TextPainter _namePainter;
 
   GeneratorComponent({
     required this.generator,
@@ -46,7 +46,17 @@ class GeneratorComponent extends PositionComponent with TapCallbacks {
   }) : super(position: position, size: Vector2.all(cellSize));
 
   @override
-  Future<void> onLoad() async {
+  Future<void> onLoad() async => _layoutName();
+
+  /// Moves and resizes the tile when the board is given a different amount
+  /// of room.
+  void fit(double cellSize, Vector2 newPosition) {
+    size = Vector2.all(cellSize);
+    position = newPosition;
+    _layoutName();
+  }
+
+  void _layoutName() {
     _namePainter = TextPainter(
       text: TextSpan(
         text: generator.name,

@@ -1,5 +1,6 @@
 // The level badge on the board, and the message shown on reaching a level.
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/domain/levels.dart';
 import 'package:whispers_of_joppa/features/levels/level_controller.dart';
 
@@ -26,11 +27,20 @@ class LevelBadge extends StatelessWidget {
         label: _fill(controller.config.text['badge'], 'level', level),
         child: SizedBox(
           key: const Key('level_badge'),
-          width: 38,
-          height: 38,
+          width: 36,
+          height: 36,
           child: Stack(
             alignment: Alignment.center,
             children: [
+              // A gold disc with the number; the ring round it fills as
+              // XP is earned.
+              const DecoratedBox(
+                decoration: BoxDecoration(
+                  color: GamePalette.level,
+                  shape: BoxShape.circle,
+                ),
+                child: SizedBox(width: 28, height: 28),
+              ),
               SizedBox(
                 width: 34,
                 height: 34,
@@ -39,8 +49,8 @@ class LevelBadge extends StatelessWidget {
                   // A full ring at the highest level.
                   value: needed == 0 ? 1 : into / needed,
                   strokeWidth: 3,
-                  color: _gold,
-                  backgroundColor: const Color(0xFF3A2A10),
+                  color: GamePalette.manna,
+                  backgroundColor: GamePalette.panelEdge,
                 ),
               ),
               ExcludeSemantics(
@@ -50,9 +60,9 @@ class LevelBadge extends StatelessWidget {
                   // The number must stay inside its ring at any text size.
                   textScaler: TextScaler.noScaling,
                   style: const TextStyle(
-                    color: _cream,
+                    color: GamePalette.backgroundBottom,
                     fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
               ),

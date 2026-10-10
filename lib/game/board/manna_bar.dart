@@ -1,14 +1,17 @@
 // The Manna (energy) bar shown above the board, and the out-of-Manna popup.
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/features/ads/ad_rewards_controller.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
 const _gold = Color(0xFFD4802A);
-const _dark = Color(0xFF1A1205);
 
 class MannaBar extends StatelessWidget {
-  const MannaBar({super.key, required this.controller});
+  const MannaBar({super.key, required this.controller, this.width});
+
+  /// A fixed width, or null to fill the space it is given.
+  final double? width;
 
   final MannaController controller;
 
@@ -18,46 +21,97 @@ class MannaBar extends StatelessWidget {
       listenable: controller,
       builder: (context, _) {
         final seconds = controller.secondsUntilNext;
-        return Container(
-          width: 170,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: _dark.withValues(alpha: 0.85),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _gold),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Manna', style: _labelStyle),
-                  Text(
-                    '${controller.manna}/${controller.maxManna}',
-                    key: const Key('manna_count'),
-                    style: _labelStyle,
+        final full = (controller.manna / controller.maxManna).clamp(0.0, 1.0);
+        return Semantics(
+          label: 'Manna',
+          child: Container(
+            width: width,
+            height: 36,
+            padding: const EdgeInsets.only(left: 3, right: 7),
+            decoration: BoxDecoration(
+              color: GamePalette.panel,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: GamePalette.panelEdge),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 26,
+                  height: 26,
+                  decoration: const BoxDecoration(
+                    color: GamePalette.manna,
+                    shape: BoxShape.circle,
                   ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: (controller.manna / controller.maxManna).clamp(0, 1),
-                  minHeight: 8,
-                  color: _gold,
-                  backgroundColor: const Color(0xFF3A2A10),
+                  child: const Icon(
+                    Icons.bolt,
+                    color: GamePalette.backgroundBottom,
+                    size: 18,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                seconds == null ? 'Full' : '+1 in ${formatCountdown(seconds)}',
-                key: const Key('manna_timer'),
-                style: const TextStyle(color: Color(0xFFBFA77A), fontSize: 11),
-              ),
-            ],
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // The count, with the wait for the next one beside
+                      // it; both shrink before anything spills.
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              '${controller.manna}/${controller.maxManna}',
+                              key: const Key('manna_count'),
+                              maxLines: 1,
+                              style: _labelStyle,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              seconds == null
+                                  ? 'Full'
+                                  : '+1 in ${formatCountdown(seconds)}',
+                              key: const Key('manna_timer'),
+                              maxLines: 1,
+                              style: const TextStyle(
+                                color: GamePalette.muted,
+                                fontSize: 9,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(3),
+                        child: SizedBox(
+                          height: 5,
+                          child: Stack(
+                            children: [
+                              const ColoredBox(
+                                color: Color(0xFF4A3716),
+                                child: SizedBox.expand(),
+                              ),
+                              FractionallySizedBox(
+                                widthFactor: full,
+                                child: const ColoredBox(
+                                  color: GamePalette.manna,
+                                  child: SizedBox.expand(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -66,8 +120,8 @@ class MannaBar extends StatelessWidget {
 }
 
 const _labelStyle = TextStyle(
-  color: _gold,
-  fontSize: 14,
+  color: Color(0xFFF3E6C8),
+  fontSize: 13,
   fontWeight: FontWeight.bold,
 );
 

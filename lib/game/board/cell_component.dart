@@ -10,15 +10,15 @@ import 'package:whispers_of_joppa/game/board/item_component.dart';
 class CellComponent extends PositionComponent with TapCallbacks {
   final int col;
   final int row;
-  final double cellSize;
+  double cellSize;
 
   ItemComponent? _item;
 
   /// Called when the cell is tapped while it holds an item.
   final void Function(int col, int row)? onItemTapped;
 
-  static const _borderColor = Color(0xFF5C3D0D);
-  static const _fillColor = Color(0xFF2A1F08);
+  static const _borderColor = Color(0xFF6B4A14);
+  static const _fillColor = Color(0xB32A1F08);
 
   CellComponent({
     required this.col,
@@ -47,6 +47,15 @@ class CellComponent extends PositionComponent with TapCallbacks {
   @override
   void onTapUp(TapUpEvent event) {
     if (_item != null) onItemTapped?.call(col, row);
+  }
+
+  /// Moves and resizes this cell (and the item in it) when the board is
+  /// given a different amount of room.
+  void fit(double newSize, Vector2 newPosition) {
+    cellSize = newSize;
+    size = Vector2.all(newSize);
+    position = newPosition;
+    _item?.fit(Vector2.all(newSize - 8));
   }
 
   /// Places (or replaces) an item in this cell.
