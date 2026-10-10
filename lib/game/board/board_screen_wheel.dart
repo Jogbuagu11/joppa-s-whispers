@@ -84,6 +84,30 @@ mixin _BoardWheel on _BoardItems {
     return WheelRules.fromJson(wheel);
   }
 
+  /// The banner ad under the board. A fixed height is kept for it whenever
+  /// it may show, so the board does not jump when an ad arrives; players
+  /// who have bought anything never see it, nor does anyone in the tutorial.
+  Widget _bannerStrip(BoardSession session) => ListenableBuilder(
+    listenable: Listenable.merge([session.tutorial, session.purchases]),
+    builder: (context, _) {
+      final banner = widget.ads?.banner();
+      final allowed = bannerAllowed(
+        tutorialOver: session.tutorial.isOver,
+        hasPaid:
+            session.purchases.appliedTransactions.isNotEmpty ||
+            session.purchases.ownedProducts.isNotEmpty,
+        downgraded: session.downgraded,
+      );
+      if (banner == null || !allowed) return const SizedBox.shrink();
+      return SizedBox(
+        key: const Key('banner_strip'),
+        height: bannerHeight,
+        width: double.infinity,
+        child: Center(child: banner),
+      );
+    },
+  );
+
   /// The Joppa Special, or null where it is not offered: no shop here, in
   /// the tutorial (no purchase is ever offered in it), or in a game played
   /// from memory only.

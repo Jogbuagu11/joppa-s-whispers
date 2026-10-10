@@ -1395,6 +1395,26 @@ Where it stands (she has seen each step; the last one is not yet approved):
   **Build 14** (`dist/whispers-of-joppa-1.0.0-14.aab`, in Downloads) has Milestone 26 and
   all of this. Store screenshots retaken with the new look.
 
+## New AdMob account and a banner (2026-10-10) — asked for by Jennifer
+- Her words: "im going to replace all the ad ids", "we also doing banner", "you dont need
+  interstitial". She pasted six ids from publisher **pub-7519175373921809** (the game was
+  on pub-9828380512433327 until build 18).
+- Swapped: both app ids (Info.plist, AndroidManifest), both rewarded units and two new
+  banner units (`tool/release_defines.json`), and `web/public/app-ads.txt`.
+- **Banner:** one standard banner under the board and the hint line. Never in the
+  tutorial; never before the consent message is answered; never for a player who has
+  bought anything (EXPANSION: fewer ads for players who have paid); nowhere but the board.
+  A height of 50 is kept for it so the board does not jump when an ad arrives.
+- CLAUDE.md's stack line, GDD and TECH_SPEC say so now.
+- **For Jennifer:** in the NEW account, publish the consent messages (European
+  regulations + IDFA explainer, policy URL https://www.whispersofjoppa.com/privacy);
+  check both units called "Rewarded" have the format Rewarded (not Rewarded
+  interstitial); under Blocking controls block the categories unfit for this game
+  (gambling, dating, alcohol…); add her phone as a test device. Builds from 19 on show
+  REAL ads from this account: never tap them when testing.
+- The shop now scrolls as one list (today's deals had pushed the last Pearl pack out of
+  reach; the device run caught it).
+
 ## Milestone 30 — state (2026-10-10, in progress)
 
 **Built so far** (the parts that need no new store product and no server change)
@@ -2307,8 +2327,9 @@ beside the game with its history kept. A backup of the original is in the GitHub
 
 ## Waiting on Jennifer
 
-- **AdMob → Privacy & messaging:** create and publish the European regulations message
-  and the IDFA explainer message for both apps. Until then build 11+ shows no ads at all.
+- **AdMob (the NEW account, pub-7519175373921809) → Privacy & messaging:** create and
+  publish the European regulations message and the IDFA explainer message for both apps.
+  Until then no build shows any ad.
 
 - AdMob: confirm that the units named "Rewarded" (iPhone …/1511907036, Android
   …/2441845322) are the plain Rewarded format, not "Rewarded interstitial".

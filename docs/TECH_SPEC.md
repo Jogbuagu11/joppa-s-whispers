@@ -268,7 +268,8 @@ On every launch and when the app returns to the foreground, read the purchase st
   - [ ] Refund test (Google: refund from Play Console order management; Apple: sandbox refund) → Pearls removed
 
 ## 7. Ads
-- Rewarded ads only, always player-initiated, with daily caps from `economy.json`.
+- Rewarded ads, always player-initiated, with daily caps from `economy.json`; and one standard banner (320×50) under the board (`lib/services/google_banner.dart`), shown only after the tutorial, only once consent is settled, and never to a player who has bought anything (`bannerAllowed` in `lib/domain/ads.dart`). No interstitial, native or app-open ads.
+- Ad ids: the AdMob app ids are in `ios/Runner/Info.plist` and `android/app/src/main/AndroidManifest.xml`; the four unit ids (rewarded and banner, each platform) are in `tool/release_defines.json`. Without them a build uses Google's public test units. The publisher is in `web/public/app-ads.txt`.
 - No ads before the end of the tutorial.
 - If an ad fails to load, hide the button; never block gameplay.
 

@@ -7,7 +7,7 @@
 | **Platforms** | iOS and Android, portrait only |
 | **Setting** | Joppa, a harbor town on the Mediterranean, around AD 40 (Acts 9–11) |
 | **Audience** | Christian women 35+ first; families and faith-based players broadly |
-| **Business model** | Free-to-play; in-app purchases, season pass, optional rewarded ads |
+| **Business model** | Free-to-play; in-app purchases, season pass, optional rewarded ads, and one banner ad under the board (Jennifer, 2026-10-10) |
 | **Core theme** | Gossip destroys; truth restores. Every rumor is resolved with truth, repentance, and reconciliation — never revenge. Anchor verse: Proverbs 16:28. |
 
 ## 2. Tone rules (apply to everything)
@@ -140,7 +140,7 @@ No paywall, no ads, no purchase offers during the tutorial.
 All values live in `content/economy.json`, never in code.
 
 ## 13. Monetization
-**Principles:** no purchases offered in the tutorial; ads always optional; every random reward, paid or free, shows its odds before the player buys, spins or opens (EXPANSION 20.4, which replaced "no paid random boxes"); Pearls are never the prize of anything paid for with Pearls; no paid random rewards in countries that forbid them.
+**Principles:** no purchases offered in the tutorial; no full-screen ad is ever shown unless the player chooses to watch it (the one ad that is always there is a small banner under the board, never in the tutorial and never for a player who has bought anything); every random reward, paid or free, shows its odds before the player buys, spins or opens (EXPANSION 20.4, which replaced "no paid random boxes"); Pearls are never the prize of anything paid for with Pearls; no paid random rewards in countries that forbid them.
 
 | Product | Details (starting prices, tune later) |
 |---|---|

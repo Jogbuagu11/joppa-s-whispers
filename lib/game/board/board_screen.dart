@@ -27,6 +27,7 @@ import 'package:whispers_of_joppa/features/events/event_screen.dart';
 import 'package:whispers_of_joppa/domain/chance.dart';
 import 'package:whispers_of_joppa/domain/wheel.dart';
 import 'package:whispers_of_joppa/domain/jars.dart';
+import 'package:whispers_of_joppa/domain/ads.dart';
 import 'package:whispers_of_joppa/domain/deals.dart';
 import 'package:whispers_of_joppa/features/shop/daily_deals.dart';
 import 'package:whispers_of_joppa/features/shop/special_offer.dart';
@@ -248,6 +249,7 @@ class _BoardScreenState extends State<BoardScreen>
                   availableAssets: session.assetPaths,
                   looks: _characterLooks,
                 ),
+                _bannerStrip(session),
               ],
             ),
           ),

@@ -103,4 +103,59 @@ void main() {
     await tester.pump(const Duration(milliseconds: 600));
     expect(find.byKey(const Key('out_of_manna_popup')), findsNothing);
   });
+
+  testWidgets('the banner sits under the board after the tutorial, and the '
+      'board is still there', (tester) async {
+    final ads = FakeAdService()
+      ..fakeBanner = const ColoredBox(
+        key: Key('fake_banner'),
+        color: Color(0xFF445566),
+        child: SizedBox(width: 320, height: 50),
+      );
+    await SaveRepository().clear();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BoardScreen(
+          playOpeningScene: false,
+          playTutorial: false,
+          ads: ads,
+        ),
+      ),
+    );
+    final board = find.byType(GameWidget<BoardGame>);
+    for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    await tester.pump(const Duration(seconds: 1));
+    expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('banner_strip')), findsOneWidget);
+    expect(find.byKey(const Key('fake_banner')), findsOneWidget);
+    // The whole banner is on the screen, below the whole board.
+    final banner = tester.getRect(find.byKey(const Key('fake_banner')));
+    final screen = tester.getRect(find.byType(MaterialApp));
+    expect(banner.bottom, lessThanOrEqualTo(screen.bottom));
+    expect(banner.top, greaterThanOrEqualTo(tester.getRect(board).bottom));
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 3));
+    await SaveRepository().clear();
+  });
+
+  testWidgets('no banner during the tutorial', (tester) async {
+    final ads = FakeAdService()
+      ..fakeBanner = const SizedBox(key: Key('fake_banner'), height: 50);
+    await SaveRepository().clear();
+    await tester.pumpWidget(
+      MaterialApp(home: BoardScreen(playOpeningScene: false, ads: ads)),
+    );
+    final board = find.byType(GameWidget<BoardGame>);
+    for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const Key('banner_strip')), findsNothing);
+    expect(find.byKey(const Key('fake_banner')), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 3));
+    await SaveRepository().clear();
+  });
 }

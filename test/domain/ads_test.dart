@@ -99,4 +99,25 @@ void main() {
     const negative = AdTally(day: '2026-10-05', mannaAds: -4);
     expect(mannaAdsLeftToday(_config(), negative, noon), 5);
   });
+
+  test('the banner: never in the tutorial, never for a player who has '
+      'bought anything, never in a game played from memory', () {
+    expect(
+      bannerAllowed(tutorialOver: true, hasPaid: false, downgraded: false),
+      isTrue,
+    );
+    expect(
+      bannerAllowed(tutorialOver: false, hasPaid: false, downgraded: false),
+      isFalse,
+    );
+    expect(
+      bannerAllowed(tutorialOver: true, hasPaid: true, downgraded: false),
+      isFalse,
+    );
+    expect(
+      bannerAllowed(tutorialOver: true, hasPaid: false, downgraded: true),
+      isFalse,
+    );
+    expect(bannerHeight, 50);
+  });
 }

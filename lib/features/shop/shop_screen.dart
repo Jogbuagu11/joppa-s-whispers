@@ -56,41 +56,52 @@ class _ShopScreenState extends State<ShopScreen> {
                 ),
               ),
             ),
-            ?widget.top,
+            // Today's deals and the store's products scroll as one.
             Expanded(
-              child: FutureBuilder<List<StoreProduct>>(
-                future: _products,
-                builder: (context, snapshot) {
-                  final products = snapshot.data;
-                  if (products == null) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: _gold),
-                    );
-                  }
-                  if (products.isEmpty) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(24),
-                        child: Text(
-                          'The shop is not available right now. '
-                          'Please try again later.',
-                          key: Key('shop_unavailable'),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: _cream),
-                        ),
-                      ),
-                    );
-                  }
-                  return ListenableBuilder(
-                    listenable: Listenable.merge([widget.purchases, shop.busy]),
-                    builder: (context, _) => ListView(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      children: [
-                        for (final product in products) _tile(product),
-                      ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ?widget.top,
+                    FutureBuilder<List<StoreProduct>>(
+                      future: _products,
+                      builder: (context, snapshot) {
+                        final products = snapshot.data;
+                        if (products == null) {
+                          return const Padding(
+                            padding: EdgeInsets.all(24),
+                            child: CircularProgressIndicator(color: _gold),
+                          );
+                        }
+                        if (products.isEmpty) {
+                          return const Padding(
+                            padding: EdgeInsets.all(24),
+                            child: Text(
+                              'The shop is not available right now. '
+                              'Please try again later.',
+                              key: Key('shop_unavailable'),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: _cream),
+                            ),
+                          );
+                        }
+                        return ListenableBuilder(
+                          listenable: Listenable.merge([
+                            widget.purchases,
+                            shop.busy,
+                          ]),
+                          builder: (context, _) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Column(
+                              children: [
+                                for (final product in products) _tile(product),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ],
+                ),
               ),
             ),
             ValueListenableBuilder<String?>(

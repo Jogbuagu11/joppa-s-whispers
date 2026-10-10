@@ -23,7 +23,7 @@ write the assumption in `PROGRESS.md` under "Assumptions to confirm."
 - Riverpod for app state
 - Supabase for accounts, cloud saves, server-driven content, events
 - Flutter's official `in_app_purchase` package for purchases, verified server-side by Supabase Edge Functions (no third-party purchase service)
-- Google Mobile Ads (AdMob) for rewarded ads only
+- Google Mobile Ads (AdMob): rewarded ads, and one banner under the board (added by Jennifer, 2026-10-10). No interstitial, native or app-open ads.
 - Firebase for push notifications (FCM), crash reporting (Crashlytics), and analytics
 - flutter_local_notifications for on-device reminders
 - **No Rive.** All animation is done in code (Flame effects + Flutter animations).

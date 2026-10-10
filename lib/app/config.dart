@@ -39,4 +39,15 @@ class AppConfig {
     'ADMOB_REWARDED_UNIT_ANDROID',
     defaultValue: 'ca-app-pub-3940256099942544/5224354917',
   );
+
+  // AdMob banner ad units (the strip under the board). The defaults are
+  // Google's public TEST banners, as above.
+  static const String admobBannerUnitIos = String.fromEnvironment(
+    'ADMOB_BANNER_UNIT_IOS',
+    defaultValue: 'ca-app-pub-3940256099942544/2934735716',
+  );
+  static const String admobBannerUnitAndroid = String.fromEnvironment(
+    'ADMOB_BANNER_UNIT_ANDROID',
+    defaultValue: 'ca-app-pub-3940256099942544/6300978111',
+  );
 }

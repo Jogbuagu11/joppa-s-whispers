@@ -3,11 +3,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/app/config.dart';
 import 'package:whispers_of_joppa/services/ad_consent.dart';
 import 'package:whispers_of_joppa/services/ad_service.dart';
+import 'package:whispers_of_joppa/services/google_banner.dart';
 
 final _log = Logger('Ads');
 
@@ -23,6 +25,13 @@ class GoogleRewardedAds implements AdService {
     : _consent = consent ?? gatherAdConsent;
 
   final ValueNotifier<bool> _ready = ValueNotifier<bool>(false);
+
+  /// True once consent is settled and the ads library is running: only
+  /// then may any ad, the banner included, be asked for.
+  final ValueNotifier<bool> _mayRequest = ValueNotifier<bool>(false);
+
+  @override
+  Widget? banner() => GoogleBanner(mayRequest: _mayRequest);
   RewardedAd? _ad;
   bool _started = false;
   bool _loading = false;
@@ -54,6 +63,7 @@ class GoogleRewardedAds implements AdService {
         return;
       }
       await MobileAds.instance.initialize();
+      _mayRequest.value = true;
       _load();
     } on Object catch (e) {
       // No ads is never a reason to stop the game.

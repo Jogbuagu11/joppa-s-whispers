@@ -28,6 +28,18 @@ int mannaAdsLeftToday(EconomyConfig config, AdTally tally, DateTime now) {
   return left < 0 ? 0 : left;
 }
 
+/// Whether the banner under the board may be shown: never during the
+/// tutorial, never to a player who has bought anything, and not in a game
+/// played from memory only.
+bool bannerAllowed({
+  required bool tutorialOver,
+  required bool hasPaid,
+  required bool downgraded,
+}) => tutorialOver && !hasPaid && !downgraded;
+
+/// The height kept for the banner (a standard 320 by 50 one).
+const bannerHeight = 50.0;
+
 /// Whether a Manna ad may be offered: never during the tutorial, and only
 /// while today's allowance lasts.
 bool canOfferMannaAd(

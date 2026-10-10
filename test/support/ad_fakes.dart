@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:whispers_of_joppa/services/ad_service.dart';
 
 class FakeAdService implements AdService {
@@ -24,6 +25,12 @@ class FakeAdService implements AdService {
 
   @override
   void start() => starts++;
+
+  /// What stands in for the banner; null (the usual) means no banners.
+  Widget? fakeBanner;
+
+  @override
+  Widget? banner() => fakeBanner;
 
   /// Whether this player has ad privacy choices to change.
   bool privacyRequired = false;
