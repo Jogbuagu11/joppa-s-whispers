@@ -1419,6 +1419,8 @@ Where it stands (she has seen each step; the last one is not yet approved):
 - **Where they come from, for now:** level-up gifts. Knife at levels 9, 19, 29…; Golden
   Thread at 14, 24, 34…; sealed jars at 11, 21, 31, 41, 51.
 - Content is version 29. No change to the save format.
+- **Build 16** (Android bundle, signed): `Downloads/whispers-of-joppa-1.0.0-16.aab`.
+  Not uploaded. It replaces build 15 as the one to put on Play testing.
 
 **Checks**
 - `flutter analyze` clean; unit tests pass (`test/domain/tools_test.dart`,
