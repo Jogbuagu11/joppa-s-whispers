@@ -123,6 +123,18 @@ void checkLevels(
           'Levels: unlock "$feature" needs a name of 1 to 40 letters',
         );
       }
+      final boost = entry['boost'];
+      if (boost != null &&
+          (boost is! Map<String, dynamic> ||
+              boost['manna_times'] is! int ||
+              (boost['manna_times'] as int) < 2 ||
+              boost['tier_bonus'] is! int ||
+              (boost['tier_bonus'] as int) < 1)) {
+        problems.add(
+          'Levels: unlock "$feature": a boost needs manna_times of 2 or more '
+          'and tier_bonus of 1 or more',
+        );
+      }
       if (entry['available'] is! bool?) {
         problems.add(
           'Levels: unlock "$feature": available must be true or false',

@@ -146,8 +146,19 @@ void main() {
         ),
       );
       await tester.pump(const Duration(milliseconds: 400));
+      // (One tap in ten gives the generator's rare chain instead, where it
+      // has one.)
+      final generators = (await _content('generators') as List<dynamic>)
+          .cast<Map<String, dynamic>>();
+      final rare = generators.firstWhere((g) => g['id'] == c.brings)['rare'];
+      final rarePrefix = rare is Map<String, dynamic>
+          ? '${rare['chain_id']}_'
+          : c.makes;
       expect(
-        game.snapshotItems().where((i) => i.itemId.startsWith(c.makes)),
+        game.snapshotItems().where(
+          (i) =>
+              i.itemId.startsWith(c.makes) || i.itemId.startsWith(rarePrefix),
+        ),
         hasLength(1),
       );
       // Leave nothing behind for the next case.

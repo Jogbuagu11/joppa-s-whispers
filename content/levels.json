@@ -80,14 +80,32 @@
     { "level": 10, "feature": "races", "name": "Races", "available": false },
     { "level": 10, "feature": "profile", "name": "Profile and avatar", "available": false },
     { "level": 12, "feature": "friends", "name": "Friends and gifting", "available": false },
-    { "level": 15, "feature": "boost_2x", "name": "Generator boost (2x)", "available": false },
+    {
+      "level": 15,
+      "feature": "boost_2x",
+      "name": "Generator boost (2x)",
+      "available": true,
+      "boost": {
+        "manna_times": 2,
+        "tier_bonus": 1
+      }
+    },
     { "level": 15, "feature": "prayer_circles", "name": "Prayer Circles", "available": false },
     { "level": 18, "feature": "collect_event", "name": "Collect events", "available": false },
     { "level": 18, "feature": "energy_event", "name": "Energy events", "available": false },
     { "level": 18, "feature": "order_event", "name": "Order events", "available": false },
     { "level": 20, "feature": "pilgrims_road", "name": "Pilgrim's Road", "available": false },
     { "level": 25, "feature": "album_trading", "name": "Keepsake album trading", "available": false },
-    { "level": 40, "feature": "boost_4x", "name": "Generator boost (4x)", "available": false }
+    {
+      "level": 40,
+      "feature": "boost_4x",
+      "name": "Generator boost (4x)",
+      "available": true,
+      "boost": {
+        "manna_times": 4,
+        "tier_bonus": 2
+      }
+    }
   ],
   "text": {
     "title": "Level {level}",

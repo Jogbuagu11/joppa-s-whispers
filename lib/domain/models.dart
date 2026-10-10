@@ -82,6 +82,10 @@ class GeneratorModel {
   /// Standard, charged, free or temporary, with its numbers.
   final GeneratorRules rules;
 
+  /// The rare chain it sometimes gives: its id and the chance (0 to 1).
+  final String? rareChainId;
+  final double rareChance;
+
   const GeneratorModel({
     required this.generatorId,
     required this.chainId,
@@ -89,6 +93,8 @@ class GeneratorModel {
     required this.energyCost,
     required this.name,
     this.rules = GeneratorRules.standard,
+    this.rareChainId,
+    this.rareChance = 0,
   });
 
   /// The same generator at another level.
@@ -99,6 +105,8 @@ class GeneratorModel {
     energyCost: energyCost,
     name: name,
     rules: rules,
+    rareChainId: rareChainId,
+    rareChance: rareChance,
   );
 }
 

@@ -258,6 +258,8 @@ class ContentLoader {
             : 0,
         name: gen['name'] as String,
         rules: rules,
+        rareChainId: RareDrop.fromJson(gen['rare'])?.chainId,
+        rareChance: RareDrop.fromJson(gen['rare'])?.chance ?? 0,
       );
     }
   }

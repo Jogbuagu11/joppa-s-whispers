@@ -59,4 +59,24 @@ extension BoardLayout on BoardGame {
     }
     return null;
   }
+
+  /// Every item on the board with its cell (written to the save file).
+  List<SavedItem> snapshotItems() => [
+    for (int c = 0; c < gridCols; c++)
+      for (int r = 0; r < gridRows; r++)
+        if (_board[c][r] case final item?)
+          SavedItem(itemId: item.itemId, col: c, row: r),
+  ];
+
+  /// Every generator with its level and cell (written to the save file).
+  List<SavedGenerator> snapshotGenerators() => [
+    for (final p in generatorPlacements)
+      SavedGenerator(
+        generatorId: p.gen.generatorId,
+        level: p.gen.level,
+        col: p.col,
+        row: p.row,
+        timer: generatorTimers[p.gen.generatorId],
+      ),
+  ];
 }

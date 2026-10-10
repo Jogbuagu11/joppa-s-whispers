@@ -191,7 +191,19 @@ class _BoardScreenState extends State<BoardScreen>
                         : null,
                     settingsTooltip:
                         _notificationContent?.settingsText['title'],
-                    manna: MannaBar(controller: session.manna),
+                    manna: ListenableBuilder(
+                      listenable: Listenable.merge([
+                        session.game.boost,
+                        session.levels,
+                      ]),
+                      builder: (context, _) => MannaBar(
+                        controller: session.manna,
+                        boostLabel: session.game.hasBoost
+                            ? '×${session.game.activeBoost.mannaTimes}'
+                            : null,
+                        onBoost: session.game.cycleBoost,
+                      ),
+                    ),
                   ),
                 ),
                 _playArea(session),

@@ -65,3 +65,28 @@ void checkItemUse(String what, Object? use, List<String> problems) {
     problems.add('$what: use must give Manna or skip time, one or the other');
   }
 }
+
+/// Adds a line to [problems] if generator [id]'s rare side chain is not a
+/// known chain with a sensible chance.
+void checkRareDrop(
+  Object? id,
+  Map<String, dynamic> gen,
+  Set<String> chainIds,
+  List<String> problems,
+) {
+  final rare = gen['rare'];
+  if (rare == null) return;
+  if (rare is! Map<String, dynamic>) {
+    problems.add('Generator $id: rare must be a record');
+    return;
+  }
+  if (!chainIds.contains(rare['chain_id'])) {
+    problems.add(
+      'Generator $id: rare chain "${rare['chain_id']}" does not exist',
+    );
+  }
+  final chance = rare['chance'];
+  if (chance is! num || chance <= 0 || chance > 0.5) {
+    problems.add('Generator $id: rare chance must be above 0 and at most 0.5');
+  }
+}

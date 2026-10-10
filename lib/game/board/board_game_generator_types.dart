@@ -12,6 +12,29 @@ extension BoardGeneratorTypes on BoardGame {
       if (p.gen.rules.kind != GeneratorKind.temporary) p.gen.level,
   ]);
 
+  /// The boost that applies to a tap right now: the one switched on, if it
+  /// is (still) unlocked.
+  GeneratorBoost get activeBoost {
+    final index = boost.value - 1;
+    if (index < 0 || index >= boosts.length) return GeneratorBoost.none;
+    return (boostUnlocked?.call(index) ?? false)
+        ? boosts[index]
+        : GeneratorBoost.none;
+  }
+
+  /// Whether the player has any boost to switch on.
+  bool get hasBoost => boosts.isNotEmpty && (boostUnlocked?.call(0) ?? false);
+
+  /// Steps to the next boost the player has unlocked, then back to none.
+  void cycleBoost() {
+    var next = boost.value + 1;
+    if (next > boosts.length || !(boostUnlocked?.call(next - 1) ?? false)) {
+      next = 0;
+    }
+    boost.value = next;
+    _boardTouched();
+  }
+
   /// This generator's clock, started fresh the first time it is asked for.
   GeneratorTimer _timerFor(GeneratorModel gen) {
     final rules = gen.rules;
@@ -27,7 +50,9 @@ extension BoardGeneratorTypes on BoardGame {
   /// time to wait, or taps left.
   String generatorLabel(GeneratorModel gen) {
     final rules = gen.rules;
-    if (rules.kind == GeneratorKind.standard) return '${gen.energyCost}M';
+    if (rules.kind == GeneratorKind.standard) {
+      return '${gen.energyCost * activeBoost.mannaTimes}M';
+    }
     final timer = _timerFor(gen);
     final wait = secondsToWait(rules, timer, now());
     if (wait != null) return formatWait(wait);

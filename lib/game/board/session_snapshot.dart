@@ -50,6 +50,7 @@ SaveState buildSnapshot({
   adMannaWatched: ads.tally.mannaAds,
   levelRewarded: levels.rewardedLevel,
   pendingGrants: grants.waiting,
+  boost: game.boost.value,
 );
 
 /// The saver for a session: what it writes, and what makes it write.

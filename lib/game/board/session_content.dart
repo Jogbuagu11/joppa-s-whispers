@@ -105,5 +105,5 @@ BoardGame buildSessionGame({
     chainPlaceholderColors: loader.chainPlaceholderColors,
     manna: manna,
     onOutOfManna: onOutOfManna,
-  );
+  )..boost.value = save.boost;
 }

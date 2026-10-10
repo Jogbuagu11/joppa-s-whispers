@@ -83,6 +83,12 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   /// returns false if it could not be used). The screen asks first.
   void Function(ItemModel item, bool Function() use)? onUsableItemTapped;
 
+  /// The generator boosts there are (weakest first), which of them the
+  /// player has unlocked, and the one switched on (0 = none, 1 = the first…).
+  List<GeneratorBoost> boosts = const [];
+  bool Function(int index)? boostUnlocked;
+  final ValueNotifier<int> boost = ValueNotifier<int>(0);
+
   /// When this returns true, generator taps cost nothing (tutorial).
   bool Function()? freeGeneratorTaps;
 
@@ -108,26 +114,6 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   /// told just afterwards, never in the middle of drawing the screen (the
   /// board is first filled while Flutter is still building it).
   void _boardTouched() => Future<void>.microtask(() => _boardVersion.value++);
-
-  /// Every item on the board with its cell (written to the save file).
-  List<SavedItem> snapshotItems() => [
-    for (int c = 0; c < gridCols; c++)
-      for (int r = 0; r < gridRows; r++)
-        if (_board[c][r] case final item?)
-          SavedItem(itemId: item.itemId, col: c, row: r),
-  ];
-
-  /// Every generator with its level and cell (written to the save file).
-  List<SavedGenerator> snapshotGenerators() => [
-    for (final p in generatorPlacements)
-      SavedGenerator(
-        generatorId: p.gen.generatorId,
-        level: p.gen.level,
-        col: p.col,
-        row: p.row,
-        timer: generatorTimers[p.gen.generatorId],
-      ),
-  ];
 
   @override
   Map<String, int> itemCounts() => countItems(_board);

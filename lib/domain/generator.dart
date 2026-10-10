@@ -12,6 +12,39 @@ class GeneratorLevelData {
   const GeneratorLevelData({required this.level, required this.odds});
 }
 
+/// A generator boost: each tap costs more Manna and gives a higher item.
+class GeneratorBoost {
+  /// Manna cost is multiplied by this.
+  final int mannaTimes;
+
+  /// The item is this many tiers higher (never past the top of its chain).
+  final int tierBonus;
+
+  const GeneratorBoost({required this.mannaTimes, required this.tierBonus});
+
+  /// No boost: the usual cost and the usual item.
+  static const none = GeneratorBoost(mannaTimes: 1, tierBonus: 0);
+}
+
+/// A rare side chain a generator sometimes gives instead of its own.
+class RareDrop {
+  final String chainId;
+
+  /// The chance of it on each tap, from 0 to 1.
+  final double chance;
+
+  const RareDrop({required this.chainId, required this.chance});
+
+  /// Null if [json] names no rare chain.
+  static RareDrop? fromJson(Object? json) {
+    if (json is! Map<String, dynamic>) return null;
+    final chain = json['chain_id'];
+    final chance = json['chance'];
+    if (chain is! String || chance is! num) return null;
+    return RareDrop(chainId: chain, chance: chance.toDouble());
+  }
+}
+
 /// Returns the tier that a generator spawns based on its odds table.
 /// [random] is injectable for deterministic unit testing.
 int spawnTier(GeneratorLevelData levelData, {Random? random}) {
@@ -81,8 +114,15 @@ GeneratorTapResult resolveGeneratorTap({
 
   /// Replaces the generator's own tap cost (the tutorial makes taps free).
   int? costOverride,
+
+  /// The boost the player has switched on, if any.
+  GeneratorBoost boost = GeneratorBoost.none,
+
+  /// The rare side chain this generator sometimes gives.
+  RareDrop? rare,
 }) {
-  final cost = costOverride ?? gen.energyCost;
+  final rng = random ?? Random();
+  final cost = costOverride ?? gen.energyCost * boost.mannaTimes;
   GeneratorTapResult refuse(GeneratorTapRefusal why) =>
       GeneratorTapResult.refused(why, mannaAfter: manna);
 
@@ -96,7 +136,20 @@ GeneratorTapResult resolveGeneratorTap({
     (l) => l.level == gen.level,
     orElse: () => levels.first,
   );
-  final tier = spawnTier(levelData, random: random);
+  // Now and then the rare chain's first item comes instead.
+  if (rare != null && rng.nextDouble() < rare.chance) {
+    final rareId = resolveSpawnedItemId(rare.chainId, 1, chains);
+    if (rareId != null) {
+      return GeneratorTapResult.spawn(
+        itemId: rareId,
+        tier: 1,
+        mannaAfter: manna - cost,
+      );
+    }
+  }
+  final top = chains[gen.chainId]?.maxTier;
+  final boosted = spawnTier(levelData, random: rng) + boost.tierBonus;
+  final tier = top != null && boosted > top ? top : boosted;
   final itemId = resolveSpawnedItemId(gen.chainId, tier, chains);
   if (itemId == null) return refuse(GeneratorTapRefusal.noItem);
   return GeneratorTapResult.spawn(

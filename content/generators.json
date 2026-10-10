@@ -1,6 +1,7 @@
 [
   {
     "id": "gen_pantry",
+    "rare": {"chain_id": "honey", "chance": 0.1},
     "name": "Grandma's Pantry",
     "chain_id": "bakery",
     "unlock_chapter": 1,
@@ -53,6 +54,7 @@
   },
   {
     "id": "gen_loom",
+    "rare": {"chain_id": "dye", "chance": 0.1},
     "name": "Loom",
     "chain_id": "loom",
     "unlock_chapter": 4,
@@ -66,6 +68,7 @@
   },
   {
     "id": "gen_press",
+    "rare": {"chain_id": "golden", "chance": 0.1},
     "name": "Olive Press",
     "chain_id": "oil",
     "unlock_chapter": 5,

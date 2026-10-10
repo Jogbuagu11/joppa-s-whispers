@@ -202,5 +202,98 @@
         }
       }
     ]
+  },
+  {
+    "id": "honey",
+    "placeholder_color": "#E0A526",
+    "name": "Honey",
+    "kind": "rare",
+    "unlock_chapter": 1,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "honey_01",
+        "name": "Honeycomb",
+        "sell": 12
+      },
+      {
+        "tier": 2,
+        "item_id": "honey_02",
+        "name": "Honey jar",
+        "sell": 30
+      },
+      {
+        "tier": 3,
+        "item_id": "honey_03",
+        "name": "Honey pot",
+        "sell": 70
+      },
+      {
+        "tier": 4,
+        "item_id": "honey_04",
+        "name": "Honeyed feast platter",
+        "sell": 160
+      }
+    ]
+  },
+  {
+    "id": "dye",
+    "placeholder_color": "#7B3F8C",
+    "name": "Purple dye",
+    "kind": "rare",
+    "unlock_chapter": 4,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "dye_01",
+        "name": "Purple dye shell",
+        "sell": 14
+      },
+      {
+        "tier": 2,
+        "item_id": "dye_02",
+        "name": "Dye pot",
+        "sell": 34
+      },
+      {
+        "tier": 3,
+        "item_id": "dye_03",
+        "name": "Purple cloth",
+        "sell": 80
+      },
+      {
+        "tier": 4,
+        "item_id": "dye_04",
+        "name": "Royal purple robe",
+        "sell": 180
+      }
+    ]
+  },
+  {
+    "id": "golden",
+    "placeholder_color": "#D9B23C",
+    "name": "Golden oil",
+    "kind": "rare",
+    "unlock_chapter": 5,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "golden_01",
+        "name": "Golden olive",
+        "sell": 16
+      },
+      {
+        "tier": 2,
+        "item_id": "golden_02",
+        "name": "Golden oil",
+        "sell": 40
+      },
+      {
+        "tier": 3,
+        "item_id": "golden_03",
+        "name": "Golden lamp",
+        "sell": 95
+      }
+    ]
   }
 ]

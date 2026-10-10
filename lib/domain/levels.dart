@@ -1,5 +1,6 @@
 // Player levels: XP comes from story tasks, and each level reached gives a
 // Manna refill, a small reward, and sometimes unlocks a feature. Pure Dart.
+import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/progression.dart';
 
 /// One level above the first: the total XP it takes to reach it, and what
@@ -34,11 +35,15 @@ class FeatureUnlock {
   /// announced to the player.
   final bool available;
 
+  /// For a generator-boost unlock: what the boost does.
+  final GeneratorBoost? boost;
+
   const FeatureUnlock({
     required this.level,
     required this.feature,
     required this.name,
     this.available = false,
+    this.boost,
   });
 }
 
@@ -88,6 +93,11 @@ class LevelsConfig {
           feature: u['feature'] as String,
           name: u['name'] as String,
           available: u['available'] as bool? ?? false,
+          boost: switch (u['boost']) {
+            {'manna_times': final int times, 'tier_bonus': final int bonus} =>
+              GeneratorBoost(mannaTimes: times, tierBonus: bonus),
+            _ => null,
+          },
         ),
     ],
     text: {
@@ -98,6 +108,12 @@ class LevelsConfig {
   );
 
   int get maxLevel => steps.isEmpty ? 1 : steps.last.level;
+
+  /// The generator boosts there are, weakest first.
+  List<FeatureUnlock> get boosts => [
+    for (final u in unlocks)
+      if (u.boost != null) u,
+  ]..sort((a, b) => a.level.compareTo(b.level));
 
   /// The level a player with [xp] has reached. Everyone starts at level 1.
   int levelAt(int xp) {

@@ -119,6 +119,9 @@ class SaveState {
   /// board, as `item:<id>` or `gen:<id>`.
   final List<String> pendingGrants;
 
+  /// The generator boost switched on (0 = none).
+  final int boost;
+
   const SaveState({
     required this.items,
     required this.generators,
@@ -142,6 +145,7 @@ class SaveState {
     this.adMannaWatched = 0,
     this.levelRewarded = 0,
     this.pendingGrants = const [],
+    this.boost = 0,
   });
 
   Map<String, dynamic> toJson() => {
@@ -166,6 +170,7 @@ class SaveState {
     'last_order_skip': lastOrderSkip?.toUtc().toIso8601String(),
     'level_rewarded': levelRewarded,
     'pending_grants': pendingGrants,
+    'boost': boost,
     'ad_day': adDay,
     'ad_manna_watched': adMannaWatched,
   };
@@ -221,6 +226,7 @@ class SaveState {
         pendingGrants: List<String>.from(
           json['pending_grants'] as List<dynamic>? ?? const [],
         ),
+        boost: json['boost'] as int? ?? 0,
       );
     } on TypeError catch (e) {
       throw FormatException('Save file is missing or has a wrong field: $e');

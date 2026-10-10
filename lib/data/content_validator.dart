@@ -243,6 +243,7 @@ Set<String> _checkGenerators(
       problems.add('Generator $id: missing name');
     }
     checkGeneratorType(id, gen, problems);
+    checkRareDrop(id, gen, maxTierByChain.keys.toSet(), problems);
     final cost = gen['energy_cost'];
     if (cost != null && (cost is! int || cost < 0)) {
       problems.add('Generator $id: energy_cost must be 0 or more');

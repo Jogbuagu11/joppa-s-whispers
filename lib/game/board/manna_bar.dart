@@ -8,7 +8,18 @@ import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 const _gold = Color(0xFFD4802A);
 
 class MannaBar extends StatelessWidget {
-  const MannaBar({super.key, required this.controller, this.width});
+  const MannaBar({
+    super.key,
+    required this.controller,
+    this.width,
+    this.boostLabel,
+    this.onBoost,
+  });
+
+  /// The generator boost switched on ("×1", "×2"…); null hides the chip
+  /// (the player has no boost yet). Tapping the chip calls [onBoost].
+  final String? boostLabel;
+  final VoidCallback? onBoost;
 
   /// A fixed width, or null to fill the space it is given.
   final double? width;
@@ -27,7 +38,10 @@ class MannaBar extends StatelessWidget {
           child: Container(
             width: width,
             height: 36,
-            padding: const EdgeInsets.only(left: 3, right: 7),
+            padding: EdgeInsets.only(
+              left: 3,
+              right: boostLabel == null ? 7 : 3,
+            ),
             decoration: BoxDecoration(
               color: GamePalette.panel,
               borderRadius: BorderRadius.circular(18),
@@ -110,6 +124,42 @@ class MannaBar extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (boostLabel case final label?) ...[
+                  const SizedBox(width: 4),
+                  Semantics(
+                    button: true,
+                    label: label,
+                    child: GestureDetector(
+                      key: const Key('boost_chip'),
+                      behavior: HitTestBehavior.opaque,
+                      onTap: onBoost,
+                      child: Container(
+                        width: 30,
+                        height: 28,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          // Lit while a boost is on.
+                          color: label == '×1'
+                              ? const Color(0xFF4A3716)
+                              : GamePalette.talents,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Text(
+                          label,
+                          key: const Key('boost_label'),
+                          textScaler: TextScaler.noScaling,
+                          style: TextStyle(
+                            color: label == '×1'
+                                ? GamePalette.muted
+                                : GamePalette.backgroundBottom,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

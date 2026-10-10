@@ -73,6 +73,16 @@ extension BoardGenerators on BoardGame {
       levels: generatorLevels[genId],
       chains: chainData,
       costOverride: free || !rules.costsManna ? 0 : null,
+      // Boost is for generators that cost Manna, and never in the tutorial.
+      boost: rules.costsManna && !free ? activeBoost : GeneratorBoost.none,
+      // No surprises during the tutorial's free taps.
+      rare: switch (gen.rareChainId) {
+        final String chain when !free => RareDrop(
+          chainId: chain,
+          chance: gen.rareChance,
+        ),
+        _ => null,
+      },
     );
     final item = itemCatalog[result.itemId];
     if (result.refusal == GeneratorTapRefusal.notEnoughManna) onOutOfManna();
