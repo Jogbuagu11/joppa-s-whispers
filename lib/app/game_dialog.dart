@@ -204,10 +204,11 @@ class _Buttons extends StatelessWidget {
           style: FilledButton.styleFrom(
             shape: shape,
             padding: padding,
-            backgroundColor: GamePalette.gold,
-            foregroundColor: GamePalette.backgroundBottom,
+            backgroundColor: GamePalette.action,
+            foregroundColor: GamePalette.onAction,
             disabledBackgroundColor: GamePalette.panelLight,
             disabledForegroundColor: GamePalette.muted,
+            side: const BorderSide(color: GamePalette.actionEdge, width: 1.5),
             textStyle: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),

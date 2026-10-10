@@ -30,6 +30,12 @@ abstract final class GamePalette {
   static const level = Color(0xFFE9993A);
   static const gold = Color(0xFFD4802A);
 
+  /// The main button of a pop-up or a screen: leaf green, with its words in
+  /// [onAction]. (Jennifer, 2026-10-10: coloured, not mustard.)
+  static const action = Color(0xFF4E8A3A);
+  static const actionEdge = Color(0xFF7FB85F);
+  static const onAction = Color(0xFFFFF8E7);
+
   /// "Ready": something can be done right now (olive green).
   static const ready = Color(0xFF8DB255);
 

@@ -81,8 +81,8 @@ class JarShop extends StatelessWidget {
                 FilledButton(
                   key: Key('jar_buy_${jar.id}'),
                   style: FilledButton.styleFrom(
-                    backgroundColor: GamePalette.gold,
-                    foregroundColor: GamePalette.backgroundBottom,
+                    backgroundColor: GamePalette.action,
+                    foregroundColor: GamePalette.onAction,
                     disabledBackgroundColor: GamePalette.panelLight,
                     disabledForegroundColor: GamePalette.muted,
                   ),

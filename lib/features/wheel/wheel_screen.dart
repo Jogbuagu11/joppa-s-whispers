@@ -268,8 +268,8 @@ class _WheelScreenState extends State<WheelScreen>
         key: Key(key),
         style: FilledButton.styleFrom(
           shape: const StadiumBorder(),
-          backgroundColor: GamePalette.gold,
-          foregroundColor: GamePalette.backgroundBottom,
+          backgroundColor: GamePalette.action,
+          foregroundColor: GamePalette.onAction,
           disabledBackgroundColor: GamePalette.panelLight,
           disabledForegroundColor: GamePalette.muted,
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

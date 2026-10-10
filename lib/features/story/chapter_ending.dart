@@ -26,11 +26,7 @@ Future<void> showChapterEnding(BuildContext context, ChapterEnding ending) {
         FilledButton(
           key: const Key('chapter_ending_button'),
           onPressed: () => Navigator.of(context).pop(),
-          style: FilledButton.styleFrom(backgroundColor: _gold),
-          child: Text(
-            ending.button,
-            style: const TextStyle(color: Colors.black),
-          ),
+          child: Text(ending.button),
         ),
       ],
     ),

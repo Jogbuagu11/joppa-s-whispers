@@ -1408,6 +1408,11 @@ Where it stands (she has seen each step; the last one is not yet approved):
   odds" is directly under them.
 - Pictures for her: `Downloads/WhispersofJoppa-art-review/popups-and-wheel/`, taken by
   `tool/take_look_shots.sh` (which stages them with `integration_test/look_shots.dart`).
+- Later: "make the pop up buttons colored instead of that mustard yellow? try blue or
+  green." The main button of every pop-up, the spin buttons and the jar prices are now
+  leaf green (`GamePalette.action`). Both colours were photographed for her to choose:
+  `Downloads/WhispersofJoppa-art-review/buttons-green/` and `buttons-blue/`. Blue is a
+  two-line change in `lib/app/game_palette.dart` (0xFF2F6FA3, edge 0xFF6FA8D6).
 - Wording: a mystery bubble's list now reads "Flour, as it is / Flour, 1 bigger".
 
 ## Milestone 29 — state (2026-10-10)

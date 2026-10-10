@@ -135,11 +135,7 @@ Future<void> showLevelUp(
       FilledButton(
         key: const Key('level_up_continue'),
         onPressed: () => Navigator.of(context).pop(),
-        style: FilledButton.styleFrom(backgroundColor: _gold),
-        child: Text(
-          text['continue'] ?? '',
-          style: const TextStyle(color: Colors.black),
-        ),
+        child: Text(text['continue'] ?? ''),
       ),
     ],
   ),
