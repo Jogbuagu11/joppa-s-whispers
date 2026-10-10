@@ -17,6 +17,7 @@ import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
 import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/events.dart';
+import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/features/events/event_screen.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
@@ -244,6 +245,7 @@ class _BoardScreenState extends State<BoardScreen>
                                         ? _openEvent
                                         : null,
                                     eventLabel: _event?.name,
+                                    storyPicture: _storyPicture,
                                     ordersChanged: session.orders,
                                     readyOrders: () => session
                                         .orders

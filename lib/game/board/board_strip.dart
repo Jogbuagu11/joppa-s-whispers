@@ -24,7 +24,11 @@ class BoardStrip extends StatefulWidget {
     this.eventLabel,
     this.ordersChanged,
     this.readyOrders,
+    this.storyPicture,
   });
+
+  /// A picture for the story card: what its task restores.
+  final String? storyPicture;
 
   /// Fires when the orders or the board change, and how many orders can
   /// be delivered right now: when another becomes ready, the row slides
@@ -180,6 +184,7 @@ class _BoardStripState extends State<BoardStrip> {
                       child: StoryCard(
                         controller: widget.story,
                         onDo: widget.onDoTask,
+                        picture: widget.storyPicture,
                       ),
                     ),
                     const SizedBox(width: _gap),

@@ -44,6 +44,23 @@ mixin _BoardItems on _BoardRoutes {
     child: child,
   );
 
+  /// A picture for the story card: what the next task restores, as it
+  /// looks now; failing that, the first part of the place. Null if the
+  /// art is not there.
+  String? get _storyPicture {
+    final session = _session;
+    final chapter = session?.story.chapter;
+    final areas = session?.locations[chapter?.locationId]?.areas;
+    if (session == null || areas == null || areas.isEmpty) return null;
+    final restored = session.story.restoredAreaIds;
+    final next = session.story.next?.restoresArea;
+    final area = areas.where((a) => a.id == next).firstOrNull ?? areas.first;
+    return locationAssetFor(
+      area.imageId(restored: restored.contains(area.id)),
+      session.assetPaths,
+    );
+  }
+
   /// A usable item was tapped. A Manna jar is used only if the player says
   /// so (it can be kept for later); an hourglass explains itself.
   Future<void> _askToUse(ItemModel item, bool Function() use) async {

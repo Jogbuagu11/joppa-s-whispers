@@ -1331,6 +1331,10 @@ Where it stands (she has seen each step; the last one is not yet approved):
   and back to the orders when a task is done or another order becomes ready. The event
   is a lit round button now, not a banner. Heads are 78 points (56 with three items).
   New buttons and challenges go into the row's left end.
+- Then: "the card that says clear the doorway is bland, it needs full design". The story
+  card now shows a picture of the very thing its task restores (as it looks now), with a
+  dark ribbon for the chapter and count, a thin gold line for progress through the
+  chapter, the task's name, and a gold Go button; a gold edge when it can be done.
 - Then: "put the instructions from Silas or whomever at the bottom of the screen below the board". The hint now sits under the board, with a 54-point cut-out head.
 - Reviewer's notes carried forward: on short phones (iPhone SE) the board cannot be
   full width — there is not the height; with three wanted items the item pictures are
