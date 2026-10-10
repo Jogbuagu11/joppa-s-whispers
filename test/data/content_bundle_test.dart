@@ -38,6 +38,17 @@ void main() {
           ContentBundle(version: 2, format: 1, files: files).problems().single,
           contains('"orders" is missing'),
         );
+        // The levels file must be there and not empty.
+        final noLevels = Map<String, Object?>.of(realContent().files)
+          ..['levels'] = null;
+        expect(
+          ContentBundle(
+            version: 2,
+            format: 1,
+            files: noLevels,
+          ).problems().single,
+          contains('"levels" is empty'),
+        );
         expect(brokenContent(2).problems(), isNotEmpty);
         expect(
           realContent(

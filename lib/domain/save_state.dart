@@ -2,7 +2,7 @@
 
 /// The save format this build writes. Raise it, and add a step to
 /// [migrateSave], whenever the format changes. Never break an existing save.
-const currentSaveVersion = 6;
+const currentSaveVersion = 7;
 
 /// The most bought or gifted Manna a game may hold above its bar.
 const maxBonusManna = 100000;
@@ -102,6 +102,10 @@ class SaveState {
   final String adDay;
   final int adMannaWatched;
 
+  /// The last player level whose rewards were given. 0 means not recorded
+  /// (a game saved before levels existed): nothing is owed for past levels.
+  final int levelRewarded;
+
   const SaveState({
     required this.items,
     required this.generators,
@@ -123,6 +127,7 @@ class SaveState {
     required this.lastOrderSkip,
     this.adDay = '',
     this.adMannaWatched = 0,
+    this.levelRewarded = 0,
   });
 
   Map<String, dynamic> toJson() => {
@@ -145,6 +150,7 @@ class SaveState {
     'endings_seen': endingsSeen,
     'content_version': contentVersion,
     'last_order_skip': lastOrderSkip?.toUtc().toIso8601String(),
+    'level_rewarded': levelRewarded,
     'ad_day': adDay,
     'ad_manna_watched': adMannaWatched,
   };
@@ -195,6 +201,7 @@ class SaveState {
         lastOrderSkip: skip == null ? null : DateTime.parse(skip),
         adDay: json['ad_day'] as String,
         adMannaWatched: json['ad_manna_watched'] as int,
+        levelRewarded: json['level_rewarded'] as int,
       );
     } on TypeError catch (e) {
       throw FormatException('Save file is missing or has a wrong field: $e');
@@ -244,6 +251,12 @@ Map<String, dynamic> migrateSave(Map<String, dynamic> raw) {
     json['ad_day'] = '';
     json['ad_manna_watched'] = 0;
     json['save_version'] = 6;
+  }
+  if (json['save_version'] == 6) {
+    // Player levels arrived: a game from before them starts at its present
+    // level, with nothing owed for the levels already passed.
+    json['level_rewarded'] = 0;
+    json['save_version'] = 7;
   }
   // The next format change goes here, as another one-version step.
   return json;

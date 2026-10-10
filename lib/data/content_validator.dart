@@ -1,5 +1,6 @@
 // Checks content/*.json for mistakes before the game uses it.
 // Pure Dart (no Flutter imports) so tool/validate_content.dart can run it.
+import 'package:whispers_of_joppa/data/level_validator.dart';
 import 'package:whispers_of_joppa/data/notification_validator.dart';
 import 'package:whispers_of_joppa/data/chapter_validator.dart';
 import 'package:whispers_of_joppa/data/order_validator.dart';
@@ -49,6 +50,7 @@ List<String> validateContent({
   required Object? endingsJson,
   required Object? productsJson,
   Object? notificationsJson,
+  Object? levelsJson,
 }) {
   final problems = <String>[];
   try {
@@ -116,6 +118,13 @@ List<String> validateContent({
             for (final t in c['tasks'] as List<dynamic>)
               (t as Map<String, dynamic>)['id'] as String,
         },
+        problems: problems,
+      );
+    }
+    if (levelsJson != null) {
+      checkLevels(
+        levelsJson as Map<String, dynamic>,
+        chapterNumbers: {for (final c in chapters) c['number'] as int},
         problems: problems,
       );
     }

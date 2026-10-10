@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 25 — Player levels & XP (first milestone of docs/EXPANSION.md; not started). Milestones 14 and 16–24 are built and awaiting Jennifer's checks. Release builds are now milestone 40.
+## Current milestone: 25 — Player levels & XP is built. Next to build: 26 — Generator types. Milestones 14 and 16–25 are built and awaiting Jennifer's checks. Release builds are now milestone 40.
 ---
 
 ## Milestone status
@@ -32,7 +32,7 @@
 | 22 | Admin panel | BUILT — not tagged: Jennifer has not yet signed in and used it; push needs the Firebase key on the server |
 | 23 | Chapters 2–6 | BUILT — all of Season 1 (Chapters 1–6) is written. Not tagged: Jennifer has not played Chapters 2–6, and her reviewer has not read them |
 | 24 | Polish & accessibility | BUILT — not tagged: Jennifer has not yet heard the sounds or felt the vibration on a real phone |
-| 25 | Player levels & XP | Not started |
+| 25 | Player levels & XP | BUILT — not tagged: Jennifer has not yet seen it on a phone |
 | 26 | Generator types | Not started |
 | 27 | Boost & rare chains | Not started |
 | 28 | Board extras | Not started |
@@ -1274,6 +1274,52 @@ tested directly).
   messaging → create and publish the European regulations message and the IDFA
   explainer for both apps, with the privacy policy URL
   https://www.whispersofjoppa.com/privacy.
+
+## Milestone 25 — state (2026-10-09)
+
+**What it does**
+- Every story task gives XP (10 a task in Chapter 1, rising to 30 in Chapter 6). The 72
+  tasks of Season 1 take a player from level 1 to exactly level 60; level 10 arrives at
+  the tenth task of Chapter 1.
+- A round level badge sits in the board's top row: the number, in a ring that fills.
+- Reaching a level refills Manna to full, gives Talents (15 + 5 a level; double on every
+  fifth level) and shows a "Level N" message, after the task's scene.
+- All numbers and wording are in `content/levels.json` (content version 15), with the
+  unlock schedule from EXPANSION 18. Nothing is gated by level yet: each unlock is marked
+  `"available": false` until its feature is built, and only then is it announced.
+- Save format 7 adds one number, the last level paid. XP itself is not saved: it is
+  worked out from the tasks done. A game from before levels starts at its present level
+  with nothing owed (no burst of back-pay).
+- The top row now shrinks to fit narrow phones instead of pushing the Manna bar off the
+  edge (`lib/game/board/board_top_bar.dart`); it was already at its limit on 375-point
+  phones with the account and settings buttons showing, which no test had covered.
+
+**Checks**
+- `flutter analyze` clean; unit tests pass; `integration_test/levels_test.dart` (level 2
+  on the first task, paid once, kept after a restart) passes on both devices.
+
+**Reviewer's notes (code-reviewer, 2026-10-09)**
+- Fixed before commit: top-row overflow; a missing levels file could have wiped the
+  "last level paid" record and later paid dozens of levels at once (the record is now
+  never lowered, and a bundle with an empty levels file is refused); a game brought
+  from the account with a level owed is now paid at once.
+- Carried forward: `board_session.dart` (297 lines), `board_screen_actions.dart`,
+  `content_loader.dart` and `content_validator.dart` are all near 300 — split before the
+  next addition to each. `LevelsConfig.isUnlocked` looks only at the level, not at
+  `available`: decide which it should mean when the first feature uses it.
+- A server content release made before this build (no levels file) is now refused. The
+  live server holds release 2, far below the app's 15, so nobody is affected; the next
+  real release must be built with `tool/build_content_bundle.dart` from this version on.
+
+## Assumptions to confirm (added in Milestone 25)
+- **Level-up rewards are Talents and a Manna refill only.** EXPANSION 18 also names
+  Pearls and "sometimes a generator". Pearls today only ever arrive from purchases the
+  server has confirmed; earned Pearls need a server-side grant so they cannot be faked,
+  which is its own piece of work (wanted anyway for the wheel and jars in Milestone 29).
+- **XP comes only from story tasks** (as EXPANSION 18 says), so levels are a second
+  face of story progress: 60 levels over 72 tasks, most tasks a level. If levels should
+  also move between tasks, orders would have to give XP too.
+- The XP and Talents numbers are starting values, to tune in playtesting.
 
 ## The expansion, and the first store-signed iPhone build (2026-10-09)
 

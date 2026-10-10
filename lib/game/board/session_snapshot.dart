@@ -1,7 +1,10 @@
 // Turns the live pieces of a play session into the state that gets saved.
+import 'package:whispers_of_joppa/app/game_saver.dart';
+import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/tutorial.dart';
 import 'package:whispers_of_joppa/features/ads/ad_rewards_controller.dart';
+import 'package:whispers_of_joppa/features/levels/level_controller.dart';
 import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
 import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
 import 'package:whispers_of_joppa/features/story/endings_tracker.dart';
@@ -20,6 +23,7 @@ SaveState buildSnapshot({
   required EndingsTracker endings,
   required PurchasesController purchases,
   required AdRewardsController ads,
+  required LevelController levels,
   required int contentVersion,
 }) => SaveState(
   items: game.snapshotItems(),
@@ -42,6 +46,48 @@ SaveState buildSnapshot({
   lastOrderSkip: orders.book.lastSkip,
   adDay: ads.tally.day,
   adMannaWatched: ads.tally.mannaAds,
+  levelRewarded: levels.rewardedLevel,
+);
+
+/// The saver for a session: what it writes, and what makes it write.
+GameSaver buildSaver({
+  required SaveRepository repository,
+  required BoardGame game,
+  required MannaController manna,
+  required OrdersController orders,
+  required StoryController story,
+  required TutorialController tutorial,
+  required EndingsTracker endings,
+  required PurchasesController purchases,
+  required AdRewardsController ads,
+  required LevelController levels,
+  required int contentVersion,
+}) => GameSaver(
+  repository: repository,
+  snapshot: () => buildSnapshot(
+    game: game,
+    manna: manna,
+    orders: orders,
+    story: story,
+    tutorial: tutorial,
+    endings: endings,
+    purchases: purchases,
+    ads: ads,
+    levels: levels,
+    contentVersion: contentVersion,
+  ),
+  // Manna spends always come with a board change, so the per-second Manna
+  // tick does not need to trigger a write.
+  triggers: [
+    game.boardChanged,
+    orders,
+    story,
+    tutorial,
+    endings,
+    purchases,
+    ads.tallyChanged,
+    levels,
+  ],
 );
 
 /// Connects the tutorial to everything it watches: merges, generator taps,

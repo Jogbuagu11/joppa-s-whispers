@@ -16,6 +16,7 @@ import 'package:whispers_of_joppa/domain/save_repair.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';
 import 'package:whispers_of_joppa/features/ads/ad_rewards_controller.dart';
+import 'package:whispers_of_joppa/features/levels/level_controller.dart';
 import 'package:whispers_of_joppa/features/orders/orders_controller.dart';
 import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
 import 'package:whispers_of_joppa/features/story/endings_tracker.dart';
@@ -45,6 +46,7 @@ class BoardSession {
 
   /// Optional rewarded ads and today's count of them.
   final AdRewardsController ads;
+  final LevelController levels;
 
   /// scene_id -> scene, for the scenes that tasks play.
   final Map<String, SceneModel> scenes;
@@ -81,6 +83,7 @@ class BoardSession {
     required this.endings,
     required this.purchases,
     required this.ads,
+    required this.levels,
     required this.scenes,
     required this.locations,
     required this.letters,
@@ -209,30 +212,27 @@ class BoardSession {
 
     await game.loadArt();
 
-    final saver = GameSaver(
+    // Levels follow the story; a level reached refills Manna and pays Talents.
+    final levels = LevelController(
+      config: loader.levels,
+      story: story,
+      addTalents: orders.addTalents,
+      refillManna: () => manna.add(manna.maxManna - manna.manna),
+      rewardedLevel: save.levelRewarded,
+    );
+
+    final saver = buildSaver(
       repository: saveRepository,
-      snapshot: () => buildSnapshot(
-        game: game,
-        manna: manna,
-        orders: orders,
-        story: story,
-        tutorial: tutorial,
-        endings: endings,
-        purchases: purchases,
-        ads: ads,
-        contentVersion: contentVersion,
-      ),
-      // Manna spends always come with a board change, so the per-second Manna
-      // tick does not need to trigger a write.
-      triggers: [
-        game.boardChanged,
-        orders,
-        story,
-        tutorial,
-        endings,
-        purchases,
-        ads.tallyChanged,
-      ],
+      game: game,
+      manna: manna,
+      orders: orders,
+      story: story,
+      tutorial: tutorial,
+      endings: endings,
+      purchases: purchases,
+      ads: ads,
+      levels: levels,
+      contentVersion: contentVersion,
     );
     // A game that has lost parts to older content is played from memory only:
     // the full game on disk is left untouched for when newer content is back.
@@ -247,6 +247,7 @@ class BoardSession {
       endings: endings,
       purchases: purchases,
       ads: ads,
+      levels: levels,
       scenes: loader.scenes,
       locations: loader.locations,
       letters: loader.letters,
@@ -278,6 +279,7 @@ class BoardSession {
   }
 
   void _disposeParts() {
+    levels.dispose();
     ads.dispose();
     purchases.dispose();
     endings.dispose();

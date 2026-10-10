@@ -27,3 +27,16 @@ Future<void> skipOpeningScene(WidgetTester tester) async {
     await tester.pump(const Duration(seconds: 1));
   }
 }
+
+/// Finishing a task can reach a new level, which shows a message. Closes it
+/// if it is there, so the test can get back to the board.
+Future<void> dismissLevelUp(WidgetTester tester) async {
+  final button = find.byKey(const Key('level_up_continue'));
+  for (int i = 0; i < 10 && button.evaluate().isEmpty; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+  if (button.evaluate().isEmpty) return;
+  await tester.tap(button);
+  await tester.pump(const Duration(milliseconds: 100));
+  await tester.pump(const Duration(seconds: 1));
+}

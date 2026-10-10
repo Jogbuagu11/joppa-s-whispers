@@ -188,12 +188,13 @@ Spiritual orders set `"kind": "spiritual"` and a `scene_id` that plays on comple
   - On the phone: `events_cache.json` (the server's last list) and `event_progress_<id>.json` (board, points, reward steps paid).
 - `tutorial.json`: first-session hints in order: id, speaker, text, `done_when` (`merge`, `generator_tap`, `order_delivered` + id, `task_done` + id, or `tap`), `free_manna`
 - `endings.json`: the message shown when a chapter's last task is done: chapter_id, title, body, button
+- `levels.json` (Milestone 25): `xp_per_task_by_chapter`, `xp_per_task_default`, `levels` (`level`, total `xp` to reach it, `talents` reward), `unlocks` (`level`, `feature`, `name`, `available`), and the `text` of the badge and level-up message. Checked by `lib/data/level_validator.dart`.
 
 ## 4. Save data
 - Local save file: `save.json` in the app documents folder, written after every meaningful action (debounced 2 seconds) and on app pause.
 - Contents: board cells, basket, currencies, Manna and last-regen timestamp, chapter/task progress, discovered items, letters found, crowns, settings, save version.
 - `save_version` field + migration functions for every format change. Never break an existing save.
-- Current format: version 5. Version 2 added `completed_orders`; version 3 added `completed_tasks`; version 4 added the tutorial position, free taps used, chapter endings seen and the content version; version 5 added Pearls, applied store transactions and owned one-time products. Migrations live in `migrateSave` in `lib/domain/save_state.dart`.
+- Current format: version 7. Version 6 added the day's rewarded-ad count; version 7 added `level_rewarded` (the last player level whose rewards were given; XP is not saved, it is worked out from the tasks done). Earlier: Version 2 added `completed_orders`; version 3 added `completed_tasks`; version 4 added the tutorial position, free taps used, chapter endings seen and the content version; version 5 added Pearls, applied store transactions and owned one-time products. Migrations live in `migrateSave` in `lib/domain/save_state.dart`.
 - Cloud save (Milestone 14): same JSON stored in Supabase `saves` table. On conflict, keep the save with more progress and ask the player only if both have progressed.
 
 ## 5. Supabase

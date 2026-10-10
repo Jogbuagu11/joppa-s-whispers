@@ -66,6 +66,7 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
       if (area != null) await _showLocation(locationId, justRestored: area);
       // The chapter's last task ends with its closing message.
       await _showPendingEnding();
+      await _showLevelUp();
       await _maybeAskAboutNotifications();
     } finally {
       _busy = false;
@@ -81,6 +82,16 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
     if (!mounted || _busy || _popupOpen || _eventOpen) return;
     if (!(ModalRoute.of(context)?.isCurrent ?? true)) return;
     _session?.ads.startWhenAllowed();
+  }
+
+  /// Pays for any level just reached (a full Manna bar and Talents) and
+  /// tells the player.
+  Future<void> _showLevelUp() async {
+    final session = _session;
+    final up = session?.levels.collect();
+    if (session == null || up == null || !mounted) return;
+    widget.comfort?.cue(GameCue.reward);
+    await showLevelUp(context, session.levels.config.text, up);
   }
 
   /// Shows the closing message of a finished chapter, once.
@@ -237,7 +248,11 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
           (_) => widget.notifications?.onReturning(),
         ),
       );
-      if (resuming) return;
+      if (resuming) {
+        // The account's game may arrive with a level reached but unpaid.
+        await _showLevelUp();
+        return;
+      }
       final opening = session.openingScene;
       if (opening != null &&
           opening.lines.isNotEmpty &&
@@ -257,6 +272,8 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
       }
       // A chapter finished earlier whose closing message was never seen.
       await _showPendingEnding();
+      // A level reached just before the game was closed.
+      await _showLevelUp();
       // A signed-in player's game is checked against their account.
       if (widget.cloud?.signedIn ?? false) await _syncWithAccount();
       _startAdsWhenQuiet();

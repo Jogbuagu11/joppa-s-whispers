@@ -11,6 +11,8 @@ import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
+import 'helpers.dart';
+
 Future<dynamic> _content(String name) async =>
     jsonDecode(await rootBundle.loadString('content/$name.json'));
 
@@ -92,6 +94,7 @@ void main() {
     }
 
     // Back on the board: paid for, counted, and the next task is up.
+    await dismissLevelUp(tester);
     expect(find.byKey(const Key('scene_screen')), findsNothing);
     expect(text('blessings_count'), '${earned - cost}');
     expect(text('task_progress'), contains('1/${tasks.length}'));

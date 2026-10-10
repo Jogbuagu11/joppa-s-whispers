@@ -76,6 +76,13 @@ void main() {
       expect(s.manna, 42);
     });
 
+    test('the level last rewarded is kept; a damaged one means none', () {
+      SaveState withLevel(int level) =>
+          SaveState.fromJson({..._sample().toJson(), 'level_rewarded': level});
+      expect(_clean(withLevel(12)).levelRewarded, 12);
+      expect(_clean(withLevel(-4)).levelRewarded, 0);
+    });
+
     test('unknown items, generators and orders are dropped', () {
       final s = sanitizeSave(
         _sample(),

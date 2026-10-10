@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/content_bundle.dart';
+import 'package:whispers_of_joppa/domain/levels.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
@@ -64,6 +65,9 @@ class ContentLoader {
   /// Notification wording and timing; null only in tests that leave it out.
   NotificationContent? notifications;
 
+  /// Player levels; null only for content from before levels existed.
+  LevelsConfig? levels;
+
   late EconomyConfig economy;
   late StartingBoard startingBoard;
 
@@ -107,6 +111,7 @@ class ContentLoader {
         lettersJson: files['letters'],
         productsJson: files['products'],
         notificationsJson: files['notifications'],
+        levelsJson: files['levels'],
       );
       contentVersion = bundle.version;
     } catch (e, stack) {
@@ -132,7 +137,11 @@ class ContentLoader {
     required Object? lettersJson,
     required Object? productsJson,
     Object? notificationsJson,
+    Object? levelsJson,
   }) {
+    levels = levelsJson == null
+        ? null
+        : LevelsConfig.fromJson(levelsJson as Map<String, dynamic>);
     notifications = notificationsJson == null
         ? null
         : NotificationContent.fromJson(

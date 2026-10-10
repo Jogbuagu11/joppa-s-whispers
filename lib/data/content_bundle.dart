@@ -24,6 +24,7 @@ const contentFileNames = [
   'endings',
   'products',
   'notifications',
+  'levels',
 ];
 
 class ContentBundle {
@@ -69,6 +70,8 @@ class ContentBundle {
         if (!files.containsKey(name)) 'Content file "$name" is missing',
     ];
     if (missing.isNotEmpty) return missing;
+    // Levels came later than the other files: an empty one must not pass.
+    if (files['levels'] == null) return ['Content file "levels" is empty'];
     return validateContent(
       chainsJson: files['chains'],
       generatorsJson: files['generators'],
@@ -84,6 +87,7 @@ class ContentBundle {
       endingsJson: files['endings'],
       productsJson: files['products'],
       notificationsJson: files['notifications'],
+      levelsJson: files['levels'],
     );
   }
 }

@@ -24,6 +24,7 @@ void main() {
     endingsJson: _read('endings'),
     productsJson: _read('products'),
     notificationsJson: _read('notifications'),
+    levelsJson: _read('levels'),
   );
   if (problems.isEmpty) {
     stdout.writeln('Content OK');

@@ -10,6 +10,8 @@ import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
+import 'helpers.dart';
+
 Future<dynamic> _content(String name) async =>
     jsonDecode(await rootBundle.loadString('content/$name.json'));
 
@@ -107,6 +109,7 @@ void main() {
 
     await tester.tap(find.byKey(const Key('location_continue')));
     await settle();
+    await dismissLevelUp(tester);
     expect(find.byType(GameWidget<BoardGame>), findsOneWidget);
     await SaveRepository().clear();
   });

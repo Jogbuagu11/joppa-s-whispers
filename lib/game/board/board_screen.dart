@@ -11,6 +11,7 @@ import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/features/letters/letters_screen.dart';
+import 'package:whispers_of_joppa/features/levels/level_widgets.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
 import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
@@ -32,6 +33,7 @@ import 'package:whispers_of_joppa/features/story/tutorial_banner.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
+import 'package:whispers_of_joppa/game/board/board_top_bar.dart';
 import 'package:whispers_of_joppa/services/ad_service.dart';
 import 'package:whispers_of_joppa/services/analytics_service.dart';
 
@@ -152,45 +154,26 @@ class _BoardScreenState extends State<BoardScreen>
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ListenableBuilder(
-                    listenable: session.tutorial,
-                    builder: (context, _) => WalletChips(
-                      compact: compact,
-                      controller: session.orders,
-                      pearls: session.purchases.pearlsListenable,
-                      // No purchase offers during the tutorial (GDD 11).
-                      onOpenShop: widget.shop != null && session.tutorial.isOver
-                          ? _openShop
-                          : null,
-                    ),
+              child: BoardTopBar(
+                wallet: ListenableBuilder(
+                  listenable: session.tutorial,
+                  builder: (context, _) => WalletChips(
+                    compact: compact,
+                    controller: session.orders,
+                    pearls: session.purchases.pearlsListenable,
+                    // No purchase offers during the tutorial (GDD 11).
+                    onOpenShop: widget.shop != null && session.tutorial.isOver
+                        ? _openShop
+                        : null,
                   ),
-                  if (widget.cloud != null)
-                    IconButton(
-                      key: const Key('account_button'),
-                      onPressed: _openAccount,
-                      tooltip: 'Account',
-                      icon: const Icon(
-                        Icons.person_outline,
-                        color: Color(0xFFD4802A),
-                      ),
-                    ),
-                  if (widget.notifications != null)
-                    IconButton(
-                      key: const Key('notifications_button'),
-                      onPressed: _openNotificationSettings,
-                      tooltip: _notificationContent?.settingsText['title'],
-                      visualDensity: VisualDensity.compact,
-                      icon: const Icon(
-                        Icons.settings_outlined,
-                        color: Color(0xFFD4802A),
-                      ),
-                    ),
-                  MannaBar(controller: session.manna),
-                ],
+                ),
+                level: LevelBadge(controller: session.levels),
+                onAccount: widget.cloud != null ? _openAccount : null,
+                onSettings: widget.notifications != null
+                    ? _openNotificationSettings
+                    : null,
+                settingsTooltip: _notificationContent?.settingsText['title'],
+                manna: MannaBar(controller: session.manna),
               ),
             ),
             TaskBar(

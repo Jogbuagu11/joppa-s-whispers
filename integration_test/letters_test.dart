@@ -11,6 +11,8 @@ import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
+import 'helpers.dart';
+
 Future<dynamic> _content(String name) async =>
     jsonDecode(await rootBundle.loadString('content/$name.json'));
 
@@ -113,6 +115,7 @@ void main() {
       await tester.tap(find.byKey(const Key('location_continue')));
       await settle(tester);
     }
+    await dismissLevelUp(tester);
 
     // Now the book has it.
     await tester.tap(find.byKey(const Key('letters_button')));
