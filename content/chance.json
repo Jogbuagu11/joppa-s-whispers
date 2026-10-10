@@ -1,0 +1,93 @@
+{
+  "paid_blocked_countries": [
+    "BE"
+  ],
+  "wheel": {
+    "free_spins_per_day": 1,
+    "ad_spins_per_day": 1,
+    "pearl_spins_per_day": 5,
+    "pearl_spin_base": 5,
+    "pearl_spin_step": 5,
+    "prizes": [
+      {
+        "id": "manna_20",
+        "name": "20 Manna",
+        "weight": 28,
+        "manna": 20
+      },
+      {
+        "id": "talents_30",
+        "name": "30 Talents",
+        "weight": 24,
+        "talents": 30
+      },
+      {
+        "id": "manna_50",
+        "name": "50 Manna",
+        "weight": 12,
+        "manna": 50
+      },
+      {
+        "id": "talents_100",
+        "name": "100 Talents",
+        "weight": 10,
+        "talents": 100
+      },
+      {
+        "id": "hourglass",
+        "name": "Small hourglass",
+        "weight": 10,
+        "items": [
+          "hourglass_01"
+        ]
+      },
+      {
+        "id": "pearls_3",
+        "name": "3 Pearls",
+        "weight": 6,
+        "pearls": 3,
+        "free_only": true
+      },
+      {
+        "id": "loaves",
+        "name": "Basket of Loaves",
+        "weight": 5,
+        "generators": [
+          "gen_loaves"
+        ]
+      },
+      {
+        "id": "knife",
+        "name": "Splitting knife",
+        "weight": 3,
+        "items": [
+          "knife_01"
+        ]
+      },
+      {
+        "id": "thread",
+        "name": "Golden Thread",
+        "weight": 2,
+        "items": [
+          "thread_01"
+        ]
+      }
+    ]
+  },
+  "text": {
+    "wheel_title": "The Blessing Wheel",
+    "wheel_button": "Wheel",
+    "spin_free": "Spin (free today)",
+    "spin_ad": "Watch an ad to spin",
+    "spin_pearls": "Spin for {pearls} Pearls",
+    "spins_done": "That is every spin for today. Come back tomorrow!",
+    "see_odds": "See odds",
+    "odds_title": "What the wheel gives",
+    "odds_free": "Free and ad spins",
+    "odds_paid": "Spins for Pearls",
+    "odds_note": "Every spin is drawn by exactly these chances. Pearls are never a prize on a spin paid for with Pearls.",
+    "won_title": "You received",
+    "won_button": "Thank you",
+    "close": "Close"
+  }
+}

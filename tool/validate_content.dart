@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:whispers_of_joppa/data/chance_validator.dart';
 import 'package:whispers_of_joppa/data/content_bundle.dart';
 import 'package:whispers_of_joppa/data/content_validator.dart';
 
@@ -28,6 +29,15 @@ void main() {
     levelsJson: _read('levels'),
   );
   problems.addAll(boardTextProblems(_read('board_text')));
+  if (problems.isEmpty) {
+    problems.addAll(
+      chanceProblems(
+        _read('chance'),
+        chainsJson: _read('chains'),
+        generatorsJson: _read('generators'),
+      ),
+    );
+  }
   if (problems.isEmpty) {
     stdout.writeln('Content OK');
     return;

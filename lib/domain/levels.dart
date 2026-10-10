@@ -115,6 +115,11 @@ class LevelsConfig {
 
   int get maxLevel => steps.isEmpty ? 1 : steps.last.level;
 
+  /// The unlock of [feature], or null if the game has none (or it is held
+  /// back).
+  FeatureUnlock? unlock(String feature) =>
+      unlocks.where((u) => u.feature == feature && u.available).firstOrNull;
+
   /// The level bubbles begin at and their numbers, or null if the game has
   /// none (or they are held back).
   FeatureUnlock? get bubbles =>

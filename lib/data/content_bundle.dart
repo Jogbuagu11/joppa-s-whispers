@@ -1,5 +1,6 @@
 // All game content as one unit: what ships in the app, and what the server
 // can replace it with. Pure Dart so tool/ scripts can use it.
+import 'package:whispers_of_joppa/data/chance_validator.dart';
 import 'package:whispers_of_joppa/data/content_validator.dart';
 
 /// The content format this build understands. A bundle with a higher format
@@ -28,6 +29,7 @@ const contentFileNames = [
   'notifications',
   'levels',
   'board_text',
+  'chance',
 ];
 
 class ContentBundle {
@@ -77,7 +79,7 @@ class ContentBundle {
     if (files['levels'] == null) return ['Content file "levels" is empty'];
     final wording = boardTextProblems(files['board_text']);
     if (wording.isNotEmpty) return wording;
-    return validateContent(
+    final problems = validateContent(
       chainsJson: files['chains'],
       generatorsJson: files['generators'],
       economyJson: files['economy'],
@@ -93,6 +95,12 @@ class ContentBundle {
       productsJson: files['products'],
       notificationsJson: files['notifications'],
       levelsJson: files['levels'],
+    );
+    if (problems.isNotEmpty) return problems;
+    return chanceProblems(
+      files['chance'],
+      chainsJson: files['chains'],
+      generatorsJson: files['generators'],
     );
   }
 }
