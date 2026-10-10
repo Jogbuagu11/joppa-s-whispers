@@ -55,10 +55,20 @@ class OrderCard extends StatelessWidget {
   Widget build(BuildContext context) => LayoutBuilder(
     // On a low card the face is a little smaller, so a line of the
     // request always fits under it.
-    builder: (context, card) => _card(context, roomy: card.maxHeight >= 140),
+    builder: (context, card) => _card(
+      context,
+      roomy: card.maxHeight >= 140,
+      // The face is as large as it can be while one wanted item still
+      // fits beside it at full size.
+      bigFace: (card.maxWidth - 52).clamp(56.0, 78.0),
+    ),
   );
 
-  Widget _card(BuildContext context, {required bool roomy}) {
+  Widget _card(
+    BuildContext context, {
+    required bool roomy,
+    required double bigFace,
+  }) {
     return Container(
       key: Key('order_card_${order.id}'),
       padding: const EdgeInsets.fromLTRB(6, 6, 6, 5),
@@ -74,7 +84,7 @@ class OrderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _whoAndWhat(roomy: roomy),
+          _whoAndWhat(roomy: roomy, bigFace: bigFace),
           const SizedBox(height: 3),
           Expanded(
             // Tapping the words shows all of them, and the reward.
@@ -164,7 +174,7 @@ class OrderCard extends StatelessWidget {
   /// The face and the wanted items. One item sits beside a large face.
   /// Several go in a row under a smaller one, at full size, when the card
   /// is tall enough; on a low card they shrink beside it instead.
-  Widget _whoAndWhat({required bool roomy}) {
+  Widget _whoAndWhat({required bool roomy, required double bigFace}) {
     final several = order.items.length > 1;
     Widget face(double size) => Semantics(
       label: characterName,
@@ -190,7 +200,7 @@ class OrderCard extends StatelessWidget {
     }
     return Row(
       children: [
-        face(several ? 40 : (roomy ? 78 : 60)),
+        face(several ? 40 : (roomy ? bigFace : 60)),
         const SizedBox(width: 2),
         Expanded(child: wanted),
       ],

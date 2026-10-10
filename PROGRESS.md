@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 26 — Generator types is built. Next to build: 27 — Boost & rare chains. Milestones 14 and 16–26 are built and awaiting Jennifer's checks. Release builds are now milestone 40.
+## Current milestone: 26 — Generator types is built, and the board was restyled with Jennifer on the simulator (approved 2026-10-10). Next to build: 27 — Boost & rare chains. Milestones 14 and 16–26 are built and awaiting Jennifer's real-phone checks. Release builds are now milestone 40.
 ---
 
 ## Milestone status
@@ -1356,14 +1356,31 @@ Where it stands (she has seen each step; the last one is not yet approved):
   - Content version 23. `board_screen.dart` was split (`board_share.dart`,
     `board_screen_layout.dart`) to stay under 300 lines.
 - Then: "put the instructions from Silas or whomever at the bottom of the screen below the board". The hint now sits under the board, with a 54-point cut-out head.
+- **Approved by Jennifer on the simulator ("good. continue", 2026-10-10)**: the whole
+  restyle, the title screen, the welcome and the spotlight, including the two generated
+  pictures (evening header, title screen), which are now part of the game.
+- A second review (code-reviewer) after approval; fixed: with two or three wanted items
+  the item pictures shrank to almost nothing beside the large face (they now sit in a
+  row under a smaller face, full size); the spotlight did not follow the row when it was
+  swiped; arrows at both edges of the row; the row no longer slides under the player's
+  finger; a title screen that could not read its wording made returning players agree
+  again; missing tests for the merge-pair finder.
+- Facts recorded, not changed: Firebase (analytics, crash reports) and the Supabase
+  session start when the app starts, before the welcome's Play is tapped; ads, cloud
+  sync, notifications and the shop start only afterwards. The real start-up path (title
+  screen, welcome) has widget tests but no device test — device tests start at the board.
+  The title screen adds about a second and a half to every launch.
 - Reviewer's notes carried forward: on short phones (iPhone SE) the board cannot be
   full width — there is not the height; with three wanted items the item pictures are
   small on narrow phones; `board_game.dart` (291 lines) and `event_screen.dart` (294)
   need splitting before their next change; other screens (shop, settings, letters,
   location, event, story) still have the older look.
-- Checks so far: analyzer clean, unit tests pass, five device tests pass on the iPhone
-  simulator. **The full device run on both devices is still owed** (for this and for
-  Milestone 26's last fixes) — it was interrupted repeatedly by design changes.
+- **Checks (final):** analyzer clean; 721 unit tests pass; all 20 device tests pass on
+  the iPhone simulator and the Android emulator (one Android failure was two tests in
+  one file writing the save at once — fixed in the test and rerun). The signed release
+  build opens on the emulator through the title screen and welcome to the board.
+  **Build 14** (`dist/whispers-of-joppa-1.0.0-14.aab`, in Downloads) has Milestone 26 and
+  all of this. Store screenshots retaken with the new look.
 
 ## Milestone 26 — state (2026-10-10)
 

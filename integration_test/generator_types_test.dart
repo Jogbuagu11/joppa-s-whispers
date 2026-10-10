@@ -145,6 +145,10 @@ void main() {
       for (final t in (chapters.first['tasks'] as List<dynamic>).take(5))
         (t as Map<String, dynamic>)['id'] as String,
     ];
+    // Let the game from the test before finish closing (it saves as it
+    // goes) before a new save is written.
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 3));
     // The Fig Tree is resting; a great hourglass and a Manna jar are on
     // the board.
     await SaveRepository().save(
