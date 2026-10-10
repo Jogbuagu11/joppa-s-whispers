@@ -1335,6 +1335,26 @@ Where it stands (she has seen each step; the last one is not yet approved):
   card now shows a picture of the very thing its task restores (as it looks now), with a
   dark ribbon for the chapter and count, a thin gold line for progress through the
   chapter, the task's name, and a gold Go button; a gold edge when it can be done.
+- Then: "show me the splash screen too, privacy pop up, we also need the intro board
+  with overlay instructions for new player". None of the three existed (the app opened
+  on a blank white launch screen and a spinner). Built:
+  - **Title screen** (`lib/app/title_gate.dart`): a new evening painting of the harbor
+    (generated; `tool/art_jobs/title_screen.json`, in the review folder `title-screen/`,
+    in the game as `assets/ui/title.jpg`) with "Whispers of Joppa" lettered over it,
+    shown for about two seconds while the game loads. The phone's own launch screen is
+    now dark wood instead of white on both platforms.
+  - **Welcome** (first launch only, on the title screen): "by tapping Play you agree to
+    our Terms of Service and Privacy Policy", with both links and a Play button;
+    remembered in `welcome.json` on the phone. The game (and its opening story) is not
+    built until Play is tapped. Wording in `content/board_text.json`.
+  - **New-player spotlight** (`lib/features/story/tutorial_spotlight.dart`): during the
+    tutorial a dim veil covers the screen and the thing to touch next stays bright with
+    a gold ring — the two items to merge (a hand shows the drag), the generator, the
+    order to deliver, the story card — and the hint stays bright. It only draws: taps
+    pass through. Gone when the tutorial ends or anything else is open.
+  - The title picture is generated art awaiting Jennifer's yes, like the header picture.
+  - Content version 23. `board_screen.dart` was split (`board_share.dart`,
+    `board_screen_layout.dart`) to stay under 300 lines.
 - Then: "put the instructions from Silas or whomever at the bottom of the screen below the board". The hint now sits under the board, with a 54-point cut-out head.
 - Reviewer's notes carried forward: on short phones (iPhone SE) the board cannot be
   full width — there is not the height; with three wanted items the item pictures are

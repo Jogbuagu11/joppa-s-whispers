@@ -33,10 +33,13 @@ import 'package:whispers_of_joppa/features/shop/shop_screen.dart';
 import 'package:whispers_of_joppa/features/story/chapter_ending.dart';
 import 'package:whispers_of_joppa/features/story/face_portrait.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_banner.dart';
+import 'package:whispers_of_joppa/features/story/tutorial_spotlight.dart';
+import 'package:whispers_of_joppa/domain/tutorial.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
+import 'package:whispers_of_joppa/game/board/board_share.dart';
 import 'package:whispers_of_joppa/game/board/board_strip.dart';
 import 'package:whispers_of_joppa/game/board/board_top_bar.dart';
 import 'package:whispers_of_joppa/game/board/header_backdrop.dart';
@@ -46,28 +49,11 @@ import 'package:whispers_of_joppa/services/analytics_service.dart';
 part 'board_screen_actions.dart';
 part 'board_screen_events.dart';
 part 'board_screen_items.dart';
+part 'board_screen_layout.dart';
 part 'board_screen_notifications.dart';
 part 'board_screen_routes.dart';
 
 final _log = Logger('BoardScreen');
-
-/// How the space under the bars is shared: the board is a 7 by 9 grid as
-/// wide as the screen if the height allows; the order cards get the rest,
-/// never less than their smallest size nor more than their largest.
-({double cards, double board}) shareHeight({
-  required double width,
-  required double height,
-}) {
-  const gap = 6.0;
-  final fullWidth = width * BoardGame.rows / BoardGame.cols;
-  final most = height - orderCardsMinHeight - gap;
-  final board = fullWidth < most ? fullWidth : (most < 0 ? 0.0 : most);
-  final left = height - board - gap;
-  final cards = left > orderCardsMaxHeight
-      ? orderCardsMaxHeight
-      : (left < orderCardsMinHeight ? orderCardsMinHeight : left);
-  return (cards: cards, board: board);
-}
 
 /// The main game board screen — hosts the Flame merge board.
 class BoardScreen extends StatefulWidget {
@@ -151,6 +137,7 @@ class _BoardScreenState extends State<BoardScreen>
         _BoardNotifications,
         _BoardEvents,
         _BoardItems,
+        _BoardLayout,
         _BoardScreenActions {
   @override
   Widget build(BuildContext context) {
@@ -207,83 +194,7 @@ class _BoardScreenState extends State<BoardScreen>
                     manna: MannaBar(controller: session.manna),
                   ),
                 ),
-                // The board comes first: it is as wide as the screen whenever
-                // the height allows, and the order cards take what is left
-                // (within their limits).
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (context, box) {
-                      final (:cards, :board) = shareHeight(
-                        width: box.maxWidth,
-                        height: box.maxHeight,
-                      );
-                      // On a very short screen the cards keep their least size
-                      // and anything that does not fit is cut off, not an error.
-                      return ClipRect(
-                        child: OverflowBox(
-                          alignment: Alignment.topCenter,
-                          minHeight: 0,
-                          maxHeight: box.maxHeight > cards + 6
-                              ? box.maxHeight
-                              : cards + 6,
-                          child: Column(
-                            children: [
-                              _ordersBackdrop(
-                                child: ListenableBuilder(
-                                  listenable: session.tutorial,
-                                  builder: (context, _) => BoardStrip(
-                                    story: session.story,
-                                    onDoTask: _doNextTask,
-                                    onOpenLocation: _openLocation,
-                                    onOpenLetters: _openLetters,
-                                    // No event offers during the tutorial, nor for a game played
-                                    // from memory only (older content): rewards could not be kept.
-                                    onOpenEvent:
-                                        _event != null &&
-                                            session.tutorial.isOver &&
-                                            !session.downgraded
-                                        ? _openEvent
-                                        : null,
-                                    eventLabel: _event?.name,
-                                    storyPicture: _storyPicture,
-                                    ordersChanged: session.orders,
-                                    readyOrders: () => session
-                                        .orders
-                                        .activeOrders
-                                        .where(session.orders.canDeliver)
-                                        .length,
-                                    // The backdrop's own edging is part of the share.
-                                    height: cards - 10,
-                                    orders: OrdersBar(
-                                      controller: session.orders,
-                                      items: session.game.itemCatalog,
-                                      characterNames: session.characterNames,
-                                      placeholderColors:
-                                          session.game.chainPlaceholderColors,
-                                      looks: _characterLooks,
-                                      height: cards - 10,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const Spacer(),
-                              // The board keeps the game's dark wood behind it.
-                              ColoredBox(
-                                key: _boardKey,
-                                color: GamePalette.background,
-                                child: SizedBox(
-                                  height: board,
-                                  width: double.infinity,
-                                  child: GameWidget(game: session.game),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                _playArea(session),
                 // Hints (Silas and the others) sit under the board.
                 TutorialBanner(
                   controller: session.tutorial,
@@ -294,6 +205,8 @@ class _BoardScreenState extends State<BoardScreen>
               ],
             ),
           ),
+          // New players: the thing to tap next is lit up.
+          Positioned.fill(child: _spotlight(session)),
         ],
       );
     }

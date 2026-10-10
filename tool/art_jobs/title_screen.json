@@ -1,0 +1,20 @@
+{
+ "folder": "title-screen",
+ "kind": "ui",
+ "model": "gemini-3-pro-image",
+ "aspect": "9:16",
+ "style_references": [
+  "assets/ui/board_header.jpg",
+  "assets/locations/bg_loc_harbor_dusk.jpg"
+ ],
+ "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork and gentle texture, like a premium illustrated story game. NOT 3D, not a 3D render, not a photo, not anime, not flat vector, not cartoon. Soft painted edges, no thick black outlines. Warm evening light. Palette: sand #E8D3A9, cream #F5EBD7, terracotta #C0643B, olive #7A7A3A, cedar brown #5A3E2B, sea blue #2F7F9E, indigo #2E3A6B, gold #D9A441. Avoid neon, pure black, and cold gray-blue.",
+ "rules": "RULES: full scene edge to edge. No text, no letters, no signs, no watermark. No people, no animals. First-century Mediterranean only (Joppa, around AD 40); nothing modern. This is a game's title screen: the game's name will be drawn over the upper third and a button over the lowest part, so keep the sky in the upper third open and calm, and the lowest fifth simple and fairly dark.",
+ "views": [
+  {
+   "id": "title_evening",
+   "label": "Title screen: Joppa harbor at evening",
+   "game": "title",
+   "prompt": "Tallest portrait format (9:16). The harbor of Joppa in the evening, just after sunset, seen from the stone quay. In the middle distance on the left, the old square sandstone harbor watchtower stands on low rocks at the water's edge, the fire in its iron basket lit and glowing warm gold, its light laid across the calm water. To the right, the flat-roofed houses of Joppa climb a low hill, a few windows glowing with lamplight; two small fishing boats rest at the quay. The sky fills the upper half: warm gold and rose at the horizon rising to dusky indigo, soft clouds, a few early stars. The foreground at the very bottom is the worn stone of the quay in shadow. Peaceful, warm, inviting: evening, not deep night. The first attached picture is the same harbor and tower in this game's style: match it."
+  }
+ ]
+}

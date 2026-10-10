@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The dark wood behind the game, shown for a moment as it opens. -->
+    <color name="launch_wood">#140D05</color>
+</resources>

@@ -4,5 +4,10 @@
   "keep": "Keep",
   "hourglass_hint": "Drag it onto a resting generator to shorten the wait.",
   "ok": "OK",
-  "header_background": "assets/ui/board_header.jpg"
+  "header_background": "assets/ui/board_header.jpg",
+  "welcome_title": "Welcome to Joppa",
+  "welcome_body": "Before you begin: by tapping Play you agree to our Terms of Service and Privacy Policy.",
+  "welcome_terms": "Terms of Service",
+  "welcome_privacy": "Privacy Policy",
+  "welcome_play": "Play"
 }

@@ -33,4 +33,30 @@ extension BoardLayout on BoardGame {
       tile.fit(cellSize, _cellPosition(placement.col, placement.row, cellSize));
     }
   }
+
+  /// Where cell ([col], [row]) is drawn, inside the board widget.
+  Rect cellRect(int col, int row) {
+    final cellSize = _cellSize;
+    final at = _cellPosition(col, row, cellSize);
+    return Rect.fromLTWH(at.x, at.y, cellSize, cellSize);
+  }
+
+  /// Two cells holding the same item that can be merged, or null if the
+  /// board has no such pair.
+  ((int, int), (int, int))? mergeablePair() {
+    final seen = <String, (int, int)>{};
+    for (int c = 0; c < gridCols; c++) {
+      for (int r = 0; r < gridRows; r++) {
+        final item = _board[c][r];
+        if (item == null) continue;
+        final other = seen[item.itemId];
+        if (other == null) {
+          seen[item.itemId] = (c, r);
+        } else if (canMerge(item, item, chainData) == MergeResult.success) {
+          return (other, (c, r));
+        }
+      }
+    }
+    return null;
+  }
 }

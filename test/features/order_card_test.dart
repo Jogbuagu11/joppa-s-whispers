@@ -4,7 +4,7 @@ import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
 import 'package:whispers_of_joppa/features/orders/order_card.dart';
 import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
-import 'package:whispers_of_joppa/game/board/board_screen.dart';
+import 'package:whispers_of_joppa/game/board/board_share.dart';
 
 import '../support/comfort_fakes.dart';
 

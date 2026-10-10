@@ -117,6 +117,12 @@ const boardTextKeys = [
   'ok',
   // Not words: the picture behind everything above the board.
   'header_background',
+  // The first-launch welcome.
+  'welcome_title',
+  'welcome_body',
+  'welcome_terms',
+  'welcome_privacy',
+  'welcome_play',
 ];
 
 /// Plain-English problems with the board wording; empty if it is sound.
@@ -127,6 +133,6 @@ List<String> boardTextProblems(Object? json) => [
     for (final key in boardTextKeys)
       if (json[key] is! String ||
           (json[key] as String).isEmpty ||
-          (json[key] as String).length > 80)
-        'Board text: "$key" is missing or longer than 80 letters',
+          (json[key] as String).length > 160)
+        'Board text: "$key" is missing or longer than 160 letters',
 ];

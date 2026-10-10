@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whispers_of_joppa/app/config.dart';
 import 'package:whispers_of_joppa/app/cloud_sync.dart';
 import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
+import 'package:whispers_of_joppa/app/title_gate.dart';
 import 'package:whispers_of_joppa/data/cloud_save_store.dart';
 import 'package:whispers_of_joppa/data/comfort_prefs_repository.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
@@ -140,16 +141,20 @@ class WhispersApp extends ConsumerWidget {
         child: child ?? const SizedBox.shrink(),
       ),
       home: accountsEnabled
-          ? BoardScreen(
-              cloud: _cloud,
-              content: _content,
-              shop: _shop,
-              ads: _ads,
-              analytics: analytics,
-              notifications: _notifications,
-              events: _events,
-              comfort: _comfort,
+          ? TitleGate(
+              store: WelcomeStore(),
               onOpenPage: _openPage,
+              child: BoardScreen(
+                cloud: _cloud,
+                content: _content,
+                shop: _shop,
+                ads: _ads,
+                analytics: analytics,
+                notifications: _notifications,
+                events: _events,
+                comfort: _comfort,
+                onOpenPage: _openPage,
+              ),
             )
           : const BoardScreen(),
     );

@@ -4,7 +4,12 @@
 part of 'board_screen.dart';
 
 mixin _BoardScreenActions
-    on _BoardRoutes, _BoardNotifications, _BoardEvents, _BoardItems {
+    on
+        _BoardRoutes,
+        _BoardNotifications,
+        _BoardEvents,
+        _BoardItems,
+        _BoardLayout {
   @override
   void initState() {
     super.initState();
@@ -37,6 +42,7 @@ mixin _BoardScreenActions
   /// other screen opened from the task bar) is running, [_busy] is set and
   /// further taps are ignored, so one tap can never pay for two tasks or
   /// stack two screens.
+  @override
   Future<void> _doNextTask() async {
     final session = _session;
     if (session == null || _busy) return;
