@@ -1320,6 +1320,17 @@ Where it stands (she has seen each step; the last one is not yet approved):
   board (`lib/game/board/header_backdrop.dart`). **She has seen it only on the simulator
   and has not yet said yes to it — it is generated art, so confirm before a store build.**
   Content version 22.
+- Then: "remove the row that says clear the doorway, what is that… make the avatars
+  bigger… make the avatar row swipable to add buttons and challenges and other icons to
+  the left". That row was the story task (Go spends Blessings to play the next piece of
+  story). It is now the **story card** at the left of a swipeable row
+  (`lib/game/board/board_strip.dart`): round buttons (the place being restored, Esther's
+  letters, the event while one is on), then the story card, then the three order cards.
+  At rest the orders fill the row; an arrow in a narrow gutter at the left edge shows
+  there is more. The row slides to the story card by itself when its task can be done,
+  and back to the orders when a task is done or another order becomes ready. The event
+  is a lit round button now, not a banner. Heads are 78 points (56 with three items).
+  New buttons and challenges go into the row's left end.
 - Then: "put the instructions from Silas or whomever at the bottom of the screen below the board". The hint now sits under the board, with a 54-point cut-out head.
 - Reviewer's notes carried forward: on short phones (iPhone SE) the board cannot be
   full width — there is not the height; with three wanted items the item pictures are

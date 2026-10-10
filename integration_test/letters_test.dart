@@ -64,7 +64,7 @@ void main() {
     await SaveRepository().clear();
     addTearDown(SaveRepository().clear);
     await open(tester, const Key('new'));
-    await tester.tap(find.byKey(const Key('letters_button')));
+    await tapOnStrip(tester, 'letters_button');
     await settle(tester);
     expect(find.byKey(const Key('letters_screen')), findsOneWidget);
     expect(text(tester, 'letters_progress'), '0 of ${letters.length} found');
@@ -100,14 +100,14 @@ void main() {
     await open(tester, const Key('later'));
 
     // Still locked before the task is done.
-    await tester.tap(find.byKey(const Key('letters_button')));
+    await tapOnStrip(tester, 'letters_button');
     await settle(tester);
     expect(text(tester, 'letter_title_$letterId'), 'Not found yet');
     await tester.pageBack();
     await settle(tester);
 
     // Do the task that reveals the letter and sit through its scene.
-    await tester.tap(find.byKey(const Key('task_button')));
+    await tapOnStrip(tester, 'task_button');
     await settle(tester);
     await tester.tap(find.byKey(const Key('scene_skip')));
     await settle(tester);
@@ -118,7 +118,7 @@ void main() {
     await dismissLevelUp(tester);
 
     // Now the book has it.
-    await tester.tap(find.byKey(const Key('letters_button')));
+    await tapOnStrip(tester, 'letters_button');
     await settle(tester);
     expect(text(tester, 'letters_progress'), '1 of ${letters.length} found');
     expect(text(tester, 'letter_title_$letterId'), letter['title']);

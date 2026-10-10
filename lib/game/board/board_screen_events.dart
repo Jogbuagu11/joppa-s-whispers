@@ -63,41 +63,4 @@ mixin _BoardEvents on _BoardRoutes {
     await showOutOfMannaPopup(context, session.manna, ads: session.ads);
     _popupOpen = false;
   }
-
-  /// The slim banner shown on the board while an event is on.
-  Widget _eventBanner(EventModel event) => Padding(
-    padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
-    child: Material(
-      color: const Color(0xFF3A2A0C),
-      borderRadius: BorderRadius.circular(10),
-      child: InkWell(
-        key: const Key('event_banner'),
-        borderRadius: BorderRadius.circular(10),
-        onTap: _openEvent,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          child: Row(
-            children: [
-              const Icon(Icons.celebration_outlined, color: Color(0xFFD4802A)),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  event.name,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFFF3E5C8),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Text(
-                formatTimeLeft(eventTimeLeft(event, DateTime.now())),
-                style: const TextStyle(color: Color(0xFFD4802A)),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
 }

@@ -1,24 +1,14 @@
-// The strip above the orders that shows the next story task and its cost.
+// The story card: the chapter being played, its next task, and the button
+// that spends Blessings to do it. It sits at the left end of the swipeable
+// row above the board.
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/features/story/story_controller.dart';
 
 const _cream = Color(0xFFF3E6C8);
 
-class TaskBar extends StatelessWidget {
-  const TaskBar({
-    super.key,
-    required this.controller,
-    required this.onDo,
-    required this.onOpenLocation,
-    required this.onOpenLetters,
-  });
-
-  /// Called when the player taps the button that opens Esther's letters.
-  final VoidCallback onOpenLetters;
-
-  /// Called when the player taps the button that shows the location.
-  final VoidCallback onOpenLocation;
+class StoryCard extends StatelessWidget {
+  const StoryCard({super.key, required this.controller, required this.onDo});
 
   final StoryController controller;
 
@@ -33,95 +23,86 @@ class TaskBar extends StatelessWidget {
         final chapter = controller.chapter;
         if (chapter == null) return const SizedBox.shrink();
         final task = controller.next;
+        final ready = controller.canDoNext;
         return Container(
           key: const Key('task_bar'),
-          margin: const EdgeInsets.fromLTRB(8, 0, 8, 4),
-          padding: const EdgeInsets.fromLTRB(4, 3, 6, 3),
+          padding: const EdgeInsets.fromLTRB(7, 6, 7, 5),
           decoration: BoxDecoration(
-            // A little see-through, so the harbor shows behind it.
-            color: GamePalette.panel.withValues(alpha: 0.88),
-            borderRadius: BorderRadius.circular(22),
+            color: GamePalette.panel.withValues(alpha: 0.92),
+            borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: controller.canDoNext
-                  ? GamePalette.gold
-                  : GamePalette.panelEdge,
-              width: controller.canDoNext ? 2 : 1,
+              color: ready ? GamePalette.gold : GamePalette.panelEdge,
+              width: ready ? 2.5 : 1,
             ),
           ),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _BarIcon(
-                buttonKey: const Key('location_button'),
-                icon: Icons.home_work,
-                color: GamePalette.level,
-                tooltip: 'See what you have restored',
-                onTap: onOpenLocation,
-              ),
-              _BarIcon(
-                buttonKey: const Key('letters_button'),
-                icon: Icons.mail,
-                color: GamePalette.level,
-                tooltip: "Esther's letters",
-                onTap: onOpenLetters,
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        // The chapter name may be cut short on a narrow
-                        // phone; the count never is.
-                        Flexible(
-                          child: Text(
-                            'Chapter ${chapter.number} · ${chapter.title}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: _smallStyle,
-                          ),
-                        ),
-                        Text(
-                          '  ${controller.doneInChapter}/${chapter.tasks.length}',
-                          key: const Key('task_progress'),
-                          style: _smallStyle,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      task?.title ?? 'Chapter complete',
-                      key: const Key('task_title'),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.auto_stories,
+                    color: GamePalette.level,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 4),
+                  // The chapter name may be cut short on a narrow phone;
+                  // the count never is.
+                  Expanded(
+                    child: Text(
+                      'Chapter ${chapter.number} · ${chapter.title}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: _cream,
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: _smallStyle,
                     ),
-                  ],
+                  ),
+                  Text(
+                    ' ${controller.doneInChapter}/${chapter.tasks.length}',
+                    key: const Key('task_progress'),
+                    style: _smallStyle,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 3),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    task?.title ?? 'Chapter complete',
+                    key: const Key('task_title'),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: _cream,
+                      fontSize: 13,
+                      height: 1.15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
               if (task != null)
                 SizedBox(
-                  height: 32,
+                  height: 26,
                   child: FilledButton(
                     key: const Key('task_button'),
-                    onPressed: controller.canDoNext ? onDo : null,
+                    onPressed: ready ? onDo : null,
                     style: FilledButton.styleFrom(
                       backgroundColor: GamePalette.gold,
                       disabledBackgroundColor: const Color(0xFF3A2A10),
-                      padding: const EdgeInsets.symmetric(horizontal: 9),
+                      padding: EdgeInsets.zero,
                     ),
-                    child: Text(
-                      '${task.costBlessings} ✦  Go',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: controller.canDoNext
-                            ? Colors.black
-                            : GamePalette.muted,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '${task.costBlessings} ✦  Go',
+                        maxLines: 1,
+                        softWrap: false,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: ready ? Colors.black : GamePalette.muted,
+                        ),
                       ),
                     ),
                   ),
@@ -134,49 +115,4 @@ class TaskBar extends StatelessWidget {
   }
 }
 
-const _smallStyle = TextStyle(color: GamePalette.muted, fontSize: 10);
-
-/// A compact icon button for the task bar (40 wide so two fit on small phones).
-class _BarIcon extends StatelessWidget {
-  const _BarIcon({
-    required this.buttonKey,
-    required this.icon,
-    required this.color,
-    required this.tooltip,
-    required this.onTap,
-  });
-
-  final Key buttonKey;
-  final IconData icon;
-  final Color color;
-  final String tooltip;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: InkResponse(
-        key: buttonKey,
-        onTap: onTap,
-        radius: 24,
-        child: SizedBox(
-          width: 40,
-          height: 40,
-          child: Center(
-            child: Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.22),
-                shape: BoxShape.circle,
-                border: Border.all(color: color.withValues(alpha: 0.8)),
-              ),
-              child: Icon(icon, color: color, size: 19),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+const _smallStyle = TextStyle(color: GamePalette.muted, fontSize: 9.5);

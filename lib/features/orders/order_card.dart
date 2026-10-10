@@ -55,7 +55,7 @@ class OrderCard extends StatelessWidget {
   Widget build(BuildContext context) => LayoutBuilder(
     // On a low card the face is a little smaller, so a line of the
     // request always fits under it.
-    builder: (context, card) => _card(context, roomy: card.maxHeight >= 122),
+    builder: (context, card) => _card(context, roomy: card.maxHeight >= 140),
   );
 
   Widget _card(BuildContext context, {required bool roomy}) {
@@ -81,7 +81,9 @@ class OrderCard extends StatelessWidget {
                 child: CharacterHead(
                   characterId: order.characterId,
                   // Three wanted items need the room more than the face.
-                  size: order.items.length > 2 ? 44 : (roomy ? 58 : 46),
+                  size: order.items.length > 2
+                      ? (roomy ? 56 : 46)
+                      : (roomy ? 78 : 60),
                   name: characterName,
                   look: look,
                 ),

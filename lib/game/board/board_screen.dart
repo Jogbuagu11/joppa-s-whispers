@@ -31,12 +31,12 @@ import 'package:whispers_of_joppa/features/story/scene_screen.dart';
 import 'package:whispers_of_joppa/features/shop/shop_screen.dart';
 import 'package:whispers_of_joppa/features/story/chapter_ending.dart';
 import 'package:whispers_of_joppa/features/story/face_portrait.dart';
-import 'package:whispers_of_joppa/features/story/task_bar.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_banner.dart';
 import 'package:whispers_of_joppa/game/board/manna_bar.dart';
 import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
+import 'package:whispers_of_joppa/game/board/board_strip.dart';
 import 'package:whispers_of_joppa/game/board/board_top_bar.dart';
 import 'package:whispers_of_joppa/game/board/header_backdrop.dart';
 import 'package:whispers_of_joppa/services/ad_service.dart';
@@ -206,23 +206,6 @@ class _BoardScreenState extends State<BoardScreen>
                     manna: MannaBar(controller: session.manna),
                   ),
                 ),
-                TaskBar(
-                  controller: session.story,
-                  onDo: _doNextTask,
-                  onOpenLocation: _openLocation,
-                  onOpenLetters: _openLetters,
-                ),
-                // No event offers during the tutorial.
-                if (_event case final event?)
-                  ListenableBuilder(
-                    listenable: session.tutorial,
-                    // Nor for a game played from memory only (older content):
-                    // rewards could not be kept.
-                    builder: (context, _) =>
-                        session.tutorial.isOver && !session.downgraded
-                        ? _eventBanner(event)
-                        : const SizedBox.shrink(),
-                  ),
                 // The board comes first: it is as wide as the screen whenever
                 // the height allows, and the order cards take what is left
                 // (within their limits).
@@ -245,15 +228,40 @@ class _BoardScreenState extends State<BoardScreen>
                           child: Column(
                             children: [
                               _ordersBackdrop(
-                                child: OrdersBar(
-                                  controller: session.orders,
-                                  items: session.game.itemCatalog,
-                                  characterNames: session.characterNames,
-                                  placeholderColors:
-                                      session.game.chainPlaceholderColors,
-                                  looks: _characterLooks,
-                                  // The backdrop's own edging is part of the share.
-                                  height: cards - 10,
+                                child: ListenableBuilder(
+                                  listenable: session.tutorial,
+                                  builder: (context, _) => BoardStrip(
+                                    story: session.story,
+                                    onDoTask: _doNextTask,
+                                    onOpenLocation: _openLocation,
+                                    onOpenLetters: _openLetters,
+                                    // No event offers during the tutorial, nor for a game played
+                                    // from memory only (older content): rewards could not be kept.
+                                    onOpenEvent:
+                                        _event != null &&
+                                            session.tutorial.isOver &&
+                                            !session.downgraded
+                                        ? _openEvent
+                                        : null,
+                                    eventLabel: _event?.name,
+                                    ordersChanged: session.orders,
+                                    readyOrders: () => session
+                                        .orders
+                                        .activeOrders
+                                        .where(session.orders.canDeliver)
+                                        .length,
+                                    // The backdrop's own edging is part of the share.
+                                    height: cards - 10,
+                                    orders: OrdersBar(
+                                      controller: session.orders,
+                                      items: session.game.itemCatalog,
+                                      characterNames: session.characterNames,
+                                      placeholderColors:
+                                          session.game.chainPlaceholderColors,
+                                      looks: _characterLooks,
+                                      height: cards - 10,
+                                    ),
+                                  ),
                                 ),
                               ),
                               const Spacer(),

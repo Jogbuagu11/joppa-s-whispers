@@ -55,7 +55,7 @@ void main() {
     }
 
     // --- Before: open the location from the board. ---
-    await tester.tap(find.byKey(const Key('location_button')));
+    await tapOnStrip(tester, 'location_button');
     await settle();
     expect(find.byKey(const Key('location_screen')), findsOneWidget);
     expect(text('location_name'), location['name']);
@@ -81,9 +81,9 @@ void main() {
           w.key.toString().contains('order_deliver_'),
     );
     expect(ready, findsWidgets);
-    await tester.tap(ready.first);
+    await tapReady(tester, ready.first);
     await tester.pump(const Duration(milliseconds: 500));
-    await tester.tap(find.byKey(const Key('task_button')));
+    await tapOnStrip(tester, 'task_button');
     await settle();
     await tester.tap(find.byKey(const Key('scene_skip')));
     await settle();

@@ -11,6 +11,8 @@ import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
+import 'helpers.dart';
+
 Future<dynamic> _content(String name) async =>
     jsonDecode(await rootBundle.loadString('content/$name.json'));
 
@@ -62,10 +64,10 @@ void main() {
           w.onPressed != null &&
           w.key.toString().contains('order_deliver_'),
     );
-    await tester.tap(ready.first);
+    await tapReady(tester, ready.first);
     await settle();
     final talentsBefore = int.parse(text('talents_count'));
-    await tester.tap(find.byKey(const Key('task_button')));
+    await tapOnStrip(tester, 'task_button');
     await settle();
     await tester.tap(find.byKey(const Key('scene_skip')));
     await settle();

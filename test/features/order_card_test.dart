@@ -149,13 +149,13 @@ void main() {
   group('sharing the height between the cards and the board', () {
     test('on a tall phone the board is as wide as the screen', () {
       // A 7 by 9 board 420 wide is 540 tall.
-      final s = shareHeight(width: 420, height: 700);
+      final s = shareHeight(width: 420, height: 720);
       expect(s.board, 540);
       expect(s.cards, orderCardsMaxHeight);
       // With less to spare the cards give way first, down to their least.
-      final tighter = shareHeight(width: 420, height: 670);
+      final tighter = shareHeight(width: 420, height: 690);
       expect(tighter.board, 540);
-      expect(tighter.cards, 670 - 540 - 6);
+      expect(tighter.cards, 690 - 540 - 6);
     });
 
     test('on a short phone the cards keep their least and the board takes '

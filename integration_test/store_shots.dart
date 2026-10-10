@@ -19,6 +19,8 @@ import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
+import 'helpers.dart';
+
 Future<dynamic> _content(String name) async =>
     jsonDecode(await rootBundle.loadString('content/$name.json'));
 
@@ -179,14 +181,14 @@ void main() {
     await shot('1_board');
 
     // The current place, being restored.
-    await tester.tap(find.byKey(const Key('location_button')));
+    await tapOnStrip(tester, 'location_button');
     await wait(20);
     await shot('2_restore');
     await tester.pageBack();
     await wait();
 
     // Esther's letters: the book, then one letter open.
-    await tester.tap(find.byKey(const Key('letters_button')));
+    await tapOnStrip(tester, 'letters_button');
     await wait(15);
     await shot('4_letters');
     await tester.tap(find.byKey(const Key('letter_tile_letter_03')));
@@ -201,7 +203,7 @@ void main() {
 
     // The event board.
     if (find.byKey(const Key('event_banner')).evaluate().isNotEmpty) {
-      await tester.tap(find.byKey(const Key('event_banner')));
+      await tapOnStrip(tester, 'event_banner');
       await wait(30);
       await shot('5_event');
       await tester.pageBack();
@@ -209,7 +211,7 @@ void main() {
     }
 
     // The story: the next task's scene, a few lines in.
-    await tester.tap(find.byKey(const Key('task_button')));
+    await tapOnStrip(tester, 'task_button');
     await wait(20);
     await tester.tap(find.byKey(const Key('scene_text')));
     await wait(12);

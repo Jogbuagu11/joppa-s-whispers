@@ -1,4 +1,4 @@
-// Milestone 21: while an event is on, a banner on the board opens the
+// Milestone 21: while an event is on, a button on the board opens the
 // event's own smaller board, which spends the player's Manna. The event here
 // comes from a stand-in for the server.
 import 'dart:io';
@@ -14,6 +14,8 @@ import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
 import '../test/support/event_fixtures.dart';
+
+import 'helpers.dart';
 
 class _Server implements RemoteEvents {
   @override
@@ -51,9 +53,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
     }
     expect(tester.takeException(), isNull);
-    expect(find.text('Joppa Boat Festival'), findsOneWidget);
-
-    await tester.tap(banner);
+    // The event is a lit round button at the left of the swipeable row.
+    await tapOnStrip(tester, 'event_banner');
     final eventBoard = find.descendant(
       of: find.byKey(const Key('event_screen')),
       matching: find.byType(GameWidget<BoardGame>),

@@ -10,6 +10,8 @@ import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
+import 'helpers.dart';
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
@@ -78,7 +80,7 @@ void main() {
       (w) => w is FilledButton && w.onPressed != null,
     );
     if (ready.evaluate().isNotEmpty) {
-      await tester.tap(ready.first);
+      await tapReady(tester, ready.first);
       await tester.pump(const Duration(milliseconds: 300));
     }
 

@@ -103,7 +103,7 @@ void main() {
     (360.0, false),
     (320.0, true),
   ]) {
-    testWidgets('the task bar fits a ${width.toInt()}pt-wide phone'
+    testWidgets('the story card fits a ${width.toInt()}pt-wide phone'
         '${largeText ? ' at the largest text size' : ''}', (tester) async {
       if (largeText) useLargestText(tester);
       tester.view.physicalSize = Size(width, 640);
@@ -136,23 +136,23 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: TaskBar(
-              controller: story,
-              onDo: () => went++,
-              onOpenLocation: () {},
-              onOpenLetters: () {},
+            // The story card is one third of the row wide.
+            body: Center(
+              child: SizedBox(
+                width: (width - 26) / 3,
+                height: 118,
+                child: StoryCard(controller: story, onDo: () => went++),
+              ),
             ),
           ),
         ),
       );
       expect(tester.takeException(), isNull);
-      // The count is always shown in full, and all three buttons are there.
+      // The count is always shown in full.
       expect(
         tester.widget<Text>(find.byKey(const Key('task_progress'))).data,
-        '  0/2',
+        ' 0/2',
       );
-      expect(find.byKey(const Key('location_button')), findsOneWidget);
-      expect(find.byKey(const Key('letters_button')), findsOneWidget);
       await tester.tap(find.byKey(const Key('task_button')));
       expect(went, 1);
     });

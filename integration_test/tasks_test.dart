@@ -65,14 +65,14 @@ void main() {
           w.key.toString().contains('order_deliver_'),
     );
     expect(ready, findsWidgets, reason: 'the starting board fills one order');
-    await tester.tap(ready.first);
+    await tapReady(tester, ready.first);
     await tester.pump(const Duration(milliseconds: 500));
     final earned = int.parse(text('blessings_count'));
     expect(earned, greaterThanOrEqualTo(cost));
     expect(taskButton().onPressed, isNotNull);
 
     // Do the task: Blessings are spent and its scene opens.
-    await tester.tap(find.byKey(const Key('task_button')));
+    await tapOnStrip(tester, 'task_button');
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump(const Duration(seconds: 1));
     final scene = scenes.firstWhere((s) => s['id'] == first['scene_id']);

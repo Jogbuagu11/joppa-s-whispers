@@ -40,3 +40,21 @@ Future<void> dismissLevelUp(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 100));
   await tester.pump(const Duration(seconds: 1));
 }
+
+/// Taps a button in the swipeable row above the board (the story card's Go
+/// button, the place, the letters, the event), sliding the row first if
+/// the button is off to one side.
+Future<void> tapOnStrip(WidgetTester tester, String key) async {
+  final button = find.byKey(Key(key));
+  await tester.ensureVisible(button);
+  await tester.pump(const Duration(milliseconds: 500));
+  await tester.tap(button);
+}
+
+/// Taps an order's Deliver button, sliding the row first if that card is
+/// off to one side.
+Future<void> tapReady(WidgetTester tester, Finder button) async {
+  await tester.ensureVisible(button);
+  await tester.pump(const Duration(milliseconds: 500));
+  await tester.tap(button);
+}

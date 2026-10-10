@@ -14,6 +14,8 @@ import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
 import '../test/support/fakes.dart';
 
+import 'helpers.dart';
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
@@ -94,7 +96,7 @@ void main() {
           w.key.toString().contains('order_deliver_'),
     );
     expect(ready, findsWidgets);
-    await tester.tap(ready.first);
+    await tapReady(tester, ready.first);
     await tester.pump(const Duration(milliseconds: 500));
     final talents = text('talents_count');
     final blessings = text('blessings_count');
