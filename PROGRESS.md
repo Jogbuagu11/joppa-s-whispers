@@ -1407,16 +1407,18 @@ Where it stands (she has seen each step; the last one is not yet approved):
 - **Bubbles** (from player level 5, never in the tutorial): about one merge in twenty
   leaves a bubble at the corner of the cell, holding a copy of the item just made (15%
   of the time the next tier up). Tap it: "Keep for N Pearls" (2 Pearls per tier),
-  "Watch an ad to keep" (tier 4 and below, and only if an ad is loaded), or "Leave it".
-  Left alone for 60 seconds it pops and leaves 2 Talents per tier. At most two bubbles
-  at once. A kept item waits for room if the board is full.
+  "Watch an ad to keep" (tier 4 and below, never a rare find, only if an ad is loaded,
+  and it counts as one of the day's five ads), or "Leave it". Left alone for 60 seconds
+  it pops and leaves 2 Talents per tier; it never pops while its question is open. At
+  most two bubbles at once. A kept item waits for room if the board is full. Merging
+  Manna jars, hourglasses and the like never leaves a bubble.
 - **Sealed jars:** a jar that sits on the board (it can be moved) until two items of its
   chain are merged in one of the eight cells round it; then it turns into its gift.
   Two kinds so far: a bread jar (merge Bakery beside it → Cup of Manna) and a fruit jar
   (merge Fruit of the Spirit beside it → Hourglass). Tapping one says how to open it.
 - **Where they come from, for now:** level-up gifts. Knife at levels 9, 19, 29…; Golden
   Thread at 14, 24, 34…; sealed jars at 11, 21, 31, 41, 51.
-- Content is version 28. No change to the save format.
+- Content is version 29. No change to the save format.
 
 **Checks**
 - `flutter analyze` clean; unit tests pass (`test/domain/tools_test.dart`,
@@ -1425,13 +1427,27 @@ Where it stands (she has seen each step; the last one is not yet approved):
   `integration_test/board_extras_test.dart` (knife, thread and jar by dragging) and
   `integration_test/bubbles_test.dart` (a bubble left, then kept for Pearls).
 
+**Reviewer's notes (code-reviewer, 2026-10-10)** — nothing blocking. Fixed: bubble ads
+had no daily limit and could have given a 100-Manna jar or a rare find (now none for
+those, and the ad shares the daily limit); a bubble could pop behind its own question;
+sealed jars could not be sold; a sealed jar could have named a chain that can never be
+merged; a tool must be alone in its chain. No unbounded loop was found: each knife or
+thread is used up, and splitting always loses value.
+
 ## Assumptions to confirm (added in Milestone 28)
 - Every number above (the 5% chance, 60 seconds, Pearl and Talent amounts, which levels
   give which tool) is my starting choice, in `content/levels.json` and
   `content/chains.json`.
 - Bubbles are not saved: one still afloat when the game is closed is simply gone (no
   Talents). They do not take up a cell.
-- Keeping a bubble's item for an ad does not count towards the day's five Manna ads.
+- Keeping a bubble's item for an ad uses one of the day's five ads (one shared limit).
+- Pearls spent on a bubble are not given back if the Pearl purchase is later refunded
+  beyond what is left (the balance stops at 0, as for any Pearl spending). There is no
+  analytics event for spending Pearls yet.
+- A bubble covers the top right corner of its cell; a drag begun exactly there is taken
+  by the bubble. After the board changes size a bubble can sit a little off for up to
+  a second.
+- A sealed jar can be sold for 3 Talents, so it can never clog a full board.
 - A bubble spends Pearls on one tap of "Keep for N Pearls" (the question itself is the
   confirmation).
 - "Rubble" and locked cells (EXPANSION 20.2 "as before") were never built and are not

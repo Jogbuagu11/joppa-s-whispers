@@ -70,7 +70,9 @@ class AdRewardsController extends ChangeNotifier {
 
   /// Shows an ad the player asked for. The Manna is given only if the ad was
   /// watched to the end. Returns whether it was.
-  Future<bool> watchForManna() async {
+  Future<bool> watchForManna() => _watch(() => addManna(mannaReward));
+
+  Future<bool> _watch(void Function() reward) async {
     final service = _service;
     if (service == null || !mannaAdOffered) return false;
     _showing = true;
@@ -88,7 +90,7 @@ class AdRewardsController extends ChangeNotifier {
     if (_disposed) return false;
     if (earned) {
       _tally = afterMannaAd(_tally, _now());
-      addManna(mannaReward);
+      reward();
       tallyChanged.value++;
     }
     notifyListeners();
@@ -96,34 +98,14 @@ class AdRewardsController extends ChangeNotifier {
   }
 
   /// Whether an ad can be shown for some other reward the player asks for
-  /// (keeping a bubble's item): one is loaded and the tutorial is over.
-  bool get rewardAdReady =>
-      !_showing &&
-      !_disposed &&
-      tutorialOver() &&
-      (_service?.ready.value ?? false);
+  /// (keeping a bubble's item). The same rules as a Manna ad, and the same
+  /// daily allowance.
+  bool get rewardAdReady => !_disposed && mannaAdOffered;
 
   /// Shows an ad the player asked for, for a reward the caller gives.
-  /// Returns whether it was watched to the end. It does not count towards
-  /// the day's Manna ads.
-  Future<bool> watchForReward() async {
-    final service = _service;
-    if (service == null || !rewardAdReady) return false;
-    _showing = true;
-    notifyListeners();
-    var earned = false;
-    try {
-      earned = await service.showRewarded();
-    } on Exception catch (e) {
-      // A broken ad gives nothing and must never disturb the game.
-      _log.warning('The ad could not be shown: $e');
-    } finally {
-      _showing = false;
-    }
-    if (_disposed) return false;
-    notifyListeners();
-    return earned;
-  }
+  /// Returns whether it was watched to the end. It counts as one of the
+  /// day's ads.
+  Future<bool> watchForReward() => _watch(() {});
 
   @override
   void dispose() {

@@ -11,6 +11,7 @@ mixin _BoardBubbles on _BoardItems {
       rules: unlock?.bubble,
       items: session.game.itemCatalog,
       chains: session.game.chainData,
+      sideChains: session.game.sideChains,
       // Not for a new player, nor for a game played from memory only
       // (older content): what it gave could not be kept.
       allowed: () =>
@@ -54,7 +55,7 @@ mixin _BoardBubbles on _BoardItems {
     final text = _boardText;
     final pearls = bubbles.pearlsFor(tapped);
     // It does not pop while the player is reading.
-    bubbles.hold(tapped.id, const Duration(seconds: 30));
+    bubbles.hold(tapped.id);
     _popupOpen = true;
     try {
       final choice = await showDialog<String>(
@@ -116,14 +117,13 @@ mixin _BoardBubbles on _BoardItems {
       }
       if (choice == 'pearls') bubbles.keepWithPearls(tapped.id);
       if (choice == 'ad') {
-        // An ad takes a while: the bubble waits for it.
-        bubbles.hold(tapped.id, const Duration(minutes: 10));
         final watched = await session.ads.watchForReward();
         if (watched && identical(bubbles, _bubbles)) {
           bubbles.keepAfterAd(tapped.id);
         }
       }
     } finally {
+      bubbles.release(tapped.id);
       _popupOpen = false;
     }
   }

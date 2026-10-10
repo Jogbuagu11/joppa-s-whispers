@@ -21,7 +21,9 @@ extension BoardTools on BoardGame {
     _put(toCol, toRow, becomes);
     _put(fromCol, fromRow, left);
     _log.fine('${tool.itemId} on ${target.itemId} -> ${becomes.itemId}');
-    // A wildcard is a merge in all but name: it sounds and counts as one.
+    // A wildcard is a merge in all but name: it sounds like one, may leave
+    // a bubble and opens sealed jars (onMerged). It is not counted as a
+    // merge the player made (onMerge: the tutorial, analytics).
     if (tool.use?.wild ?? false) {
       lastMergeCell = (toCol, toRow);
       onMerged?.call(becomes);

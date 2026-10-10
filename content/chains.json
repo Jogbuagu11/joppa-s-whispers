@@ -339,7 +339,7 @@
         "tier": 1,
         "item_id": "breadjar_01",
         "name": "Sealed bread jar",
-        "sell": 0,
+        "sell": 3,
         "use": { "opens_with": "bakery", "gives": "manna_jar_02" }
       }
     ]
@@ -355,7 +355,7 @@
         "tier": 1,
         "item_id": "fruitjar_01",
         "name": "Sealed fruit jar",
-        "sell": 0,
+        "sell": 3,
         "use": { "opens_with": "fruit", "gives": "hourglass_02" }
       }
     ]

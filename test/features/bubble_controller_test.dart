@@ -161,18 +161,67 @@ void main() {
     bubbles.dispose();
   });
 
-  test('a bubble being decided on is given more time, never less', () {
+  test('a bubble being decided on does not pop until it is let go', () {
     final bubbles = controller()..afterMerge(_b2, col: 0, row: 0);
     final id = bubbles.bubbles.single.id;
-    now = now.add(const Duration(seconds: 58));
-    bubbles.hold(id, const Duration(seconds: 30));
-    expect(bubbles.secondsLeft(id), 30);
-    now = now.add(const Duration(seconds: 10));
+    bubbles.hold(id);
+    now = now.add(const Duration(minutes: 5));
     bubbles.tick();
     expect(bubbles.bubbles, hasLength(1));
-    // Holding for less than it already has changes nothing.
-    bubbles.hold(id, const Duration(seconds: 5));
-    expect(bubbles.secondsLeft(id), 20);
+    expect(talents, 0);
+    // It can still be kept.
+    expect(bubbles.keepWithPearls(id), isTrue);
+    expect(given, ['b2']);
+    bubbles.dispose();
+  });
+
+  test('let go after its time ran out, it pops at once and pays', () {
+    final bubbles = controller()..afterMerge(_b2, col: 0, row: 0);
+    final id = bubbles.bubbles.single.id;
+    bubbles.hold(id);
+    now = now.add(const Duration(minutes: 5));
+    bubbles
+      ..release(id)
+      ..tick();
+    expect(bubbles.bubbles, isEmpty);
+    expect(talents, 6);
+    bubbles.dispose();
+  });
+
+  test('no bubble copies a usable item, and a rare find is never kept for '
+      'an ad', () {
+    const jar = ItemModel(
+      itemId: 'jar',
+      chainId: 'jar',
+      tier: 1,
+      name: 'Jar',
+      asset: '',
+      use: ItemUse(manna: 5),
+    );
+    const honey = ItemModel(
+      itemId: 'h1',
+      chainId: 'honey',
+      tier: 1,
+      name: 'Honey',
+      asset: '',
+    );
+    final bubbles = BubbleController(
+      rules: _rules,
+      items: const {'jar': jar, 'h1': honey},
+      chains: const {},
+      sideChains: const {'honey', 'jar'},
+      allowed: () => true,
+      addTalents: (_) {},
+      spendPearls: (_) => true,
+      giveItem: given.add,
+      clock: () => now,
+    )..afterMerge(jar, col: 0, row: 0);
+    expect(bubbles.bubbles, isEmpty);
+    bubbles.afterMerge(honey, col: 0, row: 0);
+    final rare = bubbles.bubbles.single;
+    expect(bubbles.adAllowedFor(rare), isFalse);
+    expect(bubbles.keepAfterAd(rare.id), isFalse);
+    expect(bubbles.keepWithPearls(rare.id), isTrue);
     bubbles.dispose();
   });
 

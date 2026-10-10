@@ -190,18 +190,26 @@ void main() {
     expect(changes, 1);
   });
 
-  test('an ad for another reward: watched to the end or not, and it does '
-      'not count as a Manna ad', () async {
+  test('an ad for another reward gives no Manna but counts as one of the '
+      "day's ads; one not watched to the end counts for nothing", () async {
     final c = make();
     expect(c.rewardAdReady, isTrue);
-    expect(await c.watchForReward(), isTrue);
     service.watchedToEnd = false;
     expect(await c.watchForReward(), isFalse);
     service.throwOnShow = true;
     expect(await c.watchForReward(), isFalse);
-    expect(service.shown, 3);
-    expect(manna, 0);
     expect(c.tally.mannaAds, 0);
+    service
+      ..throwOnShow = false
+      ..watchedToEnd = true;
+    expect(await c.watchForReward(), isTrue);
+    expect(manna, 0);
+    expect(c.tally.mannaAds, 1);
+    // The day's allowance (2 here) is shared with Manna ads.
+    expect(await c.watchForManna(), isTrue);
+    expect(c.rewardAdReady, isFalse);
+    expect(await c.watchForReward(), isFalse);
+    expect(service.shown, 4);
     c.dispose();
   });
 

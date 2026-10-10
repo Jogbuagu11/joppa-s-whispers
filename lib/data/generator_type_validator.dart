@@ -128,11 +128,26 @@ void checkSealedJars(List<Map<String, dynamic>> chains, List<String> problems) {
   final byId = {for (final t in tiers) t.tier['item_id']: t};
   for (final t in tiers) {
     final use = t.tier['use'];
-    if (use is! Map<String, dynamic> || use['opens_with'] == null) continue;
+    if (use is! Map<String, dynamic>) continue;
     final id = t.tier['item_id'];
+    final own = chains.firstWhere((c) => c['id'] == t.chain);
+    final alone = (own['tiers'] as List<dynamic>).length == 1;
+    if ((use['split'] == true || use['wild'] == true) && !alone) {
+      problems.add('Item $id: a tool must be alone in its chain');
+    }
+    if (use['opens_with'] == null) continue;
     final opens = use['opens_with'];
-    if (opens == t.chain || !chains.any((c) => c['id'] == opens)) {
-      problems.add('Item $id: opens_with "$opens" is not another chain');
+    final opener = chains.where((c) => c['id'] == opens).firstOrNull;
+    // It must be a chain the player can make and merge, or the jar would
+    // never open.
+    if (opens == t.chain ||
+        opener == null ||
+        opener['generator_id'] == null ||
+        (opener['tiers'] as List<dynamic>).length < 2) {
+      problems.add(
+        'Item $id: opens_with "$opens" must be another chain with a '
+        'generator and at least two tiers',
+      );
     }
     final gift = byId[use['gives']];
     if (gift == null) {
@@ -140,10 +155,7 @@ void checkSealedJars(List<Map<String, dynamic>> chains, List<String> problems) {
     } else if (gift.tier['use'] case {'opens_with': _}) {
       problems.add('Item $id: a sealed jar cannot give a sealed jar');
     }
-    if (t.tier['tier'] != 1 ||
-        (chains.firstWhere((c) => c['id'] == t.chain)['tiers'] as List<dynamic>)
-                .length !=
-            1) {
+    if (!alone) {
       problems.add('Item $id: a sealed jar must be alone in its chain');
     }
   }

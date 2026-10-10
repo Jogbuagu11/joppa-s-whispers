@@ -116,6 +116,7 @@ void main() {
 
     Map<String, dynamic> chain(String id, List<Map<String, dynamic>> tiers) => {
       'id': id,
+      if (id == 'bakery') 'generator_id': 'gen',
       'tiers': tiers,
     };
     Map<String, dynamic> tier(String id, int n, [Object? use]) => {
@@ -138,6 +139,8 @@ void main() {
     expect(all({'opens_with': 'bakery', 'gives': 'b2'}), isEmpty);
     expect(all({'opens_with': 'nowhere', 'gives': 'b2'}), isNotEmpty);
     expect(all({'opens_with': 'jar', 'gives': 'b2'}), isNotEmpty);
+    // A chain nobody can make or merge would never open it.
+    expect(all({'opens_with': 'other', 'gives': 'b2'}), isNotEmpty);
     expect(all({'opens_with': 'bakery', 'gives': 'nothing'}), isNotEmpty);
     // A jar inside a jar would never end.
     expect(all({'opens_with': 'bakery', 'gives': 'o1'}), isNotEmpty);
@@ -145,6 +148,10 @@ void main() {
       all({'opens_with': 'bakery', 'gives': 'b2'}, alone: false),
       isNotEmpty,
     );
+    // A tool must be alone in its chain too (two would merge).
+    expect(all({'split': true}), isEmpty);
+    expect(all({'split': true}, alone: false), isNotEmpty);
+    expect(all({'wild': true}, alone: false), isNotEmpty);
   });
 
   test('a use is read from content, and must do exactly one thing', () {

@@ -31,6 +31,9 @@ class BubbleController extends ChangeNotifier {
   final Map<String, ItemModel> items;
   final Map<String, ChainTierData> chains;
 
+  /// Chains no generator makes (rare finds, gifts): never kept for an ad.
+  final Set<String> sideChains;
+
   /// False while there are to be no new bubbles (before their level, and
   /// during the tutorial).
   final bool Function() allowed;
@@ -47,6 +50,7 @@ class BubbleController extends ChangeNotifier {
   final Random _random;
   final DateTime Function() _now;
   final List<Bubble> _bubbles = [];
+  final Set<int> _held = {};
   Timer? _timer;
   int _nextId = 1;
   bool _disposed = false;
@@ -55,6 +59,7 @@ class BubbleController extends ChangeNotifier {
     required this.rules,
     required this.items,
     required this.chains,
+    this.sideChains = const {},
     required this.allowed,
     required this.addTalents,
     required this.spendPearls,
@@ -84,7 +89,8 @@ class BubbleController extends ChangeNotifier {
   int pearlsFor(Bubble bubble) => rules?.pearlsFor(bubble.item.tier) ?? 0;
   int talentsFor(Bubble bubble) => rules?.talentsFor(bubble.item.tier) ?? 0;
   bool adAllowedFor(Bubble bubble) =>
-      rules?.adAllowedFor(bubble.item.tier) ?? false;
+      !sideChains.contains(bubble.item.chainId) &&
+      (rules?.adAllowedFor(bubble.item.tier) ?? false);
 
   /// The bubble with [id] as it is now, or null if it is gone.
   Bubble? byId(int id) => _bubbles.where((b) => b.id == id).firstOrNull;
@@ -94,6 +100,8 @@ class BubbleController extends ChangeNotifier {
   void afterMerge(ItemModel merged, {required int col, required int row}) {
     final rules = this.rules;
     if (_disposed || rules == null || !allowed()) return;
+    // Never a second Manna jar, hourglass, tool or sealed jar.
+    if (merged.use != null) return;
     if (_bubbles.length >= rules.maxAtOnce) return;
     final held =
         items[bubbleAfterMerge(merged, rules, chains, random: _random)];
@@ -118,7 +126,7 @@ class BubbleController extends ChangeNotifier {
     final now = _now();
     final done = [
       for (final b in _bubbles)
-        if (!b.popsAt.isAfter(now)) b,
+        if (!b.popsAt.isAfter(now) && !_held.contains(b.id)) b,
     ];
     for (final bubble in done) {
       _bubbles.remove(bubble);
@@ -149,26 +157,19 @@ class BubbleController extends ChangeNotifier {
     return true;
   }
 
-  /// Gives the bubble with [id] at least [time] more while the player is
-  /// deciding or watching an ad, so it cannot pop under their finger.
-  void hold(int id, Duration time) {
-    final at = _bubbles.indexWhere((b) => b.id == id);
-    if (_disposed || at < 0) return;
-    final bubble = _bubbles[at];
-    final until = _now().add(time);
-    if (!bubble.popsAt.isBefore(until)) return;
-    _bubbles[at] = Bubble(
-      id: bubble.id,
-      item: bubble.item,
-      col: bubble.col,
-      row: bubble.row,
-      popsAt: until,
-    );
-    notifyListeners();
+  /// Keeps the bubble with [id] from popping while the player is deciding
+  /// about it or watching an ad for it, until [release].
+  void hold(int id) {
+    if (!_disposed && byId(id) != null) _held.add(id);
   }
+
+  /// Lets a held bubble go on as before; if its time ran out meanwhile it
+  /// pops at the next tick.
+  void release(int id) => _held.remove(id);
 
   void _keep(Bubble bubble) {
     _bubbles.remove(bubble);
+    _held.remove(bubble.id);
     giveItem(bubble.item.itemId);
     _rest();
     notifyListeners();

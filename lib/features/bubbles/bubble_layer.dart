@@ -37,9 +37,9 @@ class BubbleLayer extends StatelessWidget {
 
   Widget _bubble(Bubble bubble) {
     final cell = cellRect(bubble.col, bubble.row);
-    // Smaller than the cell and up in its corner, so the item beneath can
-    // still be seen and dragged.
-    final size = cell.width * 0.62;
+    // Small and up in the cell's corner, so the item beneath can still be
+    // seen, and dragged by the rest of its cell.
+    final size = cell.width * 0.5;
     return Positioned(
       key: ValueKey('bubble_at_${bubble.id}'),
       left: cell.right - size * 0.8,
