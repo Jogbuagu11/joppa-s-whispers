@@ -3,5 +3,6 @@
   "use": "Use",
   "keep": "Keep",
   "hourglass_hint": "Drag it onto a resting generator to shorten the wait.",
-  "ok": "OK"
+  "ok": "OK",
+  "orders_background": "assets/locations/bg_loc_harbor_dusk.jpg"
 }

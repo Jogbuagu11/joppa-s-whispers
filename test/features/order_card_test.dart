@@ -153,9 +153,9 @@ void main() {
       expect(s.board, 540);
       expect(s.cards, orderCardsMaxHeight);
       // With less to spare the cards give way first, down to their least.
-      final tighter = shareHeight(width: 420, height: 660);
+      final tighter = shareHeight(width: 420, height: 670);
       expect(tighter.board, 540);
-      expect(tighter.cards, 660 - 540 - 6);
+      expect(tighter.cards, 670 - 540 - 6);
     });
 
     test('on a short phone the cards keep their least and the board takes '

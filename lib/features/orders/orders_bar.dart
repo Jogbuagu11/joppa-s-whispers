@@ -9,8 +9,8 @@ import 'package:whispers_of_joppa/features/story/face_portrait.dart';
 
 /// The row of order cards is as tall as the screen can spare, within these
 /// limits: the board below it comes first.
-const double orderCardsMinHeight = 110;
-const double orderCardsMaxHeight = 132;
+const double orderCardsMinHeight = 118;
+const double orderCardsMaxHeight = 140;
 
 class OrdersBar extends StatelessWidget {
   const OrdersBar({
@@ -61,9 +61,7 @@ class OrdersBar extends StatelessWidget {
                       canSkip: controller.canSkip,
                       onDeliver: () => controller.deliver(order.id),
                       onSkip: () => controller.skip(order.id),
-                      characterColor: looks[order.characterId]?.color,
-                      faceZoom:
-                          looks[order.characterId]?.zoom ?? defaultFaceZoom,
+                      look: looks[order.characterId],
                     ),
                   ),
                 ),

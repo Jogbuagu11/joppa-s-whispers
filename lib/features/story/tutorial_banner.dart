@@ -51,14 +51,11 @@ class TutorialBanner extends StatelessWidget {
               if (portrait != null)
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: FacePortrait(
-                    asset: portrait,
+                  child: CharacterHead(
+                    characterId: controller.current?.speaker ?? '',
                     size: 54,
                     name: controller.current?.speaker ?? '',
-                    ring: _gold,
-                    zoom:
-                        looks[controller.current?.speaker]?.zoom ??
-                        defaultFaceZoom,
+                    look: looks[controller.current?.speaker],
                   ),
                 ),
               Expanded(

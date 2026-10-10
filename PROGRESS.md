@@ -1301,7 +1301,16 @@ Where it stands (she has seen each step; the last one is not yet approved):
 - **Faces:** `FacePortrait` zooms the full-length portraits in on the head. Each
   character's ring colour and zoom are in `content/characters.json` (`color`,
   `face_zoom`; Joy, a child, uses 1.5). Content version 20.
-- The tutorial hint sits above the order cards, with a 54-point face.
+- Then: "remove the circle… just avatar head, no profile circle frame; lighten the
+  background of that section, maybe with lighthouse background". Each character now has
+  a cut-out head and shoulders with nothing behind it (`assets/characters/head_<id>.png`,
+  made from the portraits by `dart run tool/make_heads.dart` — run it again when a
+  portrait changes or is added). The order cards are light parchment, set on a strip
+  showing the harbor and its tower (`bg_loc_harbor_dusk`, named in
+  `content/board_text.json` as `orders_background`), washed with cream. The night
+  watchtower picture itself was too dark to lighten well; a daytime lighthouse strip
+  would be new art. Content version 21.
+- The tutorial hint sits above the order cards, with a 54-point cut-out head.
 - Reviewer's notes carried forward: on short phones (iPhone SE) the board cannot be
   full width — there is not the height; with three wanted items the item pictures are
   small on narrow phones; `board_game.dart` (291 lines) and `event_screen.dart` (294)

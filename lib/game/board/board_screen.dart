@@ -238,8 +238,7 @@ class _BoardScreenState extends State<BoardScreen>
                           : cards + 6,
                       child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                          _ordersBackdrop(
                             child: OrdersBar(
                               controller: session.orders,
                               items: session.game.itemCatalog,
@@ -247,7 +246,8 @@ class _BoardScreenState extends State<BoardScreen>
                               placeholderColors:
                                   session.game.chainPlaceholderColors,
                               looks: _characterLooks,
-                              height: cards,
+                              // The backdrop's own edging is part of the share.
+                              height: cards - 10,
                             ),
                           ),
                           const Spacer(),

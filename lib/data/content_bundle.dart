@@ -109,7 +109,15 @@ ContentBundle chooseContent({
 }
 
 /// The small wording used on the board (content/board_text.json).
-const boardTextKeys = ['use_manna', 'use', 'keep', 'hourglass_hint', 'ok'];
+const boardTextKeys = [
+  'use_manna',
+  'use',
+  'keep',
+  'hourglass_hint',
+  'ok',
+  // Not words: the picture behind the order cards.
+  'orders_background',
+];
 
 /// Plain-English problems with the board wording; empty if it is sound.
 List<String> boardTextProblems(Object? json) => [

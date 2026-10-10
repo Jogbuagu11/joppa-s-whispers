@@ -3,12 +3,14 @@
 // given; tapping the words shows the whole request and its reward.
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
-import 'package:whispers_of_joppa/data/asset_names.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
 import 'package:whispers_of_joppa/features/story/face_portrait.dart';
 
 const _cream = Color(0xFFF3E6C8);
+
+// Dark brown, for words on the light card.
+const _ink = Color(0xFF2E2110);
 const _textSize = 10.0;
 const _textLineHeight = 1.2;
 
@@ -27,12 +29,11 @@ class OrderCard extends StatelessWidget {
     required this.canSkip,
     required this.onDeliver,
     required this.onSkip,
-    this.characterColor,
-    this.faceZoom = defaultFaceZoom,
+    this.look,
   });
 
-  /// How far the portrait is zoomed in on this character's face.
-  final double faceZoom;
+  /// The character's colour and framing, for one with no cut-out head yet.
+  final CharacterLook? look;
 
   final OrderModel order;
   final String characterName;
@@ -50,21 +51,24 @@ class OrderCard extends StatelessWidget {
   final VoidCallback onDeliver;
   final VoidCallback onSkip;
 
-  /// The character's own colour, from content.
-  final Color? characterColor;
-
   @override
-  Widget build(BuildContext context) {
-    final theirs = characterColor ?? GamePalette.person;
+  Widget build(BuildContext context) => LayoutBuilder(
+    // On a low card the face is a little smaller, so a line of the
+    // request always fits under it.
+    builder: (context, card) => _card(context, roomy: card.maxHeight >= 122),
+  );
+
+  Widget _card(BuildContext context, {required bool roomy}) {
     return Container(
       key: Key('order_card_${order.id}'),
       padding: const EdgeInsets.fromLTRB(6, 6, 6, 5),
       decoration: BoxDecoration(
-        color: GamePalette.panel,
+        // Light parchment, a little see-through, over the harbor behind.
+        color: const Color(0xE0F6EBD0),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: canDeliver ? GamePalette.ready : theirs.withValues(alpha: 0.7),
-          width: canDeliver ? 2 : 1,
+          color: canDeliver ? GamePalette.ready : const Color(0xFFB89A5E),
+          width: canDeliver ? 2.5 : 1,
         ),
       ),
       child: Column(
@@ -74,18 +78,15 @@ class OrderCard extends StatelessWidget {
             children: [
               Semantics(
                 label: characterName,
-                child: FacePortrait(
-                  asset:
-                      'assets/characters/'
-                      '${portraitBaseName(order.characterId, 'neutral')}.jpg',
+                child: CharacterHead(
+                  characterId: order.characterId,
                   // Three wanted items need the room more than the face.
-                  size: order.items.length > 2 ? 40 : 54,
-                  zoom: faceZoom,
+                  size: order.items.length > 2 ? 44 : (roomy ? 58 : 46),
                   name: characterName,
-                  ring: theirs,
+                  look: look,
                 ),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: 2),
               // Three wanted items are wider than the space beside the
               // face on a narrow phone: they shrink to fit.
               Expanded(
@@ -124,7 +125,7 @@ class OrderCard extends StatelessWidget {
                       maxLines: fits > _maxLines ? _maxLines : fits,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        color: _cream,
+                        color: _ink,
                         fontSize: _textSize,
                         height: _textLineHeight,
                       ),
@@ -144,7 +145,7 @@ class OrderCard extends StatelessWidget {
                     onPressed: canDeliver ? onDeliver : null,
                     style: FilledButton.styleFrom(
                       backgroundColor: GamePalette.ready,
-                      disabledBackgroundColor: GamePalette.panelLight,
+                      disabledBackgroundColor: const Color(0xFFD9C7A0),
                       padding: EdgeInsets.zero,
                     ),
                     child: FittedBox(
@@ -159,7 +160,7 @@ class OrderCard extends StatelessWidget {
                           // Dark on green: easy to read.
                           color: canDeliver
                               ? GamePalette.backgroundBottom
-                              : GamePalette.muted,
+                              : const Color(0xFF8A7650),
                         ),
                       ),
                     ),
@@ -176,7 +177,7 @@ class OrderCard extends StatelessWidget {
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                     child: const Text(
                       'Skip',
-                      style: TextStyle(fontSize: 9, color: _cream),
+                      style: TextStyle(fontSize: 9, color: _ink),
                     ),
                   ),
                 ),
@@ -257,7 +258,7 @@ class OrderCard extends StatelessWidget {
               fontSize: 9,
               height: 1.2,
               fontWeight: FontWeight.bold,
-              color: have >= wanted.count ? GamePalette.ready : _cream,
+              color: have >= wanted.count ? const Color(0xFF4E7A1E) : _ink,
             ),
           ),
         ],

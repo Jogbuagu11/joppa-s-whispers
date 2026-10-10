@@ -36,6 +36,34 @@ mixin _BoardItems on _BoardRoutes {
   Map<String, CharacterLook> get _characterLooks =>
       characterLooks(_session?.contentBundle.files['characters']);
 
+  /// The order cards sit on a lighter strip: a picture of the harbor (named
+  /// in the content's board wording), washed with cream so words stay easy
+  /// to read.
+  Widget _ordersBackdrop({required Widget child}) {
+    final picture = _boardText['orders_background'];
+    final known = _session?.assetPaths.contains(picture) ?? false;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xFFCDB98A),
+        image: picture == null || !known
+            ? null
+            : DecorationImage(
+                image: AssetImage(picture),
+                fit: BoxFit.cover,
+                alignment: const Alignment(0, -0.42),
+                colorFilter: const ColorFilter.mode(
+                  Color(0x59F6EBD0),
+                  BlendMode.srcOver,
+                ),
+              ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+        child: child,
+      ),
+    );
+  }
+
   /// A usable item was tapped. A Manna jar is used only if the player says
   /// so (it can be kept for later); an hourglass explains itself.
   Future<void> _askToUse(ItemModel item, bool Function() use) async {

@@ -2,6 +2,7 @@
 // the head.
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
+import 'package:whispers_of_joppa/data/asset_names.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 
 /// The zoom that frames an adult's head and shoulders.
@@ -87,4 +88,42 @@ class FacePortrait extends StatelessWidget {
       ),
     );
   }
+}
+
+/// A character's head and shoulders with nothing behind them (cut out of
+/// the portrait by tool/make_heads.dart). A character with no cut-out yet
+/// is shown in a ring instead.
+class CharacterHead extends StatelessWidget {
+  const CharacterHead({
+    super.key,
+    required this.characterId,
+    required this.size,
+    required this.name,
+    this.look,
+  });
+
+  final String characterId;
+  final double size;
+  final String name;
+  final CharacterLook? look;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: size,
+    height: size,
+    child: Image.asset(
+      'assets/characters/head_$characterId.png',
+      fit: BoxFit.contain,
+      alignment: Alignment.bottomCenter,
+      filterQuality: FilterQuality.medium,
+      errorBuilder: (context, error, stack) => FacePortrait(
+        asset:
+            'assets/characters/${portraitBaseName(characterId, 'neutral')}.jpg',
+        size: size,
+        name: name,
+        ring: look?.color ?? GamePalette.person,
+        zoom: look?.zoom ?? defaultFaceZoom,
+      ),
+    ),
+  );
 }
