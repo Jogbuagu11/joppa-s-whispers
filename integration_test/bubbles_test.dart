@@ -79,7 +79,7 @@ void main() {
         home: BoardScreen(
           playOpeningScene: false,
           playTutorial: false,
-          bubbleLuck: _Always(),
+          luck: _Always(),
         ),
       ),
     );

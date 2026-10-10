@@ -26,7 +26,11 @@ class BoardStrip extends StatefulWidget {
     this.readyOrders,
     this.storyPicture,
     this.onMoved,
+    this.moreButtons = const [],
   });
+
+  /// Further round buttons for the menu (the Blessing Wheel and the like).
+  final List<Widget> moreButtons;
 
   /// Called whenever the row is slid (so anything pointing at one of its
   /// cards can follow).
@@ -204,7 +208,11 @@ class _BoardStripState extends State<BoardStrip> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      SizedBox(width: _menuWidth, child: _menu()),
+                      SizedBox(
+                        // Three buttons to a column.
+                        width: _menuWidth * ((_buttons.length + 2) ~/ 3),
+                        child: _menu(),
+                      ),
                       const SizedBox(width: _gap),
                       SizedBox(
                         width: card,
@@ -247,30 +255,41 @@ class _BoardStripState extends State<BoardStrip> {
     ),
   );
 
-  /// The round buttons at the far left, one under another.
-  Widget _menu() => Column(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  /// The round buttons at the far left, three to a column.
+  Widget _menu() => Row(
     children: [
-      StripButton(
-        buttonKey: const Key('location_button'),
-        icon: Icons.home_work,
-        tooltip: 'See what you have restored',
-        onTap: widget.onOpenLocation,
-      ),
-      StripButton(
-        buttonKey: const Key('letters_button'),
-        icon: Icons.mail,
-        tooltip: "Esther's letters",
-        onTap: widget.onOpenLetters,
-      ),
-      if (widget.onOpenEvent != null)
-        StripButton(
-          buttonKey: const Key('event_banner'),
-          icon: Icons.celebration,
-          tooltip: widget.eventLabel ?? '',
-          onTap: widget.onOpenEvent,
-          lit: true,
+      for (var i = 0; i < _buttons.length; i += 3)
+        SizedBox(
+          width: _menuWidth,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: _buttons.skip(i).take(3).toList(),
+          ),
         ),
     ],
   );
+
+  List<Widget> get _buttons => [
+    StripButton(
+      buttonKey: const Key('location_button'),
+      icon: Icons.home_work,
+      tooltip: 'See what you have restored',
+      onTap: widget.onOpenLocation,
+    ),
+    StripButton(
+      buttonKey: const Key('letters_button'),
+      icon: Icons.mail,
+      tooltip: "Esther's letters",
+      onTap: widget.onOpenLetters,
+    ),
+    if (widget.onOpenEvent != null)
+      StripButton(
+        buttonKey: const Key('event_banner'),
+        icon: Icons.celebration,
+        tooltip: widget.eventLabel ?? '',
+        onTap: widget.onOpenEvent,
+        lit: true,
+      ),
+    ...widget.moreButtons,
+  ];
 }

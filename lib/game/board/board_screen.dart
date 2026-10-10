@@ -23,6 +23,11 @@ import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/features/bubbles/bubble_controller.dart';
 import 'package:whispers_of_joppa/features/bubbles/bubble_layer.dart';
 import 'package:whispers_of_joppa/features/events/event_screen.dart';
+import 'package:whispers_of_joppa/domain/chance.dart';
+import 'package:whispers_of_joppa/domain/wheel.dart';
+import 'package:whispers_of_joppa/features/wheel/wheel_controller.dart';
+import 'package:whispers_of_joppa/features/wheel/wheel_screen.dart';
+import 'package:whispers_of_joppa/game/board/strip_button.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
 import 'package:whispers_of_joppa/domain/comfort.dart';
 import 'package:whispers_of_joppa/features/settings/account_screen.dart';
@@ -56,6 +61,7 @@ part 'board_screen_items.dart';
 part 'board_screen_layout.dart';
 part 'board_screen_notifications.dart';
 part 'board_screen_routes.dart';
+part 'board_screen_wheel.dart';
 
 final _log = Logger('BoardScreen');
 
@@ -77,12 +83,17 @@ class BoardScreen extends StatefulWidget {
     this.eventProgress,
     this.comfort,
     this.onOpenPage,
-    this.bubbleLuck,
+    this.luck,
+    this.country,
   });
 
-  /// Decides which merges leave a bubble. Tests pass their own; the app
-  /// leaves it to chance.
-  final Random? bubbleLuck;
+  /// Decides everything left to chance (bubbles, the wheel). Tests pass
+  /// their own; the app leaves it to chance.
+  final Random? luck;
+
+  /// The two-letter country the player is in, for rules that differ by
+  /// country. Tests pass their own; the app asks the phone.
+  final String? country;
 
   /// Opens one of the game's web pages ("privacy", "terms", "support").
   /// Null (in tests) leaves those rows out of Settings.
@@ -147,6 +158,7 @@ class _BoardScreenState extends State<BoardScreen>
         _BoardEvents,
         _BoardItems,
         _BoardBubbles,
+        _BoardWheel,
         _BoardLayout,
         _BoardScreenActions {
   @override

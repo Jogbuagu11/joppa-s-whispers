@@ -21,7 +21,7 @@ mixin _BoardBubbles on _BoardItems {
       addTalents: session.orders.addTalents,
       spendPearls: session.purchases.spendPearls,
       giveItem: (id) => session.grants.give(itemIds: [id]),
-      random: widget.bubbleLuck,
+      random: widget.luck,
     );
     _bubbles = bubbles;
     final onMerged = session.game.onMerged;

@@ -106,6 +106,14 @@ class PurchasesController extends ChangeNotifier {
     return refunds.length;
   }
 
+  /// Adds Pearls won or earned in play (never bought ones: those come only
+  /// through a verified purchase).
+  void earnPearls(int amount) {
+    if (amount <= 0) return;
+    _pearls += amount;
+    notifyListeners();
+  }
+
   /// Takes Pearls for something bought with them. Returns false, taking
   /// nothing, if there are not enough.
   bool spendPearls(int amount) {

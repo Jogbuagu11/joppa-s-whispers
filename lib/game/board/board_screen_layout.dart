@@ -2,7 +2,7 @@
 // and the board), and the new player's spotlight.
 part of 'board_screen.dart';
 
-mixin _BoardLayout on _BoardItems, _BoardEvents, _BoardBubbles {
+mixin _BoardLayout on _BoardItems, _BoardEvents, _BoardBubbles, _BoardWheel {
   Future<void> _doNextTask();
 
   Widget _playArea(BoardSession session) {
@@ -27,8 +27,13 @@ mixin _BoardLayout on _BoardItems, _BoardEvents, _BoardBubbles {
                 children: [
                   _ordersBackdrop(
                     child: ListenableBuilder(
-                      listenable: session.tutorial,
+                      listenable: Listenable.merge([
+                        session.tutorial,
+                        session.levels,
+                        session.extras,
+                      ]),
                       builder: (context, _) => BoardStrip(
+                        moreButtons: _wheelButton(session),
                         story: session.story,
                         onDoTask: _doNextTask,
                         onOpenLocation: _openLocation,
