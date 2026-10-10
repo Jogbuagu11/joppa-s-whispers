@@ -1,0 +1,33 @@
+{
+ "kind": "items",
+ "model": "gemini-3-pro-image",
+ "aspect": "1:1",
+ "style_references": [
+  "assets/items/item_bakery_05.jpg",
+  "assets/items/item_loom_05.jpg",
+  "assets/items/item_church_03.jpg"
+ ],
+ "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork, like a premium illustrated merge game. NOT 3D, not a photo, not anime, not flat vector. Soft painted edges, no thick black outlines. Warm soft light from the upper left with a gentle soft shadow beneath the object. Palette: sand, cream, terracotta, olive, cedar brown, sea blue, indigo, gold.",
+ "rules": "RULES: Square picture (1:1). ONE single object, centred, filling about 80 percent of the frame, on a plain soft light-gray background exactly like the attached item pictures. No text, no letters, no numbers, no labels, no watermark, no border, no people. First-century Mediterranean only (around AD 40): wood, clay, glass, linen, bronze; nothing modern.",
+ "folder": "jars-of-clay",
+ "views": [
+  {
+   "id": "clayjar_01",
+   "label": "Jar of Clay",
+   "game": "item_clayjar_01",
+   "prompt": "a humble rough earthen clay jar with a plain clay lid tied down with twine, a small chip on its rim, a soft warm light glowing faintly from under the lid as if something precious were inside (2 Corinthians 4:7)"
+  },
+  {
+   "id": "treasurejar_01",
+   "label": "Treasure Jar",
+   "game": "item_treasurejar_01",
+   "prompt": "a handsome glazed sea-blue ceramic jar with a bronze band and a domed lid tied with a red cord, a warm golden light glowing from under the lid"
+  },
+  {
+   "id": "goldenjar_01",
+   "label": "Golden Jar",
+   "game": "item_goldenjar_01",
+   "prompt": "a splendid jar of polished gold with simple engraved bands and a domed golden lid sealed with a purple cord, bright warm light glowing from under the lid"
+  }
+ ]
+}

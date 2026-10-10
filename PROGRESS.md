@@ -1441,7 +1441,9 @@ Where it stands (she has seen each step; the last one is not yet approved):
     mystery bubbles. Free spins, ad spins and jars already owned work everywhere. The
     country is the phone's region setting.
   - No chance feature in the tutorial; none for money during it either.
-- Content is version 33. The wheel's daily counts are saved (in the save file's new
+- **Build 17** (Android bundle, signed): `Downloads/whispers-of-joppa-1.0.0-17.aab`.
+  Not uploaded. It replaces build 16 as the one to put on Play testing.
+- Content is version 36. The wheel's daily counts are saved (in the save file's new
   `extras`); no new save version.
 
 **Checks**
@@ -1493,7 +1495,9 @@ Where it stands (she has seen each step; the last one is not yet approved):
 - "Fewer ad placements for players who have paid", "a free wheel spin" as a rewarded-ad
   placement beyond the one built, and buying hourglasses/knives/threads directly with
   Pearls are not built here.
-- **Art needed:** the three jars (Jar of Clay, Treasure Jar, Golden Jar) and a wheel.
+- **Art:** the fifteen `rare-and-tools` pictures are approved and in the game (lamp and
+  honey pot redone first). Three jar pictures await her yes in
+  `Downloads/WhispersofJoppa-art-review/jars-of-clay/` (job `tool/art_jobs/jars_of_clay.json`).
 - `chance_validator.dart` is 292 lines and `board_strip.dart` 295: split before adding.
 
 ## Jennifer's answers (2026-10-10, after Milestone 28)
