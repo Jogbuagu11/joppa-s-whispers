@@ -1,5 +1,6 @@
 // The Pearl shop: the store's products with the store's own prices.
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/app/game_app_bar.dart';
 import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
 import 'package:whispers_of_joppa/services/store_service.dart';
@@ -35,11 +36,7 @@ class _ShopScreenState extends State<ShopScreen> {
     return Scaffold(
       key: const Key('shop_screen'),
       backgroundColor: _ink,
-      appBar: AppBar(
-        backgroundColor: _ink,
-        foregroundColor: _gold,
-        title: const Text('Pearl Shop'),
-      ),
+      appBar: gameAppBar(const Text('Pearl Shop')),
       body: SafeArea(
         child: Column(
           children: [

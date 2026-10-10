@@ -1,5 +1,6 @@
 // Shows a location and each of its areas, before or after restoration.
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/app/game_app_bar.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
 
 const _gold = Color(0xFFD4802A);
@@ -56,11 +57,7 @@ class _LocationScreenState extends State<LocationScreen> {
     return Scaffold(
       key: const Key('location_screen'),
       backgroundColor: _ink,
-      appBar: AppBar(
-        backgroundColor: _ink,
-        foregroundColor: _gold,
-        title: Text(location.name, key: const Key('location_name')),
-      ),
+      appBar: gameAppBar(Text(location.name, key: const Key('location_name'))),
       body: SafeArea(
         child: Column(
           children: [

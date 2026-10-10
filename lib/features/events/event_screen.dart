@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/app/game_app_bar.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/events_repository.dart';
@@ -208,11 +209,7 @@ class _EventScreenState extends State<EventScreen> {
     return Scaffold(
       key: const Key('event_screen'),
       backgroundColor: _ink,
-      appBar: AppBar(
-        backgroundColor: _ink,
-        foregroundColor: _gold,
-        title: Text(widget.event.name),
-      ),
+      appBar: gameAppBar(Text(widget.event.name)),
       body: controller == null || game == null
           ? const Center(child: CircularProgressIndicator(color: _gold))
           : SafeArea(

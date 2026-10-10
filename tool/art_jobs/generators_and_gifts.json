@@ -1,0 +1,90 @@
+{
+ "folder": "generators-and-gifts",
+ "kind": "items",
+ "model": "gemini-3-pro-image",
+ "aspect": "1:1",
+ "style_references": [
+  "assets/items/item_bakery_05.jpg",
+  "assets/items/item_loom_05.jpg",
+  "assets/items/item_church_03.jpg"
+ ],
+ "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork, like a premium illustrated merge game. NOT 3D, not a photo, not anime, not flat vector. Soft painted edges, no thick black outlines. Warm soft light from the upper left with a gentle soft shadow beneath the object. Palette: sand, cream, terracotta, olive, cedar brown, sea blue, indigo, gold.",
+ "rules": "RULES: Square picture (1:1). ONE single object, centred, filling about 80 percent of the frame, on a plain soft light-gray background exactly like the attached item pictures. No text, no letters, no numbers, no labels, no watermark, no border, no people. First-century Mediterranean only (around AD 40): wood, clay, glass, linen, bronze; nothing modern.",
+ "views": [
+  {
+   "id": "fig",
+   "label": "Fig Tree (generator)",
+   "game": "gen_fig_l1",
+   "kind": "generators",
+   "references": [
+    "assets/generators/gen_chest_l2.jpg",
+    "assets/generators/gen_armor_l1.jpg"
+   ],
+   "prompt": "a small fig tree in a round clay planter: a gnarled trunk, broad lobed green leaves and several ripe purple figs. It is the thing a player taps to get items, drawn like the last two attached generator pictures: one object, a little larger and richer than an ordinary item."
+  },
+  {
+   "id": "olive_tree",
+   "label": "Courtyard Olive Tree (generator)",
+   "game": "gen_olive_tree_l1",
+   "kind": "generators",
+   "references": [
+    "assets/generators/gen_chest_l2.jpg",
+    "assets/generators/gen_armor_l1.jpg"
+   ],
+   "prompt": "an old olive tree growing from a low ring of courtyard stones: a twisted silver-grey trunk, narrow grey-green leaves and clusters of green and black olives. It is the thing a player taps to get items, drawn like the last two attached generator pictures: one object, a little larger and richer than an ordinary item."
+  },
+  {
+   "id": "loaves",
+   "label": "Basket of Loaves (generator)",
+   "game": "gen_loaves_l1",
+   "kind": "generators",
+   "references": [
+    "assets/generators/gen_chest_l2.jpg",
+    "assets/generators/gen_armor_l1.jpg"
+   ],
+   "prompt": "a wide woven reed basket heaped with fresh round loaves and flatbreads, a linen cloth folded over one side. It is the thing a player taps to get items, drawn like the last two attached generator pictures: one object, a little larger and richer than an ordinary item."
+  },
+  {
+   "id": "hourglass_01",
+   "label": "Hourglass 1 Small",
+   "game": "item_hourglass_01",
+   "prompt": "a small simple sand-glass timer: two little bulbs of pale greenish ancient glass in a plain olive-wood frame, a thin stream of sand falling"
+  },
+  {
+   "id": "hourglass_02",
+   "label": "Hourglass 2 Medium",
+   "game": "item_hourglass_02",
+   "prompt": "a medium sand-glass timer: two clear glass bulbs in a turned cedar-wood frame with bronze caps, golden sand falling, half run through"
+  },
+  {
+   "id": "hourglass_03",
+   "label": "Hourglass 3 Great",
+   "game": "item_hourglass_03",
+   "prompt": "a large, fine sand-glass timer: two big clear glass bulbs in a polished bronze-and-cedar frame with small gold details, bright golden sand falling, with a soft warm glow about it"
+  },
+  {
+   "id": "manna_jar_01",
+   "label": "Manna 1 Pinch",
+   "game": "item_manna_jar_01",
+   "prompt": "a tiny shallow clay dish holding a small heap of pale, frost-white flakes of manna, like fine coriander-seed wafers"
+  },
+  {
+   "id": "manna_jar_02",
+   "label": "Manna 2 Cup",
+   "game": "item_manna_jar_02",
+   "prompt": "a small clay cup filled to the brim with pale frost-white flakes of manna"
+  },
+  {
+   "id": "manna_jar_03",
+   "label": "Manna 3 Jar",
+   "game": "item_manna_jar_03",
+   "prompt": "a rounded clay jar with a linen cover tied with cord, a little pale frost-white manna heaped at its open mouth"
+  },
+  {
+   "id": "manna_jar_04",
+   "label": "Manna 4 Golden pot",
+   "game": "item_manna_jar_04",
+   "prompt": "a small golden lidded pot (like the golden pot of manna kept in the ark), its lid set a little aside to show pale frost-white manna inside, softly glowing"
+  }
+ ]
+}

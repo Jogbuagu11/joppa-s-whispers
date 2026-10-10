@@ -1,6 +1,7 @@
 // Sign in, sync, sign out and delete the account.
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/app/game_app_bar.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/services/auth_service.dart';
 
@@ -127,11 +128,7 @@ class _AccountScreenState extends State<AccountScreen> {
     return Scaffold(
       key: const Key('account_screen'),
       backgroundColor: _ink,
-      appBar: AppBar(
-        backgroundColor: _ink,
-        foregroundColor: _gold,
-        title: const Text('Account'),
-      ),
+      appBar: gameAppBar(const Text('Account')),
       body: SafeArea(
         child: ValueListenableBuilder<AuthUser?>(
           valueListenable: widget.auth.user,

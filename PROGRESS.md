@@ -1370,6 +1370,19 @@ Where it stands (she has seen each step; the last one is not yet approved):
   sync, notifications and the shop start only afterwards. The real start-up path (title
   screen, welcome) has widget tests but no device test — device tests start at the board.
   The title screen adds about a second and a half to every launch.
+- Other screens (shop, settings, account, letters, restoration, event): each now has the
+  evening harbor behind its title bar (`lib/app/game_app_bar.dart`), as on the board.
+  The story scene still shows portraits on their white cards.
+- Generated for Jennifer's review ("you generate"), NOT yet in the game: the three new
+  generators, three hourglasses and four Manna jars
+  (`Downloads/WhispersofJoppa-art-review/generators-and-gifts/`, job
+  `tool/art_jobs/generators_and_gifts.json`). After her yes:
+  `python3 tool/accept_art.py tool/art_jobs/generators_and_gifts.json`, then
+  `dart run tool/process_assets.dart`, then add the `asset` paths for the seven new
+  items in `content/chains.json`.
+- She asked to be reminded LATER (not at once) about: the AdMob consent messages, the
+  Play service account file, her OK to upload the iPhone build to TestFlight, and the
+  real-phone checks.
 - Reviewer's notes carried forward: on short phones (iPhone SE) the board cannot be
   full width — there is not the height; with three wanted items the item pictures are
   small on narrow phones; `board_game.dart` (291 lines) and `event_screen.dart` (294)

@@ -17,6 +17,7 @@ the two line up. A view with "prompt" is a single picture.
 import base64
 import json
 import os
+import subprocess
 import sys
 import time
 import urllib.error
@@ -39,6 +40,16 @@ def image_part(path):
     mime = 'image/png' if path.lower().endswith('.png') else 'image/jpeg'
     with open(path, 'rb') as f:
         return {'inline_data': {'mime_type': mime, 'data': base64.b64encode(f.read()).decode()}}
+
+
+def save_png(path, data):
+    """Writes a picture as a real .png, whatever format Google sent it in
+    (it sometimes sends a JPEG), so every later tool can read it."""
+    with open(path, 'wb') as f:
+        f.write(data)
+    if not data.startswith(b'\x89PNG'):
+        subprocess.run(['sips', '-s', 'format', 'png', path, '--out', path],
+                       check=True, capture_output=True)
 
 
 def generate(model, prompt, images, aspect):
@@ -109,8 +120,7 @@ def main():
                     + '\n\nThe attached pictures show the art style to match exactly.'
                 )
                 data = generate(job['model'], prompt, refs + extra, view.get('aspect', job['aspect']))
-                with open(single, 'wb') as f:
-                    f.write(data)
+                save_png(single, data)
                 print('made', os.path.basename(single), flush=True)
             continue
         after = os.path.join(out_dir, f"{view['label']} - after.png")
@@ -126,8 +136,7 @@ def main():
                    'wood, stone, water and colours identical).' if same else '.')
             )
             data = generate(job['model'], prompt, refs + same, job['aspect'])
-            with open(after, 'wb') as f:
-                f.write(data)
+            save_png(after, data)
             print('made', os.path.basename(after), flush=True)
         if anchor is None:
             anchor = after
@@ -138,8 +147,7 @@ def main():
                 + f"\n\nWhat is different in this view: {view['before']}" + note
             )
             data = generate(job['model'], prompt, [after], job['aspect'])
-            with open(before, 'wb') as f:
-                f.write(data)
+            save_png(before, data)
             print('made', os.path.basename(before), flush=True)
 
 

@@ -1,5 +1,6 @@
 // The keepsake book: every letter from Esther the player has found.
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/app/game_app_bar.dart';
 import 'package:whispers_of_joppa/domain/letters.dart';
 
 const _gold = Color(0xFFD4802A);
@@ -28,11 +29,7 @@ class LettersScreen extends StatelessWidget {
     return Scaffold(
       key: const Key('letters_screen'),
       backgroundColor: _ink,
-      appBar: AppBar(
-        backgroundColor: _ink,
-        foregroundColor: _gold,
-        title: const Text("Esther's Letters"),
-      ),
+      appBar: gameAppBar(const Text("Esther's Letters")),
       body: SafeArea(
         child: Column(
           children: [
@@ -139,11 +136,7 @@ class LetterReader extends StatelessWidget {
     return Scaffold(
       key: const Key('letter_reader'),
       backgroundColor: _ink,
-      appBar: AppBar(
-        backgroundColor: _ink,
-        foregroundColor: _gold,
-        title: Text(letter.title),
-      ),
+      appBar: gameAppBar(Text(letter.title)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),

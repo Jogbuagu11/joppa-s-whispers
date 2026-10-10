@@ -2,6 +2,7 @@
 // switches), and the one-time in-game question that comes before the
 // phone's own permission prompt.
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/app/game_app_bar.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
 import 'package:whispers_of_joppa/features/settings/comfort_controller.dart';
 import 'package:whispers_of_joppa/features/settings/notifications_controller.dart';
@@ -41,11 +42,7 @@ class NotificationSettingsScreen extends StatelessWidget {
     return Scaffold(
       key: const Key('notification_settings_screen'),
       backgroundColor: _ink,
-      appBar: AppBar(
-        backgroundColor: _ink,
-        foregroundColor: _gold,
-        title: Text(text['title'] ?? ''),
-      ),
+      appBar: gameAppBar(Text(text['title'] ?? '')),
       body: SafeArea(
         child: ListenableBuilder(
           listenable: Listenable.merge([controller, comfort]),
