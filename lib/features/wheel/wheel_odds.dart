@@ -77,13 +77,17 @@ class OddsList extends StatelessWidget {
   );
 }
 
-/// Shows every prize and its chance: for free and ad spins, and (if there
-/// are any) for Pearl spins.
+/// A further list for the odds panel: its heading and its chances.
+typedef OddsSection = ({String title, List<PrizeOdds> odds});
+
+/// Shows every prize and its chance: for free and ad spins, (if there are
+/// any) for Pearl spins, and then the game's other chances.
 Future<void> showWheelOdds(
   BuildContext context, {
   required Map<String, String> text,
   required List<PrizeOdds> free,
   required List<PrizeOdds> paid,
+  List<OddsSection> more = const [],
 }) => showDialog<void>(
   context: context,
   builder: (context) => AlertDialog(
@@ -105,6 +109,8 @@ Future<void> showWheelOdds(
               title: text['odds_paid'] ?? '',
               odds: paid,
             ),
+          for (final section in more)
+            OddsList(title: section.title, odds: section.odds),
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Text(

@@ -1,6 +1,7 @@
 // Milestone 27: from level 15 the Manna pill carries a boost chip; with 2x
 // on, a generator tap costs twice the Manna. Rare finds can be sold.
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -12,19 +13,30 @@ import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
+/// Luck that always draws the last outcome of any list.
+class _Luckiest implements Random {
+  @override
+  bool nextBool() => true;
+  @override
+  double nextDouble() => 0.999999;
+  @override
+  int nextInt(int max) => max - 1;
+}
+
 Future<dynamic> _content(String name) async =>
     jsonDecode(await rootBundle.loadString('content/$name.json'));
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  Future<BoardGame> open(WidgetTester tester, Key key) async {
+  Future<BoardGame> open(WidgetTester tester, Key key, {Random? luck}) async {
     await tester.pumpWidget(
       MaterialApp(
         home: BoardScreen(
           key: key,
           playOpeningScene: false,
           playTutorial: false,
+          luck: luck,
         ),
       ),
     );
@@ -116,6 +128,59 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(game.itemCounts()[id], isNull);
     expect(talents(), '${7 + price * 2}');
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 3));
+    await SaveRepository().clear();
+  });
+
+  testWidgets('a lucky boosted tap lifts the item further and says so', (
+    tester,
+  ) async {
+    final chapters = (await _content('chapters') as List<dynamic>)
+        .cast<Map<String, dynamic>>();
+    final orders = (await _content('orders') as List<dynamic>)
+        .cast<Map<String, dynamic>>();
+    await SaveRepository().save(
+      SaveState(
+        items: const [],
+        generators: const [
+          SavedGenerator(generatorId: 'gen_pantry', level: 1, col: 2, row: 8),
+        ],
+        manna: 60,
+        mannaLastRegen: DateTime.now(),
+        talents: 0,
+        blessings: 0,
+        activeOrders: const [],
+        pendingOrders: const [],
+        completedOrders: [
+          for (final o in orders)
+            if ((o['chapter'] as int) < 3) o['id'] as String,
+        ],
+        completedTasks: [
+          for (final c in chapters.take(2))
+            for (final t in c['tasks'] as List<dynamic>)
+              (t as Map<String, dynamic>)['id'] as String,
+        ],
+        tutorialStep: tutorialFinished,
+        endingsSeen: [for (final c in chapters.take(2)) c['id'] as String],
+        lastOrderSkip: null,
+        boost: 1,
+      ),
+    );
+    final game = await open(tester, const Key('lucky'), luck: _Luckiest());
+    final pantry = game.generatorPlacements.firstWhere(
+      (p) => p.gen.generatorId == 'gen_pantry',
+    );
+    await tester.tapAt(cellCentre(tester, pantry.col, pantry.row));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(tester.takeException(), isNull);
+    // 2x lifts one tier; the luckiest draw multiplies that lift, so the
+    // item is well above the second tier. The price is still 2 Manna.
+    final made = game.snapshotItems().single.itemId;
+    final tier = int.parse(made.substring(made.length - 2));
+    expect(tier, greaterThan(2), reason: made);
+    expect(find.byKey(const Key('lucky_toast')), findsOneWidget);
     await tester.pump(const Duration(seconds: 3));
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 3));

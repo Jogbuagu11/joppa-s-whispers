@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/generator_types.dart';
+import 'package:whispers_of_joppa/domain/lucky.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
@@ -48,6 +49,11 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
 
   /// Called with the new item after two items merge.
   void Function(ItemModel merged)? onMerged;
+
+  /// The lucky boost: how many times the lift a boosted tap gets (1 = no
+  /// luck), and a call when a tap was lucky.
+  int Function()? luckyTimes;
+  void Function(int times)? onLucky;
 
   /// Called with what came out of a sealed jar just opened.
   void Function(ItemModel gift)? onJarOpened;
@@ -214,51 +220,6 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
     }
     _built = true;
     _boardTouched();
-  }
-
-  void _buildCells() {
-    final cellSize = _cellSize;
-
-    _cells = List.generate(gridCols, (c) {
-      return List.generate(gridRows, (r) {
-        final cell = CellComponent(
-          col: c,
-          row: r,
-          cellSize: cellSize,
-          position: _cellPosition(c, r, cellSize),
-          onItemTapped: _onItemTapped,
-        );
-        add(cell);
-        return cell;
-      });
-    });
-  }
-
-  void _buildGenerators() => generatorPlacements.forEach(_showGenerator);
-
-  void _showGenerator(GeneratorPlacement placement) {
-    final cellSize = _cellSize;
-    _generatorCellSet.add((placement.col, placement.row));
-    add(
-      GeneratorComponent(
-        generator: placement.gen,
-        onTapped: _onGeneratorTapped,
-        label: () => generatorLabel(placement.gen),
-        art: () => _generatorArtFor(placement.gen.generatorId),
-        position: _cellPosition(placement.col, placement.row, cellSize),
-        cellSize: cellSize,
-      ),
-    );
-  }
-
-  // Grey is the fallback when a chain has no placeholder colour in content.
-  Color _colorFor(ItemModel item) =>
-      Color(chainPlaceholderColors[item.chainId] ?? 0xFF888888);
-
-  double get _cellSize {
-    final maxW = size.x / gridCols;
-    final maxH = size.y / gridRows;
-    return (maxW < maxH ? maxW : maxH) - 2;
   }
 
   @override

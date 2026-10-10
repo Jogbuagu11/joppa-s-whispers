@@ -21,6 +21,12 @@ const chanceTextKeys = [
   'jar_holds',
   'jar_buy',
   'jar_open',
+  'lucky_title',
+  'lucky_step',
+  'lucky_toast',
+  'mystery_title',
+  'mystery_step',
+  'mystery_name',
 ];
 
 /// Plain-English problems with the chance file; empty if it is sound.
@@ -82,6 +88,25 @@ List<String> chanceProblems(
       chainsJson,
       itemIds: itemIds,
       temporary: temporary,
+      problems: problems,
+    );
+    _checkSteps(
+      'Lucky boost',
+      (json['lucky_boost'] as Map<String, dynamic>)['steps'],
+      'times',
+      least: 1,
+      problems: problems,
+    );
+    final mystery = json['mystery_bubble'] as Map<String, dynamic>;
+    final share = mystery['share'];
+    if (share is! num || share < 0 || share > 1) {
+      problems.add('Mystery bubble: share must be between 0 and 1');
+    }
+    _checkSteps(
+      'Mystery bubble',
+      mystery['lifts'],
+      'tiers',
+      least: 0,
       problems: problems,
     );
     final text = json['text'];
@@ -233,5 +258,35 @@ void _checkJars(
         problems.add('$what: a jar that is sold cannot hold Pearls');
       }
     }
+  }
+}
+
+/// Checks a list of outcomes (each a number under [key], and a weight): each number
+/// at least [least] and used once, the first being the plain outcome.
+void _checkSteps(
+  String what,
+  Object? steps,
+  String key, {
+  required int least,
+  required List<String> problems,
+}) {
+  if (steps is! List<dynamic> || steps.isEmpty) {
+    problems.add('$what: has no outcomes');
+    return;
+  }
+  final seen = <Object?>{};
+  for (final entry in steps) {
+    final step = entry as Map<String, dynamic>;
+    final amount = step[key];
+    final weight = step['weight'];
+    if (amount is! int || amount < least || amount > 9 || !seen.add(amount)) {
+      problems.add('$what: $key "$amount" must be $least to 9, used once');
+    }
+    if (weight is! int || weight < 1) {
+      problems.add('$what: every weight must be 1 or more');
+    }
+  }
+  if ((steps.first as Map<String, dynamic>)[key] != least) {
+    problems.add('$what: the first outcome must be the plain one ($least)');
   }
 }

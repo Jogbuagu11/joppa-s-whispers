@@ -173,6 +173,26 @@ void main() {
     expect(game.boost.value, 2);
   });
 
+  test('a lucky tap lifts further for the same Manna, and says so; without '
+      'a boost there is no luck', () async {
+    level = 15;
+    final game = await board();
+    final lucky = <int>[];
+    game
+      ..luckyTimes = (() => 2)
+      ..onLucky = lucky.add;
+    // No boost on: an ordinary tap, and luck is not even asked.
+    tap(game);
+    expect(made(game), ['g1']);
+    expect(lucky, isEmpty);
+    game.cycleBoost();
+    tap(game);
+    // 2x lifts one tier; twice lucky, two tiers: the third-tier item.
+    expect(made(game)..sort(), ['g1', 'g3']);
+    expect(manna.manna, 10 - 1 - 2);
+    expect(lucky, [2]);
+  });
+
   test(
     'a saved boost the player no longer has is simply not applied',
     () async {

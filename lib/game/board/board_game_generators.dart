@@ -69,7 +69,10 @@ extension BoardGenerators on BoardGame {
     // Boost is for generators that cost Manna, and never in the tutorial.
     // With too little Manna for the boosted price but enough for an
     // ordinary tap, the tap is an ordinary one.
-    final boost = free ? GeneratorBoost.none : boostFor(gen);
+    final plain = free ? GeneratorBoost.none : boostFor(gen);
+    // With a boost on, now and then the lift is multiplied (lucky boost).
+    final lucky = plain.tierBonus > 0 ? (luckyTimes?.call() ?? 1) : 1;
+    final boost = LuckyBoost.lifted(plain, lucky);
     final result = resolveGeneratorTap(
       gen: gen,
       manna: manna.manna,
@@ -98,6 +101,7 @@ extension BoardGenerators on BoardGame {
     placeItem(item);
     _afterGave(placement);
     onGeneratorSpawn?.call(wasFree: free || !rules.costsManna);
+    if (lucky > 1) onLucky?.call(lucky);
     _log.fine('Generator $genId spawned ${item.itemId}, manna=${manna.manna}');
   }
 

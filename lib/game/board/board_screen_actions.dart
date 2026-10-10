@@ -235,8 +235,6 @@ mixin _BoardScreenActions
       _attachShop(session);
       _attachComfort(session);
       _wireBoard(session);
-      _wireBubbles(session);
-      _wireJars(session);
       session.ads.service = widget.ads;
       widget.cloud?.blockUploads = session.downgraded;
       session.saver.onSaved = (state) => widget.cloud?.afterLocalSave(state);
@@ -244,6 +242,8 @@ mixin _BoardScreenActions
       // Look for newer content in the background; it is used from next launch.
       unawaited(widget.content?.checkForUpdate(session.contentBundle));
       setState(() => _session = session);
+      // These read the content of the game now in play, so they come after.
+      _wireChance(session);
       // Back in the game: saved choices are read, old reminders cleared.
       unawaited(
         widget.notifications?.load().then(

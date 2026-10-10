@@ -2,7 +2,7 @@
 // merges, drawing them over the board, and asking what to do with one.
 part of 'board_screen.dart';
 
-mixin _BoardBubbles on _BoardItems {
+mixin _BoardBubbles on _BoardWheel {
   /// Starts bubbles for [session] (and ends those of the game before it).
   void _wireBubbles(BoardSession session) {
     _bubbles?.dispose();
@@ -12,6 +12,7 @@ mixin _BoardBubbles on _BoardItems {
       items: session.game.itemCatalog,
       chains: session.game.chainData,
       sideChains: session.game.sideChains,
+      mystery: _mysteryBubble,
       // Not for a new player, nor for a game played from memory only
       // (older content): what it gave could not be kept.
       allowed: () =>
@@ -42,6 +43,7 @@ mixin _BoardBubbles on _BoardItems {
       placeholderColors: session.game.chainPlaceholderColors,
       onTap: _askAboutBubble,
       label: _boardText['bubble_label'] ?? '',
+      mysteryName: _chanceText['mystery_name'] ?? '',
     );
   }
 
@@ -64,15 +66,33 @@ mixin _BoardBubbles on _BoardItems {
           key: const Key('bubble_dialog'),
           backgroundColor: const Color(0xFF2A1F08),
           title: Text(
-            tapped.item.name,
+            tapped.mystery
+                ? _chanceText['mystery_name'] ?? ''
+                : tapped.item.name,
             style: const TextStyle(color: Color(0xFFD4802A)),
           ),
-          content: Text(
-            (text['bubble_body'] ?? '').replaceAll(
-              '{talents}',
-              '${bubbles.talentsFor(tapped)}',
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                Text(
+                  (text['bubble_body'] ?? '').replaceAll(
+                    '{talents}',
+                    '${bubbles.talentsFor(tapped)}',
+                  ),
+                  style: const TextStyle(color: Color(0xFFF3E5C8)),
+                ),
+                // What a mystery bubble may hold is shown before it is
+                // paid for.
+                if (bubbles.mystery case final mystery? when tapped.mystery)
+                  OddsList(
+                    key: const Key('mystery_odds'),
+                    title: tapped.item.name,
+                    odds: mystery.odds(_mysteryStep),
+                  ),
+              ],
             ),
-            style: const TextStyle(color: Color(0xFFF3E5C8)),
           ),
           actionsOverflowAlignment: OverflowBarAlignment.end,
           actions: [
@@ -115,12 +135,22 @@ mixin _BoardBubbles on _BoardItems {
       if (!identical(session, _session) || !identical(bubbles, _bubbles)) {
         return;
       }
-      if (choice == 'pearls') bubbles.keepWithPearls(tapped.id);
+      var kept = choice == 'pearls' && bubbles.keepWithPearls(tapped.id);
       if (choice == 'ad') {
         final watched = await session.ads.watchForReward();
-        if (watched && identical(bubbles, _bubbles)) {
-          bubbles.keepAfterAd(tapped.id);
-        }
+        kept =
+            watched &&
+            identical(bubbles, _bubbles) &&
+            bubbles.keepAfterAd(tapped.id);
+      }
+      // A mystery bubble's item is named once it is the player's.
+      final held = bubbles.lastKept;
+      if (kept && tapped.mystery && held != null && mounted) {
+        await showPrize(
+          context,
+          text: _chanceText,
+          prize: Prize(id: held.itemId, name: held.name, weight: 1),
+        );
       }
     } finally {
       bubbles.release(tapped.id);

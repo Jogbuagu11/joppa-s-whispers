@@ -80,6 +80,7 @@ void main() {
           playOpeningScene: false,
           playTutorial: false,
           luck: _Always(),
+          country: 'US',
         ),
       ),
     );
@@ -128,6 +129,8 @@ void main() {
     await tester.tap(bubble);
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.byKey(const Key('bubble_dialog')), findsOneWidget);
+    // A mystery bubble shows what it may hold before anything is paid.
+    expect(find.byKey(const Key('mystery_odds')), findsOneWidget);
     // No ads are set up in this test, so no ad is offered.
     expect(find.byKey(const Key('bubble_ad')), findsNothing);
     await tester.tap(find.byKey(const Key('bubble_leave')));
@@ -142,12 +145,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 600));
     expect(tester.takeException(), isNull);
     expect(bubble, findsNothing);
-    final counts = game.itemCounts();
-    expect(counts.length, 2);
-    expect(counts['bakery_02'], 1);
-    // This luck always gives the next tier up.
-    expect(counts['bakery_03'], 1);
-    expect(pearls(), '${20 - perTier * 3}');
+    // With this luck every bubble is a mystery one: what it held is named.
+    expect(find.byKey(const Key('wheel_prize_name')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('wheel_prize_ok')));
+    await tester.pump(const Duration(milliseconds: 600));
+    // The plain outcome: a second flour, at the price of its tier.
+    expect(game.itemCounts(), {'bakery_02': 2});
+    expect(pearls(), '${20 - perTier * 2}');
 
     await tester.pump(const Duration(seconds: 3));
     await tester.pumpWidget(const SizedBox());

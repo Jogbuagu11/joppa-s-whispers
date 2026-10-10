@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:whispers_of_joppa/domain/bubbles.dart';
+import 'package:whispers_of_joppa/domain/lucky.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 
@@ -16,12 +17,17 @@ class Bubble {
   final int row;
   final DateTime popsAt;
 
+  /// True for a mystery bubble: [item] is the item that was merged, and
+  /// what the bubble really holds is only drawn when it is kept.
+  final bool mystery;
+
   const Bubble({
     required this.id,
     required this.item,
     required this.col,
     required this.row,
     required this.popsAt,
+    this.mystery = false,
   });
 }
 
@@ -33,6 +39,13 @@ class BubbleController extends ChangeNotifier {
 
   /// Chains no generator makes (rare finds, gifts): never kept for an ad.
   final Set<String> sideChains;
+
+  /// Mystery bubbles; null where there are none (the game has none, or
+  /// buying random rewards is forbidden here).
+  final MysteryBubble? mystery;
+
+  /// What the last bubble kept turned out to hold.
+  ItemModel? lastKept;
 
   /// False while there are to be no new bubbles (before their level, and
   /// during the tutorial).
@@ -60,6 +73,7 @@ class BubbleController extends ChangeNotifier {
     required this.items,
     required this.chains,
     this.sideChains = const {},
+    this.mystery,
     required this.allowed,
     required this.addTalents,
     required this.spendPearls,
@@ -103,9 +117,13 @@ class BubbleController extends ChangeNotifier {
     // Never a second Manna jar, hourglass, tool or sealed jar.
     if (merged.use != null) return;
     if (_bubbles.length >= rules.maxAtOnce) return;
-    final held =
+    final drawn =
         items[bubbleAfterMerge(merged, rules, chains, random: _random)];
-    if (held == null) return;
+    if (drawn == null) return;
+    // A mystery bubble starts from the plain item; its lift is drawn when
+    // it is kept.
+    final mystery = _isMystery();
+    final held = mystery ? merged : drawn;
     _bubbles.add(
       Bubble(
         id: _nextId++,
@@ -113,6 +131,7 @@ class BubbleController extends ChangeNotifier {
         col: col,
         row: row,
         popsAt: _now().add(Duration(seconds: rules.seconds)),
+        mystery: mystery,
       ),
     );
     _timer ??= Timer.periodic(const Duration(seconds: 1), (_) => tick());
@@ -167,10 +186,19 @@ class BubbleController extends ChangeNotifier {
   /// pops at the next tick.
   void release(int id) => _held.remove(id);
 
+  bool _isMystery() {
+    final mystery = this.mystery;
+    return mystery != null && _random.nextDouble() < mystery.share;
+  }
+
   void _keep(Bubble bubble) {
     _bubbles.remove(bubble);
     _held.remove(bubble.id);
-    giveItem(bubble.item.itemId);
+    // A mystery bubble's item is drawn now, by the odds it showed.
+    final lift = bubble.mystery ? (mystery?.draw(random: _random) ?? 0) : 0;
+    final kept = items[liftedItemId(bubble.item, lift, chains)] ?? bubble.item;
+    lastKept = kept;
+    giveItem(kept.itemId);
     _rest();
     notifyListeners();
   }

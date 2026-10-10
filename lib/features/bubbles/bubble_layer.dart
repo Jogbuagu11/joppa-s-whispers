@@ -13,7 +13,11 @@ class BubbleLayer extends StatelessWidget {
     required this.placeholderColors,
     required this.onTap,
     this.label = '',
+    this.mysteryName = '',
   });
+
+  /// What a mystery bubble is called (its item is not named).
+  final String mysteryName;
 
   final BubbleController controller;
 
@@ -48,7 +52,10 @@ class BubbleLayer extends StatelessWidget {
       height: size,
       child: Semantics(
         button: true,
-        label: label.replaceAll('{name}', bubble.item.name),
+        label: label.replaceAll(
+          '{name}',
+          bubble.mystery ? mysteryName : bubble.item.name,
+        ),
         child: GestureDetector(
           key: Key('bubble_${bubble.id}'),
           behavior: HitTestBehavior.opaque,
@@ -66,7 +73,7 @@ class BubbleLayer extends StatelessWidget {
                 padding: EdgeInsets.all(size * 0.2),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(size * 0.12),
-                  child: _picture(bubble.item),
+                  child: bubble.mystery ? _hidden() : _picture(bubble.item),
                 ),
               ),
               CircularProgressIndicator(
@@ -81,6 +88,21 @@ class BubbleLayer extends StatelessWidget {
       ),
     );
   }
+
+  Widget _hidden() => const ColoredBox(
+    color: GamePalette.panelEdge,
+    child: Center(
+      child: Text(
+        '?',
+        textScaler: TextScaler.noScaling,
+        style: TextStyle(
+          color: GamePalette.talents,
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  );
 
   Widget _picture(ItemModel item) => item.asset.isEmpty
       ? ColoredBox(

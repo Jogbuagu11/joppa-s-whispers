@@ -16,7 +16,11 @@ class WheelScreen extends StatefulWidget {
     required this.controller,
     required this.text,
     this.below,
+    this.moreOdds = const [],
   });
+
+  /// The game's other chances, for the odds panel.
+  final List<OddsSection> moreOdds;
 
   /// Shown under the wheel (the jars that can be bought).
   final Widget? below;
@@ -101,6 +105,7 @@ class _WheelScreenState extends State<WheelScreen>
                   free: _wheel.freeOdds,
                   // No Pearl spins here: nothing to show for them.
                   paid: _wheel.paidAllowed ? _wheel.paidOdds : const [],
+                  more: widget.moreOdds,
                 ),
                 child: Text(
                   _t('see_odds'),

@@ -100,7 +100,13 @@
     "jars_title": "Jars of Clay",
     "jar_holds": "It holds one of these:",
     "jar_buy": "{pearls} Pearls",
-    "jar_open": "Open"
+    "jar_open": "Open",
+    "lucky_title": "Lucky boost (with a boost on)",
+    "lucky_step": "{times} times the lift",
+    "lucky_toast": "Lucky! {times} times the lift",
+    "mystery_title": "Mystery bubbles",
+    "mystery_step": "The item, {tiers} higher",
+    "mystery_name": "Mystery bubble"
   },
   "jars": {
     "clay_every_orders": 4,
@@ -248,5 +254,42 @@
         ]
       }
     }
+  },
+  "lucky_boost": {
+    "steps": [
+      {
+        "times": 1,
+        "weight": 90
+      },
+      {
+        "times": 2,
+        "weight": 6
+      },
+      {
+        "times": 3,
+        "weight": 3
+      },
+      {
+        "times": 5,
+        "weight": 1
+      }
+    ]
+  },
+  "mystery_bubble": {
+    "share": 0.15,
+    "lifts": [
+      {
+        "tiers": 0,
+        "weight": 50
+      },
+      {
+        "tiers": 1,
+        "weight": 35
+      },
+      {
+        "tiers": 2,
+        "weight": 15
+      }
+    ]
   }
 }

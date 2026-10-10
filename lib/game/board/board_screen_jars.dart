@@ -3,7 +3,16 @@
 // wheel.
 part of 'board_screen.dart';
 
-mixin _BoardJars on _BoardWheel {
+mixin _BoardJars on _BoardBubbles {
+  /// Starts everything left to chance for [session], which must already
+  /// be the game in play: bubbles, jars with orders, the lucky boost.
+  void _wireChance(BoardSession session) {
+    assert(identical(session, _session), 'wire the game in play');
+    _wireBubbles(session);
+    _wireJars(session);
+    _wireLuck(session);
+  }
+
   /// The jars' rules, or null if this content has none.
   JarsConfig? get _jars => switch (_chance?['jars']) {
     final Map<String, dynamic> json => JarsConfig.fromJson(json),

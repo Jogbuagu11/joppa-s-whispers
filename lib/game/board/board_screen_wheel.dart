@@ -19,6 +19,52 @@ mixin _BoardWheel on _BoardItems {
         if (e.value case final String words) e.key: words,
   };
 
+  /// The lucky boost's list, or null if this content has none.
+  LuckyBoost? get _luckyBoost => switch (_chance?['lucky_boost']) {
+    final Map<String, dynamic> json => LuckyBoost.fromJson(json),
+    _ => null,
+  };
+
+  /// Mystery bubbles' list; null if this content has none, or where
+  /// buying random rewards is forbidden (a mystery bubble is one).
+  MysteryBubble? get _mysteryBubble => switch (_chance?['mystery_bubble']) {
+    final Map<String, dynamic> json when _paidChanceAllowed =>
+      MysteryBubble.fromJson(json),
+    _ => null,
+  };
+
+  String _luckyName(int times) =>
+      (_chanceText['lucky_step'] ?? '').replaceAll('{times}', '$times');
+  String _mysteryStep(int tiers) =>
+      (_chanceText['mystery_step'] ?? '').replaceAll('{tiers}', '$tiers');
+
+  /// A boosted tap is now and then lucky; the player is told when it was.
+  void _wireLuck(BoardSession session) {
+    final lucky = _luckyBoost;
+    if (lucky == null) return;
+    session.game
+      ..luckyTimes = (() => lucky.draw(random: widget.luck))
+      ..onLucky = (times) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              key: const Key('lucky_toast'),
+              duration: const Duration(seconds: 2),
+              backgroundColor: GamePalette.panel,
+              content: Text(
+                (_chanceText['lucky_toast'] ?? '').replaceAll(
+                  '{times}',
+                  '$times',
+                ),
+                style: const TextStyle(color: GamePalette.talents),
+              ),
+            ),
+          );
+      };
+  }
+
   /// The wheel's rules, or null while the wheel is not open to this
   /// player: before its level, in the tutorial, or in a game played from
   /// memory only (older content), whose prizes could not be kept.
@@ -87,6 +133,18 @@ mixin _BoardWheel on _BoardItems {
             controller: wheel,
             text: _chanceText,
             below: _jarShop(session),
+            moreOdds: [
+              if (_luckyBoost case final lucky?)
+                (
+                  title: _chanceText['lucky_title'] ?? '',
+                  odds: lucky.odds(_luckyName),
+                ),
+              if (_mysteryBubble case final mystery?)
+                (
+                  title: _chanceText['mystery_title'] ?? '',
+                  odds: mystery.odds(_mysteryStep),
+                ),
+            ],
           ),
         ),
       );
