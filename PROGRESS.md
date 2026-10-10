@@ -1415,6 +1415,9 @@ Where it stands (she has seen each step; the last one is not yet approved):
   number in `content/chains.json`. Ordinary items that can still be merged are not for
   sale by tap, and neither is anything an order on show is asking for.
 - Content is version 25. The save gained one optional field (`boost`), no new version.
+- **Build 15** (Android bundle, signed): `Downloads/whispers-of-joppa-1.0.0-15.aab`. It
+  also carries the harbor title bars and the board restyle. Not uploaded. No iPhone
+  build 15 has been made yet (the last store-signed iPhone file is build 12).
 
 **Checks**
 - `flutter analyze` clean; unit tests pass (`test/domain/generator_boost_test.dart`,
