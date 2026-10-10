@@ -10,7 +10,8 @@ broken in a way she can't recover from. Follow them exactly.
 3. `docs/STORY_BIBLE.md` — world, characters, chapters, task beats, letters
 4. `docs/TECH_SPEC.md` — architecture, packages, data formats
 5. `docs/LIVEOPS_LAUNCH.md` — events, content pipeline, launch plan
-6. `PROGRESS.md` — current milestone, what's done, open questions (you maintain this file)
+6. `docs/EXPANSION.md` — the full feature expansion (in scope for launch; where it and an earlier doc disagree, it wins)
+7. `PROGRESS.md` — current milestone, what's done, open questions (you maintain this file)
 
 If the docs don't answer something, **ask Jennifer** before building. If you must assume,
 write the assumption in `PROGRESS.md` under "Assumptions to confirm."
@@ -200,7 +201,22 @@ Copy this list into `PROGRESS.md` at setup and track status there.
 | 22 | Admin panel | Simple web page to edit content, schedule events, and send push notifications |
 | 23 | Chapters 2–6 | Content added one chapter at a time, each its own milestone |
 | 24 | Polish & accessibility | Sound, haptics, text scaling, colorblind-safe item shapes |
-| 25 | Release builds | Signed iOS and Android builds for TestFlight and Play internal testing |
+| 25 | Player levels & XP | XP from tasks, levels 1–60, level-up refill and rewards, feature unlocks per section 18 |
+| 26 | Generator types | Charged, free, and temporary generators with cooldowns; hourglass time-skips; Manna items (section 19) |
+| 27 | Boost & rare chains | 2x/4x generator boost, rare side-chain drops (19.2–19.3) |
+| 28 | Board extras | Bubbles, sealed jars, splitting knife, Golden Thread (20.1–20.3) |
+| 29 | Chance features | Blessing Wheel, random Jars of Clay, lucky boost, mystery bubbles; "See odds" panel on each; country switch for paid random items (20.4) |
+| 30 | Offers & pop-ups | Every offer type and rule in section 21, driven by the Supabase `offers` table; reusable offer products; frequency caps |
+| 31 | Treasure Jar & pass tiers | Piggy bank; Premium and Premium Plus pass with endless track |
+| 32 | Event suite | Milestone, race, collect, energy, order, daily tasks, global goal (section 22), scheduled from the admin panel |
+| 33 | Pilgrim's Road | Dice board-game event with tiles, mini-games, staged event shop |
+| 34 | Social: profiles & friends | Profiles, avatars, friend codes, Facebook friends, daily gifting, item requests, report and block |
+| 35 | Prayer & Church Circles | Teams up to 30, preset-message chat, team chests and challenges, church codes and leaderboard |
+| 36 | Decoration choices & order quests | 3 designs per area, switchable; order quests; timed orders; story skip and replay (section 24) |
+| 37 | Story choices & hearts | Dialogue choices, relationship meters, bonus scenes and outfits (section 25) |
+| 38 | Daily calendar, album, pet | 28-day login calendar with verse of the day, keepsake card album with trading, Shadow the cat |
+| 39 | Sharing & Manna links | Share images to Facebook, deep-linked free Manna links with one claim per player, Bible study guides |
+| 40 | Release builds | Signed iOS and Android builds for TestFlight and Play internal testing |
 
 ## Purchases — extra rules
 Money is involved, so these are stricter than everything else:

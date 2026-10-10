@@ -1,7 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 24 is built — sound, vibration, text size and numbers on items. Next to build: 25 — Release builds. Milestones 14 and 16–24 are built and awaiting Jennifer's checks.
-
+## Current milestone: 25 — Player levels & XP (first milestone of docs/EXPANSION.md; not started). Milestones 14 and 16–24 are built and awaiting Jennifer's checks. Release builds are now milestone 40.
 ---
 
 ## Milestone status
@@ -33,7 +32,22 @@
 | 22 | Admin panel | BUILT — not tagged: Jennifer has not yet signed in and used it; push needs the Firebase key on the server |
 | 23 | Chapters 2–6 | BUILT — all of Season 1 (Chapters 1–6) is written. Not tagged: Jennifer has not played Chapters 2–6, and her reviewer has not read them |
 | 24 | Polish & accessibility | BUILT — not tagged: Jennifer has not yet heard the sounds or felt the vibration on a real phone |
-| 25 | Release builds | Not started |
+| 25 | Player levels & XP | Not started |
+| 26 | Generator types | Not started |
+| 27 | Boost & rare chains | Not started |
+| 28 | Board extras | Not started |
+| 29 | Chance features | Not started |
+| 30 | Offers & pop-ups | Not started |
+| 31 | Treasure Jar & pass tiers | Not started |
+| 32 | Event suite | Not started |
+| 33 | Pilgrim's Road | Not started |
+| 34 | Social: profiles & friends | Not started |
+| 35 | Prayer & Church Circles | Not started |
+| 36 | Decoration choices & order quests | Not started |
+| 37 | Story choices & hearts | Not started |
+| 38 | Daily calendar, album, pet | Not started |
+| 39 | Sharing & Manna links | Not started |
+| 40 | Release builds (was 25) | STARTED EARLY — signed Android bundle and store-signed iPhone app both build (build 12); not uploaded to TestFlight; see the Milestone 25-era notes below |
 
 ---
 
@@ -1260,6 +1274,29 @@ tested directly).
   messaging → create and publish the European regulations message and the IDFA
   explainer for both apps, with the privacy policy URL
   https://www.whispersofjoppa.com/privacy.
+
+## The expansion, and the first store-signed iPhone build (2026-10-09)
+
+- Jennifer added `docs/EXPANSION.md` (filed there from the project root, as it asks):
+  fifteen new milestones, 25–39, all in scope for launch; "Release builds" moves to 40.
+  The milestone tables here and in `CLAUDE.md` were renumbered to match, and
+  `CLAUDE.md` now lists the document among those to read first. Notes written before
+  today that say "Milestone 25" mean release builds (now 40).
+- She signed in to Xcode. `xcodebuild archive` then `-exportArchive` (settings in
+  `ios/ExportOptions.plist`) now produce a store-signed app, signed with an Apple-managed
+  distribution certificate: `dist/whispers-of-joppa-1.0.0-12.ipa`, copied to Downloads.
+  It was built with the real ad units. **Not uploaded** — TestFlight upload waits for her OK.
+- Raised with Jennifer about the expansion (her decisions, not yet answered):
+  1. Age rating: the Blessing Wheel, paid Jars and dice make the game "simulated gambling"
+     plus paid random items; the rating will be higher than the 4+/Everyone planned in
+     LIVEOPS, and some countries restrict paid random items.
+  2. `CLAUDE.md` still says rewarded ads only — the expansion keeps that.
+  3. The twelve new store products are permanent once created on Apple; confirm before
+     creating. The two passes are listed as "Consumable".
+  4. Facebook friends / contacts need Facebook's kit (a new package and new privacy
+     disclosures); friend codes alone need neither.
+  5. New art needed is large: 3 designs for every restored area, album cards, avatars and
+     frames, wheel, jars, the cat, event boards.
 
 ## Assumptions to confirm (added in Milestone 24)
 - **Text grows to 1.3× at most.** GDD 16 says text "scales with the phone's text-size
