@@ -17,6 +17,7 @@ import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/data/notification_prefs_repository.dart';
 import 'package:whispers_of_joppa/data/supabase_remote_events.dart';
+import 'package:whispers_of_joppa/data/welcome_store.dart';
 import 'package:whispers_of_joppa/data/supabase_remote_content.dart';
 import 'package:whispers_of_joppa/domain/comfort.dart';
 import 'package:whispers_of_joppa/data/sync_base_repository.dart';

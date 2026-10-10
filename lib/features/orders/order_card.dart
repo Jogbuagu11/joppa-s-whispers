@@ -74,36 +74,7 @@ class OrderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Semantics(
-                label: characterName,
-                child: CharacterHead(
-                  characterId: order.characterId,
-                  // Three wanted items need the room more than the face.
-                  size: order.items.length > 2
-                      ? (roomy ? 56 : 46)
-                      : (roomy ? 78 : 60),
-                  name: characterName,
-                  look: look,
-                ),
-              ),
-              const SizedBox(width: 2),
-              // Three wanted items are wider than the space beside the
-              // face on a narrow phone: they shrink to fit.
-              Expanded(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (final wanted in order.items) _wantedItem(wanted),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+          _whoAndWhat(roomy: roomy),
           const SizedBox(height: 3),
           Expanded(
             // Tapping the words shows all of them, and the reward.
@@ -187,6 +158,42 @@ class OrderCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  /// The face and the wanted items. One item sits beside a large face.
+  /// Several go in a row under a smaller one, at full size, when the card
+  /// is tall enough; on a low card they shrink beside it instead.
+  Widget _whoAndWhat({required bool roomy}) {
+    final several = order.items.length > 1;
+    Widget face(double size) => Semantics(
+      label: characterName,
+      child: CharacterHead(
+        characterId: order.characterId,
+        size: size,
+        name: characterName,
+        look: look,
+      ),
+    );
+    final wanted = FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [for (final item in order.items) _wantedItem(item)],
+      ),
+    );
+    if (several && roomy) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [face(58), wanted],
+      );
+    }
+    return Row(
+      children: [
+        face(several ? 40 : (roomy ? 78 : 60)),
+        const SizedBox(width: 2),
+        Expanded(child: wanted),
+      ],
     );
   }
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/app/title_gate.dart';
+import 'package:whispers_of_joppa/data/welcome_store.dart';
 
 import '../support/comfort_fakes.dart';
 
@@ -104,5 +105,37 @@ void main() {
     await show(tester);
     await letItOpen(tester);
     expect(find.byKey(const Key('welcome')), findsOneWidget);
+  });
+
+  testWidgets('if the wording cannot be read, a returning player still goes '
+      'straight in, and a new one still gets a welcome they can read', (
+    tester,
+  ) async {
+    Future<void> showBroken() async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: TitleGate(
+            key: UniqueKey(),
+            store: WelcomeStore(directory: () async => folder),
+            onOpenPage: opened.add,
+            hold: const Duration(milliseconds: 50),
+            loadText: () async => throw const FormatException('bad wording'),
+            child: const Scaffold(key: Key('the_game')),
+          ),
+        ),
+      );
+      await letItOpen(tester);
+    }
+
+    await showBroken();
+    expect(find.byKey(const Key('welcome')), findsOneWidget);
+    expect(find.text('Play'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('welcome_play')));
+    await letItOpen(tester);
+    expect(find.byKey(const Key('the_game')), findsOneWidget);
+    // Next time, with the wording still unreadable: no second welcome.
+    await showBroken();
+    expect(find.byKey(const Key('welcome')), findsNothing);
+    expect(find.byKey(const Key('the_game')), findsOneWidget);
   });
 }

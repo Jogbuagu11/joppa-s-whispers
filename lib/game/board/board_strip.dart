@@ -3,9 +3,9 @@
 // being restored, Esther's letters, the event), with room for more. It
 // slides to the story card by itself when the next task can be done.
 import 'package:flutter/material.dart';
-import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/features/story/story_controller.dart';
 import 'package:whispers_of_joppa/features/story/task_bar.dart';
+import 'package:whispers_of_joppa/game/board/strip_button.dart';
 
 const _gap = 5.0;
 const _menuWidth = 46.0;
@@ -25,7 +25,12 @@ class BoardStrip extends StatefulWidget {
     this.ordersChanged,
     this.readyOrders,
     this.storyPicture,
+    this.onMoved,
   });
+
+  /// Called whenever the row is slid (so anything pointing at one of its
+  /// cards can follow).
+  final VoidCallback? onMoved;
 
   /// A picture for the story card: what its task restores.
   final String? storyPicture;
@@ -95,7 +100,22 @@ class _BoardStripState extends State<BoardStrip> {
 
   bool get _atStart => !_scroll.hasClients || _scroll.offset < 8;
 
+  DateTime? _touched;
+
+  /// True for a few seconds after the player slid the row by hand: it is
+  /// not moved under their finger.
+  bool get _inHand {
+    final at = _touched;
+    return at != null &&
+        DateTime.now().difference(at) < const Duration(seconds: 4);
+  }
+
+  bool get _atEnd =>
+      !_scroll.hasClients ||
+      _scroll.offset > _scroll.position.maxScrollExtent - 8;
+
   void _onScroll() {
+    widget.onMoved?.call();
     // The "more this way" arrow comes and goes with the scroll position.
     if (mounted) setState(() {});
   }
@@ -115,7 +135,7 @@ class _BoardStripState extends State<BoardStrip> {
     final ready = widget.readyOrders?.call() ?? 0;
     final more = ready > _ready;
     _ready = ready;
-    if (more && !_couldDo) _slide(toStory: false);
+    if (more && !_couldDo && !_inHand) _slide(toStory: false);
   }
 
   void _slide({required bool toStory}) {
@@ -168,32 +188,60 @@ class _BoardStripState extends State<BoardStrip> {
                   if (!_couldDo) {
                     _scroll.jumpTo(_scroll.position.maxScrollExtent);
                   }
+                  // The arrows at the edges depend on where it now rests.
+                  setState(() {});
                 });
               }
-              return SingleChildScrollView(
-                key: const Key('board_strip'),
-                controller: _scroll,
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    SizedBox(width: _menuWidth, child: _menu()),
-                    const SizedBox(width: _gap),
-                    SizedBox(
-                      width: card,
-                      height: widget.height,
-                      child: StoryCard(
-                        controller: widget.story,
-                        onDo: widget.onDoTask,
-                        picture: widget.storyPicture,
+              return NotificationListener<ScrollStartNotification>(
+                onNotification: (start) {
+                  // A slide begun by a finger, not by the game.
+                  if (start.dragDetails != null) _touched = DateTime.now();
+                  return false;
+                },
+                child: SingleChildScrollView(
+                  key: const Key('board_strip'),
+                  controller: _scroll,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      SizedBox(width: _menuWidth, child: _menu()),
+                      const SizedBox(width: _gap),
+                      SizedBox(
+                        width: card,
+                        height: widget.height,
+                        child: StoryCard(
+                          controller: widget.story,
+                          onDo: widget.onDoTask,
+                          picture: widget.storyPicture,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: _gap),
-                    SizedBox(width: width, child: widget.orders),
-                  ],
+                      const SizedBox(width: _gap),
+                      SizedBox(width: width, child: widget.orders),
+                    ],
+                  ),
                 ),
               );
             },
           ),
+        ),
+        // And one at the right edge when the orders are slid out of view.
+        SizedBox(
+          width: _gutter,
+          child: _atEnd
+              ? null
+              : GestureDetector(
+                  key: const Key('strip_orders'),
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => _slide(toStory: false),
+                  child: const Center(
+                    child: Icon(
+                      Icons.chevron_right,
+                      color: Colors.white,
+                      size: 22,
+                      shadows: [Shadow(blurRadius: 4)],
+                    ),
+                  ),
+                ),
         ),
       ],
     ),
@@ -203,20 +251,20 @@ class _BoardStripState extends State<BoardStrip> {
   Widget _menu() => Column(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
-      _RoundIcon(
+      StripButton(
         buttonKey: const Key('location_button'),
         icon: Icons.home_work,
         tooltip: 'See what you have restored',
         onTap: widget.onOpenLocation,
       ),
-      _RoundIcon(
+      StripButton(
         buttonKey: const Key('letters_button'),
         icon: Icons.mail,
         tooltip: "Esther's letters",
         onTap: widget.onOpenLetters,
       ),
       if (widget.onOpenEvent != null)
-        _RoundIcon(
+        StripButton(
           buttonKey: const Key('event_banner'),
           icon: Icons.celebration,
           tooltip: widget.eventLabel ?? '',
@@ -224,47 +272,5 @@ class _BoardStripState extends State<BoardStrip> {
           lit: true,
         ),
     ],
-  );
-}
-
-class _RoundIcon extends StatelessWidget {
-  const _RoundIcon({
-    required this.buttonKey,
-    required this.icon,
-    required this.tooltip,
-    required this.onTap,
-    this.lit = false,
-  });
-
-  final Key buttonKey;
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback? onTap;
-
-  /// A gold button rather than a dark one (something is on now).
-  final bool lit;
-
-  @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    label: tooltip,
-    child: Material(
-      color: lit ? GamePalette.gold : GamePalette.panel.withValues(alpha: 0.92),
-      shape: const CircleBorder(side: BorderSide(color: GamePalette.panelEdge)),
-      child: InkWell(
-        key: buttonKey,
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: SizedBox(
-          width: 38,
-          height: 38,
-          child: Icon(
-            icon,
-            size: 20,
-            color: lit ? GamePalette.backgroundBottom : GamePalette.level,
-          ),
-        ),
-      ),
-    ),
   );
 }

@@ -1,4 +1,4 @@
-// The tutorial hint shown above the board.
+// The tutorial hint shown under the board.
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/features/story/face_portrait.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';

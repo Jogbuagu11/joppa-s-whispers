@@ -41,7 +41,7 @@ void main() {
     );
     // One frame to measure, and the short wait for things to come to rest.
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(milliseconds: 700));
   }
 
   setUp(() {
@@ -90,7 +90,7 @@ void main() {
     targets = const SpotlightTargets([]);
     changed.value++;
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(milliseconds: 700));
     expect(find.byKey(const Key('tutorial_spotlight')), findsNothing);
     await tester.pumpAndSettle();
   });
@@ -103,7 +103,7 @@ void main() {
     enabled = true;
     changed.value++;
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(milliseconds: 700));
     expect(find.byKey(const Key('tutorial_spotlight')), findsOneWidget);
   });
 }

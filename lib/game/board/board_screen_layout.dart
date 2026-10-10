@@ -43,6 +43,7 @@ mixin _BoardLayout on _BoardItems, _BoardEvents {
                             : null,
                         eventLabel: _event?.name,
                         storyPicture: _storyPicture,
+                        onMoved: () => _stripMoved.value++,
                         ordersChanged: session.orders,
                         readyOrders: () => session.orders.activeOrders
                             .where(session.orders.canDeliver)
@@ -89,6 +90,7 @@ mixin _BoardLayout on _BoardItems, _BoardEvents {
       session.tutorial,
       session.orders,
       session.game.boardChanged,
+      _stripMoved,
     ]),
     targets: () => _spotlightTargets(session),
     alwaysLit: () => [?_rectOf(const Key('tutorial_banner'))],
@@ -117,6 +119,7 @@ mixin _BoardLayout on _BoardItems, _BoardEvents {
           onScreen(game.cellRect(pair.$2.$1, pair.$2.$2)),
         ], drag: true);
       case TutorialTrigger.generatorTap:
+        // The hint is about the first generator a new game has.
         final first = game.generatorPlacements.firstOrNull;
         if (first == null) return const SpotlightTargets([]);
         return SpotlightTargets([

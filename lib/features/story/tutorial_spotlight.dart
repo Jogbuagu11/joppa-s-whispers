@@ -74,7 +74,7 @@ class _TutorialSpotlightState extends State<TutorialSpotlight>
   /// later, after anything that was sliding has come to rest).
   void _refreshSoon() {
     WidgetsBinding.instance.addPostFrameCallback((_) => _refresh());
-    Future<void>.delayed(const Duration(milliseconds: 450), _refresh);
+    Future<void>.delayed(const Duration(milliseconds: 600), _refresh);
   }
 
   void _refresh() {
@@ -169,24 +169,25 @@ class _SpotlightPainter extends CustomPainter {
     return Offset.lerp(first, second, eased) ?? first;
   }
 
-  void _paintHand(Canvas canvas, Offset tip) {
-    const icon = Icons.touch_app;
-    final painter = TextPainter(
-      text: TextSpan(
-        text: String.fromCharCode(icon.codePoint),
-        style: TextStyle(
-          fontFamily: icon.fontFamily,
-          package: icon.fontPackage,
-          fontSize: 44,
-          color: Colors.white,
-        ),
+  // Laid out once: the hand never changes.
+  static final TextPainter _handPainter = TextPainter(
+    text: TextSpan(
+      text: String.fromCharCode(Icons.touch_app.codePoint),
+      style: TextStyle(
+        fontFamily: Icons.touch_app.fontFamily,
+        package: Icons.touch_app.fontPackage,
+        fontSize: 44,
+        color: Colors.white,
       ),
-      textDirection: TextDirection.ltr,
-    )..layout();
+    ),
+    textDirection: TextDirection.ltr,
+  )..layout();
+
+  void _paintHand(Canvas canvas, Offset tip) {
     // The fingertip of the icon is near its top, a little left of centre.
-    painter.paint(
+    _handPainter.paint(
       canvas,
-      tip - Offset(painter.width * 0.42, painter.height * 0.1),
+      tip - Offset(_handPainter.width * 0.42, _handPainter.height * 0.1),
     );
   }
 

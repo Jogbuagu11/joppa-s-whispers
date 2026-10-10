@@ -97,7 +97,7 @@ void main() {
     final orders = tester.getRect(find.byKey(const Key('orders')));
     // (After the narrow gutter that holds the arrow.)
     expect(orders.left, moreOrLessEquals(16, epsilon: 0.5));
-    expect(orders.width, 400 - 16);
+    expect(orders.width, 400 - 32);
     expect(left(tester, 'task_button'), lessThan(16));
     // An arrow at the edge says there is more that way; tapping it slides
     // back to the start.
@@ -178,5 +178,19 @@ void main() {
     ready.value = 2;
     await tester.pumpAndSettle();
     expect(left(tester, 'task_button'), greaterThan(0));
+  });
+
+  testWidgets('with the orders slid away an arrow at the right brings them '
+      'back', (tester) async {
+    blessings.value = 5;
+    await show(tester);
+    expect(find.byKey(const Key('strip_more')), findsNothing);
+    await tester.tap(find.byKey(const Key('strip_orders')));
+    await tester.pumpAndSettle();
+    expect(
+      tester.getRect(find.byKey(const Key('orders'))).left,
+      moreOrLessEquals(16, epsilon: 0.5),
+    );
+    expect(find.byKey(const Key('strip_orders')), findsNothing);
   });
 }

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flame/components.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
@@ -119,5 +121,71 @@ void main() {
     game.onGameResize(Vector2(240, 300));
     expect(tile.size.x, 78);
     expect(tile.position.y, (300 - 3 * 78) / 2 + 78);
+  });
+
+  test('cells are found where they are drawn', () async {
+    final game = await board(_gen('pantry', GeneratorRules.standard));
+    // 300 x 300 for a 3 x 3 board: cells of 98 with a 3-point margin.
+    expect(game.cellRect(0, 0), const Rect.fromLTWH(3, 3, 98, 98));
+    expect(game.cellRect(2, 1), const Rect.fromLTWH(3 + 196, 3 + 98, 98, 98));
+    game.onGameResize(Vector2(420, 420));
+    expect(game.cellRect(0, 0), const Rect.fromLTWH(3, 3, 138, 138));
+  });
+
+  test('a pair that can be merged is found; one alone, or a top-tier pair, '
+      'is not', () async {
+    final game = await board(_gen('pantry', GeneratorRules.standard));
+    expect(game.mergeablePair(), isNull);
+    game.placeItem(_fig);
+    expect(game.mergeablePair(), isNull);
+    game.placeItem(_fig);
+    // _fig is the top (and only) tier of its chain here: nothing to merge to.
+    expect(game.mergeablePair(), isNull);
+  });
+
+  test('two of the same item below the top tier are a pair to merge', () async {
+    const sheaf = ItemModel(
+      itemId: 'grain_1',
+      chainId: 'grain',
+      tier: 1,
+      name: 'Sheaf',
+      asset: '',
+    );
+    const flour = ItemModel(
+      itemId: 'grain_2',
+      chainId: 'grain',
+      tier: 2,
+      name: 'Flour',
+      asset: '',
+    );
+    final game = BoardGame(
+      itemCatalog: const {'grain_1': sheaf, 'grain_2': flour},
+      chainData: const {
+        'grain': ChainTierData(
+          chainId: 'grain',
+          itemTiers: {'grain_1': 1, 'grain_2': 2},
+          tierToItemId: {'grain_1': 'grain_1', 'grain_2': 'grain_2'},
+          maxTier: 2,
+        ),
+      },
+      generatorLevels: const {},
+      generatorPlacements: [],
+      startingItems: const [
+        (item: flour, col: 0, row: 0),
+        (item: sheaf, col: 2, row: 0),
+        (item: flour, col: 1, row: 1),
+        (item: sheaf, col: 0, row: 2),
+      ],
+      chainPlaceholderColors: const {},
+      manna: MannaController(config: _economy, startingManna: 1),
+      onOutOfManna: () {},
+      gridCols: 3,
+      gridRows: 3,
+    );
+    game.onGameResize(Vector2(300, 300));
+    await game.onLoad();
+    game.update(0);
+    // The two sheaves (the flours are the top tier and cannot merge).
+    expect(game.mergeablePair(), ((0, 2), (2, 0)));
   });
 }

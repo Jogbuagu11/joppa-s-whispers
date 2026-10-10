@@ -1,57 +1,29 @@
-// What a player sees before the game: the title screen while things load,
-// and, the first time only, a welcome that points to the Terms and the
+// What a player sees before the game: the title screen for a moment, and,
+// the first time only, a welcome that points to the Terms and the
 // Privacy Policy. The game itself is built only once both are past.
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
+import 'package:whispers_of_joppa/data/welcome_store.dart';
 
 final _log = Logger('TitleGate');
 
 const _cream = Color(0xFFF7ECD2);
 const _titlePicture = 'assets/ui/title.jpg';
 
-/// Remembers, on this phone, that the welcome has been agreed to.
-class WelcomeStore {
-  final Future<Directory> Function() _directory;
-
-  WelcomeStore({Future<Directory> Function()? directory})
-    : _directory = directory ?? getApplicationDocumentsDirectory;
-
-  Future<File> _file() async =>
-      File('${(await _directory()).path}/welcome.json');
-
-  Future<bool> agreed() async {
-    try {
-      final file = await _file();
-      if (!file.existsSync()) return false;
-      // A tiny file, read in one go.
-      final json = jsonDecode(file.readAsStringSync());
-      return json is Map<String, dynamic> && json['agreed'] == true;
-    } on Object catch (e) {
-      _log.warning('The welcome record could not be read: $e');
-      return false;
-    }
-  }
-
-  Future<void> agree(DateTime when) async {
-    try {
-      final file = await _file();
-      file.writeAsStringSync(
-        jsonEncode({'agreed': true, 'at': when.toUtc().toIso8601String()}),
-        flush: true,
-      );
-    } on Object catch (e) {
-      // It is simply asked again next time.
-      _log.warning('The welcome record could not be saved: $e');
-    }
-  }
-}
+// Used only if the game's own wording cannot be read.
+const _fallbackText = {
+  'welcome_title': 'Welcome',
+  'welcome_body':
+      'By tapping Play you agree to our Terms of Service and Privacy Policy.',
+  'welcome_terms': 'Terms of Service',
+  'welcome_privacy': 'Privacy Policy',
+  'welcome_play': 'Play',
+};
 
 class TitleGate extends StatefulWidget {
   const TitleGate({
@@ -59,7 +31,7 @@ class TitleGate extends StatefulWidget {
     required this.child,
     required this.store,
     required this.onOpenPage,
-    this.hold = const Duration(milliseconds: 1800),
+    this.hold = const Duration(milliseconds: 1400),
     this.loadText,
   });
 
@@ -103,21 +75,28 @@ class _TitleGateState extends State<TitleGate> {
     };
   }
 
-  Future<void> _open() async {
-    var agreed = false;
+  Future<Map<String, String>> _wording() async {
     try {
-      final results = await Future.wait<Object>([
-        (widget.loadText ?? _bundledText)(),
-        widget.store.agreed(),
-        Future<Object>.delayed(widget.hold, () => true),
-      ]);
-      _text = results[0] as Map<String, String>;
-      agreed = results[1] as bool;
+      return await (widget.loadText ?? _bundledText)();
     } on Object catch (e) {
-      _log.warning('The title screen could not get ready: $e');
+      _log.warning('The welcome wording could not be read: $e');
+      return _fallbackText;
     }
+  }
+
+  Future<void> _open() async {
+    // Each part stands alone: wording that cannot be read must not make a
+    // returning player agree again, and nothing here can hold the game back.
+    final wording = _wording();
+    final agreed = widget.store.agreed();
+    await Future<void>.delayed(widget.hold);
+    final text = await wording;
+    final already = await agreed;
     if (!mounted) return;
-    setState(() => _stage = agreed ? _Stage.game : _Stage.welcome);
+    setState(() {
+      _text = {..._fallbackText, ...text};
+      _stage = already ? _Stage.game : _Stage.welcome;
+    });
   }
 
   Future<void> _agree() async {
@@ -175,7 +154,8 @@ class _TitleGateState extends State<TitleGate> {
   }
 }
 
-/// The game's name, in its own lettering.
+/// The game's name, in its own lettering (the one thing written here and
+/// not in the content: it is the game's name, not its wording).
 class _Title extends StatelessWidget {
   const _Title();
 

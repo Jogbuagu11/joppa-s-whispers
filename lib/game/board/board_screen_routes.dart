@@ -20,6 +20,9 @@ mixin _BoardState on State<BoardScreen> {
   /// True while the event board is open over this one.
   bool _eventOpen = false;
 
+  /// Fires when the row above the board is slid.
+  final ValueNotifier<int> _stripMoved = ValueNotifier<int>(0);
+
   /// Marks the board, so the picture above it knows where to stop.
   final GlobalKey _boardKey = GlobalKey();
 

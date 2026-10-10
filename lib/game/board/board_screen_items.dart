@@ -39,8 +39,8 @@ mixin _BoardItems on _BoardRoutes {
   /// The order cards, with a little room round them (the harbor picture
   /// behind the whole top of the screen shows between them).
   Widget _ordersBackdrop({required Widget child}) => Padding(
-    // The row has its own gutter at the left edge.
-    padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
+    // The row has its own gutters at both edges.
+    padding: const EdgeInsets.symmetric(vertical: 5),
     child: child,
   );
 
