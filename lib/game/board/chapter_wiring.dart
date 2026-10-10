@@ -39,9 +39,7 @@ void wireChapters({
       if (gen == null) continue;
       // It arrives at the level the player's other generators have all
       // reached (a purchase may have raised them), never behind them.
-      final startAt = lowestLevel([
-        for (final p in game.generatorPlacements) p.gen.level,
-      ]);
+      final startAt = game.lowestLastingLevel;
       if (!game.addGenerator(gen.atLevel(startAt), g.col, g.row)) {
         waiting = true;
       }

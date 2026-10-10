@@ -80,6 +80,12 @@ List<String> eventProblems(Object? raw) {
     if (generator['chain_id'] != chainId) {
       problems.add('$label: generator must make the event chain');
     }
+    // An event board keeps no generator clocks, so only the ordinary kind
+    // is allowed there: any other would start fresh each time it opened.
+    final type = generator['type'];
+    if (type != null && type != 'standard') {
+      problems.add('$label: an event generator must be the standard kind');
+    }
     final cost = generator['energy_cost'];
     if (cost != null && (cost is! int || cost < 0 || cost > 20)) {
       problems.add('$label: generator energy_cost must be 0 to 20');

@@ -3,6 +3,15 @@
 part of 'board_game.dart';
 
 extension BoardGeneratorTypes on BoardGame {
+  /// The level a newly arrived generator starts at: the lowest among the
+  /// generators that stay (a purchase may have raised them all). A gifted
+  /// temporary generator does not count, or it would hold later arrivals
+  /// back at its own level.
+  int get lowestLastingLevel => lowestLevel([
+    for (final p in generatorPlacements)
+      if (p.gen.rules.kind != GeneratorKind.temporary) p.gen.level,
+  ]);
+
   /// This generator's clock, started fresh the first time it is asked for.
   GeneratorTimer _timerFor(GeneratorModel gen) {
     final rules = gen.rules;

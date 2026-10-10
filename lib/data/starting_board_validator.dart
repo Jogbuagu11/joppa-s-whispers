@@ -8,6 +8,10 @@ void checkStartingBoard(
   required Set<String> generatorIds,
   required Set<String> itemIds,
   Map<String, int> generatorUnlockChapters = const {},
+
+  /// Generators that are used up and gone: never part of the starting board
+  /// (it would hand them back each time).
+  Set<String> temporaryGeneratorIds = const {},
   required Map<String, dynamic> economy,
   required List<String> problems,
 }) {
@@ -42,6 +46,12 @@ void checkStartingBoard(
       problems.add('Starting board: unknown generator "$id"');
     } else if (!placed.add(id as String)) {
       problems.add('Starting board: generator "$id" is placed more than once');
+    }
+    if (temporaryGeneratorIds.contains(id)) {
+      problems.add(
+        'Starting board: "$id" is a temporary generator and cannot start on '
+        'the board',
+      );
     }
     checkCell('generator $id', g);
     final chapter = g['chapter'];

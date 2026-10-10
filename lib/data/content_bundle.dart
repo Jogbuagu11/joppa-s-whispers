@@ -6,7 +6,9 @@ import 'package:whispers_of_joppa/data/content_validator.dart';
 /// was made for a newer app and is ignored.
 // Format 2: orders wait for their chapter, and a generator on the starting
 // board may name the chapter it arrives in. An older app cannot play that.
-const supportedContentFormat = 2;
+// Format 3: generators have kinds (charged, free, temporary) and may wait
+// for a player level; some chains have no generator; items can be used.
+const supportedContentFormat = 3;
 
 /// Every content file (`content/<name>.json`) a bundle must contain.
 const contentFileNames = [

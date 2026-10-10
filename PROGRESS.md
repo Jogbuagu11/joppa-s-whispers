@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 25 — Player levels & XP is built. Next to build: 26 — Generator types. Milestones 14 and 16–25 are built and awaiting Jennifer's checks. Release builds are now milestone 40.
+## Current milestone: 26 — Generator types is built. Next to build: 27 — Boost & rare chains. Milestones 14 and 16–26 are built and awaiting Jennifer's checks. Release builds are now milestone 40.
 ---
 
 ## Milestone status
@@ -33,7 +33,7 @@
 | 23 | Chapters 2–6 | BUILT — all of Season 1 (Chapters 1–6) is written. Not tagged: Jennifer has not played Chapters 2–6, and her reviewer has not read them |
 | 24 | Polish & accessibility | BUILT — not tagged: Jennifer has not yet heard the sounds or felt the vibration on a real phone |
 | 25 | Player levels & XP | BUILT — not tagged: Jennifer has not yet seen it on a phone |
-| 26 | Generator types | Not started |
+| 26 | Generator types | BUILT — not tagged: Jennifer has not yet played it; new tiles have no art |
 | 27 | Boost & rare chains | Not started |
 | 28 | Board extras | Not started |
 | 29 | Chance features | Not started |
@@ -1274,6 +1274,59 @@ tested directly).
   messaging → create and publish the European regulations message and the IDFA
   explainer for both apps, with the privacy policy URL
   https://www.whispersofjoppa.com/privacy.
+
+## Milestone 26 — state (2026-10-10)
+
+**What it does** (EXPANSION 19.1, 19.4, 19.5)
+- **Four kinds of generator**, set per generator in `content/generators.json` (`type`):
+  standard (Manna per tap, as before); **charged** (a number of items for no Manna, then
+  a rest); **free** (makes an item by itself every so often, into a free cell touching
+  it); **temporary** (a fixed number of items for no Manna, then it leaves the board).
+  A tile's corner shows its Manna cost, charges left (×6) or a countdown.
+- New in the game: **Fig Tree** (charged: 6 fruit, then 2 hours' rest; arrives at player
+  level 4), **Courtyard Olive Tree** (free: an olive every 15 minutes, up to 3 while
+  away; arrives in Chapter 5), **Basket of Loaves** (temporary: 10 loaves; a level gift).
+- **Hourglasses** (small 15 min, medium 1 hour, great = finish): drag one onto a resting
+  generator to shorten its wait. Dropped anywhere else it goes back, unused. Two merge
+  into the next size.
+- **Manna jars** (+5, +15, +40, and the Manna potion +100, over the bar if need be): they
+  sit on the board until tapped, and the game asks "Use / Keep" first. Two merge into
+  the next size.
+- **Level-up gifts:** levels ending in 2 and 7 give a Manna jar, 3 and 8 an hourglass,
+  and levels 6, 16, 26… the Basket of Loaves. A gift that finds the board full waits
+  (saved with the game) and arrives as soon as a cell is free.
+- Content is version 17, **format 3** (older builds cannot play it, by design). The save
+  gained two optional fields (a generator's clock; gifts waiting) without a new version.
+
+**Checks**
+- `flutter analyze` clean; unit tests pass; `integration_test/generator_types_test.dart`
+  (Fig Tree arrives, gives its charges, rests, keeps resting after a restart; an
+  hourglass ends the rest; a Manna jar is used only on "Use") passes on both devices.
+
+**Reviewer's notes (code-reviewer, 2026-10-10)**
+- Fixed before the final commit: a gifted temporary generator at level 1 would have held
+  every later generator at level 1 for players who bought the generator upgrade; an
+  event generator given a kind could have been farmed (events now allow only the
+  standard kind); a level could have named a lasting generator as a gift (it would wait
+  for ever); a temporary generator on the starting board would have come back each time;
+  content format raised to 3; three test files over 300 lines split.
+- Carried forward: `board_session.dart` 298, `content_validator.dart` 291,
+  `board_game.dart` 288, `content_loader.dart` 288 and `test/app/cloud_sync_test.dart`
+  304 lines — split each before adding to it. The level-up message names a gift even
+  when it is still waiting for room. No test drops an hourglass on a generator that is
+  not resting (read through: it goes back). Moving the phone's clock forward recharges
+  generators, as it already does for Manna.
+
+## Assumptions to confirm (added in Milestone 26)
+- Which generators are which kind, and when they arrive, are my starting choices: the
+  seven story generators stay standard so Chapters 1–6 play as before.
+- A free generator with room for one item but owing three makes one; the rest are not
+  saved up.
+- Not built here: a temporary generator "spawned from a top-tier item" (it comes as a
+  level gift instead); buying hourglasses with Pearls, and hourglasses or jars from
+  events, the wheel and jars (Milestones 29–32, where those rewards are built).
+- **Art needed:** Fig Tree, Courtyard Olive Tree, Basket of Loaves (generator tiles),
+  three hourglasses, four Manna jars. Until then they show as plain named tiles.
 
 ## Milestone 25 — state (2026-10-09)
 

@@ -18,6 +18,9 @@ void checkLevels(
 
   /// Ids a level may give; null skips that check.
   Set<String>? itemIds,
+
+  /// Only a temporary generator can be a gift: any other kind would stay
+  /// on the board and block the next one for ever.
   Set<String>? generatorIds,
 }) {
   final perChapter = json['xp_per_task_by_chapter'];
@@ -87,7 +90,8 @@ void checkLevels(
           generatorIds != null &&
           !generatorIds.contains(generator)) {
         problems.add(
-          'Levels: level $level gives unknown generator "$generator"',
+          'Levels: level $level gives "$generator", which is not a temporary '
+          'generator',
         );
       }
       expected++;

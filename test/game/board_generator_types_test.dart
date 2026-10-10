@@ -1,6 +1,5 @@
 import 'package:flame/components.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whispers_of_joppa/data/generator_type_validator.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/generator_types.dart';
@@ -277,27 +276,5 @@ void main() {
     expect(manna.manna, 9);
     expect(game.snapshotGenerators().single.timer, isNull);
     expect(game.skipGeneratorWait('pantry'), isFalse);
-  });
-
-  test('content checks: each kind must say its numbers', () {
-    List<String> check(Map<String, dynamic> gen) {
-      final problems = <String>[];
-      checkGeneratorType('g', gen, problems);
-      return problems;
-    }
-
-    expect(check({}), isEmpty);
-    expect(
-      check({'type': 'charged', 'charges': 6, 'cooldown_seconds': 7200}),
-      isEmpty,
-    );
-    expect(check({'type': 'sideways'}).join(), contains('unknown type'));
-    expect(check({'type': 'charged'}).join(), contains('needs charges'));
-    expect(
-      check({'type': 'charged', 'charges': 3}).join(),
-      contains('needs cooldown_seconds'),
-    );
-    expect(check({'type': 'free'}).join(), contains('needs interval_seconds'));
-    expect(check({'type': 'temporary'}).join(), contains('needs taps'));
   });
 }

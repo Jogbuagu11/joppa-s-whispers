@@ -76,7 +76,12 @@ class GrantQueue extends ChangeNotifier {
         (p) => p.gen.generatorId == gen.generatorId,
       );
       if (onBoard) return false;
-      return game.addGenerator(gen, game.gridCols ~/ 2, game.gridRows ~/ 2);
+      // It arrives at the level the player's own generators have reached.
+      return game.addGenerator(
+        gen.atLevel(game.lowestLastingLevel),
+        game.gridCols ~/ 2,
+        game.gridRows ~/ 2,
+      );
     }
     return true;
   }

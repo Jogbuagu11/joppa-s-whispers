@@ -63,6 +63,10 @@ List<String> validateContent({
         .cast<Map<String, dynamic>>();
     final maxTierByChain = _checkChains(chains, problems);
     final generatorIds = _checkGenerators(generators, maxTierByChain, problems);
+    final temporaryIds = {
+      for (final g in generators)
+        if (g['type'] == 'temporary') g['id'] as String,
+    };
     for (final chain in chains) {
       final genId = chain['generator_id'];
       // A chain of gift items (hourglasses, Manna jars) has no generator.
@@ -132,7 +136,7 @@ List<String> validateContent({
             for (final tier in chain['tiers'] as List<dynamic>)
               (tier as Map<String, dynamic>)['item_id'] as String,
         },
-        generatorIds: generatorIds,
+        generatorIds: temporaryIds,
         problems: problems,
       );
     }
@@ -143,6 +147,7 @@ List<String> validateContent({
     checkStartingBoard(
       startingBoardJson,
       generatorIds: generatorIds,
+      temporaryGeneratorIds: temporaryIds,
       generatorUnlockChapters: {
         for (final g in generators)
           if (g['unlock_chapter'] case final int chapter)
