@@ -115,8 +115,8 @@ const boardTextKeys = [
   'keep',
   'hourglass_hint',
   'ok',
-  // Not words: the picture behind the order cards.
-  'orders_background',
+  // Not words: the picture behind everything above the board.
+  'header_background',
 ];
 
 /// Plain-English problems with the board wording; empty if it is sound.

@@ -38,8 +38,9 @@ class TaskBar extends StatelessWidget {
           margin: const EdgeInsets.fromLTRB(8, 0, 8, 4),
           padding: const EdgeInsets.fromLTRB(4, 3, 6, 3),
           decoration: BoxDecoration(
-            color: GamePalette.panel,
-            borderRadius: BorderRadius.circular(14),
+            // A little see-through, so the harbor shows behind it.
+            color: GamePalette.panel.withValues(alpha: 0.88),
+            borderRadius: BorderRadius.circular(22),
             border: Border.all(
               color: controller.canDoNext
                   ? GamePalette.gold

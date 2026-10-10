@@ -65,7 +65,7 @@ class OrderCard extends StatelessWidget {
       decoration: BoxDecoration(
         // Light parchment, a little see-through, over the harbor behind.
         color: const Color(0xE0F6EBD0),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: canDeliver ? GamePalette.ready : const Color(0xFFB89A5E),
           width: canDeliver ? 2.5 : 1,

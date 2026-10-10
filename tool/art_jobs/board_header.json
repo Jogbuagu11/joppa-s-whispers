@@ -1,0 +1,20 @@
+{
+ "folder": "board-header",
+ "kind": "ui",
+ "model": "gemini-3-pro-image",
+ "aspect": "16:9",
+ "style_references": [
+  "assets/locations/bg_loc_harbor_dusk.jpg",
+  "assets/locations/loc_watchtower_beacon_after.jpg"
+ ],
+ "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork and gentle texture, like a premium illustrated story game. NOT 3D, not a 3D render, not a photo, not anime, not flat vector, not cartoon. Soft painted edges, no thick black outlines. Warm evening light. Palette: sand #E8D3A9, cream #F5EBD7, terracotta #C0643B, olive #7A7A3A, cedar brown #5A3E2B, sea blue #2F7F9E, indigo #2E3A6B, gold #D9A441. Avoid neon, pure black, and cold gray-blue.",
+ "rules": "RULES: full scene edge to edge. No text, no letters, no signs, no watermark. No people, no animals. First-century Mediterranean only (Joppa, around AD 40); nothing modern. This picture sits BEHIND a game's buttons and cards, so keep it calm, soft and low in contrast: gentle shapes, no busy detail in the middle or the lower half.",
+ "views": [
+  {
+   "id": "harbor_lighthouse_evening",
+   "label": "Board header: the harbor lighthouse at evening",
+   "game": "board_header",
+   "prompt": "Wide landscape format (16:9). The harbor of Joppa in the evening, just after sunset. On the left third, the old stone harbor watchtower (the town's lighthouse: a square, weathered sandstone tower with an iron fire-basket on top) stands on low rocks at the water's edge, its beacon fire lit and glowing warm gold. A calm sea fills the middle, deep teal with the last gold and rose light on it and the beacon's reflection. On the right, the flat-roofed houses of Joppa climb a low hill, hazy with dusk, a few windows lit with lamplight. The sky is a soft evening sky: warm gold and rose at the horizon rising to dusky indigo, with a few soft clouds and one or two early stars. Peaceful and warm, not dark or stormy: evening, not deep night. The attached pictures show the same harbor and the same tower in this game's style: match their painting style and the tower's stone."
+  }
+ ]
+}

@@ -20,6 +20,9 @@ mixin _BoardState on State<BoardScreen> {
   /// True while the event board is open over this one.
   bool _eventOpen = false;
 
+  /// Marks the board, so the picture above it knows where to stop.
+  final GlobalKey _boardKey = GlobalKey();
+
   /// Stops this game's sounds and vibrations; null when there are none.
   VoidCallback? _quiet;
 }

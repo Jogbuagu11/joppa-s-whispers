@@ -1310,6 +1310,16 @@ Where it stands (she has seen each step; the last one is not yet approved):
   `content/board_text.json` as `orders_background`), washed with cream. The night
   watchtower picture itself was too dark to lighten well; a daytime lighthouse strip
   would be new art. Content version 21.
+- Then: "the top of the game needs a redesign… the lighthouse image on the background of
+  the above-the-board section… a neat game-like design", and "the lighthouse image should
+  be in evening not daytime". A new evening picture of Joppa's harbor and its lit
+  watchtower was generated (`tool/art_jobs/board_header.json`; both the day and evening
+  versions are in `Downloads/WhispersofJoppa-art-review/board-header/`). The evening one
+  is in the game as `assets/ui/board_header.jpg` (named in `content/board_text.json` as
+  `header_background`), behind everything from the top of the screen to the top of the
+  board (`lib/game/board/header_backdrop.dart`). **She has seen it only on the simulator
+  and has not yet said yes to it — it is generated art, so confirm before a store build.**
+  Content version 22.
 - Then: "put the instructions from Silas or whomever at the bottom of the screen below the board". The hint now sits under the board, with a 54-point cut-out head.
 - Reviewer's notes carried forward: on short phones (iPhone SE) the board cannot be
   full width — there is not the height; with three wanted items the item pictures are

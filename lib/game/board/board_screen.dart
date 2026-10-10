@@ -38,6 +38,7 @@ import 'package:whispers_of_joppa/game/board/board_cloud.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_session.dart';
 import 'package:whispers_of_joppa/game/board/board_top_bar.dart';
+import 'package:whispers_of_joppa/game/board/header_backdrop.dart';
 import 'package:whispers_of_joppa/services/ad_service.dart';
 import 'package:whispers_of_joppa/services/analytics_service.dart';
 
@@ -168,106 +169,126 @@ class _BoardScreenState extends State<BoardScreen>
         child: CircularProgressIndicator(color: Color(0xFFD4802A)),
       );
     } else {
-      body = SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-              child: BoardTopBar(
-                wallet: ListenableBuilder(
-                  listenable: session.tutorial,
-                  builder: (context, _) => WalletChips(
-                    controller: session.orders,
-                    pearls: session.purchases.pearlsListenable,
-                    // No purchase offers during the tutorial (GDD 11).
-                    onOpenShop: widget.shop != null && session.tutorial.isOver
-                        ? _openShop
-                        : null,
-                  ),
-                ),
-                level: LevelBadge(controller: session.levels),
-                onAccount: widget.cloud != null ? _openAccount : null,
-                onSettings: widget.notifications != null
-                    ? _openNotificationSettings
-                    : null,
-                settingsTooltip: _notificationContent?.settingsText['title'],
-                manna: MannaBar(controller: session.manna),
-              ),
+      body = Stack(
+        children: [
+          Positioned.fill(
+            child: HeaderBackdrop(
+              asset: _boardText['header_background'] ?? '',
+              boardKey: _boardKey,
+              relayout: Listenable.merge([session.tutorial, session.orders]),
             ),
-            TaskBar(
-              controller: session.story,
-              onDo: _doNextTask,
-              onOpenLocation: _openLocation,
-              onOpenLetters: _openLetters,
-            ),
-            // No event offers during the tutorial.
-            if (_event case final event?)
-              ListenableBuilder(
-                listenable: session.tutorial,
-                // Nor for a game played from memory only (older content):
-                // rewards could not be kept.
-                builder: (context, _) =>
-                    session.tutorial.isOver && !session.downgraded
-                    ? _eventBanner(event)
-                    : const SizedBox.shrink(),
-              ),
-            // The board comes first: it is as wide as the screen whenever
-            // the height allows, and the order cards take what is left
-            // (within their limits).
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, box) {
-                  final (:cards, :board) = shareHeight(
-                    width: box.maxWidth,
-                    height: box.maxHeight,
-                  );
-                  // On a very short screen the cards keep their least size
-                  // and anything that does not fit is cut off, not an error.
-                  return ClipRect(
-                    child: OverflowBox(
-                      alignment: Alignment.topCenter,
-                      minHeight: 0,
-                      maxHeight: box.maxHeight > cards + 6
-                          ? box.maxHeight
-                          : cards + 6,
-                      child: Column(
-                        children: [
-                          _ordersBackdrop(
-                            child: OrdersBar(
-                              controller: session.orders,
-                              items: session.game.itemCatalog,
-                              characterNames: session.characterNames,
-                              placeholderColors:
-                                  session.game.chainPlaceholderColors,
-                              looks: _characterLooks,
-                              // The backdrop's own edging is part of the share.
-                              height: cards - 10,
-                            ),
-                          ),
-                          const Spacer(),
-                          SizedBox(
-                            height: board,
-                            child: GameWidget(game: session.game),
-                          ),
-                        ],
+          ),
+          SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                  child: BoardTopBar(
+                    wallet: ListenableBuilder(
+                      listenable: session.tutorial,
+                      builder: (context, _) => WalletChips(
+                        controller: session.orders,
+                        pearls: session.purchases.pearlsListenable,
+                        // No purchase offers during the tutorial (GDD 11).
+                        onOpenShop:
+                            widget.shop != null && session.tutorial.isOver
+                            ? _openShop
+                            : null,
                       ),
                     ),
-                  );
-                },
-              ),
+                    level: LevelBadge(controller: session.levels),
+                    onAccount: widget.cloud != null ? _openAccount : null,
+                    onSettings: widget.notifications != null
+                        ? _openNotificationSettings
+                        : null,
+                    settingsTooltip:
+                        _notificationContent?.settingsText['title'],
+                    manna: MannaBar(controller: session.manna),
+                  ),
+                ),
+                TaskBar(
+                  controller: session.story,
+                  onDo: _doNextTask,
+                  onOpenLocation: _openLocation,
+                  onOpenLetters: _openLetters,
+                ),
+                // No event offers during the tutorial.
+                if (_event case final event?)
+                  ListenableBuilder(
+                    listenable: session.tutorial,
+                    // Nor for a game played from memory only (older content):
+                    // rewards could not be kept.
+                    builder: (context, _) =>
+                        session.tutorial.isOver && !session.downgraded
+                        ? _eventBanner(event)
+                        : const SizedBox.shrink(),
+                  ),
+                // The board comes first: it is as wide as the screen whenever
+                // the height allows, and the order cards take what is left
+                // (within their limits).
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, box) {
+                      final (:cards, :board) = shareHeight(
+                        width: box.maxWidth,
+                        height: box.maxHeight,
+                      );
+                      // On a very short screen the cards keep their least size
+                      // and anything that does not fit is cut off, not an error.
+                      return ClipRect(
+                        child: OverflowBox(
+                          alignment: Alignment.topCenter,
+                          minHeight: 0,
+                          maxHeight: box.maxHeight > cards + 6
+                              ? box.maxHeight
+                              : cards + 6,
+                          child: Column(
+                            children: [
+                              _ordersBackdrop(
+                                child: OrdersBar(
+                                  controller: session.orders,
+                                  items: session.game.itemCatalog,
+                                  characterNames: session.characterNames,
+                                  placeholderColors:
+                                      session.game.chainPlaceholderColors,
+                                  looks: _characterLooks,
+                                  // The backdrop's own edging is part of the share.
+                                  height: cards - 10,
+                                ),
+                              ),
+                              const Spacer(),
+                              // The board keeps the game's dark wood behind it.
+                              ColoredBox(
+                                key: _boardKey,
+                                color: GamePalette.background,
+                                child: SizedBox(
+                                  height: board,
+                                  width: double.infinity,
+                                  child: GameWidget(game: session.game),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                // Hints (Silas and the others) sit under the board.
+                TutorialBanner(
+                  controller: session.tutorial,
+                  characterNames: session.characterNames,
+                  availableAssets: session.assetPaths,
+                  looks: _characterLooks,
+                ),
+              ],
             ),
-            // Hints (Silas and the others) sit under the board.
-            TutorialBanner(
-              controller: session.tutorial,
-              characterNames: session.characterNames,
-              availableAssets: session.assetPaths,
-              looks: _characterLooks,
-            ),
-          ],
-        ),
+          ),
+        ],
       );
     }
-    // The board is dark: the phone's clock and battery are drawn light.
+    // The picture at the top is an evening sky: the phone's clock is drawn
+    // light.
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
