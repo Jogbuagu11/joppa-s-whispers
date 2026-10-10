@@ -84,13 +84,58 @@ mixin _BoardWheel on _BoardItems {
     return WheelRules.fromJson(wheel);
   }
 
+  /// The Joppa Special, or null where it is not offered: no shop here, in
+  /// the tutorial (no purchase is ever offered in it), or in a game played
+  /// from memory only.
+  SpecialOffer? _special(BoardSession session) {
+    if (widget.shop == null || !session.tutorial.isOver || session.downgraded) {
+      return null;
+    }
+    return switch (session.contentBundle.files['offers']) {
+      {'special': final Object special} => SpecialOffer.fromJson(special),
+      _ => null,
+    };
+  }
+
+  Future<void> _openSpecial() async {
+    final session = _session;
+    final shop = widget.shop;
+    if (session == null || shop == null) return;
+    final offer = _special(session);
+    if (offer == null || _busy || _syncing || _popupOpen || !mounted) return;
+    _popupOpen = true;
+    try {
+      await showSpecialOffer(
+        context,
+        offer: offer,
+        shop: shop,
+        onBuy: _events?.purchaseStarted,
+      );
+    } finally {
+      _popupOpen = false;
+    }
+  }
+
   /// The wheel's round button (gold while a free spin is waiting), or
   /// nothing while the wheel is not open to this player.
   List<Widget> _wheelButton(BoardSession session) {
+    final special = _special(session) == null
+        ? null
+        : StripButton(
+            buttonKey: const Key('special_button'),
+            icon: Icons.local_offer,
+            tooltip: switch (session.contentBundle.files['offers']) {
+              {'special': {'button': final String words}} => words,
+              _ => '',
+            },
+            onTap: _openSpecial,
+            lit: true,
+          );
     final rules = _wheelRules(session);
-    if (rules == null) return const [];
+    if (rules == null) return [?special];
     final tally = WheelTally.fromJson(session.extras.read(wheelRecord));
     return [
+      ?special,
       StripButton(
         buttonKey: const Key('wheel_button'),
         icon: Icons.album,

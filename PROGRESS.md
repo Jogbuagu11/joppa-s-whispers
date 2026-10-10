@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 29 — Chance features is built (2026-10-10). Next to build: 30 — Offers & pop-ups. Milestones 14 and 16–29 are built and awaiting Jennifer's real-phone checks. Release builds are now milestone 40.
+## Current milestone: 30 — Offers & pop-ups, IN PROGRESS (2026-10-10): daily deals and the Joppa Special pop-up are built; the rest waits on Jennifer's answers about store products and server changes (see "Milestone 30 — state"). Milestones 14 and 16–29 are built and awaiting Jennifer's real-phone checks. Release builds are now milestone 40.
 ---
 
 ## Milestone status
@@ -1394,6 +1394,44 @@ Where it stands (she has seen each step; the last one is not yet approved):
   build opens on the emulator through the title screen and welcome to the board.
   **Build 14** (`dist/whispers-of-joppa-1.0.0-14.aab`, in Downloads) has Milestone 26 and
   all of this. Store screenshots retaken with the new look.
+
+## Milestone 30 — state (2026-10-10, in progress)
+
+**Built so far** (the parts that need no new store product and no server change)
+- **Today's deals** at the top of the Pearl shop: one free gift a day and two things
+  for Pearls, new each day (`content/offers.json`, `daily_deals`). Each says exactly what
+  it gives; nothing random. Saved under `extras.deals`.
+- **The Joppa Special** (Jennifer: "a joppa special style pop up like gossip harbor
+  super saver… a gorgeous modal for purchasing packs"): a showpiece pop-up with the
+  evening harbor and a ribbon title, three pack cards side by side (the middle one
+  raised and starred), each with a heap of Pearls, the number, and the store's own price
+  on a green button; a round close cross and a clear "No thanks". It sells the existing
+  Pearl packs (`pearls_tier1`–`3` under the names Fisher's purse, Merchant's chest,
+  Harbor treasure) through the same verified purchase path as the shop — no purchase
+  code was changed. Opened by a new gold tag button in the row above the board (never
+  in the tutorial). Picture: `Downloads/WhispersofJoppa-art-review/joppa-special/`.
+- The shop's Buy buttons are green like the rest.
+- Content is version 38.
+
+**Deliberately not in it yet**
+- No countdown timer and no "200% value" style badge: the packs are the ordinary ones
+  at the ordinary price, so either would be untrue. Both come with real time-limited
+  offers below.
+- It does not pop up by itself yet.
+
+**Waiting on Jennifer before the rest of Milestone 30 can be built**
+1. May I create the twelve new store products of EXPANSION Part 5 on Apple
+   (`offer_099` … `offer_4999`, `pass_premium`, `pass_premium_plus`,
+   `treasure_jar_small/medium/large`)? Apple product ids are permanent. Google needs
+   the Play service account JSON first.
+2. May I change the live server: add the `offers` and `offer_impressions` tables, and
+   teach `verify-purchase` which offer a payment was for (so an offer's contents are
+   granted by the server, not trusted from the phone)?
+3. Offers change purchase code, so per CLAUDE.md the full IAP test list must pass and
+   she must make a sandbox purchase on a real phone before it counts as done.
+- Then: timed offers with bonus contents in the Joppa Special, the offer rules (at most
+  3 pop-ups a session, 1 at the start, none in the tutorial, a scene or a merge),
+  price-drop, targeting by past spend, first-purchase bonus, flash sales.
 
 ## Pop-ups and wheel restyle (2026-10-10) — asked for by Jennifer
 - Her words: "clear cache. then fix the css on the spin wheel. make sure pop up modals

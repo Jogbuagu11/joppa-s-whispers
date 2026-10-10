@@ -58,12 +58,39 @@ mixin _BoardRoutes on _BoardState {
             shop: shop,
             purchases: session.purchases,
             onBuy: _events?.purchaseStarted,
+            top: _dailyDeals(session),
           ),
         ),
       );
     } finally {
       _busy = false;
     }
+  }
+
+  /// Today's deals, for the top of the shop; nothing if this content has
+  /// none, or in a game played from memory only (older content).
+  Widget? _dailyDeals(BoardSession session) {
+    final offers = session.contentBundle.files['offers'];
+    if (offers is! Map<String, dynamic> || session.downgraded) return null;
+    final deals = offers['daily_deals'];
+    if (deals is! Map<String, dynamic>) return null;
+    return DailyDeals(
+      config: DealsConfig.fromJson(deals),
+      extras: session.extras,
+      text: {
+        if (offers['text'] case final Map<String, dynamic> text)
+          for (final e in text.entries)
+            if (e.value case final String words) e.key: words,
+      },
+      pearls: session.purchases.pearlsListenable,
+      spendPearls: session.purchases.spendPearls,
+      give: (deal) {
+        if (deal.manna > 0) session.manna.add(deal.manna);
+        if (deal.talents > 0) session.orders.addTalents(deal.talents);
+        session.grants.give(itemIds: deal.items);
+        widget.comfort?.cue(GameCue.reward);
+      },
+    );
   }
 
   /// Connects the shop to this game and delivers anything already paid for

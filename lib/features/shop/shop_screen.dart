@@ -1,6 +1,7 @@
 // The Pearl shop: the store's products with the store's own prices.
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_app_bar.dart';
+import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
 import 'package:whispers_of_joppa/services/store_service.dart';
@@ -15,7 +16,11 @@ class ShopScreen extends StatefulWidget {
     required this.shop,
     required this.purchases,
     this.onBuy,
+    this.top,
   });
+
+  /// Shown above the store's products (today's deals).
+  final Widget? top;
 
   /// Told which product the player tapped Buy for (analytics).
   final void Function(String productId)? onBuy;
@@ -51,6 +56,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 ),
               ),
             ),
+            ?widget.top,
             Expanded(
               child: FutureBuilder<List<StoreProduct>>(
                 future: _products,
@@ -143,12 +149,13 @@ class _ShopScreenState extends State<ShopScreen> {
                   widget.onBuy?.call(product.id);
                   shop.buy(product.id);
                 },
-          style: FilledButton.styleFrom(backgroundColor: _gold),
-          child: Text(
-            // The price is the store's own, never written in the app.
-            owned ? 'Owned' : product.price,
-            style: const TextStyle(color: Colors.black),
+          style: FilledButton.styleFrom(
+            shape: const StadiumBorder(),
+            backgroundColor: GamePalette.action,
+            foregroundColor: GamePalette.onAction,
           ),
+          // The price is the store's own, never written in the app.
+          child: Text(owned ? 'Owned' : product.price),
         ),
       ),
     );

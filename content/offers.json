@@ -1,0 +1,113 @@
+{
+  "daily_deals": {
+    "pearl_deals_per_day": 2,
+    "free": [
+      {
+        "id": "free_manna",
+        "name": "15 Manna",
+        "manna": 15
+      },
+      {
+        "id": "free_talents",
+        "name": "40 Talents",
+        "talents": 40
+      },
+      {
+        "id": "free_pinch",
+        "name": "Pinch of Manna",
+        "items": [
+          "manna_jar_01"
+        ]
+      },
+      {
+        "id": "free_manna_more",
+        "name": "25 Manna",
+        "manna": 25
+      },
+      {
+        "id": "free_glass",
+        "name": "Small hourglass",
+        "items": [
+          "hourglass_01"
+        ]
+      }
+    ],
+    "for_pearls": [
+      {
+        "id": "deal_manna",
+        "name": "60 Manna",
+        "pearl_price": 8,
+        "manna": 60
+      },
+      {
+        "id": "deal_glass",
+        "name": "Hourglass",
+        "pearl_price": 10,
+        "items": [
+          "hourglass_02"
+        ]
+      },
+      {
+        "id": "deal_knife",
+        "name": "Splitting knife",
+        "pearl_price": 12,
+        "items": [
+          "knife_01"
+        ]
+      },
+      {
+        "id": "deal_talents",
+        "name": "250 Talents",
+        "pearl_price": 10,
+        "talents": 250
+      },
+      {
+        "id": "deal_thread",
+        "name": "Golden Thread",
+        "pearl_price": 18,
+        "items": [
+          "thread_01"
+        ]
+      },
+      {
+        "id": "deal_cup",
+        "name": "Cup of Manna",
+        "pearl_price": 6,
+        "items": [
+          "manna_jar_02"
+        ]
+      }
+    ]
+  },
+  "text": {
+    "deals_title": "Today's deals",
+    "deal_free": "Free",
+    "deal_price": "{pearls} Pearls",
+    "deal_taken": "Taken",
+    "deals_note": "New deals every day."
+  },
+  "special": {
+    "title": "Joppa Special",
+    "subtitle": "Pearls from the harbor market",
+    "picture": "assets/ui/board_header.jpg",
+    "no_thanks": "No thanks",
+    "unavailable": "The market is closed just now. Please try again later.",
+    "pearls_word": "Pearls",
+    "button": "Joppa Special",
+    "packs": [
+      {
+        "product_id": "pearls_tier1",
+        "name": "Fisher's purse"
+      },
+      {
+        "product_id": "pearls_tier2",
+        "name": "Merchant's chest",
+        "featured": true
+      },
+      {
+        "product_id": "pearls_tier3",
+        "name": "Harbor treasure"
+      }
+    ]
+  }
+}

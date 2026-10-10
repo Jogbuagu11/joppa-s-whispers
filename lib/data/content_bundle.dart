@@ -2,6 +2,7 @@
 // can replace it with. Pure Dart so tool/ scripts can use it.
 import 'package:whispers_of_joppa/data/chance_validator.dart';
 import 'package:whispers_of_joppa/data/content_validator.dart';
+import 'package:whispers_of_joppa/data/offers_validator.dart';
 
 /// The content format this build understands. A bundle with a higher format
 /// was made for a newer app and is ignored.
@@ -30,6 +31,7 @@ const contentFileNames = [
   'levels',
   'board_text',
   'chance',
+  'offers',
 ];
 
 class ContentBundle {
@@ -97,6 +99,12 @@ class ContentBundle {
       levelsJson: files['levels'],
     );
     if (problems.isNotEmpty) return problems;
+    final offers = offersProblems(
+      files['offers'],
+      chainsJson: files['chains'],
+      productsJson: files['products'],
+    );
+    if (offers.isNotEmpty) return offers;
     return chanceProblems(
       files['chance'],
       chainsJson: files['chains'],

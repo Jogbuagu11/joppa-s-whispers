@@ -12,11 +12,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
+import '../test/support/store_fakes.dart';
 import 'helpers.dart';
 
 class _First implements Random {
@@ -98,6 +100,10 @@ void main() {
           playTutorial: false,
           luck: _First(),
           country: 'US',
+          shop: PurchaseCoordinator(
+            store: FakeStore(),
+            backend: FakePurchaseBackend(),
+          ),
         ),
       ),
     );
@@ -126,6 +132,12 @@ void main() {
       await tester.tap(find.byKey(Key(key)));
       await wait();
     }
+
+    // The Joppa Special.
+    await tapOnStrip(tester, 'special_button');
+    await wait(12);
+    await shot('0_joppa_special');
+    await tapKey('special_no_thanks');
 
     // A Manna jar: use, keep or sell.
     await tester.tapAt(centre(1, 2));
