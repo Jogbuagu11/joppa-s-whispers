@@ -2,7 +2,7 @@
 // and the board), and the new player's spotlight.
 part of 'board_screen.dart';
 
-mixin _BoardLayout on _BoardItems, _BoardEvents {
+mixin _BoardLayout on _BoardItems, _BoardEvents, _BoardBubbles {
   Future<void> _doNextTask();
 
   Widget _playArea(BoardSession session) {
@@ -70,7 +70,14 @@ mixin _BoardLayout on _BoardItems, _BoardEvents {
                     child: SizedBox(
                       height: board,
                       width: double.infinity,
-                      child: GameWidget(game: session.game),
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: GameWidget(game: session.game),
+                          ),
+                          Positioned.fill(child: _bubbleLayer(session)),
+                        ],
+                      ),
                     ),
                   ),
                 ],

@@ -189,4 +189,45 @@ void main() {
     await c.watchForManna();
     expect(changes, 1);
   });
+
+  test('an ad for another reward: watched to the end or not, and it does '
+      'not count as a Manna ad', () async {
+    final c = make();
+    expect(c.rewardAdReady, isTrue);
+    expect(await c.watchForReward(), isTrue);
+    service.watchedToEnd = false;
+    expect(await c.watchForReward(), isFalse);
+    service.throwOnShow = true;
+    expect(await c.watchForReward(), isFalse);
+    expect(service.shown, 3);
+    expect(manna, 0);
+    expect(c.tally.mannaAds, 0);
+    c.dispose();
+  });
+
+  test('no ad for another reward in the tutorial, with none loaded, or '
+      'while one is showing', () async {
+    tutorialOver = false;
+    final early = make();
+    expect(early.rewardAdReady, isFalse);
+    expect(await early.watchForReward(), isFalse);
+    early.dispose();
+    tutorialOver = true;
+    service.isReady = false;
+    final unloaded = make();
+    expect(unloaded.rewardAdReady, isFalse);
+    expect(await unloaded.watchForReward(), isFalse);
+    unloaded.dispose();
+    service
+      ..isReady = true
+      ..hold = Completer<void>();
+    final c = make();
+    final first = c.watchForReward();
+    expect(c.rewardAdReady, isFalse);
+    expect(await c.watchForReward(), isFalse);
+    service.hold?.complete();
+    expect(await first, isTrue);
+    expect(service.shown, 1);
+    c.dispose();
+  });
 }

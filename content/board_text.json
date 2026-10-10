@@ -13,5 +13,10 @@
   "sell": "Sell for {talents} Talents",
   "boost_hint": "Generator boost {boost}",
   "knife_hint": "Drag it onto an item to split it into two of the size below.",
-  "thread_hint": "Drag it onto any item to raise it one step."
+  "thread_hint": "Drag it onto any item to raise it one step.",
+  "bubble_label": "Bubble with {name}",
+  "bubble_body": "A bubble! Keep what is inside, or leave it: it will pop by itself and leave {talents} Talents.",
+  "bubble_pearls": "Keep for {pearls} Pearls",
+  "bubble_ad": "Watch an ad to keep",
+  "bubble_leave": "Leave it"
 }

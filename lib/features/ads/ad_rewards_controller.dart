@@ -95,6 +95,36 @@ class AdRewardsController extends ChangeNotifier {
     return earned;
   }
 
+  /// Whether an ad can be shown for some other reward the player asks for
+  /// (keeping a bubble's item): one is loaded and the tutorial is over.
+  bool get rewardAdReady =>
+      !_showing &&
+      !_disposed &&
+      tutorialOver() &&
+      (_service?.ready.value ?? false);
+
+  /// Shows an ad the player asked for, for a reward the caller gives.
+  /// Returns whether it was watched to the end. It does not count towards
+  /// the day's Manna ads.
+  Future<bool> watchForReward() async {
+    final service = _service;
+    if (service == null || !rewardAdReady) return false;
+    _showing = true;
+    notifyListeners();
+    var earned = false;
+    try {
+      earned = await service.showRewarded();
+    } on Exception catch (e) {
+      // A broken ad gives nothing and must never disturb the game.
+      _log.warning('The ad could not be shown: $e');
+    } finally {
+      _showing = false;
+    }
+    if (_disposed) return false;
+    notifyListeners();
+    return earned;
+  }
+
   @override
   void dispose() {
     _disposed = true;

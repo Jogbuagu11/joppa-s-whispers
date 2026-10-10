@@ -119,6 +119,11 @@ const boardTextKeys = [
   'ok',
   'sell',
   'boost_hint',
+  'bubble_label',
+  'bubble_body',
+  'bubble_pearls',
+  'bubble_ad',
+  'bubble_leave',
   // Not words: the picture behind everything above the board.
   'header_background',
   // The first-launch welcome.

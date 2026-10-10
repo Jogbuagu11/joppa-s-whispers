@@ -14,6 +14,9 @@ mixin _BoardState on State<BoardScreen> {
   /// Reports what happens in the game; null where analytics is not set up.
   GameAnalytics? _events;
 
+  /// The bubbles afloat over the board; null until a game is loaded.
+  BubbleController? _bubbles;
+
   /// The event that is on now, if any.
   EventModel? _event;
 

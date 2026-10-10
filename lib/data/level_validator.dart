@@ -1,4 +1,5 @@
 // Checks content/levels.json. Pure Dart.
+import 'package:whispers_of_joppa/domain/bubbles.dart';
 
 const _textKeys = [
   'title',
@@ -135,6 +136,7 @@ void checkLevels(
           'and tier_bonus of 1 or more',
         );
       }
+      checkBubbleRules('Levels: unlock "$feature"', entry['bubble'], problems);
       if (entry['available'] is! bool?) {
         problems.add(
           'Levels: unlock "$feature": available must be true or false',

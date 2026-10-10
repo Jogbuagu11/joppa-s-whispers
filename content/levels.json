@@ -73,7 +73,21 @@
     { "level": 3, "feature": "daily_tasks", "name": "Daily tasks", "available": false },
     { "level": 3, "feature": "login_calendar", "name": "Daily login calendar", "available": false },
     { "level": 5, "feature": "blessing_wheel", "name": "Blessing Wheel", "available": false },
-    { "level": 5, "feature": "bubbles", "name": "Bubbles", "available": false },
+    {
+      "level": 5,
+      "feature": "bubbles",
+      "name": "Bubbles: tap one after a merge",
+      "available": true,
+      "bubble": {
+        "chance": 0.05,
+        "higher_chance": 0.15,
+        "seconds": 60,
+        "pearls_per_tier": 2,
+        "ad_max_tier": 4,
+        "talents_per_tier": 2,
+        "max_at_once": 2
+      }
+    },
     { "level": 7, "feature": "milestone_event", "name": "Milestone events", "available": false },
     { "level": 7, "feature": "treasure_jar", "name": "Treasure Jar", "available": false },
     { "level": 9, "feature": "order_quests", "name": "Order quests", "available": false },

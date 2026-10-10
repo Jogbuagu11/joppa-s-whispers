@@ -1,5 +1,6 @@
 // Player levels: XP comes from story tasks, and each level reached gives a
 // Manna refill, a small reward, and sometimes unlocks a feature. Pure Dart.
+import 'package:whispers_of_joppa/domain/bubbles.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/progression.dart';
 
@@ -38,12 +39,16 @@ class FeatureUnlock {
   /// For a generator-boost unlock: what the boost does.
   final GeneratorBoost? boost;
 
+  /// For the bubbles unlock: the numbers bubbles go by.
+  final BubbleRules? bubble;
+
   const FeatureUnlock({
     required this.level,
     required this.feature,
     required this.name,
     this.available = false,
     this.boost,
+    this.bubble,
   });
 }
 
@@ -98,6 +103,7 @@ class LevelsConfig {
               GeneratorBoost(mannaTimes: times, tierBonus: bonus),
             _ => null,
           },
+          bubble: BubbleRules.fromJson(u['bubble']),
         ),
     ],
     text: {
@@ -108,6 +114,11 @@ class LevelsConfig {
   );
 
   int get maxLevel => steps.isEmpty ? 1 : steps.last.level;
+
+  /// The level bubbles begin at and their numbers, or null if the game has
+  /// none (or they are held back).
+  FeatureUnlock? get bubbles =>
+      unlocks.where((u) => u.bubble != null && u.available).firstOrNull;
 
   /// The generator boosts in the game, weakest first (one marked not yet
   /// available is left out, like any other feature held back).

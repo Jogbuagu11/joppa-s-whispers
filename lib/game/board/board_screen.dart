@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,8 @@ import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/events.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
+import 'package:whispers_of_joppa/features/bubbles/bubble_controller.dart';
+import 'package:whispers_of_joppa/features/bubbles/bubble_layer.dart';
 import 'package:whispers_of_joppa/features/events/event_screen.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
 import 'package:whispers_of_joppa/domain/comfort.dart';
@@ -47,6 +50,7 @@ import 'package:whispers_of_joppa/services/ad_service.dart';
 import 'package:whispers_of_joppa/services/analytics_service.dart';
 
 part 'board_screen_actions.dart';
+part 'board_screen_bubbles.dart';
 part 'board_screen_events.dart';
 part 'board_screen_items.dart';
 part 'board_screen_layout.dart';
@@ -73,7 +77,12 @@ class BoardScreen extends StatefulWidget {
     this.eventProgress,
     this.comfort,
     this.onOpenPage,
+    this.bubbleLuck,
   });
+
+  /// Decides which merges leave a bubble. Tests pass their own; the app
+  /// leaves it to chance.
+  final Random? bubbleLuck;
 
   /// Opens one of the game's web pages ("privacy", "terms", "support").
   /// Null (in tests) leaves those rows out of Settings.
@@ -137,6 +146,7 @@ class _BoardScreenState extends State<BoardScreen>
         _BoardNotifications,
         _BoardEvents,
         _BoardItems,
+        _BoardBubbles,
         _BoardLayout,
         _BoardScreenActions {
   @override

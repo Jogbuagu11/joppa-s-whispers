@@ -22,7 +22,10 @@ extension BoardTools on BoardGame {
     _put(fromCol, fromRow, left);
     _log.fine('${tool.itemId} on ${target.itemId} -> ${becomes.itemId}');
     // A wildcard is a merge in all but name: it sounds and counts as one.
-    if (tool.use?.wild ?? false) onMerged?.call(becomes);
+    if (tool.use?.wild ?? false) {
+      lastMergeCell = (toCol, toRow);
+      onMerged?.call(becomes);
+    }
     _boardTouched();
     return true;
   }

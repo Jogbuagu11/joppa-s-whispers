@@ -24,6 +24,7 @@ mixin _BoardScreenActions
     _events?.detach();
     widget.shop?.detach();
     // Saves any unsaved change, then stops the timers.
+    _bubbles?.dispose();
     _session?.dispose();
     super.dispose();
   }
@@ -233,6 +234,7 @@ mixin _BoardScreenActions
       _attachShop(session);
       _attachComfort(session);
       _wireBoard(session);
+      _wireBubbles(session);
       session.ads.service = widget.ads;
       widget.cloud?.blockUploads = session.downgraded;
       session.saver.onSaved = (state) => widget.cloud?.afterLocalSave(state);

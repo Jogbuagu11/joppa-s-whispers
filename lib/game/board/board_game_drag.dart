@@ -76,6 +76,7 @@ extension _BoardDrag on BoardGame {
           target.setItem(merged, _colorFor(merged), _art[merged.itemId]);
           _log.fine('Merged ${originItem.itemId} -> ${merged.itemId}');
           _boardTouched();
+          lastMergeCell = (target.col, target.row);
           onMerge?.call();
           onMerged?.call(merged);
         } else {
