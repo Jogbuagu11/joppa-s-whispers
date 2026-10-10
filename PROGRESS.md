@@ -1395,6 +1395,22 @@ Where it stands (she has seen each step; the last one is not yet approved):
   **Build 14** (`dist/whispers-of-joppa-1.0.0-14.aab`, in Downloads) has Milestone 26 and
   all of this. Store screenshots retaken with the new look.
 
+## Jennifer's answers (2026-10-10, after Milestone 28)
+- **Chance features (Milestone 29): "do what's legal."** Build them as designed in
+  EXPANSION 20.4, with every legal safeguard: odds shown on a "See odds" panel for each,
+  paid random items switched off by country (list in `economy.json`), nothing that pays
+  out real money or anything that can be cashed out, and the store age-rating answers
+  updated to declare them.
+- **Art:** the ten pictures in `generators-and-gifts` are approved and are in the game
+  (three generators, three hourglasses, four Manna jars; content version 30). Fifteen
+  more are being generated for her to review (`rare-and-tools`: honey, dyes, golden
+  vessels, knife, Golden Thread, two sealed jars).
+- **Selling:** stays limited to rare finds, gift items and top-tier items ("not any
+  item"). `docs/GDD.md` section 4 updated to say so.
+- Reminders (AdMob messages, Play upload, service account, phone checks, TestFlight):
+  remind her again later.
+- The art pipeline now accepts two-word names (`item_manna_jar_01`, `gen_olive_tree_l1`).
+
 ## Milestone 28 — state (2026-10-10)
 
 **What it does** (EXPANSION 20.1–20.3)

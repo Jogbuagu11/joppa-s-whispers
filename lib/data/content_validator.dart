@@ -11,7 +11,7 @@ import 'package:whispers_of_joppa/data/tutorial_validator.dart';
 
 final _idPattern = RegExp(r'^[a-z][a-z0-9_]*$');
 final _itemAssetPattern = RegExp(
-  r'^assets/items/item_[a-z]+_\d{2}\.(png|jpg)$',
+  r'^assets/items/item_[a-z]+(_[a-z]+)*_\d{2}\.(png|jpg)$',
 );
 final _colorPattern = RegExp(r'^#[0-9a-fA-F]{6}$');
 

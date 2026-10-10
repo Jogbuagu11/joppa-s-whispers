@@ -1,6 +1,6 @@
 // Naming rules for art files. Pure Dart so tool/process_assets.dart can use it.
 
-final _itemName = RegExp(r'^item_[a-z]+_\d{2}$');
+final _itemName = RegExp(r'^item_[a-z]+(?:_[a-z]+)*_\d{2}$');
 
 /// Turns a raw art file name into its clean item name, or null if it does not
 /// follow `item_<chain>_<two-digit tier>`. Extra endings such as ".png.jpeg"
@@ -102,7 +102,7 @@ String? locationAssetBaseName(String fileName, Map<String, String> names) {
   return _locationName.firstMatch(stem.toLowerCase())?.group(1);
 }
 
-final _generatorName = RegExp(r'^(gen_[a-z]+)_l([1-9])$');
+final _generatorName = RegExp(r'^(gen_[a-z]+(?:_[a-z]+)*)_l([1-9])$');
 
 /// Turns a raw generator picture's file name into `<generator id>_l<level>`
 /// (for example gen_pantry_l2). [otherNames] maps a name an artist may have

@@ -134,6 +134,7 @@
         "item_id": "hourglass_01",
         "name": "Small hourglass",
         "sell": 5,
+        "asset": "assets/items/item_hourglass_01.jpg",
         "use": {
           "skip_seconds": 900
         }
@@ -143,6 +144,7 @@
         "item_id": "hourglass_02",
         "name": "Hourglass",
         "sell": 15,
+        "asset": "assets/items/item_hourglass_02.jpg",
         "use": {
           "skip_seconds": 3600
         }
@@ -152,6 +154,7 @@
         "item_id": "hourglass_03",
         "name": "Great hourglass",
         "sell": 40,
+        "asset": "assets/items/item_hourglass_03.jpg",
         "use": {
           "skip_all": true
         }
@@ -170,6 +173,7 @@
         "item_id": "manna_jar_01",
         "name": "Pinch of Manna",
         "sell": 2,
+        "asset": "assets/items/item_manna_jar_01.jpg",
         "use": {
           "manna": 5
         }
@@ -179,6 +183,7 @@
         "item_id": "manna_jar_02",
         "name": "Cup of Manna",
         "sell": 5,
+        "asset": "assets/items/item_manna_jar_02.jpg",
         "use": {
           "manna": 15
         }
@@ -188,6 +193,7 @@
         "item_id": "manna_jar_03",
         "name": "Jar of Manna",
         "sell": 12,
+        "asset": "assets/items/item_manna_jar_03.jpg",
         "use": {
           "manna": 40
         }
@@ -197,6 +203,7 @@
         "item_id": "manna_jar_04",
         "name": "Manna potion",
         "sell": 30,
+        "asset": "assets/items/item_manna_jar_04.jpg",
         "use": {
           "manna": 100
         }

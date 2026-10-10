@@ -1,0 +1,105 @@
+{
+ "kind": "items",
+ "model": "gemini-3-pro-image",
+ "aspect": "1:1",
+ "style_references": [
+  "assets/items/item_bakery_05.jpg",
+  "assets/items/item_loom_05.jpg",
+  "assets/items/item_church_03.jpg"
+ ],
+ "style": "STYLE: 2D hand-painted digital illustration, painterly semi-realism with visible soft brushwork, like a premium illustrated merge game. NOT 3D, not a photo, not anime, not flat vector. Soft painted edges, no thick black outlines. Warm soft light from the upper left with a gentle soft shadow beneath the object. Palette: sand, cream, terracotta, olive, cedar brown, sea blue, indigo, gold.",
+ "rules": "RULES: Square picture (1:1). ONE single object, centred, filling about 80 percent of the frame, on a plain soft light-gray background exactly like the attached item pictures. No text, no letters, no numbers, no labels, no watermark, no border, no people. First-century Mediterranean only (around AD 40): wood, clay, glass, linen, bronze; nothing modern.",
+ "folder": "rare-and-tools",
+ "views": [
+  {
+   "id": "honey_01",
+   "label": "Honey 1 Honeycomb",
+   "game": "item_honey_01",
+   "prompt": "a broken piece of golden honeycomb on a fig leaf, honey glistening in the cells, one drop running down"
+  },
+  {
+   "id": "honey_02",
+   "label": "Honey 2 Honey jar",
+   "game": "item_honey_02",
+   "prompt": "a small clay jar of honey with a cloth cover tied with twine, a little honey running down its side"
+  },
+  {
+   "id": "honey_03",
+   "label": "Honey 3 Honey pot",
+   "game": "item_honey_03",
+   "prompt": "a fine wide glazed pot brimming with golden honey, an olive-wood dipper resting in it"
+  },
+  {
+   "id": "honey_04",
+   "label": "Honey 4 Honeyed feast platter",
+   "game": "item_honey_04",
+   "prompt": "a round bronze platter laid as a feast: honey cakes, sliced figs, dates and almonds drizzled with honey, a small bowl of honey in the middle"
+  },
+  {
+   "id": "dye_01",
+   "label": "Dye 1 Purple dye shell",
+   "game": "item_dye_01",
+   "prompt": "a single spiny murex sea-snail shell, cream and tan, with a smear of deep purple dye at its opening"
+  },
+  {
+   "id": "dye_02",
+   "label": "Dye 2 Dye pot",
+   "game": "item_dye_02",
+   "prompt": "a squat clay pot full of rich purple dye, a wooden stirring stick in it and purple stains on the rim"
+  },
+  {
+   "id": "dye_03",
+   "label": "Dye 3 Purple cloth",
+   "game": "item_dye_03",
+   "prompt": "a neatly folded length of fine linen cloth dyed deep royal purple, one corner turned back to show its sheen"
+  },
+  {
+   "id": "dye_04",
+   "label": "Dye 4 Royal purple robe",
+   "game": "item_dye_04",
+   "prompt": "a splendid royal purple robe folded and draped, with a narrow gold-thread border, fit for a noble house"
+  },
+  {
+   "id": "golden_01",
+   "label": "Golden 1 Golden olive",
+   "game": "item_golden_01",
+   "prompt": "a single plump olive on a short twig with two leaves, the olive a glowing golden colour as if lit from within"
+  },
+  {
+   "id": "golden_02",
+   "label": "Golden 2 Golden oil",
+   "game": "item_golden_02",
+   "prompt": "a small clear glass flask of bright golden oil with a bronze stopper, catching the light"
+  },
+  {
+   "id": "golden_03",
+   "label": "Golden 3 Golden lamp",
+   "game": "item_golden_03",
+   "prompt": "an ornate polished golden oil lamp of the first-century kind, with a small steady flame at its spout"
+  },
+  {
+   "id": "knife_01",
+   "label": "Splitting knife",
+   "game": "item_knife_01",
+   "prompt": "a small first-century kitchen knife with a short iron blade and a smooth olive-wood handle bound with a leather thong, lying at a slight angle"
+  },
+  {
+   "id": "thread_01",
+   "label": "Golden Thread",
+   "game": "item_thread_01",
+   "prompt": "a wooden spool wound with shining golden thread, a loose end curling away, with a single bronze needle beside it"
+  },
+  {
+   "id": "breadjar_01",
+   "label": "Sealed bread jar",
+   "game": "item_breadjar_01",
+   "prompt": "a sturdy clay storage jar closed with a clay stopper and sealed with a cord and a round wax seal; an ear of wheat is pressed into the wax and painted on the jar's side in simple brown lines"
+  },
+  {
+   "id": "fruitjar_01",
+   "label": "Sealed fruit jar",
+   "game": "item_fruitjar_01",
+   "prompt": "a sturdy clay storage jar closed with a clay stopper and sealed with a cord and a round wax seal; a bunch of grapes and a fig are painted on the jar's side in simple purple and green lines"
+  }
+ ]
+}

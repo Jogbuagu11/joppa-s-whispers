@@ -29,7 +29,7 @@
 ## 4. The board — Esther's Rooftop
 - Grid: **7 columns × 9 rows** (63 cells). Some cells start covered by **rubble** (broken pottery, fallen palm fronds) and clear when an item is merged next to them.
 - **Esther's Basket:** storage for items off the board. Starts with 4 slots; more slots cost Pearls.
-- **Selling:** any item can be sold for Talents (small amount, scaled by tier).
+- **Selling:** only rare finds, gift items (hourglasses, Manna jars, tools, sealed jars) and items at the top of their chain can be sold for Talents, by tapping them; never an item an order on show is asking for. (Jennifer, 2026-10-10: "not any item".) Prices are each item's `sell` in `content/chains.json`.
 - **Item info:** tapping an item shows its chain and the next tier (silhouetted if not yet discovered).
 - **Discovery book:** first time a player makes a new item, it's recorded (with a small Talent reward).
 
@@ -134,7 +134,7 @@ No paywall, no ads, no purchase offers during the tutorial.
 | Manna refill (full) | 10 Pearls, cost rises with each refill per day (10 → 20 → 40) |
 | Basket slot | 10 Pearls, then +10 each |
 | Order reward | Talents = 5 × sum of item tiers; Blessings = 1–3 |
-| Item sell value | Tier × 2 Talents |
+| Item sell value | Tier × 2 Talents for ordinary chains; rare and gift items have their own prices in `content/chains.json` |
 | Order skip | Free, once per 30 min |
 
 All values live in `content/economy.json`, never in code.
