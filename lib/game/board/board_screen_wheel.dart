@@ -33,10 +33,17 @@ mixin _BoardWheel on _BoardItems {
     _ => null,
   };
 
-  String _luckyName(int times) =>
-      (_chanceText['lucky_step'] ?? '').replaceAll('{times}', '$times');
-  String _mysteryStep(int tiers) =>
-      (_chanceText['mystery_step'] ?? '').replaceAll('{tiers}', '$tiers');
+  String _luckyName(int times) => times <= 1
+      ? _chanceText['lucky_plain'] ?? ''
+      : (_chanceText['lucky_step'] ?? '').replaceAll('{times}', '$times');
+
+  /// Names a mystery bubble's outcomes for the item called [name] (or for
+  /// any item, in the general list of chances).
+  String Function(int tiers) _mysteryStep([String? name]) =>
+      (tiers) =>
+          (_chanceText[tiers <= 0 ? 'mystery_same' : 'mystery_step'] ?? '')
+              .replaceAll('{name}', name ?? _chanceText['mystery_any'] ?? '')
+              .replaceAll('{tiers}', '$tiers');
 
   /// A boosted tap is now and then lucky; the player is told when it was.
   void _wireLuck(BoardSession session) {
@@ -142,7 +149,7 @@ mixin _BoardWheel on _BoardItems {
               if (_mysteryBubble case final mystery?)
                 (
                   title: _chanceText['mystery_title'] ?? '',
-                  odds: mystery.odds(_mysteryStep),
+                  odds: mystery.odds(_mysteryStep()),
                 ),
             ],
           ),

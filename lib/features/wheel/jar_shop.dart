@@ -1,5 +1,6 @@
 // The jars that can be bought with Pearls, under the Blessing Wheel. What
 // each may hold, and how likely, is one tap away before buying.
+import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/domain/jars.dart';
@@ -34,7 +35,6 @@ class JarShop extends StatelessWidget {
     builder: (context, have, _) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Divider(color: GamePalette.panelEdge, height: 24),
         Text(
           text['jars_title'] ?? '',
           style: const TextStyle(
@@ -105,9 +105,9 @@ Future<void> showJarOdds(
   required JarKind jar,
 }) => showDialog<void>(
   context: context,
-  builder: (context) => AlertDialog(
+  builder: (context) => GameDialog(
     key: const Key('jar_odds_panel'),
-    backgroundColor: GamePalette.panel,
+    icon: Icons.percent,
     title: Text(title, style: const TextStyle(color: GamePalette.gold)),
     content: SizedBox(
       width: double.maxFinite,
@@ -126,13 +126,10 @@ Future<void> showJarOdds(
       ),
     ),
     actions: [
-      TextButton(
+      FilledButton(
         key: const Key('odds_close'),
         onPressed: () => Navigator.of(context).pop(),
-        child: Text(
-          text['close'] ?? '',
-          style: const TextStyle(color: GamePalette.gold),
-        ),
+        child: Text(text['close'] ?? ''),
       ),
     ],
   ),

@@ -87,45 +87,67 @@ class _WheelScreenState extends State<WheelScreen>
         builder: (context, _) => ListView(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
           children: [
-            Center(child: _wheelPicture()),
-            const SizedBox(height: 12),
-            ..._buttons(),
-            const SizedBox(height: 8),
-            OddsList(
-              title: _t('odds_free'),
-              odds: _wheel.freeOdds,
-              numbered: true,
-            ),
-            Align(
-              child: TextButton(
-                key: const Key('wheel_see_odds'),
-                onPressed: () => showWheelOdds(
-                  context,
-                  text: widget.text,
-                  free: _wheel.freeOdds,
-                  // No Pearl spins here: nothing to show for them.
-                  paid: _wheel.paidAllowed ? _wheel.paidOdds : const [],
-                  more: widget.moreOdds,
-                ),
-                child: Text(
-                  _t('see_odds'),
-                  style: const TextStyle(
-                    color: GamePalette.talents,
-                    decoration: TextDecoration.underline,
+            _panel(
+              Column(
+                children: [
+                  Center(child: _wheelPicture()),
+                  const SizedBox(height: 14),
+                  ..._buttons(),
+                  Align(
+                    child: TextButton(
+                      key: const Key('wheel_see_odds'),
+                      onPressed: () => showWheelOdds(
+                        context,
+                        text: widget.text,
+                        free: _wheel.freeOdds,
+                        // No Pearl spins here: nothing to show for them.
+                        paid: _wheel.paidAllowed ? _wheel.paidOdds : const [],
+                        more: widget.moreOdds,
+                      ),
+                      child: Text(
+                        _t('see_odds'),
+                        style: const TextStyle(
+                          color: GamePalette.talents,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-            ?widget.below,
+            const SizedBox(height: 12),
+            _panel(
+              OddsList(
+                title: _t('odds_free'),
+                odds: _wheel.freeOdds,
+                numbered: true,
+              ),
+            ),
+            if (widget.below case final below?) ...[
+              const SizedBox(height: 12),
+              _panel(below),
+            ],
           ],
         ),
       ),
     ),
   );
 
+  /// A framed panel, like the game's pop-ups.
+  Widget _panel(Widget child) => Container(
+    padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+    decoration: BoxDecoration(
+      color: GamePalette.panel,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: GamePalette.panelEdge, width: 2),
+    ),
+    child: child,
+  );
+
   Widget _wheelPicture() => SizedBox(
-    width: 240,
-    height: 252,
+    width: 264,
+    height: 276,
     child: Stack(
       alignment: Alignment.topCenter,
       children: [
@@ -144,13 +166,13 @@ class _WheelScreenState extends State<WheelScreen>
             ),
             child: CustomPaint(
               key: const Key('wheel'),
-              size: const Size.square(240),
+              size: const Size.square(264),
               painter: WheelPainter(_wheel.freeOdds),
             ),
           ),
         ),
         // The pointer the prize comes to rest under.
-        const Icon(Icons.arrow_drop_down, size: 40, color: Color(0xFFF7ECD2)),
+        const CustomPaint(size: Size(30, 34), painter: WheelPointer()),
       ],
     ),
   );
@@ -160,9 +182,21 @@ class _WheelScreenState extends State<WheelScreen>
     final idle = !_spinning && !_wheel.busy;
     final buttons = [
       if (_wheel.freeSpins > 0)
-        _button('wheel_spin_free', _t('spin_free'), idle, SpinKind.free),
+        _button(
+          'wheel_spin_free',
+          _t('spin_free'),
+          idle,
+          SpinKind.free,
+          Icons.redeem,
+        ),
       if (_wheel.adSpinOffered || (_wheel.busy && _wheel.adSpins > 0))
-        _button('wheel_spin_ad', _t('spin_ad'), idle, SpinKind.ad),
+        _button(
+          'wheel_spin_ad',
+          _t('spin_ad'),
+          idle,
+          SpinKind.ad,
+          Icons.play_circle_fill,
+        ),
       if (price != null)
         _button(
           'wheel_spin_pearls',
@@ -170,6 +204,7 @@ class _WheelScreenState extends State<WheelScreen>
           // Greyed out without the Pearls for it.
           idle && _wheel.pearls() >= price,
           SpinKind.pearls,
+          Icons.brightness_1,
         ),
     ];
     // Nothing to spin with just now (all used, or no ad ready): say so
@@ -189,19 +224,31 @@ class _WheelScreenState extends State<WheelScreen>
           ];
   }
 
-  Widget _button(String key, String label, bool enabled, SpinKind kind) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: FilledButton(
-          key: Key(key),
-          style: FilledButton.styleFrom(
-            backgroundColor: GamePalette.gold,
-            foregroundColor: GamePalette.backgroundBottom,
-            disabledBackgroundColor: GamePalette.panelLight,
-            disabledForegroundColor: GamePalette.muted,
-          ),
-          onPressed: enabled ? () => _spin(kind) : null,
-          child: Text(label),
+  Widget _button(
+    String key,
+    String label,
+    bool enabled,
+    SpinKind kind,
+    IconData icon,
+  ) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: SizedBox(
+      width: double.infinity,
+      height: 48,
+      child: FilledButton.icon(
+        key: Key(key),
+        style: FilledButton.styleFrom(
+          shape: const StadiumBorder(),
+          backgroundColor: GamePalette.gold,
+          foregroundColor: GamePalette.backgroundBottom,
+          disabledBackgroundColor: GamePalette.panelLight,
+          disabledForegroundColor: GamePalette.muted,
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-      );
+        onPressed: enabled ? () => _spin(kind) : null,
+        icon: Icon(icon, size: 20),
+        label: Text(label),
+      ),
+    ),
+  );
 }

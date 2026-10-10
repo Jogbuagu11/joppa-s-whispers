@@ -26,6 +26,9 @@ const chanceTextKeys = [
   'lucky_toast',
   'mystery_title',
   'mystery_step',
+  'mystery_same',
+  'mystery_any',
+  'lucky_plain',
   'mystery_name',
 ];
 

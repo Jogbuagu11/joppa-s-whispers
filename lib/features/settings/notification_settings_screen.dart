@@ -1,6 +1,7 @@
 // The settings screen (sound, vibration, tier numbers and the notification
 // switches), and the one-time in-game question that comes before the
 // phone's own permission prompt.
+import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_app_bar.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
@@ -150,15 +151,14 @@ Future<bool?> showNotificationExplainer(
     context: context,
     // A stray tap outside must not count as an answer.
     barrierDismissible: false,
-    builder: (context) => AlertDialog(
+    builder: (context) => GameDialog(
       key: const Key('notification_explainer'),
-      backgroundColor: const Color(0xFF2A1F08),
+      icon: Icons.notifications_active,
       title: Text(content.explainerTitle, style: const TextStyle(color: _gold)),
       content: Text(
         content.explainerBody,
         style: const TextStyle(color: Colors.white),
       ),
-      actionsOverflowAlignment: OverflowBarAlignment.end,
       actions: [
         TextButton(
           key: const Key('notification_explainer_no'),
@@ -168,13 +168,10 @@ Future<bool?> showNotificationExplainer(
             style: const TextStyle(color: _cream),
           ),
         ),
-        TextButton(
+        FilledButton(
           key: const Key('notification_explainer_yes'),
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text(
-            content.explainerYes,
-            style: const TextStyle(color: _gold),
-          ),
+          child: Text(content.explainerYes),
         ),
       ],
     ),

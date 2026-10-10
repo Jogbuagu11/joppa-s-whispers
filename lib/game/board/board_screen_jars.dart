@@ -83,9 +83,9 @@ mixin _BoardJars on _BoardBubbles {
     try {
       final choice = await showDialog<String>(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (context) => GameDialog(
           key: const Key('jar_dialog'),
-          backgroundColor: GamePalette.panel,
+          icon: Icons.inventory_2,
           title: Text(
             item.name,
             style: const TextStyle(color: GamePalette.gold),
@@ -99,7 +99,6 @@ mixin _BoardJars on _BoardBubbles {
               ],
             ),
           ),
-          actionsOverflowAlignment: OverflowBarAlignment.end,
           actions: [
             TextButton(
               key: const Key('use_item_keep'),
@@ -118,13 +117,10 @@ mixin _BoardJars on _BoardBubbles {
                   style: const TextStyle(color: GamePalette.talents),
                 ),
               ),
-            TextButton(
+            FilledButton(
               key: const Key('jar_open'),
               onPressed: () => Navigator.of(context).pop('open'),
-              child: Text(
-                text['jar_open'] ?? '',
-                style: const TextStyle(color: GamePalette.gold),
-              ),
+              child: Text(text['jar_open'] ?? ''),
             ),
           ],
         ),

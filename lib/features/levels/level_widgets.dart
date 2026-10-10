@@ -1,4 +1,5 @@
 // The level badge on the board, and the message shown on reaching a level.
+import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/domain/levels.dart';
@@ -84,9 +85,9 @@ Future<void> showLevelUp(
   List<String> giftNames = const [],
 }) => showDialog<void>(
   context: context,
-  builder: (context) => AlertDialog(
+  builder: (context) => GameDialog(
     key: const Key('level_up'),
-    backgroundColor: const Color(0xFF2A1F08),
+    icon: Icons.military_tech,
     title: Text(
       _fill(text['title'], 'level', up.to),
       key: const Key('level_up_title'),
@@ -130,7 +131,6 @@ Future<void> showLevelUp(
         ],
       ),
     ),
-    actionsAlignment: MainAxisAlignment.center,
     actions: [
       FilledButton(
         key: const Key('level_up_continue'),

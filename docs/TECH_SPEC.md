@@ -40,6 +40,7 @@ lib/
   features/       # Flutter UI screens, one folder per feature
     ads/          # optional rewarded ads (bonus Manna)
     bubbles/      # bubbles over the board (a merged item to keep)
+    wheel/        # the Blessing Wheel, Jars of Clay, the odds panels
     levels/       # player level badge and level-up message
     orders/
     story/        # dialogue scenes
@@ -194,6 +195,7 @@ Spiritual orders set `"kind": "spiritual"` and a `scene_id` that plays on comple
 - `board_text.json`: the few words used on the board (`use_manna`, `use`, `keep`, `hourglass_hint`, `ok`, `sell` with `{talents}`, `boost_hint` with `{boost}`, `knife_hint`, `thread_hint`, `sealed_hint` with `{chain}`, and the bubble words `bubble_label`, `bubble_body`, `bubble_pearls`, `bubble_ad`, `bubble_leave`).
 - Boost and rare chains (Milestone 27): a `levels.json` unlock may add `boost`: `{manna_times, tier_bonus}` (offered only if `available`); a `generators.json` entry may add `rare`: `{chain_id, chance}` (chance above 0, at most 0.5; never its own chain). A rare chain has no `generator_id`. Rules: `resolveGeneratorTap` in `lib/domain/generator.dart`.
 - Board extras (Milestone 28): a chain tier's `use` may also be `{split: true}` (splitting knife), `{wild: true}` (Golden Thread) or `{opens_with: <chain id>, gives: <item id>}` (a sealed jar, alone in its chain). Exactly one kind per item. Rules: `lib/domain/tools.dart`. The `bubbles` unlock in `levels.json` carries `bubble`: `{chance, higher_chance, seconds, pearls_per_tier, ad_max_tier, talents_per_tier, max_at_once}`; rules in `lib/domain/bubbles.dart`, state in `lib/features/bubbles/`. Bubbles are not saved. Keeping a bubble's item by ad uses the same daily cap as Manna ads; never for a chain without a generator.
+- Chance features (Milestone 29): `content/chance.json` holds `paid_blocked_countries` (two-letter codes), `wheel` (`free_spins_per_day`, `ad_spins_per_day`, `pearl_spins_per_day`, `pearl_spin_base`, `pearl_spin_step`, `prizes`), `jars` (`clay_every_orders`, `order_jar`, `kinds`: each `item`, optional `pearl_price`, `prizes`), `lucky_boost.steps` (`times`, `weight`), `mystery_bubble` (`share`, `lifts`: `tiers`, `weight`) and `text`. A prize is `{id, name, weight, manna?, talents?, pearls?, items?, generators?, free_only?}`; a prize of Pearls must be `free_only`, and a jar with a `pearl_price` may hold none. A jar item's `use` is `{jar: <kind>}`. Checked by `lib/data/chance_validator.dart`. Rules: `lib/domain/chance.dart`, `wheel.dart`, `jars.dart`, `lucky.dart`; screens in `lib/features/wheel/`. Outcomes are drawn on the device from the same table the player is shown.
 - Selling from the board: an item with a `sell` price can be sold by tapping it if its chain has no `generator_id` or it is the top tier of its chain, unless an order on show asks for it (`BoardGame.canSell`).
 - `levels.json` (Milestone 25): `xp_per_task_by_chapter`, `xp_per_task_default`, `levels` (`level`, total `xp` to reach it, `talents` reward), `unlocks` (`level`, `feature`, `name`, `available`), and the `text` of the badge and level-up message. Checked by `lib/data/level_validator.dart`.
 
@@ -201,6 +203,7 @@ Spiritual orders set `"kind": "spiritual"` and a `scene_id` that plays on comple
 - Local save file: `save.json` in the app documents folder, written after every meaningful action (debounced 2 seconds) and on app pause.
 - Contents: board cells, basket, currencies, Manna and last-regen timestamp, chapter/task progress, discovered items, letters found, crowns, settings, save version.
 - `save_version` field + migration functions for every format change. Never break an existing save.
+- `extras` (added within version 7): a map of small named records kept by later features (`wheel`: the day and its spins taken). Unknown records are kept untouched.
 - Optional fields added within version 7: a generator's `timer` (`left`, `at`), `pending_grants` (gifts waiting for room, as `item:<id>` / `gen:<id>`) and `boost` (the generator boost switched on; 0 = none).
 - Current format: version 7. Version 6 added the day's rewarded-ad count; version 7 added `level_rewarded` (the last player level whose rewards were given; XP is not saved, it is worked out from the tasks done). Earlier: Version 2 added `completed_orders`; version 3 added `completed_tasks`; version 4 added the tutorial position, free taps used, chapter endings seen and the content version; version 5 added Pearls, applied store transactions and owned one-time products. Migrations live in `migrateSave` in `lib/domain/save_state.dart`.
 - Cloud save (Milestone 14): same JSON stored in Supabase `saves` table. On conflict, keep the save with more progress and ask the player only if both have progressed.

@@ -1,4 +1,5 @@
 // Sign in, sync, sign out and delete the account.
+import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_app_bar.dart';
@@ -89,8 +90,9 @@ class _AccountScreenState extends State<AccountScreen> {
   Future<void> _confirmDelete() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => GameDialog(
         key: const Key('account_delete_dialog'),
+        icon: Icons.warning_amber,
         title: const Text('Delete your account?'),
         content: const Text(
           'This permanently deletes your account and your saved game from '

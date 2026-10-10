@@ -105,8 +105,11 @@
     "lucky_step": "{times} times the lift",
     "lucky_toast": "Lucky! {times} times the lift",
     "mystery_title": "Mystery bubbles",
-    "mystery_step": "The item, {tiers} higher",
-    "mystery_name": "Mystery bubble"
+    "mystery_step": "{name}, {tiers} bigger",
+    "mystery_name": "Mystery bubble",
+    "lucky_plain": "No extra lift",
+    "mystery_same": "{name}, as it is",
+    "mystery_any": "The item"
   },
   "jars": {
     "clay_every_orders": 4,

@@ -1,4 +1,5 @@
 // The message shown when a chapter's last task is done.
+import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/domain/progression.dart';
 
@@ -8,9 +9,9 @@ Future<void> showChapterEnding(BuildContext context, ChapterEnding ending) {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (context) => AlertDialog(
+    builder: (context) => GameDialog(
       key: const Key('chapter_ending'),
-      backgroundColor: const Color(0xFF2A1F08),
+      icon: Icons.menu_book,
       title: Text(
         ending.title,
         key: const Key('chapter_ending_title'),

@@ -1,4 +1,5 @@
 // The Manna (energy) bar shown above the board, and the out-of-Manna popup.
+import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
@@ -193,9 +194,9 @@ Future<void> showOutOfMannaPopup(
 }) {
   return showDialog<void>(
     context: context,
-    builder: (context) => AlertDialog(
+    builder: (context) => GameDialog(
       key: const Key('out_of_manna_popup'),
-      backgroundColor: const Color(0xFF2A1F08),
+      icon: Icons.hourglass_bottom,
       title: const Text('Out of Manna', style: TextStyle(color: _gold)),
       content: ListenableBuilder(
         listenable: controller,
@@ -210,7 +211,6 @@ Future<void> showOutOfMannaPopup(
           );
         },
       ),
-      actionsOverflowAlignment: OverflowBarAlignment.end,
       actions: [
         if (ads != null)
           ListenableBuilder(
@@ -227,10 +227,10 @@ Future<void> showOutOfMannaPopup(
                   )
                 : const SizedBox.shrink(),
           ),
-        TextButton(
+        FilledButton(
           key: const Key('out_of_manna_ok'),
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('OK', style: TextStyle(color: _gold)),
+          child: const Text('OK'),
         ),
       ],
     ),

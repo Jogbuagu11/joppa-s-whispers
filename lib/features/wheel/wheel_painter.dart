@@ -40,7 +40,29 @@ class WheelPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final centre = size.center(Offset.zero);
     final radius = size.shortestSide / 2;
-    final rect = Rect.fromCircle(center: centre, radius: radius - 4);
+    // The rim: dark wood between two gold lines, set with small studs.
+    canvas.drawCircle(centre, radius, Paint()..color = GamePalette.gold);
+    canvas.drawCircle(
+      centre,
+      radius - 3,
+      Paint()..color = GamePalette.backgroundBottom,
+    );
+    canvas.drawCircle(
+      centre,
+      radius - 13,
+      Paint()..color = GamePalette.talents,
+    );
+    const studs = 24;
+    for (var i = 0; i < studs; i++) {
+      final angle = 2 * pi * i / studs;
+      canvas.drawCircle(
+        centre + Offset(cos(angle), sin(angle)) * (radius - 8),
+        2.2,
+        Paint()..color = GamePalette.talents,
+      );
+    }
+    final inner = radius - 15;
+    final rect = Rect.fromCircle(center: centre, radius: inner);
     var start = -pi / 2;
     for (var i = 0; i < odds.length; i++) {
       final sweep = odds[i].chance * 2 * pi;
@@ -55,40 +77,70 @@ class WheelPainter extends CustomPainter {
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.5,
       );
-      // Its number, which the list beneath explains.
+      // Its number, on a small dark disc, which the list beneath explains.
       final middle = start + sweep / 2;
-      final at = centre + Offset(cos(middle), sin(middle)) * radius * 0.72;
-      final number = TextPainter(
-        text: TextSpan(
-          text: '${i + 1}',
-          style: const TextStyle(
-            color: GamePalette.backgroundBottom,
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
+      if (sweep > 0.16) {
+        final at = centre + Offset(cos(middle), sin(middle)) * inner * 0.68;
+        canvas.drawCircle(
+          at,
+          11,
+          Paint()..color = GamePalette.backgroundBottom,
+        );
+        final number = TextPainter(
+          text: TextSpan(
+            text: '${i + 1}',
+            style: const TextStyle(
+              color: GamePalette.talents,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout();
-      if (sweep > 0.12) {
+          textDirection: TextDirection.ltr,
+        )..layout();
         number.paint(canvas, at - number.size.center(Offset.zero));
       }
       start += sweep;
     }
+    // The hub.
+    canvas.drawCircle(centre, inner * 0.2, Paint()..color = GamePalette.gold);
     canvas.drawCircle(
       centre,
-      radius - 4,
-      Paint()
-        ..color = GamePalette.panelEdge
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 5,
+      inner * 0.15,
+      Paint()..color = GamePalette.backgroundBottom,
     );
     canvas.drawCircle(
       centre,
-      radius * 0.12,
-      Paint()..color = GamePalette.panel,
+      inner * 0.06,
+      Paint()..color = GamePalette.talents,
     );
   }
 
   @override
   bool shouldRepaint(WheelPainter old) => old.odds != odds;
+}
+
+/// The marker at the top of the wheel that the prize comes to rest under.
+class WheelPointer extends CustomPainter {
+  const WheelPointer();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final shape = Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width / 2, size.height)
+      ..close();
+    canvas.drawShadow(shape, const Color(0xFF000000), 3, false);
+    canvas.drawPath(shape, Paint()..color = GamePalette.talents);
+    canvas.drawPath(
+      shape,
+      Paint()
+        ..color = GamePalette.backgroundBottom
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5,
+    );
+  }
+
+  @override
+  bool shouldRepaint(WheelPointer old) => false;
 }

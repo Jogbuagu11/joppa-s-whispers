@@ -1,4 +1,5 @@
 // The list of prizes with their chances, and the "See odds" panel.
+import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/domain/chance.dart';
@@ -27,6 +28,7 @@ class OddsList extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Text(
           title,
+          textAlign: TextAlign.left,
           style: const TextStyle(
             color: GamePalette.talents,
             fontWeight: FontWeight.bold,
@@ -35,7 +37,7 @@ class OddsList extends StatelessWidget {
       ),
       for (var i = 0; i < odds.length; i++)
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
+          padding: const EdgeInsets.symmetric(vertical: 3),
           child: Row(
             children: [
               if (numbered) ...[
@@ -62,13 +64,26 @@ class OddsList extends StatelessWidget {
               Expanded(
                 child: Text(
                   odds[i].prize.name,
+                  textAlign: TextAlign.left,
                   style: const TextStyle(color: Color(0xFFF3E5C8)),
                 ),
               ),
-              Text(
-                formatChance(odds[i].chance),
-                key: Key('odds_${odds[i].prize.id}'),
-                style: const TextStyle(color: GamePalette.muted),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                decoration: BoxDecoration(
+                  color: GamePalette.panelLight,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  formatChance(odds[i].chance),
+                  key: Key('odds_${odds[i].prize.id}'),
+                  textAlign: TextAlign.right,
+                  style: const TextStyle(
+                    color: GamePalette.talents,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
@@ -90,9 +105,9 @@ Future<void> showWheelOdds(
   List<OddsSection> more = const [],
 }) => showDialog<void>(
   context: context,
-  builder: (context) => AlertDialog(
+  builder: (context) => GameDialog(
     key: const Key('odds_panel'),
-    backgroundColor: GamePalette.panel,
+    icon: Icons.percent,
     title: Text(
       text['odds_title'] ?? '',
       style: const TextStyle(color: GamePalette.gold),
@@ -122,13 +137,10 @@ Future<void> showWheelOdds(
       ),
     ),
     actions: [
-      TextButton(
+      FilledButton(
         key: const Key('odds_close'),
         onPressed: () => Navigator.of(context).pop(),
-        child: Text(
-          text['close'] ?? '',
-          style: const TextStyle(color: GamePalette.gold),
-        ),
+        child: Text(text['close'] ?? ''),
       ),
     ],
   ),
@@ -141,9 +153,9 @@ Future<void> showPrize(
   required Prize prize,
 }) => showDialog<void>(
   context: context,
-  builder: (context) => AlertDialog(
+  builder: (context) => GameDialog(
     key: const Key('wheel_prize'),
-    backgroundColor: GamePalette.panel,
+    icon: Icons.card_giftcard,
     title: Text(
       text['won_title'] ?? '',
       style: const TextStyle(color: GamePalette.gold),
@@ -154,13 +166,10 @@ Future<void> showPrize(
       style: const TextStyle(color: Color(0xFFF3E5C8), fontSize: 18),
     ),
     actions: [
-      TextButton(
+      FilledButton(
         key: const Key('wheel_prize_ok'),
         onPressed: () => Navigator.of(context).pop(),
-        child: Text(
-          text['won_button'] ?? '',
-          style: const TextStyle(color: GamePalette.gold),
-        ),
+        child: Text(text['won_button'] ?? ''),
       ),
     ],
   ),

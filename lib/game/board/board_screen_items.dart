@@ -131,9 +131,9 @@ mixin _BoardItems on _BoardRoutes {
     try {
       final choice = await showDialog<String>(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (context) => GameDialog(
           key: const Key('use_item'),
-          backgroundColor: const Color(0xFF2A1F08),
+          icon: Icons.touch_app,
           title: Text(
             item.name,
             style: const TextStyle(color: Color(0xFFD4802A)),
@@ -145,7 +145,6 @@ mixin _BoardItems on _BoardRoutes {
                   key: const Key('use_item_effect'),
                   style: const TextStyle(color: Color(0xFFF3E5C8)),
                 ),
-          actionsOverflowAlignment: OverflowBarAlignment.end,
           actions: [
             TextButton(
               key: const Key('use_item_keep'),
@@ -165,13 +164,10 @@ mixin _BoardItems on _BoardRoutes {
                 ),
               ),
             if (use != null)
-              TextButton(
+              FilledButton(
                 key: const Key('use_item_use'),
                 onPressed: () => Navigator.of(context).pop('use'),
-                child: Text(
-                  text['use'] ?? '',
-                  style: const TextStyle(color: Color(0xFFD4802A)),
-                ),
+                child: Text(text['use'] ?? ''),
               ),
           ],
         ),

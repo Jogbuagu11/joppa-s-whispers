@@ -62,9 +62,9 @@ mixin _BoardBubbles on _BoardWheel {
     try {
       final choice = await showDialog<String>(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (context) => GameDialog(
           key: const Key('bubble_dialog'),
-          backgroundColor: const Color(0xFF2A1F08),
+          icon: Icons.bubble_chart,
           title: Text(
             tapped.mystery
                 ? _chanceText['mystery_name'] ?? ''
@@ -88,13 +88,12 @@ mixin _BoardBubbles on _BoardWheel {
                 if (bubbles.mystery case final mystery? when tapped.mystery)
                   OddsList(
                     key: const Key('mystery_odds'),
-                    title: tapped.item.name,
-                    odds: mystery.odds(_mysteryStep),
+                    title: _chanceText['jar_holds'] ?? '',
+                    odds: mystery.odds(_mysteryStep(tapped.item.name)),
                   ),
               ],
             ),
           ),
-          actionsOverflowAlignment: OverflowBarAlignment.end,
           actions: [
             TextButton(
               key: const Key('bubble_leave'),
@@ -113,7 +112,7 @@ mixin _BoardBubbles on _BoardWheel {
                   style: const TextStyle(color: Color(0xFFE9B44C)),
                 ),
               ),
-            TextButton(
+            FilledButton(
               key: const Key('bubble_pearls'),
               // Greyed out without the Pearls for it.
               onPressed: session.purchases.pearls >= pearls
@@ -121,11 +120,6 @@ mixin _BoardBubbles on _BoardWheel {
                   : null,
               child: Text(
                 (text['bubble_pearls'] ?? '').replaceAll('{pearls}', '$pearls'),
-                style: TextStyle(
-                  color: session.purchases.pearls >= pearls
-                      ? const Color(0xFFD4802A)
-                      : const Color(0xFF7A6A4A),
-                ),
               ),
             ),
           ],

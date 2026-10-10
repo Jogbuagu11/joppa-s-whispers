@@ -1,4 +1,5 @@
 // Asks the player which game to keep when two have moved on separately.
+import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/material.dart';
 
 /// Asks which game to keep when this phone and the cloud have both moved on.
@@ -16,8 +17,9 @@ Future<bool?> showSaveChoice(
   return showDialog<bool>(
     context: context,
     barrierDismissible: false,
-    builder: (context) => AlertDialog(
+    builder: (context) => GameDialog(
       key: const Key('save_choice_dialog'),
+      icon: Icons.cloud_sync,
       title: const Text('Which game do you want to keep?'),
       content: Text(
         'This phone: ${line(localTasks, localOrders)}.\n\n'
@@ -32,7 +34,7 @@ Future<bool?> showSaveChoice(
           onPressed: () => Navigator.of(context).pop(false),
           child: const Text('Keep this phone'),
         ),
-        TextButton(
+        FilledButton(
           key: const Key('save_choice_cloud'),
           onPressed: () => Navigator.of(context).pop(true),
           child: const Text('Keep my account'),

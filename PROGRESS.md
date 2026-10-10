@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 28 — Board extras is built (2026-10-10). Next to build: 29 — Chance features (questions for Jennifer first, see "Waiting on Jennifer"). Milestones 14 and 16–28 are built and awaiting Jennifer's real-phone checks. Release builds are now milestone 40.
+## Current milestone: 29 — Chance features is built (2026-10-10). Next to build: 30 — Offers & pop-ups. Milestones 14 and 16–29 are built and awaiting Jennifer's real-phone checks. Release builds are now milestone 40.
 ---
 
 ## Milestone status
@@ -36,7 +36,7 @@
 | 26 | Generator types | BUILT — not tagged: Jennifer has not yet played it; new tiles have no art |
 | 27 | Boost & rare chains | BUILT — not tagged: Jennifer has not yet played it; the new items have no approved art yet |
 | 28 | Board extras | BUILT — not tagged: Jennifer has not yet played it; the new items have no art |
-| 29 | Chance features | Not started |
+| 29 | Chance features | BUILT — not tagged: Jennifer has not yet played it; store age-rating answers must be updated before release |
 | 30 | Offers & pop-ups | Not started |
 | 31 | Treasure Jar & pass tiers | Not started |
 | 32 | Event suite | Not started |
@@ -1394,6 +1394,86 @@ Where it stands (she has seen each step; the last one is not yet approved):
   build opens on the emulator through the title screen and welcome to the board.
   **Build 14** (`dist/whispers-of-joppa-1.0.0-14.aab`, in Downloads) has Milestone 26 and
   all of this. Store screenshots retaken with the new look.
+
+## Pop-ups and wheel restyle (2026-10-10) — asked for by Jennifer
+- Her words: "clear cache. then fix the css on the spin wheel. make sure pop up modals
+  are enhanced design not too basic and plain."
+- Cache cleared (`flutter clean`; the app removed from both simulators).
+- Every pop-up in the game (17 of them) now uses one shared design,
+  `lib/app/game_dialog.dart`: a framed wood panel, a round emblem set into the top edge,
+  the title on a lighter band with a small flourish, rounded buttons with the main one
+  filled gold.
+- The wheel has a studded rim, a hub and a proper pointer; the wheel, its prize list and
+  the jar shop each sit in a framed panel; spin buttons are large with an icon; "See
+  odds" is directly under them.
+- Pictures for her: `Downloads/WhispersofJoppa-art-review/popups-and-wheel/`, taken by
+  `tool/take_look_shots.sh` (which stages them with `integration_test/look_shots.dart`).
+- Wording: a mystery bubble's list now reads "Flour, as it is / Flour, 1 bigger".
+
+## Milestone 29 — state (2026-10-10)
+
+**What it does** (EXPANSION 20.4; Jennifer: "do what's legal")
+- **The Blessing Wheel** (from player level 5; a round button in the row above the
+  board, gold while a free spin is waiting): one free spin a day, one more for an ad,
+  and up to five more for Pearls (5, 10, 15, 20, 25). Prizes: Manna, Talents, an
+  hourglass, a Basket of Loaves, a knife, a Golden Thread, 3 Pearls, and a Golden Jar.
+- **Jars of Clay:** a clay jar comes with every fourth order delivered. A jar sits on
+  the board; tapping it lists what it may hold with the chance of each, and it is
+  opened only on "Open". Treasure Jars (15 Pearls) and Golden Jars (40 Pearls) are sold
+  under the wheel.
+- **Lucky boost:** with a boost on, one tap in ten is lucky: the item is lifted 2, 3 or
+  5 times as far, for the same Manna. The game says "Lucky!".
+- **Mystery bubbles:** about one bubble in seven shows "?". It holds the item just
+  merged, or one or two tiers higher; which is only seen once it is kept.
+- **The legal safeguards, all of them built and tested:**
+  - Every prize and its chance is on the screen before anything is spun, opened or
+    paid for: under the wheel, in "See odds" (free and Pearl spins separately, plus the
+    lucky boost and mystery bubbles), in each jar's "See odds", in a jar's own question
+    and in a mystery bubble's question.
+  - The chances shown and the chances drawn come from one table by one sum
+    (`oddsFor` / `drawPrize` in `lib/domain/chance.dart`); tests draw tens of thousands
+    of times and compare.
+  - **Pearls can never be won with Pearls:** a Pearl spin never lands on Pearls, and a
+    jar that is sold never holds Pearls. The content check refuses content that breaks
+    this. Nothing won can be cashed out or traded.
+  - **Countries that forbid paid random rewards** (list in `content/chance.json`,
+    `paid_blocked_countries`; Belgium for now): no Pearl spins, no jars for sale, no
+    mystery bubbles. Free spins, ad spins and jars already owned work everywhere. The
+    country is the phone's region setting.
+  - No chance feature in the tutorial; none for money during it either.
+- Content is version 33. The wheel's daily counts are saved (in the save file's new
+  `extras`); no new save version.
+
+**Checks**
+- `flutter analyze` clean; unit tests pass (`test/domain/chance_test.dart`,
+  `jars_test.dart`, `lucky_test.dart`; `test/features/wheel_controller_test.dart`,
+  `wheel_screen_test.dart`, `jar_shop_test.dart`); device tests
+  `integration_test/wheel_test.dart` and `jars_test.dart`, plus mystery bubbles in
+  `bubbles_test.dart` and the lucky boost in `boost_test.dart`.
+
+## Assumptions to confirm (added in Milestone 29)
+- **Not a lawyer's opinion.** I built what the app stores and the laws I know of ask
+  for (published odds, no paid random rewards in Belgium, nothing that can be cashed
+  out). Before release Jennifer should have someone confirm the country list; the
+  Netherlands, and Australia's 2024 age-classification rules for paid chance, are the
+  ones to ask about. Adding a country is one line in `content/chance.json`.
+- **Store age rating will no longer be 4+ / Everyone.** Both store questionnaires must
+  now declare "simulated gambling: infrequent/mild" and "random paid items: yes"
+  (EXPANSION Part 1). Expect about 12+ on Apple. This is a release step (Milestone 40).
+- **Rolled on the phone, not on a server.** EXPANSION Part 4 asks for an Edge Function
+  `roll`. Pearls and the board live in the save file on the phone, so a server roll
+  would not stop anyone who alters their own save, and it would stop the wheel working
+  offline. The odds are honest either way. Building `roll` means a new live server
+  function; say if it is wanted.
+- All numbers (prizes, weights, prices, one jar per four orders, one lucky tap in ten,
+  one mystery bubble in seven) are my starting choices in `content/chance.json`.
+- The wheel's slices are as wide as their chances (so a rare prize is a thin slice),
+  and are numbered to match the list underneath rather than labelled.
+- "Fewer ad placements for players who have paid", "a free wheel spin" as a rewarded-ad
+  placement beyond the one built, and buying hourglasses/knives/threads directly with
+  Pearls are not built here.
+- **Art needed:** the three jars (Jar of Clay, Treasure Jar, Golden Jar) and a wheel.
+- `chance_validator.dart` is 292 lines and `board_strip.dart` 295: split before adding.
 
 ## Jennifer's answers (2026-10-10, after Milestone 28)
 - **Chance features (Milestone 29): "do what's legal."** Build them as designed in

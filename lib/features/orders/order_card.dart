@@ -1,6 +1,7 @@
 // One order card: who is asking (their face), what they want, a line or two
 // of what they say, and the Deliver button. It fits whatever height it is
 // given; tapping the words shows the whole request and its reward.
+import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
@@ -212,9 +213,9 @@ class OrderCard extends StatelessWidget {
   /// The whole request and its reward, in a small window.
   Future<void> _showDetails(BuildContext context) => showDialog<void>(
     context: context,
-    builder: (context) => AlertDialog(
+    builder: (context) => GameDialog(
       key: const Key('order_details'),
-      backgroundColor: GamePalette.panel,
+      icon: Icons.receipt_long,
       title: Text(
         characterName,
         style: const TextStyle(color: GamePalette.level),
@@ -235,13 +236,10 @@ class OrderCard extends StatelessWidget {
         ),
       ),
       actions: [
-        TextButton(
+        FilledButton(
           key: const Key('order_details_close'),
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text(
-            'Close',
-            style: TextStyle(color: GamePalette.level),
-          ),
+          child: const Text('Close'),
         ),
       ],
     ),
