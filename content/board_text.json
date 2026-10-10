@@ -11,5 +11,7 @@
   "welcome_privacy": "Privacy Policy",
   "welcome_play": "Play",
   "sell": "Sell for {talents} Talents",
-  "boost_hint": "Generator boost {boost}"
+  "boost_hint": "Generator boost {boost}",
+  "knife_hint": "Drag it onto an item to split it into two of the size below.",
+  "thread_hint": "Drag it onto any item to raise it one step."
 }

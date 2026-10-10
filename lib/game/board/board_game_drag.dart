@@ -31,6 +31,7 @@ extension _BoardDrag on BoardGame {
     final origin = _dragOriginCell;
     if (dragging == null || origin == null) return;
     if (_dropOnGenerator(dragging, origin)) return;
+    if (_dropTool(dragging, origin)) return;
 
     CellComponent? target;
     for (int c = 0; c < gridCols; c++) {

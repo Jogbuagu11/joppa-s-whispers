@@ -12,6 +12,7 @@ import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
+import 'package:whispers_of_joppa/domain/tools.dart';
 import 'package:whispers_of_joppa/domain/unlocks.dart';
 import 'package:whispers_of_joppa/app/board_inventory.dart';
 import 'package:whispers_of_joppa/data/asset_names.dart';
@@ -26,6 +27,7 @@ part 'board_game_drag.dart';
 part 'board_game_generator_types.dart';
 part 'board_game_layout.dart';
 part 'board_game_generators.dart';
+part 'board_game_tools.dart';
 
 final _log = Logger('BoardGame');
 

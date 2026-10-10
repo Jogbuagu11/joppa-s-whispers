@@ -295,5 +295,37 @@
         "sell": 95
       }
     ]
+  },
+  {
+    "id": "knife",
+    "placeholder_color": "#9A9A9A",
+    "name": "Splitting knife",
+    "kind": "gift",
+    "unlock_chapter": 1,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "knife_01",
+        "name": "Splitting knife",
+        "sell": 15,
+        "use": { "split": true }
+      }
+    ]
+  },
+  {
+    "id": "thread",
+    "placeholder_color": "#E6C04A",
+    "name": "Golden Thread",
+    "kind": "gift",
+    "unlock_chapter": 1,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "thread_01",
+        "name": "Golden Thread",
+        "sell": 25,
+        "use": { "wild": true }
+      }
+    ]
   }
 ]

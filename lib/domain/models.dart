@@ -37,7 +37,21 @@ class ItemUse {
   /// True if it ends a generator's wait outright.
   final bool skipAll;
 
-  const ItemUse({this.manna = 0, this.skipSeconds = 0, this.skipAll = false});
+  /// True for a splitting knife: dropped on an item, it makes two of the
+  /// tier below.
+  final bool split;
+
+  /// True for a wildcard (the Golden Thread): dropped on any item, it
+  /// raises that item one tier.
+  final bool wild;
+
+  const ItemUse({
+    this.manna = 0,
+    this.skipSeconds = 0,
+    this.skipAll = false,
+    this.split = false,
+    this.wild = false,
+  });
 
   /// Null if [json] describes no effect.
   static ItemUse? fromJson(Object? json) {
@@ -46,12 +60,17 @@ class ItemUse {
       manna: json['manna'] as int? ?? 0,
       skipSeconds: json['skip_seconds'] as int? ?? 0,
       skipAll: json['skip_all'] as bool? ?? false,
+      split: json['split'] as bool? ?? false,
+      wild: json['wild'] as bool? ?? false,
     );
-    return use.givesManna || use.skipsTime ? use : null;
+    return use.givesManna || use.skipsTime || use.isTool ? use : null;
   }
 
   bool get givesManna => manna > 0;
   bool get skipsTime => skipAll || skipSeconds > 0;
+
+  /// True for something dropped on another item to change it.
+  bool get isTool => split || wild;
 }
 
 /// One cell on the 7×9 board.

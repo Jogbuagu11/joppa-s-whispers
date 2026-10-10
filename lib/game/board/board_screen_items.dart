@@ -107,7 +107,12 @@ mixin _BoardItems on _BoardRoutes {
               : Text(
                   effect.givesManna
                       ? fill('use_manna', 'manna', effect.manna)
-                      : text['hourglass_hint'] ?? '',
+                      : text[effect.split
+                                ? 'knife_hint'
+                                : effect.wild
+                                ? 'thread_hint'
+                                : 'hourglass_hint'] ??
+                            '',
                   key: const Key('use_item_effect'),
                   style: const TextStyle(color: Color(0xFFF3E5C8)),
                 ),

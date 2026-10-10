@@ -59,10 +59,23 @@ void checkItemUse(String what, Object? use, List<String> problems) {
   if (all != null && all is! bool) {
     problems.add('$what: use.skip_all must be true or false');
   }
-  final gives = manna != null;
-  final skips = seconds != null || all == true;
-  if (gives == skips) {
-    problems.add('$what: use must give Manna or skip time, one or the other');
+  for (final key in ['split', 'wild']) {
+    final value = use[key];
+    if (value != null && value is! bool) {
+      problems.add('$what: use.$key must be true or false');
+    }
+  }
+  final kinds = [
+    manna != null,
+    seconds != null || all == true,
+    use['split'] == true,
+    use['wild'] == true,
+  ].where((kind) => kind).length;
+  if (kinds != 1) {
+    problems.add(
+      '$what: use must do exactly one thing: give Manna, skip time, split '
+      'or be a wildcard',
+    );
   }
 }
 
