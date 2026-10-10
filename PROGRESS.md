@@ -1310,7 +1310,7 @@ Where it stands (she has seen each step; the last one is not yet approved):
   `content/board_text.json` as `orders_background`), washed with cream. The night
   watchtower picture itself was too dark to lighten well; a daytime lighthouse strip
   would be new art. Content version 21.
-- The tutorial hint sits above the order cards, with a 54-point cut-out head.
+- Then: "put the instructions from Silas or whomever at the bottom of the screen below the board". The hint now sits under the board, with a 54-point cut-out head.
 - Reviewer's notes carried forward: on short phones (iPhone SE) the board cannot be
   full width — there is not the height; with three wanted items the item pictures are
   small on narrow phones; `board_game.dart` (291 lines) and `event_screen.dart` (294)

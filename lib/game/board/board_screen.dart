@@ -211,12 +211,6 @@ class _BoardScreenState extends State<BoardScreen>
                     ? _eventBanner(event)
                     : const SizedBox.shrink(),
               ),
-            TutorialBanner(
-              controller: session.tutorial,
-              characterNames: session.characterNames,
-              availableAssets: session.assetPaths,
-              looks: _characterLooks,
-            ),
             // The board comes first: it is as wide as the screen whenever
             // the height allows, and the order cards take what is left
             // (within their limits).
@@ -261,6 +255,13 @@ class _BoardScreenState extends State<BoardScreen>
                   );
                 },
               ),
+            ),
+            // Hints (Silas and the others) sit under the board.
+            TutorialBanner(
+              controller: session.tutorial,
+              characterNames: session.characterNames,
+              availableAssets: session.assetPaths,
+              looks: _characterLooks,
             ),
           ],
         ),
