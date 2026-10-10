@@ -65,7 +65,17 @@ void checkItemUse(String what, Object? use, List<String> problems) {
       problems.add('$what: use.$key must be true or false');
     }
   }
+  final opens = use['opens_with'];
+  final gift = use['gives'];
+  if ((opens != null && opens is! String) ||
+      (gift != null && gift is! String)) {
+    problems.add('$what: use.opens_with and use.gives must be ids');
+  }
+  if ((opens == null) != (gift == null)) {
+    problems.add('$what: a sealed jar needs both opens_with and gives');
+  }
   final kinds = [
+    opens != null || gift != null,
     manna != null,
     seconds != null || all == true,
     use['split'] == true,
@@ -73,8 +83,8 @@ void checkItemUse(String what, Object? use, List<String> problems) {
   ].where((kind) => kind).length;
   if (kinds != 1) {
     problems.add(
-      '$what: use must do exactly one thing: give Manna, skip time, split '
-      'or be a wildcard',
+      '$what: use must do exactly one thing: give Manna, skip time, split, '
+      'be a wildcard or be a sealed jar',
     );
   }
 }
@@ -104,5 +114,37 @@ void checkRareDrop(
   final chance = rare['chance'];
   if (chance is! num || chance <= 0 || chance > 0.5) {
     problems.add('Generator $id: rare chance must be above 0 and at most 0.5');
+  }
+}
+
+/// Adds a line to [problems] for every sealed jar that names a chain or a
+/// gift the game does not have, or that would give another sealed jar.
+void checkSealedJars(List<Map<String, dynamic>> chains, List<String> problems) {
+  final tiers = [
+    for (final chain in chains)
+      for (final tier in chain['tiers'] as List<dynamic>)
+        (chain: chain['id'], tier: tier as Map<String, dynamic>),
+  ];
+  final byId = {for (final t in tiers) t.tier['item_id']: t};
+  for (final t in tiers) {
+    final use = t.tier['use'];
+    if (use is! Map<String, dynamic> || use['opens_with'] == null) continue;
+    final id = t.tier['item_id'];
+    final opens = use['opens_with'];
+    if (opens == t.chain || !chains.any((c) => c['id'] == opens)) {
+      problems.add('Item $id: opens_with "$opens" is not another chain');
+    }
+    final gift = byId[use['gives']];
+    if (gift == null) {
+      problems.add('Item $id: gives "${use['gives']}", which is no item');
+    } else if (gift.tier['use'] case {'opens_with': _}) {
+      problems.add('Item $id: a sealed jar cannot give a sealed jar');
+    }
+    if (t.tier['tier'] != 1 ||
+        (chains.firstWhere((c) => c['id'] == t.chain)['tiers'] as List<dynamic>)
+                .length !=
+            1) {
+      problems.add('Item $id: a sealed jar must be alone in its chain');
+    }
   }
 }

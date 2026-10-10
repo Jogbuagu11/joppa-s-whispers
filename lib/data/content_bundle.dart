@@ -116,6 +116,7 @@ const boardTextKeys = [
   'hourglass_hint',
   'knife_hint',
   'thread_hint',
+  'sealed_hint',
   'ok',
   'sell',
   'boost_hint',

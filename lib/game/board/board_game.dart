@@ -49,6 +49,9 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   /// Called with the new item after two items merge.
   void Function(ItemModel merged)? onMerged;
 
+  /// Called with what came out of a sealed jar just opened.
+  void Function(ItemModel gift)? onJarOpened;
+
   /// The cell of the latest merge (set just before [onMerged] is called).
   (int, int)? lastMergeCell;
 

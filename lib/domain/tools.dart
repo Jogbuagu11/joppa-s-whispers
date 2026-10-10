@@ -3,6 +3,14 @@ import 'package:whispers_of_joppa/domain/generator.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 
+/// The item the sealed jar [jar] turns into when [merged] is made beside
+/// it, or null if it stays shut (EXPANSION 20.2).
+String? sealedJarGives(ItemModel jar, ItemModel merged) {
+  final use = jar.use;
+  if (use == null || !use.isSealed) return null;
+  return use.opensWith == merged.chainId ? use.gives : null;
+}
+
 /// What dropping a tool on an item does.
 class ToolResult {
   /// The item the target becomes.

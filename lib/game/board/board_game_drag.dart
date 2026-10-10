@@ -79,6 +79,7 @@ extension _BoardDrag on BoardGame {
           lastMergeCell = (target.col, target.row);
           onMerge?.call();
           onMerged?.call(merged);
+          _openJarsBeside(target.col, target.row, merged);
         } else {
           _snapBack(dragging, origin, originItem);
         }

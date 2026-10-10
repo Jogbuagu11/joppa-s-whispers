@@ -62,6 +62,7 @@ List<String> validateContent({
     final generators = (generatorsJson as List<dynamic>)
         .cast<Map<String, dynamic>>();
     final maxTierByChain = _checkChains(chains, problems);
+    checkSealedJars(chains, problems);
     final generatorIds = _checkGenerators(generators, maxTierByChain, problems);
     final temporaryIds = {
       for (final g in generators)

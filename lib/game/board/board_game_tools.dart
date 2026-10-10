@@ -25,9 +25,28 @@ extension BoardTools on BoardGame {
     if (tool.use?.wild ?? false) {
       lastMergeCell = (toCol, toRow);
       onMerged?.call(becomes);
+      _openJarsBeside(toCol, toRow, becomes);
     }
     _boardTouched();
     return true;
+  }
+
+  /// [merged] was just made in ([col], [row]): any sealed jar in the eight
+  /// cells round it that opens with that chain turns into its gift.
+  void _openJarsBeside(int col, int row, ItemModel merged) {
+    for (var c = col - 1; c <= col + 1; c++) {
+      for (var r = row - 1; r <= row + 1; r++) {
+        if (c < 0 || c >= gridCols || r < 0 || r >= gridRows) continue;
+        final jar = _board[c][r];
+        if (jar == null || (c == col && r == row)) continue;
+        final gift = itemCatalog[sealedJarGives(jar, merged)];
+        if (gift == null) continue;
+        _put(c, r, gift);
+        _log.fine('${jar.itemId} opened -> ${gift.itemId}');
+        onJarOpened?.call(gift);
+        _boardTouched();
+      }
+    }
   }
 
   void _put(int col, int row, ItemModel? item) {

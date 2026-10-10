@@ -1,6 +1,6 @@
 # Whispers of Joppa — Progress
 
-## Current milestone: 27 — Boost & rare chains is built (2026-10-10). Next to build: 28 — Board extras. Milestones 14 and 16–27 are built and awaiting Jennifer's real-phone checks. Release builds are now milestone 40.
+## Current milestone: 28 — Board extras is built (2026-10-10). Next to build: 29 — Chance features (questions for Jennifer first, see "Waiting on Jennifer"). Milestones 14 and 16–28 are built and awaiting Jennifer's real-phone checks. Release builds are now milestone 40.
 ---
 
 ## Milestone status
@@ -35,7 +35,7 @@
 | 25 | Player levels & XP | BUILT — not tagged: Jennifer has not yet seen it on a phone |
 | 26 | Generator types | BUILT — not tagged: Jennifer has not yet played it; new tiles have no art |
 | 27 | Boost & rare chains | BUILT — not tagged: Jennifer has not yet played it; the new items have no approved art yet |
-| 28 | Board extras | Not started |
+| 28 | Board extras | BUILT — not tagged: Jennifer has not yet played it; the new items have no art |
 | 29 | Chance features | Not started |
 | 30 | Offers & pop-ups | Not started |
 | 31 | Treasure Jar & pass tiers | Not started |
@@ -1394,6 +1394,55 @@ Where it stands (she has seen each step; the last one is not yet approved):
   build opens on the emulator through the title screen and welcome to the board.
   **Build 14** (`dist/whispers-of-joppa-1.0.0-14.aab`, in Downloads) has Milestone 26 and
   all of this. Store screenshots retaken with the new look.
+
+## Milestone 28 — state (2026-10-10)
+
+**What it does** (EXPANSION 20.1–20.3)
+- **Splitting knife:** drag it onto an item above the first tier and it becomes two of
+  the tier below (one where the item was, one where the knife was). The knife is used up.
+- **Golden Thread:** drag it onto any item below the top of its chain and that item goes
+  up one tier. The thread is used up. It counts as a merge (sound, sealed jars).
+- Dropped where it would do nothing, either tool simply goes back. Tapping one explains
+  it and offers to sell it.
+- **Bubbles** (from player level 5, never in the tutorial): about one merge in twenty
+  leaves a bubble at the corner of the cell, holding a copy of the item just made (15%
+  of the time the next tier up). Tap it: "Keep for N Pearls" (2 Pearls per tier),
+  "Watch an ad to keep" (tier 4 and below, and only if an ad is loaded), or "Leave it".
+  Left alone for 60 seconds it pops and leaves 2 Talents per tier. At most two bubbles
+  at once. A kept item waits for room if the board is full.
+- **Sealed jars:** a jar that sits on the board (it can be moved) until two items of its
+  chain are merged in one of the eight cells round it; then it turns into its gift.
+  Two kinds so far: a bread jar (merge Bakery beside it → Cup of Manna) and a fruit jar
+  (merge Fruit of the Spirit beside it → Hourglass). Tapping one says how to open it.
+- **Where they come from, for now:** level-up gifts. Knife at levels 9, 19, 29…; Golden
+  Thread at 14, 24, 34…; sealed jars at 11, 21, 31, 41, 51.
+- Content is version 28. No change to the save format.
+
+**Checks**
+- `flutter analyze` clean; unit tests pass (`test/domain/tools_test.dart`,
+  `test/domain/bubbles_test.dart`, `test/game/board_tools_test.dart`,
+  `test/features/bubble_controller_test.dart`, `test/features/bubble_layer_test.dart`);
+  `integration_test/board_extras_test.dart` (knife, thread and jar by dragging) and
+  `integration_test/bubbles_test.dart` (a bubble left, then kept for Pearls).
+
+## Assumptions to confirm (added in Milestone 28)
+- Every number above (the 5% chance, 60 seconds, Pearl and Talent amounts, which levels
+  give which tool) is my starting choice, in `content/levels.json` and
+  `content/chains.json`.
+- Bubbles are not saved: one still afloat when the game is closed is simply gone (no
+  Talents). They do not take up a cell.
+- Keeping a bubble's item for an ad does not count towards the day's five Manna ads.
+- A bubble spends Pearls on one tap of "Keep for N Pearls" (the question itself is the
+  confirmation).
+- "Rubble" and locked cells (EXPANSION 20.2 "as before") were never built and are not
+  built here; only sealed jars.
+- Not built here: buying knives or threads with Pearls, and getting them from events,
+  the wheel and jars (Milestones 29–32, where those rewards are built). Mystery bubbles
+  are Milestone 29.
+- **Art needed:** splitting knife, Golden Thread, two sealed jars, and a bubble (drawn
+  in code for now as a pale circle with a gold timer ring).
+- `board_game.dart` is 295 lines and `content_validator.dart` 293: each must be split
+  before anything more is added to it.
 
 ## Milestone 27 — state (2026-10-10)
 

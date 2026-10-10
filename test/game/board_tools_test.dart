@@ -35,32 +35,63 @@ final _thread = _item('thread', 'thread', 1, use: const ItemUse(wild: true));
 final _b1 = _item('b1', 'bakery', 1);
 final _b2 = _item('b2', 'bakery', 2);
 final _b3 = _item('b3', 'bakery', 3);
+final _gift = _item('gift', 'gift', 1);
+final _breadJar = _item(
+  'breadjar',
+  'breadjar',
+  1,
+  use: const ItemUse(opensWith: 'bakery', gives: 'gift'),
+);
+final _fruitJar = _item(
+  'fruitjar',
+  'fruitjar',
+  1,
+  use: const ItemUse(opensWith: 'fruit', gives: 'gift'),
+);
 
 void main() {
   late List<String> merged;
+  late List<String> opened;
 
-  Future<BoardGame> board() async {
-    final game = BoardGame(
-      itemCatalog: {
-        for (final i in [_knife, _thread, _b1, _b2, _b3]) i.itemId: i,
-      },
-      chainData: const {
-        'bakery': ChainTierData(
-          chainId: 'bakery',
-          maxTier: 3,
-          itemTiers: {'b1': 1, 'b2': 2, 'b3': 3},
-          tierToItemId: {'bakery_1': 'b1', 'bakery_2': 'b2', 'bakery_3': 'b3'},
-        ),
-      },
-      generatorLevels: const {},
-      generatorPlacements: const [],
-      startingItems: const [],
-      chainPlaceholderColors: const {},
-      manna: MannaController(config: _economy, startingManna: 10),
-      onOutOfManna: () {},
-      gridCols: 3,
-      gridRows: 3,
-    )..onMerged = (item) => merged.add(item.itemId);
+  Future<BoardGame> board({int cols = 3, int rows = 3}) async {
+    final game =
+        BoardGame(
+            itemCatalog: {
+              for (final i in [
+                _knife,
+                _thread,
+                _b1,
+                _b2,
+                _b3,
+                _gift,
+                _breadJar,
+                _fruitJar,
+              ])
+                i.itemId: i,
+            },
+            chainData: const {
+              'bakery': ChainTierData(
+                chainId: 'bakery',
+                maxTier: 3,
+                itemTiers: {'b1': 1, 'b2': 2, 'b3': 3},
+                tierToItemId: {
+                  'bakery_1': 'b1',
+                  'bakery_2': 'b2',
+                  'bakery_3': 'b3',
+                },
+              ),
+            },
+            generatorLevels: const {},
+            generatorPlacements: const [],
+            startingItems: const [],
+            chainPlaceholderColors: const {},
+            manna: MannaController(config: _economy, startingManna: 10),
+            onOutOfManna: () {},
+            gridCols: cols,
+            gridRows: rows,
+          )
+          ..onMerged = ((item) => merged.add(item.itemId))
+          ..onJarOpened = (gift) => opened.add(gift.itemId);
     game.onGameResize(Vector2(300, 300));
     await game.onLoad();
     game.update(0);
@@ -72,7 +103,10 @@ void main() {
     return (col: at.col, row: at.row);
   }
 
-  setUp(() => merged = []);
+  setUp(() {
+    merged = [];
+    opened = [];
+  });
 
   test('a knife on a third-tier item leaves two second-tier items and no '
       'knife', () async {
@@ -138,5 +172,44 @@ void main() {
     expect(game.useToolOn(top.col, top.row, thread.col, thread.row), isFalse);
     expect(game.itemCounts(), {'thread': 1, 'b3': 1});
     expect(merged, isEmpty);
+  });
+
+  test('a merge beside a sealed jar of its chain opens it; a jar of '
+      'another chain stays shut', () async {
+    // One row: thread, sheaf, bread jar ... the sheaf sits beside the jar.
+    final game = await board(cols: 1, rows: 5);
+    game
+      ..placeItem(_fruitJar)
+      ..placeItem(_b1)
+      ..placeItem(_breadJar)
+      ..placeItem(_thread);
+    final sheaf = where(game, 'b1');
+    final thread = where(game, 'thread');
+    expect((where(game, 'breadjar').row - sheaf.row).abs(), 1);
+    expect((where(game, 'fruitjar').row - sheaf.row).abs(), 1);
+    expect(
+      game.useToolOn(thread.col, thread.row, sheaf.col, sheaf.row),
+      isTrue,
+    );
+    expect(game.itemCounts(), {'b2': 1, 'gift': 1, 'fruitjar': 1});
+    expect(opened, ['gift']);
+  });
+
+  test('a merge further off does not open a jar', () async {
+    final game = await board(cols: 1, rows: 5);
+    game
+      ..placeItem(_b1)
+      ..placeItem(_thread)
+      ..placeItem(_b3)
+      ..placeItem(_breadJar);
+    final sheaf = where(game, 'b1');
+    final thread = where(game, 'thread');
+    expect((where(game, 'breadjar').row - sheaf.row).abs(), greaterThan(1));
+    expect(
+      game.useToolOn(thread.col, thread.row, sheaf.col, sheaf.row),
+      isTrue,
+    );
+    expect(game.itemCounts(), {'b2': 1, 'b3': 1, 'breadjar': 1});
+    expect(opened, isEmpty);
   });
 }

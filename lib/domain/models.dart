@@ -45,7 +45,14 @@ class ItemUse {
   /// raises that item one tier.
   final bool wild;
 
+  /// For a sealed jar: the chain whose merge beside it breaks the seal, and
+  /// the item it then turns into.
+  final String? opensWith;
+  final String? gives;
+
   const ItemUse({
+    this.opensWith,
+    this.gives,
     this.manna = 0,
     this.skipSeconds = 0,
     this.skipAll = false,
@@ -62,12 +69,19 @@ class ItemUse {
       skipAll: json['skip_all'] as bool? ?? false,
       split: json['split'] as bool? ?? false,
       wild: json['wild'] as bool? ?? false,
+      opensWith: json['opens_with'] as String?,
+      gives: json['gives'] as String?,
     );
-    return use.givesManna || use.skipsTime || use.isTool ? use : null;
+    return use.givesManna || use.skipsTime || use.isTool || use.isSealed
+        ? use
+        : null;
   }
 
   bool get givesManna => manna > 0;
   bool get skipsTime => skipAll || skipSeconds > 0;
+
+  /// True for a sealed jar.
+  bool get isSealed => opensWith != null && gives != null;
 
   /// True for something dropped on another item to change it.
   bool get isTool => split || wild;

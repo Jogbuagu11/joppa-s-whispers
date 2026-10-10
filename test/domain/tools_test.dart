@@ -80,6 +80,73 @@ void main() {
     expect(resolveTool(_thread, stray, _chains), isNull);
   });
 
+  test('a sealed jar opens only for a merge of its own chain', () {
+    final jar = _item(
+      'jar1',
+      'breadjar',
+      1,
+      use: const ItemUse(opensWith: 'bakery', gives: 'gift'),
+    );
+    expect(sealedJarGives(jar, _b2), 'gift');
+    expect(sealedJarGives(jar, _thread), isNull);
+    // Only a sealed jar is a sealed jar.
+    expect(sealedJarGives(_b1, _b2), isNull);
+    expect(sealedJarGives(_jar, _b2), isNull);
+    // Tools do nothing to it.
+    expect(resolveTool(_knife, jar, _chains), isNull);
+    expect(resolveTool(_thread, jar, _chains), isNull);
+  });
+
+  test('sealed jars are read from content, and checked', () {
+    final use = ItemUse.fromJson({'opens_with': 'bakery', 'gives': 'x'});
+    expect(use?.isSealed, isTrue);
+    expect(use?.isTool, isFalse);
+    expect(ItemUse.fromJson({'opens_with': 'bakery'}), isNull);
+    List<String> one(Object? use) {
+      final problems = <String>[];
+      checkItemUse('Item', use, problems);
+      return problems;
+    }
+
+    expect(one({'opens_with': 'bakery', 'gives': 'x'}), isEmpty);
+    expect(one({'opens_with': 'bakery'}), isNotEmpty);
+    expect(one({'gives': 'x'}), isNotEmpty);
+    expect(one({'opens_with': 'bakery', 'gives': 'x', 'manna': 5}), isNotEmpty);
+    expect(one({'opens_with': 3, 'gives': 'x'}), isNotEmpty);
+
+    Map<String, dynamic> chain(String id, List<Map<String, dynamic>> tiers) => {
+      'id': id,
+      'tiers': tiers,
+    };
+    Map<String, dynamic> tier(String id, int n, [Object? use]) => {
+      'tier': n,
+      'item_id': id,
+      'use': ?use,
+    };
+    List<String> all(Object jarUse, {bool alone = true}) {
+      final problems = <String>[];
+      checkSealedJars([
+        chain('bakery', [tier('b1', 1), tier('b2', 2)]),
+        chain('jar', [tier('jar1', 1, jarUse), if (!alone) tier('jar2', 2)]),
+        chain('other', [
+          tier('o1', 1, {'opens_with': 'bakery', 'gives': 'b1'}),
+        ]),
+      ], problems);
+      return problems;
+    }
+
+    expect(all({'opens_with': 'bakery', 'gives': 'b2'}), isEmpty);
+    expect(all({'opens_with': 'nowhere', 'gives': 'b2'}), isNotEmpty);
+    expect(all({'opens_with': 'jar', 'gives': 'b2'}), isNotEmpty);
+    expect(all({'opens_with': 'bakery', 'gives': 'nothing'}), isNotEmpty);
+    // A jar inside a jar would never end.
+    expect(all({'opens_with': 'bakery', 'gives': 'o1'}), isNotEmpty);
+    expect(
+      all({'opens_with': 'bakery', 'gives': 'b2'}, alone: false),
+      isNotEmpty,
+    );
+  });
+
   test('a use is read from content, and must do exactly one thing', () {
     expect(ItemUse.fromJson({'split': true})?.split, isTrue);
     expect(ItemUse.fromJson({'wild': true})?.wild, isTrue);

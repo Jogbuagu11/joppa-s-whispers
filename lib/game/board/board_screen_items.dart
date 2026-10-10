@@ -69,12 +69,40 @@ mixin _BoardItems on _BoardRoutes {
     session.game
       ..onItemAsked = _askAboutItem
       ..onSold = ((item) => session.orders.addTalents(item.sell))
+      ..onJarOpened = ((_) => widget.comfort?.cue(GameCue.reward))
       ..wantedByOrder = ((id) => session.orders.activeOrders.any(
         (order) => order.items.any((wanted) => wanted.itemId == id),
       ))
       ..boosts = [for (final u in boosts) ?u.boost]
       ..boostUnlocked = (i) =>
           i < boosts.length && session.levels.level >= boosts[i].level;
+  }
+
+  /// The line that says what a usable item does.
+  String _whatItDoes(ItemUse effect) {
+    final text = _boardText;
+    if (effect.givesManna) {
+      return (text['use_manna'] ?? '').replaceAll('{manna}', '${effect.manna}');
+    }
+    if (effect.isSealed) {
+      final chains = _session?.contentBundle.files['chains'];
+      final name = [
+        if (chains is List<dynamic>)
+          for (final chain in chains)
+            if (chain case {
+              'id': final String id,
+              'name': final String name,
+            } when id == effect.opensWith)
+              name,
+      ].firstOrNull;
+      return (text['sealed_hint'] ?? '').replaceAll('{chain}', name ?? '');
+    }
+    return text[effect.split
+            ? 'knife_hint'
+            : effect.wild
+            ? 'thread_hint'
+            : 'hourglass_hint'] ??
+        '';
   }
 
   /// An item that can be used or sold was tapped. Nothing happens unless
@@ -105,14 +133,7 @@ mixin _BoardItems on _BoardRoutes {
           content: effect == null
               ? null
               : Text(
-                  effect.givesManna
-                      ? fill('use_manna', 'manna', effect.manna)
-                      : text[effect.split
-                                ? 'knife_hint'
-                                : effect.wild
-                                ? 'thread_hint'
-                                : 'hourglass_hint'] ??
-                            '',
+                  _whatItDoes(effect),
                   key: const Key('use_item_effect'),
                   style: const TextStyle(color: Color(0xFFF3E5C8)),
                 ),

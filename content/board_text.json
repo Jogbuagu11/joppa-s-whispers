@@ -18,5 +18,6 @@
   "bubble_body": "A bubble! Keep what is inside, or leave it: it will pop by itself and leave {talents} Talents.",
   "bubble_pearls": "Keep for {pearls} Pearls",
   "bubble_ad": "Watch an ad to keep",
-  "bubble_leave": "Leave it"
+  "bubble_leave": "Leave it",
+  "sealed_hint": "Sealed. Merge two {chain} items beside it to break the seal."
 }

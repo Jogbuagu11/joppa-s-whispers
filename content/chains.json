@@ -327,5 +327,37 @@
         "use": { "wild": true }
       }
     ]
+  },
+  {
+    "id": "breadjar",
+    "placeholder_color": "#B08A5A",
+    "name": "Sealed bread jar",
+    "kind": "gift",
+    "unlock_chapter": 1,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "breadjar_01",
+        "name": "Sealed bread jar",
+        "sell": 0,
+        "use": { "opens_with": "bakery", "gives": "manna_jar_02" }
+      }
+    ]
+  },
+  {
+    "id": "fruitjar",
+    "placeholder_color": "#8C6E9A",
+    "name": "Sealed fruit jar",
+    "kind": "gift",
+    "unlock_chapter": 1,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "fruitjar_01",
+        "name": "Sealed fruit jar",
+        "sell": 0,
+        "use": { "opens_with": "fruit", "gives": "hourglass_02" }
+      }
+    ]
   }
 ]
