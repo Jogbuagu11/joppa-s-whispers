@@ -127,3 +127,35 @@ Future<void> showWheelOdds(
     ],
   ),
 );
+
+/// Tells the player what they have just been given.
+Future<void> showPrize(
+  BuildContext context, {
+  required Map<String, String> text,
+  required Prize prize,
+}) => showDialog<void>(
+  context: context,
+  builder: (context) => AlertDialog(
+    key: const Key('wheel_prize'),
+    backgroundColor: GamePalette.panel,
+    title: Text(
+      text['won_title'] ?? '',
+      style: const TextStyle(color: GamePalette.gold),
+    ),
+    content: Text(
+      prize.name,
+      key: const Key('wheel_prize_name'),
+      style: const TextStyle(color: Color(0xFFF3E5C8), fontSize: 18),
+    ),
+    actions: [
+      TextButton(
+        key: const Key('wheel_prize_ok'),
+        onPressed: () => Navigator.of(context).pop(),
+        child: Text(
+          text['won_button'] ?? '',
+          style: const TextStyle(color: GamePalette.gold),
+        ),
+      ),
+    ],
+  ),
+);

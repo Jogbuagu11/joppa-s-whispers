@@ -3,6 +3,9 @@
 part of 'board_screen.dart';
 
 mixin _BoardWheel on _BoardItems {
+  /// The jars sold under the wheel (see the jars part of this screen).
+  Widget? _jarShop(BoardSession session);
+
   /// content/chance.json as it is being played, or null if it is not there.
   Map<String, dynamic>? get _chance =>
       switch (_session?.contentBundle.files['chance']) {
@@ -80,7 +83,11 @@ mixin _BoardWheel on _BoardItems {
     try {
       await Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) => WheelScreen(controller: wheel, text: _chanceText),
+          builder: (_) => WheelScreen(
+            controller: wheel,
+            text: _chanceText,
+            below: _jarShop(session),
+          ),
         ),
       );
     } finally {

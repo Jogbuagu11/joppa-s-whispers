@@ -366,5 +366,53 @@
         "use": { "opens_with": "fruit", "gives": "hourglass_02" }
       }
     ]
+  },
+  {
+    "id": "clayjar",
+    "placeholder_color": "#B5651D",
+    "name": "Jar of Clay",
+    "kind": "gift",
+    "unlock_chapter": 1,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "clayjar_01",
+        "name": "Jar of Clay",
+        "sell": 3,
+        "use": { "jar": "clay" }
+      }
+    ]
+  },
+  {
+    "id": "treasurejar",
+    "placeholder_color": "#3F7F8C",
+    "name": "Treasure Jar",
+    "kind": "gift",
+    "unlock_chapter": 1,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "treasurejar_01",
+        "name": "Treasure Jar",
+        "sell": 10,
+        "use": { "jar": "treasure" }
+      }
+    ]
+  },
+  {
+    "id": "goldenjar",
+    "placeholder_color": "#DAA520",
+    "name": "Golden Jar",
+    "kind": "gift",
+    "unlock_chapter": 1,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "goldenjar_01",
+        "name": "Golden Jar",
+        "sell": 25,
+        "use": { "jar": "golden" }
+      }
+    ]
   }
 ]

@@ -161,12 +161,19 @@ extension BoardGeneratorTypes on BoardGame {
   void _onItemTapped(int col, int row) {
     final item = _board[col][row];
     if (item == null) return;
-    final usable = item.use?.givesManna ?? false;
+    final jar = item.use?.jar != null;
+    final usable = jar || (item.use?.givesManna ?? false);
     final sellable = canSell(item);
     if (item.use == null && !sellable) return;
     onItemAsked?.call(
       item,
-      use: usable ? () => useItemAt(col, row, only: item) : null,
+      // A Jar of Clay only leaves the board here: the screen draws what
+      // was in it.
+      use: !usable
+          ? null
+          : jar
+          ? () => _takeItemAt(col, row, item)
+          : () => useItemAt(col, row, only: item),
       sell: sellable ? () => sellItemAt(col, row, only: item) : null,
     );
   }
@@ -206,6 +213,16 @@ extension BoardGeneratorTypes on BoardGame {
     _board[col][row] = null;
     _cells[col][row].clearItem();
     manna.add(use.manna);
+    _boardTouched();
+    return true;
+  }
+
+  /// Takes exactly [only] off the board from ([col], [row]). Returns false,
+  /// changing nothing, if it is no longer there.
+  bool _takeItemAt(int col, int row, ItemModel only) {
+    if (_itemToTake(col, row, only) == null) return false;
+    _board[col][row] = null;
+    _cells[col][row].clearItem();
     _boardTouched();
     return true;
   }

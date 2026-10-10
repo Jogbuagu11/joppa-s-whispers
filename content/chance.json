@@ -71,6 +71,14 @@
         "items": [
           "thread_01"
         ]
+      },
+      {
+        "id": "golden_jar",
+        "name": "Golden Jar",
+        "weight": 1,
+        "items": [
+          "goldenjar_01"
+        ]
       }
     ]
   },
@@ -85,9 +93,160 @@
     "odds_title": "What the wheel gives",
     "odds_free": "Free and ad spins",
     "odds_paid": "Spins for Pearls",
-    "odds_note": "Every spin is drawn by exactly these chances. Pearls are never a prize on a spin paid for with Pearls.",
+    "odds_note": "Every spin and every jar is drawn by exactly these chances. Pearls are never a prize of anything paid for with Pearls.",
     "won_title": "You received",
     "won_button": "Thank you",
-    "close": "Close"
+    "close": "Close",
+    "jars_title": "Jars of Clay",
+    "jar_holds": "It holds one of these:",
+    "jar_buy": "{pearls} Pearls",
+    "jar_open": "Open"
+  },
+  "jars": {
+    "clay_every_orders": 4,
+    "order_jar": "clay",
+    "kinds": {
+      "clay": {
+        "item": "clayjar_01",
+        "prizes": [
+          {
+            "id": "talents_20",
+            "name": "20 Talents",
+            "weight": 35,
+            "talents": 20
+          },
+          {
+            "id": "manna_10",
+            "name": "10 Manna",
+            "weight": 30,
+            "manna": 10
+          },
+          {
+            "id": "manna_jar",
+            "name": "Pinch of Manna",
+            "weight": 15,
+            "items": [
+              "manna_jar_01"
+            ]
+          },
+          {
+            "id": "hourglass",
+            "name": "Small hourglass",
+            "weight": 12,
+            "items": [
+              "hourglass_01"
+            ]
+          },
+          {
+            "id": "pearl_1",
+            "name": "1 Pearl",
+            "weight": 8,
+            "pearls": 1,
+            "free_only": true
+          }
+        ]
+      },
+      "treasure": {
+        "item": "treasurejar_01",
+        "pearl_price": 15,
+        "prizes": [
+          {
+            "id": "manna_60",
+            "name": "60 Manna",
+            "weight": 30,
+            "manna": 60
+          },
+          {
+            "id": "talents_150",
+            "name": "150 Talents",
+            "weight": 28,
+            "talents": 150
+          },
+          {
+            "id": "cup",
+            "name": "Cup of Manna",
+            "weight": 16,
+            "items": [
+              "manna_jar_02"
+            ]
+          },
+          {
+            "id": "hourglass",
+            "name": "Hourglass",
+            "weight": 14,
+            "items": [
+              "hourglass_02"
+            ]
+          },
+          {
+            "id": "knife",
+            "name": "Splitting knife",
+            "weight": 7,
+            "items": [
+              "knife_01"
+            ]
+          },
+          {
+            "id": "thread",
+            "name": "Golden Thread",
+            "weight": 5,
+            "items": [
+              "thread_01"
+            ]
+          }
+        ]
+      },
+      "golden": {
+        "item": "goldenjar_01",
+        "pearl_price": 40,
+        "prizes": [
+          {
+            "id": "manna_150",
+            "name": "150 Manna",
+            "weight": 28,
+            "manna": 150
+          },
+          {
+            "id": "talents_400",
+            "name": "400 Talents",
+            "weight": 26,
+            "talents": 400
+          },
+          {
+            "id": "potion",
+            "name": "Manna potion",
+            "weight": 16,
+            "items": [
+              "manna_jar_04"
+            ]
+          },
+          {
+            "id": "great_glass",
+            "name": "Great hourglass",
+            "weight": 12,
+            "items": [
+              "hourglass_03"
+            ]
+          },
+          {
+            "id": "threads",
+            "name": "2 Golden Threads",
+            "weight": 10,
+            "items": [
+              "thread_01",
+              "thread_01"
+            ]
+          },
+          {
+            "id": "loaves",
+            "name": "Basket of Loaves",
+            "weight": 8,
+            "generators": [
+              "gen_loaves"
+            ]
+          }
+        ]
+      }
+    }
   }
 }

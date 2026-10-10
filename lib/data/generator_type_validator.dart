@@ -74,7 +74,12 @@ void checkItemUse(String what, Object? use, List<String> problems) {
   if ((opens == null) != (gift == null)) {
     problems.add('$what: a sealed jar needs both opens_with and gives');
   }
+  final jar = use['jar'];
+  if (jar != null && jar is! String) {
+    problems.add('$what: use.jar must be the name of a kind of jar');
+  }
   final kinds = [
+    jar != null,
     opens != null || gift != null,
     manna != null,
     seconds != null || all == true,
@@ -84,7 +89,7 @@ void checkItemUse(String what, Object? use, List<String> problems) {
   if (kinds != 1) {
     problems.add(
       '$what: use must do exactly one thing: give Manna, skip time, split, '
-      'be a wildcard or be a sealed jar',
+      'be a wildcard, be a sealed jar or be a Jar of Clay',
     );
   }
 }

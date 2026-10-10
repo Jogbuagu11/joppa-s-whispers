@@ -25,6 +25,9 @@ import 'package:whispers_of_joppa/features/bubbles/bubble_layer.dart';
 import 'package:whispers_of_joppa/features/events/event_screen.dart';
 import 'package:whispers_of_joppa/domain/chance.dart';
 import 'package:whispers_of_joppa/domain/wheel.dart';
+import 'package:whispers_of_joppa/domain/jars.dart';
+import 'package:whispers_of_joppa/features/wheel/jar_shop.dart';
+import 'package:whispers_of_joppa/features/wheel/wheel_odds.dart';
 import 'package:whispers_of_joppa/features/wheel/wheel_controller.dart';
 import 'package:whispers_of_joppa/features/wheel/wheel_screen.dart';
 import 'package:whispers_of_joppa/game/board/strip_button.dart';
@@ -58,6 +61,7 @@ part 'board_screen_actions.dart';
 part 'board_screen_bubbles.dart';
 part 'board_screen_events.dart';
 part 'board_screen_items.dart';
+part 'board_screen_jars.dart';
 part 'board_screen_layout.dart';
 part 'board_screen_notifications.dart';
 part 'board_screen_routes.dart';
@@ -159,6 +163,7 @@ class _BoardScreenState extends State<BoardScreen>
         _BoardItems,
         _BoardBubbles,
         _BoardWheel,
+        _BoardJars,
         _BoardLayout,
         _BoardScreenActions {
   @override

@@ -50,9 +50,13 @@ class ItemUse {
   final String? opensWith;
   final String? gives;
 
+  /// For a Jar of Clay: which kind it is (its prizes are in chance.json).
+  final String? jar;
+
   const ItemUse({
     this.opensWith,
     this.gives,
+    this.jar,
     this.manna = 0,
     this.skipSeconds = 0,
     this.skipAll = false,
@@ -71,8 +75,13 @@ class ItemUse {
       wild: json['wild'] as bool? ?? false,
       opensWith: json['opens_with'] as String?,
       gives: json['gives'] as String?,
+      jar: json['jar'] as String?,
     );
-    return use.givesManna || use.skipsTime || use.isTool || use.isSealed
+    return use.givesManna ||
+            use.skipsTime ||
+            use.isTool ||
+            use.isSealed ||
+            use.jar != null
         ? use
         : null;
   }

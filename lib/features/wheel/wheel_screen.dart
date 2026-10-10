@@ -11,7 +11,15 @@ import 'package:whispers_of_joppa/features/wheel/wheel_odds.dart';
 import 'package:whispers_of_joppa/features/wheel/wheel_painter.dart';
 
 class WheelScreen extends StatefulWidget {
-  const WheelScreen({super.key, required this.controller, required this.text});
+  const WheelScreen({
+    super.key,
+    required this.controller,
+    required this.text,
+    this.below,
+  });
+
+  /// Shown under the wheel (the jars that can be bought).
+  final Widget? below;
 
   final WheelController controller;
 
@@ -58,32 +66,7 @@ class _WheelScreenState extends State<WheelScreen>
       _to = _from.floorToDouble() + 4 + rest;
       await _turn.forward(from: 0);
       if (!mounted) return;
-      await showDialog<void>(
-        context: context,
-        builder: (context) => AlertDialog(
-          key: const Key('wheel_prize'),
-          backgroundColor: GamePalette.panel,
-          title: Text(
-            _t('won_title'),
-            style: const TextStyle(color: GamePalette.gold),
-          ),
-          content: Text(
-            prize.name,
-            key: const Key('wheel_prize_name'),
-            style: const TextStyle(color: Color(0xFFF3E5C8), fontSize: 18),
-          ),
-          actions: [
-            TextButton(
-              key: const Key('wheel_prize_ok'),
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                _t('won_button'),
-                style: const TextStyle(color: GamePalette.gold),
-              ),
-            ),
-          ],
-        ),
-      );
+      await showPrize(context, text: widget.text, prize: prize);
     } finally {
       if (mounted) setState(() => _spinning = false);
     }
@@ -128,6 +111,7 @@ class _WheelScreenState extends State<WheelScreen>
                 ),
               ),
             ),
+            ?widget.below,
           ],
         ),
       ),

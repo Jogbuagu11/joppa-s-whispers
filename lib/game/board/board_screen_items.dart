@@ -3,6 +3,13 @@
 part of 'board_screen.dart';
 
 mixin _BoardItems on _BoardRoutes {
+  /// A Jar of Clay was tapped (see the jars part of this screen).
+  Future<void> _askAboutJar(
+    ItemModel item, {
+    bool Function()? use,
+    bool Function()? sell,
+  });
+
   /// Pays for any level just reached (a full Manna bar, Talents, perhaps a
   /// gift) and tells the player.
   Future<void> _showLevelUp() async {
@@ -113,6 +120,7 @@ mixin _BoardItems on _BoardRoutes {
     bool Function()? use,
     bool Function()? sell,
   }) async {
+    if (item.use?.jar != null) return _askAboutJar(item, use: use, sell: sell);
     final session = _session;
     if (_busy || _syncing || _popupOpen || !mounted) return;
     final effect = item.use;

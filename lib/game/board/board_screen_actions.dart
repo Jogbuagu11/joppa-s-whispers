@@ -9,6 +9,7 @@ mixin _BoardScreenActions
         _BoardNotifications,
         _BoardEvents,
         _BoardItems,
+        _BoardJars,
         _BoardLayout {
   @override
   void initState() {
@@ -235,6 +236,7 @@ mixin _BoardScreenActions
       _attachComfort(session);
       _wireBoard(session);
       _wireBubbles(session);
+      _wireJars(session);
       session.ads.service = widget.ads;
       widget.cloud?.blockUploads = session.downgraded;
       session.saver.onSaved = (state) => widget.cloud?.afterLocalSave(state);
