@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/data/content_bundle.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/game/board/session_content.dart';
@@ -76,5 +77,17 @@ void main() {
         expect(repaired.talents, 40);
       },
     );
+
+    test('what later features keep in the save comes through a repair', () {
+      final saved = SaveState.fromJson({
+        ...testSave(tasks: const [], orders: const [], talents: 0).toJson(),
+        'extras': {
+          'wheel': {'free': 1},
+        },
+      });
+      expect(repairedSave(saved, loader).extras, {
+        'wheel': {'free': 1},
+      });
+    });
   });
 }

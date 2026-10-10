@@ -1,5 +1,8 @@
 // What gets written to the save file — pure Dart, fully unit tested.
 import 'package:whispers_of_joppa/domain/generator_types.dart';
+import 'package:whispers_of_joppa/domain/save_migrations.dart';
+
+export 'package:whispers_of_joppa/domain/save_migrations.dart';
 
 /// The save format this build writes. Raise it, and add a step to
 /// [migrateSave], whenever the format changes. Never break an existing save.
@@ -122,6 +125,10 @@ class SaveState {
   /// The generator boost switched on (0 = none).
   final int boost;
 
+  /// Small records kept by later features, by name ("wheel", "jars"…).
+  /// Each feature reads and writes its own; an unknown one is kept as is.
+  final Map<String, dynamic> extras;
+
   const SaveState({
     required this.items,
     required this.generators,
@@ -146,6 +153,7 @@ class SaveState {
     this.levelRewarded = 0,
     this.pendingGrants = const [],
     this.boost = 0,
+    this.extras = const {},
   });
 
   Map<String, dynamic> toJson() => {
@@ -171,6 +179,7 @@ class SaveState {
     'level_rewarded': levelRewarded,
     'pending_grants': pendingGrants,
     'boost': boost,
+    if (extras.isNotEmpty) 'extras': extras,
     'ad_day': adDay,
     'ad_manna_watched': adMannaWatched,
   };
@@ -227,62 +236,12 @@ class SaveState {
           json['pending_grants'] as List<dynamic>? ?? const [],
         ),
         boost: json['boost'] as int? ?? 0,
+        extras: Map<String, dynamic>.of(
+          json['extras'] as Map<String, dynamic>? ?? const {},
+        ),
       );
     } on TypeError catch (e) {
       throw FormatException('Save file is missing or has a wrong field: $e');
     }
   }
-}
-
-/// Brings an older save up to [currentSaveVersion], one step at a time.
-/// Throws [FormatException] for a save with no version or from a newer build.
-Map<String, dynamic> migrateSave(Map<String, dynamic> raw) {
-  final version = raw['save_version'];
-  if (version is! int || version < 1) {
-    throw const FormatException('Save file has no valid save_version');
-  }
-  if (version > currentSaveVersion) {
-    throw FormatException(
-      'Save file is version $version, newer than this app ($currentSaveVersion)',
-    );
-  }
-  final json = Map<String, dynamic>.of(raw);
-  if (json['save_version'] == 1) {
-    // Version 2 remembers which orders were delivered. Version 1 did not
-    // record that, so it starts as none.
-    json['completed_orders'] = <String>[];
-    json['save_version'] = 2;
-  }
-  if (json['save_version'] == 2) {
-    // Version 3 adds story-task progress, which starts empty.
-    json['completed_tasks'] = <String>[];
-    json['save_version'] = 3;
-  }
-  if (json['save_version'] == 3) {
-    // Version 4 adds the tutorial. Anyone with an older save has already been
-    // playing, so the tutorial counts as finished for them.
-    json['tutorial_step'] = tutorialFinished;
-    json['save_version'] = 4;
-  }
-  if (json['save_version'] == 4) {
-    // Version 5 adds Pearls and the record of applied purchases.
-    json['pearls'] = 0;
-    json['applied_transactions'] = <String>[];
-    json['owned_products'] = <String>[];
-    json['save_version'] = 5;
-  }
-  if (json['save_version'] == 5) {
-    // Version 6 adds the count of rewarded ads watched today.
-    json['ad_day'] = '';
-    json['ad_manna_watched'] = 0;
-    json['save_version'] = 6;
-  }
-  if (json['save_version'] == 6) {
-    // Player levels arrived: a game from before them starts at its present
-    // level, with nothing owed for the levels already passed.
-    json['level_rewarded'] = 0;
-    json['save_version'] = 7;
-  }
-  // The next format change goes here, as another one-version step.
-  return json;
 }

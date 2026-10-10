@@ -7,7 +7,6 @@ import 'package:whispers_of_joppa/data/content_bundle.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
-import 'package:whispers_of_joppa/domain/ads.dart';
 import 'package:whispers_of_joppa/domain/letters.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
@@ -23,6 +22,7 @@ import 'package:whispers_of_joppa/features/story/story_controller.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/grant_queue.dart';
+import 'package:whispers_of_joppa/game/board/save_extras.dart';
 import 'package:whispers_of_joppa/game/board/chapter_wiring.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 import 'package:whispers_of_joppa/game/board/new_game.dart';
@@ -48,6 +48,7 @@ class BoardSession {
   final AdRewardsController ads;
   final LevelController levels;
   final GrantQueue grants;
+  final SaveExtras extras;
 
   /// scene_id -> scene, for the scenes that tasks play.
   final Map<String, SceneModel> scenes;
@@ -95,6 +96,7 @@ class BoardSession {
     required this.characterNames,
     required this.openingScene,
     required this.assetPaths,
+    required this.extras,
   });
 
   static Future<BoardSession> create({
@@ -167,14 +169,7 @@ class BoardSession {
       endings: loader.endings,
       seen: save.endingsSeen,
     );
-    final purchases = PurchasesController(
-      products: loader.products,
-      addManna: manna.add,
-      raiseGenerators: game.raiseGeneratorsTo,
-      startingPearls: save.pearls,
-      appliedTransactions: save.appliedTransactions,
-      ownedProducts: save.ownedProducts,
-    );
+    final purchases = buildPurchases(loader.products, manna, game, save);
 
     final tutorial = TutorialController(
       steps: loader.tutorial,
@@ -210,12 +205,13 @@ class BoardSession {
       levelChanged: levels,
     );
 
-    final ads = AdRewardsController(
+    final ads = buildAds(
       config: loader.economy,
-      addManna: manna.add,
-      tutorialOver: () => tutorial.isOver,
-      startingTally: AdTally(day: save.adDay, mannaAds: save.adMannaWatched),
+      manna: manna,
+      tutorial: tutorial,
+      save: save,
     );
+    final extras = SaveExtras(save.extras);
 
     await game.loadArt();
 
@@ -231,6 +227,7 @@ class BoardSession {
       ads: ads,
       levels: levels,
       grants: grants,
+      extras: extras,
       contentVersion: contentVersion,
     );
     // A game that has lost parts to older content is played from memory only:
@@ -258,9 +255,8 @@ class BoardSession {
       openingScene: loaded == null
           ? loader.scenes[loader.startingBoard.openingScene]
           : null,
-      assetPaths: (await AssetManifest.loadFromAssetBundle(
-        rootBundle,
-      )).listAssets().toSet(),
+      assetPaths: await loadAssetPaths(),
+      extras: extras,
     );
   }
 
@@ -280,6 +276,7 @@ class BoardSession {
 
   void _disposeParts() {
     levels.dispose();
+    extras.dispose();
     grants.dispose();
     ads.dispose();
     purchases.dispose();

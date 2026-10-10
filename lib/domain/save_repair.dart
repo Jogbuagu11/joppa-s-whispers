@@ -66,6 +66,7 @@ SaveState sanitizeSave(
     levelRewarded: save.levelRewarded < 0 ? 0 : save.levelRewarded,
     pendingGrants: save.pendingGrants,
     boost: save.boost < 0 ? 0 : save.boost,
+    extras: save.extras,
   );
 }
 

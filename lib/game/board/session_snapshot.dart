@@ -1,5 +1,9 @@
 // Turns the live pieces of a play session into the state that gets saved.
+import 'package:flutter/services.dart';
 import 'package:whispers_of_joppa/app/game_saver.dart';
+import 'package:whispers_of_joppa/domain/ads.dart';
+import 'package:whispers_of_joppa/domain/economy.dart';
+import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/tutorial.dart';
@@ -13,6 +17,7 @@ import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/grant_queue.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
+import 'package:whispers_of_joppa/game/board/save_extras.dart';
 
 /// Collects the saveable state from the pieces of a session.
 SaveState buildSnapshot({
@@ -26,6 +31,7 @@ SaveState buildSnapshot({
   required AdRewardsController ads,
   required LevelController levels,
   required GrantQueue grants,
+  required SaveExtras extras,
   required int contentVersion,
 }) => SaveState(
   items: game.snapshotItems(),
@@ -51,6 +57,7 @@ SaveState buildSnapshot({
   levelRewarded: levels.rewardedLevel,
   pendingGrants: grants.waiting,
   boost: game.boost.value,
+  extras: extras.all,
 );
 
 /// The saver for a session: what it writes, and what makes it write.
@@ -66,6 +73,7 @@ GameSaver buildSaver({
   required AdRewardsController ads,
   required LevelController levels,
   required GrantQueue grants,
+  required SaveExtras extras,
   required int contentVersion,
 }) => GameSaver(
   repository: repository,
@@ -80,6 +88,7 @@ GameSaver buildSaver({
     ads: ads,
     levels: levels,
     grants: grants,
+    extras: extras,
     contentVersion: contentVersion,
   ),
   // Manna spends always come with a board change, so the per-second Manna
@@ -94,6 +103,7 @@ GameSaver buildSaver({
     ads.tallyChanged,
     levels,
     grants,
+    extras,
   ],
 );
 
@@ -122,3 +132,35 @@ void wireTutorial({
   story.onTaskDone = (id) =>
       tutorial.handle(TutorialEvent(TutorialTrigger.taskDone, id));
 }
+
+/// The files the app was built with (to tell which art is there).
+Future<Set<String>> loadAssetPaths() async =>
+    (await AssetManifest.loadFromAssetBundle(rootBundle)).listAssets().toSet();
+
+/// Rewarded ads for a session, carrying on from the saved count.
+AdRewardsController buildAds({
+  required EconomyConfig config,
+  required MannaController manna,
+  required TutorialController tutorial,
+  required SaveState save,
+}) => AdRewardsController(
+  config: config,
+  addManna: manna.add,
+  tutorialOver: () => tutorial.isOver,
+  startingTally: AdTally(day: save.adDay, mannaAds: save.adMannaWatched),
+);
+
+/// The Pearl purse for a session, carrying on from the save.
+PurchasesController buildPurchases(
+  Map<String, ProductModel> products,
+  MannaController manna,
+  BoardGame game,
+  SaveState save,
+) => PurchasesController(
+  products: products,
+  addManna: manna.add,
+  raiseGenerators: game.raiseGeneratorsTo,
+  startingPearls: save.pearls,
+  appliedTransactions: save.appliedTransactions,
+  ownedProducts: save.ownedProducts,
+);
