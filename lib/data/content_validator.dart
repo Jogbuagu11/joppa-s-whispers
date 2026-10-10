@@ -1,5 +1,6 @@
 // Checks content/*.json for mistakes before the game uses it.
 // Pure Dart (no Flutter imports) so tool/validate_content.dart can run it.
+import 'package:whispers_of_joppa/data/generator_type_validator.dart';
 import 'package:whispers_of_joppa/data/level_validator.dart';
 import 'package:whispers_of_joppa/data/notification_validator.dart';
 import 'package:whispers_of_joppa/data/chapter_validator.dart';
@@ -228,6 +229,7 @@ Set<String> _checkGenerators(
     if (name is! String || name.trim().isEmpty) {
       problems.add('Generator $id: missing name');
     }
+    checkGeneratorType(id, gen, problems);
     final cost = gen['energy_cost'];
     if (cost != null && (cost is! int || cost < 0)) {
       problems.add('Generator $id: energy_cost must be 0 or more');

@@ -12,7 +12,6 @@ import 'package:whispers_of_joppa/domain/letters.dart';
 import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/domain/orders.dart';
 import 'package:whispers_of_joppa/domain/progression.dart';
-import 'package:whispers_of_joppa/domain/save_repair.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/scenes.dart';
 import 'package:whispers_of_joppa/features/ads/ad_rewards_controller.dart';
@@ -123,22 +122,10 @@ class BoardSession {
       ..tick()
       ..start();
 
-    final game = BoardGame(
-      itemCatalog: loader.items,
-      chainData: loader.chains,
-      generatorLevels: loader.generatorLevels,
-      generatorPlacements: [
-        // A saved game that lost a generator gets it back from the start board.
-        for (final g in withMissingGenerators(save, fresh.generators))
-          if (loader.generators[g.generatorId] case final gen?)
-            (gen: gen.atLevel(g.level), col: g.col, row: g.row),
-      ],
-      startingItems: [
-        for (final i in save.items)
-          if (loader.items[i.itemId] case final item?)
-            (item: item, col: i.col, row: i.row),
-      ],
-      chainPlaceholderColors: loader.chainPlaceholderColors,
+    final game = buildSessionGame(
+      loader: loader,
+      save: save,
+      fresh: fresh,
       manna: manna,
       onOutOfManna: onOutOfManna,
     );
@@ -194,6 +181,14 @@ class BoardSession {
       startIndex: playTutorial ? save.tutorialStep : tutorialFinished,
       freeTapsAlreadyUsed: save.tutorialFreeTapsUsed,
     );
+    // Levels follow the story; a level reached refills Manna and pays Talents.
+    final levels = LevelController(
+      config: loader.levels,
+      story: story,
+      addTalents: orders.addTalents,
+      refillManna: () => manna.add(manna.maxManna - manna.manna),
+      rewardedLevel: save.levelRewarded,
+    );
     wireTutorial(game: game, orders: orders, story: story, tutorial: tutorial);
     wireChapters(
       game: game,
@@ -201,6 +196,8 @@ class BoardSession {
       story: story,
       boardGenerators: loader.startingBoard.generators,
       generators: loader.generators,
+      level: () => levels.level,
+      levelChanged: levels,
     );
 
     final ads = AdRewardsController(
@@ -211,15 +208,6 @@ class BoardSession {
     );
 
     await game.loadArt();
-
-    // Levels follow the story; a level reached refills Manna and pays Talents.
-    final levels = LevelController(
-      config: loader.levels,
-      story: story,
-      addTalents: orders.addTalents,
-      refillManna: () => manna.add(manna.maxManna - manna.manna),
-      rewardedLevel: save.levelRewarded,
-    );
 
     final saver = buildSaver(
       repository: saveRepository,

@@ -15,6 +15,9 @@ class GeneratorComponent extends PositionComponent with TapCallbacks {
   /// the plain tile (no art yet).
   final ui.Image? Function() art;
 
+  /// The small words in the corner: Manna cost, charges left or a wait.
+  final String Function() label;
+
   static final _bgPaint = Paint()..color = const Color(0xFF2D5A27);
   static final _borderPaint = Paint()
     ..color = const Color(0xFF7CB342)
@@ -37,6 +40,7 @@ class GeneratorComponent extends PositionComponent with TapCallbacks {
     required this.generator,
     required this.onTapped,
     required this.art,
+    required this.label,
     required Vector2 position,
     required double cellSize,
   }) : super(position: position, size: Vector2.all(cellSize));
@@ -91,7 +95,7 @@ class GeneratorComponent extends PositionComponent with TapCallbacks {
         ..drawRRect(rect, _borderPaint);
       _costPaint.render(
         canvas,
-        '${generator.energyCost}M',
+        label(),
         Vector2(size.x - 4, size.y - 4),
         anchor: Anchor.bottomRight,
       );
@@ -109,7 +113,7 @@ class GeneratorComponent extends PositionComponent with TapCallbacks {
     );
     _costPaint.render(
       canvas,
-      '${generator.energyCost}M',
+      label(),
       Vector2(size.x - 4, size.y - 4),
       anchor: Anchor.bottomRight,
     );

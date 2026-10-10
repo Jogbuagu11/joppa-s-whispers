@@ -1,7 +1,9 @@
 // What gets written to the save file — pure Dart, fully unit tested.
+import 'package:whispers_of_joppa/domain/generator_types.dart';
 
 /// The save format this build writes. Raise it, and add a step to
 /// [migrateSave], whenever the format changes. Never break an existing save.
+
 const currentSaveVersion = 7;
 
 /// The most bought or gifted Manna a game may hold above its bar.
@@ -34,11 +36,15 @@ class SavedGenerator {
   final int col;
   final int row;
 
+  /// Its charges or countdown; null for a generator with no clock.
+  final GeneratorTimer? timer;
+
   const SavedGenerator({
     required this.generatorId,
     required this.level,
     required this.col,
     required this.row,
+    this.timer,
   });
 
   Map<String, dynamic> toJson() => {
@@ -46,6 +52,7 @@ class SavedGenerator {
     'level': level,
     'col': col,
     'row': row,
+    if (timer case final timer?) 'timer': timer.toJson(),
   };
 
   factory SavedGenerator.fromJson(Map<String, dynamic> json) => SavedGenerator(
@@ -53,6 +60,8 @@ class SavedGenerator {
     level: json['level'] as int,
     col: json['col'] as int,
     row: json['row'] as int,
+    // Added without a new save version: absent in older saves.
+    timer: GeneratorTimer.fromJson(json['timer']),
   );
 }
 

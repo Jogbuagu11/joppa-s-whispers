@@ -3,13 +3,18 @@ import 'package:whispers_of_joppa/domain/models.dart';
 
 /// The generators the player should have by [chapter] but does not have yet
 /// ([have] = ids already on the board).
+/// A generator that also names a player level waits for that as well.
 List<StartingGenerator> generatorsOwed(
   List<StartingGenerator> all,
   Set<String> have,
-  int chapter,
-) => [
+  int chapter, {
+  int level = 1,
+}) => [
   for (final g in all)
-    if (g.chapter <= chapter && !have.contains(g.generatorId)) g,
+    if (g.chapter <= chapter &&
+        g.level <= level &&
+        !have.contains(g.generatorId))
+      g,
 ];
 
 /// Where a new generator goes: its home cell if nothing is there, otherwise

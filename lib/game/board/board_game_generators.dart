@@ -55,6 +55,13 @@ extension BoardGenerators on BoardGame {
     if (placement == null) return;
 
     final gen = placement.gen;
+    final rules = gen.rules;
+    // A free generator makes its items by itself; a charged one that is
+    // resting, or a temporary one with nothing left, gives nothing.
+    if (!canGive(rules, _timerFor(gen), now())) {
+      _log.fine('Generator $genId has nothing to give right now');
+      return;
+    }
 
     // Collect any Manna that is already due before deciding.
     manna.tick();
@@ -65,7 +72,7 @@ extension BoardGenerators on BoardGame {
       hasFreeCell: _hasSpaceForItem(),
       levels: generatorLevels[genId],
       chains: chainData,
-      costOverride: free ? 0 : null,
+      costOverride: free || !rules.costsManna ? 0 : null,
     );
     final item = itemCatalog[result.itemId];
     if (result.refusal == GeneratorTapRefusal.notEnoughManna) onOutOfManna();
@@ -76,9 +83,10 @@ extension BoardGenerators on BoardGame {
       return;
     }
 
-    manna.setAfterSpend(result.mannaAfter);
+    if (rules.costsManna) manna.setAfterSpend(result.mannaAfter);
     placeItem(item);
-    onGeneratorSpawn?.call(wasFree: free);
+    _afterGave(placement);
+    onGeneratorSpawn?.call(wasFree: free || !rules.costsManna);
     _log.fine('Generator $genId spawned ${item.itemId}, manna=${manna.manna}');
   }
 
@@ -91,5 +99,22 @@ extension BoardGenerators on BoardGame {
       }
     }
     return false;
+  }
+
+  /// Raises every generator on the board to at least [level] (a purchase
+  /// reward). Generators already at or above it are left alone.
+  void raiseGeneratorsTo(int level) {
+    final levels = raisedGeneratorLevels([
+      for (final p in generatorPlacements) p.gen.level,
+    ], level);
+    for (int i = 0; i < generatorPlacements.length; i++) {
+      final p = generatorPlacements[i];
+      generatorPlacements[i] = (
+        gen: p.gen.atLevel(levels[i]),
+        col: p.col,
+        row: p.row,
+      );
+    }
+    _boardTouched();
   }
 }

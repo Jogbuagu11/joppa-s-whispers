@@ -8,7 +8,9 @@
     { "generator_id": "gen_armor", "col": 5, "row": 8, "chapter": 3 },
     { "generator_id": "gen_loom", "col": 1, "row": 8, "chapter": 4 },
     { "generator_id": "gen_press", "col": 0, "row": 8, "chapter": 5 },
-    { "generator_id": "gen_scribe", "col": 6, "row": 8, "chapter": 6 }
+    { "generator_id": "gen_scribe", "col": 6, "row": 8, "chapter": 6 },
+    { "generator_id": "gen_fig", "col": 6, "row": 7, "level": 4 },
+    { "generator_id": "gen_olive_tree", "col": 0, "row": 7, "chapter": 5 }
   ],
   "items": [
     { "item_id": "bakery_01", "col": 0, "row": 0 },

@@ -43,6 +43,30 @@ void main() {
   });
 
   group('generatorsOwed', () {
+    test('a generator that names a player level waits for it too', () {
+      const board = [
+        StartingGenerator(generatorId: 'fig', col: 6, row: 7, level: 4),
+        StartingGenerator(
+          generatorId: 'olive',
+          col: 0,
+          row: 7,
+          chapter: 2,
+          level: 3,
+        ),
+      ];
+      List<String> owed(int chapter, int level) => [
+        for (final g in generatorsOwed(board, {}, chapter, level: level))
+          g.generatorId,
+      ];
+      expect(owed(1, 3), isEmpty);
+      expect(owed(1, 4), ['fig']);
+      // Both the chapter and the level must be reached.
+      expect(owed(2, 2), isEmpty);
+      expect(owed(2, 3), ['olive']);
+      expect(owed(2, 9), ['fig', 'olive']);
+      expect(generatorsOwed(board, {'fig'}, 1, level: 9), isEmpty);
+    });
+
     test('chapter 1 owes nothing beyond the starting generators', () {
       expect(generatorsOwed(_board, {'pantry', 'tree'}, 1), isEmpty);
     });

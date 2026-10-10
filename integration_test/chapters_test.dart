@@ -122,7 +122,12 @@ void main() {
       final col = arrived.single.col;
       final row = arrived.single.row;
       expect((col - homeCol).abs() + (row - homeRow).abs(), c.blocked ? 1 : 0);
-      expect(game.generatorPlacements, hasLength(c.has + 1));
+      // Everything the starting board gives by this chapter is here: the
+      // chapter's own generator and any that waited only for a level.
+      final due = (board['generators'] as List<dynamic>)
+          .cast<Map<String, dynamic>>()
+          .where((g) => (g['chapter'] as int? ?? 1) <= c.finished + 1);
+      expect(game.generatorPlacements, hasLength(due.length));
       expect(game.snapshotItems(), hasLength(c.blocked ? 1 : 0));
 
       // Tapping it makes one of the new chain's items.

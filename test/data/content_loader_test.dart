@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:whispers_of_joppa/domain/generator_types.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 
 Object? _read(String name) =>
@@ -108,8 +109,30 @@ void main() {
 
   test('generator tap cost comes from economy.json', () {
     for (final gen in loader.generators.values) {
-      expect(gen.energyCost, loader.economy.generatorTapCost);
+      // Only a standard generator costs Manna; the other kinds are free.
+      expect(
+        gen.energyCost,
+        gen.rules.costsManna ? loader.economy.generatorTapCost : 0,
+        reason: gen.generatorId,
+      );
     }
+  });
+
+  test('generator kinds are read from content', () {
+    final fig = loader.generators['gen_fig'];
+    expect(fig?.rules.kind, GeneratorKind.charged);
+    expect(fig?.rules.charges, 6);
+    expect(fig?.rules.cooldownSeconds, 7200);
+    final olive = loader.generators['gen_olive_tree'];
+    expect(olive?.rules.kind, GeneratorKind.free);
+    expect(olive?.rules.intervalSeconds, 900);
+    expect(loader.generators['gen_pantry']?.rules.kind, GeneratorKind.standard);
+    // The Fig Tree waits for level 4; the Olive Tree for Chapter 5.
+    final board = {
+      for (final g in loader.startingBoard.generators) g.generatorId: g,
+    };
+    expect(board['gen_fig']?.level, 4);
+    expect(board['gen_olive_tree']?.chapter, 5);
   });
 
   test('a generator can override the tap cost', () {

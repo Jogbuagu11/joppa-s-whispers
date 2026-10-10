@@ -48,6 +48,10 @@ void checkStartingBoard(
     if (chapter != null && (chapter is! int || chapter < 1)) {
       problems.add('Starting board: generator "$id" chapter must be 1 or more');
     }
+    final level = g['level'];
+    if (level != null && (level is! int || level < 1)) {
+      problems.add('Starting board: generator "$id" level must be 1 or more');
+    }
     // The chapter a generator arrives in is written in two places; they
     // must agree.
     final unlock = generatorUnlockChapters[id];

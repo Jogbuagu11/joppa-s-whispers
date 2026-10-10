@@ -25,7 +25,9 @@ SaveState newGameState(ContentLoader loader, int? mannaOverride) {
     ],
     generators: [
       // Later chapters bring their own generators when the story gets there.
-      for (final g in start.generators.where((g) => g.chapter <= 1))
+      for (final g in start.generators.where(
+        (g) => g.chapter <= 1 && g.level <= 1,
+      ))
         SavedGenerator(
           generatorId: g.generatorId,
           level: loader.generators[g.generatorId]?.level ?? 1,

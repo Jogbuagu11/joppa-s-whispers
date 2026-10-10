@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/content_bundle.dart';
+import 'package:whispers_of_joppa/domain/generator_types.dart';
 import 'package:whispers_of_joppa/domain/levels.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
@@ -244,13 +245,18 @@ class ContentLoader {
           odds: oddsJson.map((k, v) => MapEntry(k, (v as num).toDouble())),
         );
       }).toList();
+      final rules = GeneratorRules.fromJson(gen);
       generators[genId] = GeneratorModel(
         generatorId: genId,
         chainId: gen['chain_id'] as String,
         level: 1,
-        // Tap cost comes from economy.json unless this generator overrides it.
-        energyCost: gen['energy_cost'] as int? ?? economy.generatorTapCost,
+        // Tap cost comes from economy.json unless this generator overrides
+        // it. Only a standard generator costs Manna at all.
+        energyCost: rules.costsManna
+            ? gen['energy_cost'] as int? ?? economy.generatorTapCost
+            : 0,
         name: gen['name'] as String,
+        rules: rules,
       );
     }
   }

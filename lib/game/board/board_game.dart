@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
+import 'package:whispers_of_joppa/domain/generator_types.dart';
 import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
@@ -22,6 +23,7 @@ import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
 part 'board_game_art.dart';
 part 'board_game_drag.dart';
+part 'board_game_generator_types.dart';
 part 'board_game_generators.dart';
 
 final _log = Logger('BoardGame');
@@ -69,6 +71,13 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   /// Whether every item shows its tier number (the player's choice).
   bool showTierNumbers = false;
 
+  /// generator id -> its charges or countdown (charged, free and temporary
+  /// generators only).
+  final Map<String, GeneratorTimer> generatorTimers;
+
+  /// The time (tests pass their own).
+  final DateTime Function() now;
+
   /// When this returns true, generator taps cost nothing (tutorial).
   bool Function()? freeGeneratorTaps;
 
@@ -111,25 +120,9 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
         level: p.gen.level,
         col: p.col,
         row: p.row,
+        timer: generatorTimers[p.gen.generatorId],
       ),
   ];
-
-  /// Raises every generator on the board to at least [level] (a purchase
-  /// reward). Generators already at or above it are left alone.
-  void raiseGeneratorsTo(int level) {
-    final levels = raisedGeneratorLevels([
-      for (final p in generatorPlacements) p.gen.level,
-    ], level);
-    for (int i = 0; i < generatorPlacements.length; i++) {
-      final p = generatorPlacements[i];
-      generatorPlacements[i] = (
-        gen: p.gen.atLevel(levels[i]),
-        col: p.col,
-        row: p.row,
-      );
-    }
-    _boardTouched();
-  }
 
   @override
   Map<String, int> itemCounts() => countItems(_board);
@@ -162,6 +155,9 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   // item_id -> loaded picture, for items whose art file exists.
   final Map<String, ui.Image> _art = {};
 
+  // Seconds since free generators were last looked at.
+  double _sinceGeneratorTick = 0;
+
   // True once the cells, generators and starting items are in place.
   bool _built = false;
 
@@ -179,7 +175,10 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
     required this.onOutOfManna,
     this.gridCols = cols,
     this.gridRows = rows,
-  });
+    Map<String, GeneratorTimer>? generatorTimers,
+    DateTime Function()? clock,
+  }) : generatorTimers = generatorTimers ?? {},
+       now = clock ?? DateTime.now;
 
   @override
   Color backgroundColor() => const Color(0xFF1A1205);
@@ -235,6 +234,7 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
       GeneratorComponent(
         generator: placement.gen,
         onTapped: _onGeneratorTapped,
+        label: () => generatorLabel(placement.gen),
         art: () => _generatorArtFor(placement.gen.generatorId),
         position: Vector2(
           (size.x - gridCols * cellSize) / 2 + placement.col * cellSize,
@@ -253,6 +253,12 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
     final maxW = size.x / gridCols;
     final maxH = size.y / gridRows;
     return (maxW < maxH ? maxW : maxH) - 2;
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    _tickGenerators(dt);
   }
 
   // --- Drag handling (logic lives in board_game_drag.dart) ---

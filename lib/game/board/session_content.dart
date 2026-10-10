@@ -1,4 +1,5 @@
 // Chooses and loads the content a play session runs on.
+import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/data/content_bundle.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
@@ -8,6 +9,8 @@ import 'package:whispers_of_joppa/domain/orders.dart';
 import 'package:whispers_of_joppa/domain/progression.dart';
 import 'package:whispers_of_joppa/domain/save_repair.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
+import 'package:whispers_of_joppa/game/board/board_game.dart';
+import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
 final _log = Logger('SessionContent');
 
@@ -71,4 +74,36 @@ OrderAvailable ordersOpenAt(ContentLoader loader, List<String> completedTasks) {
   final reached = chapterReached(loader.chapters, completedTasks.toSet());
   final chapterOf = {for (final o in loader.orders) o.id: o.chapter};
   return (id) => (chapterOf[id] ?? 1) <= reached;
+}
+
+/// The board for a session: the saved generators (with their clocks) and
+/// items, on the content being played.
+BoardGame buildSessionGame({
+  required ContentLoader loader,
+  required SaveState save,
+  required SaveState fresh,
+  required MannaController manna,
+  required VoidCallback onOutOfManna,
+}) {
+  // A saved game that lost a generator gets it back from the start board.
+  final saved = withMissingGenerators(save, fresh.generators);
+  return BoardGame(
+    itemCatalog: loader.items,
+    chainData: loader.chains,
+    generatorLevels: loader.generatorLevels,
+    generatorPlacements: [
+      for (final g in saved)
+        if (loader.generators[g.generatorId] case final gen?)
+          (gen: gen.atLevel(g.level), col: g.col, row: g.row),
+    ],
+    generatorTimers: {for (final g in saved) g.generatorId: ?g.timer},
+    startingItems: [
+      for (final i in save.items)
+        if (loader.items[i.itemId] case final item?)
+          (item: item, col: i.col, row: i.row),
+    ],
+    chainPlaceholderColors: loader.chainPlaceholderColors,
+    manna: manna,
+    onOutOfManna: onOutOfManna,
+  );
 }

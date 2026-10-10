@@ -1,5 +1,7 @@
 // Core game models — pure Dart, no Flutter or Flame imports.
 
+import 'package:whispers_of_joppa/domain/generator_types.dart';
+
 /// A single item on the board or in the basket.
 class ItemModel {
   final String itemId; // e.g. "bakery_03"
@@ -44,12 +46,16 @@ class GeneratorModel {
   final int energyCost;
   final String name;
 
+  /// Standard, charged, free or temporary, with its numbers.
+  final GeneratorRules rules;
+
   const GeneratorModel({
     required this.generatorId,
     required this.chainId,
     required this.level,
     required this.energyCost,
     required this.name,
+    this.rules = GeneratorRules.standard,
   });
 
   /// The same generator at another level.
@@ -59,6 +65,7 @@ class GeneratorModel {
     level: newLevel,
     energyCost: energyCost,
     name: name,
+    rules: rules,
   );
 }
 
@@ -112,11 +119,15 @@ class StartingGenerator {
   /// start of the game).
   final int chapter;
 
+  /// The player level at which this generator arrives (1 = no wait).
+  final int level;
+
   const StartingGenerator({
     required this.generatorId,
     required this.col,
     required this.row,
     this.chapter = 1,
+    this.level = 1,
   });
 }
 
@@ -159,6 +170,7 @@ class StartingBoard {
           col: g['col'] as int,
           row: g['row'] as int,
           chapter: g['chapter'] as int? ?? 1,
+          level: g['level'] as int? ?? 1,
         ),
     ],
     items: [
