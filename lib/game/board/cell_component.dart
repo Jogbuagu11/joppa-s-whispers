@@ -2,16 +2,20 @@
 import 'dart:ui' as ui;
 
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/game/board/item_component.dart';
 
-class CellComponent extends PositionComponent {
+class CellComponent extends PositionComponent with TapCallbacks {
   final int col;
   final int row;
   final double cellSize;
 
   ItemComponent? _item;
+
+  /// Called when the cell is tapped while it holds an item.
+  final void Function(int col, int row)? onItemTapped;
 
   static const _borderColor = Color(0xFF5C3D0D);
   static const _fillColor = Color(0xFF2A1F08);
@@ -21,6 +25,7 @@ class CellComponent extends PositionComponent {
     required this.row,
     required this.cellSize,
     required Vector2 position,
+    this.onItemTapped,
   }) : super(position: position, size: Vector2.all(cellSize));
 
   @override
@@ -37,6 +42,11 @@ class CellComponent extends PositionComponent {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5,
     );
+  }
+
+  @override
+  void onTapUp(TapUpEvent event) {
+    if (_item != null) onItemTapped?.call(col, row);
   }
 
   /// Places (or replaces) an item in this cell.

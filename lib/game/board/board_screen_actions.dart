@@ -3,7 +3,8 @@
 // board_screen_routes.dart; the layout is in board_screen.dart.
 part of 'board_screen.dart';
 
-mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
+mixin _BoardScreenActions
+    on _BoardRoutes, _BoardNotifications, _BoardEvents, _BoardItems {
   @override
   void initState() {
     super.initState();
@@ -82,16 +83,6 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
     if (!mounted || _busy || _popupOpen || _eventOpen) return;
     if (!(ModalRoute.of(context)?.isCurrent ?? true)) return;
     _session?.ads.startWhenAllowed();
-  }
-
-  /// Pays for any level just reached (a full Manna bar and Talents) and
-  /// tells the player.
-  Future<void> _showLevelUp() async {
-    final session = _session;
-    final up = session?.levels.collect();
-    if (session == null || up == null || !mounted) return;
-    widget.comfort?.cue(GameCue.reward);
-    await showLevelUp(context, session.levels.config.text, up);
   }
 
   /// Shows the closing message of a finished chapter, once.
@@ -235,6 +226,7 @@ mixin _BoardScreenActions on _BoardRoutes, _BoardNotifications, _BoardEvents {
       }
       _attachShop(session);
       _attachComfort(session);
+      session.game.onUsableItemTapped = _askToUse;
       session.ads.service = widget.ads;
       widget.cloud?.blockUploads = session.downgraded;
       session.saver.onSaved = (state) => widget.cloud?.afterLocalSave(state);

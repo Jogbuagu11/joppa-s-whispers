@@ -11,6 +11,7 @@ import 'package:whispers_of_joppa/features/story/endings_tracker.dart';
 import 'package:whispers_of_joppa/features/story/story_controller.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
+import 'package:whispers_of_joppa/game/board/grant_queue.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 
 /// Collects the saveable state from the pieces of a session.
@@ -24,6 +25,7 @@ SaveState buildSnapshot({
   required PurchasesController purchases,
   required AdRewardsController ads,
   required LevelController levels,
+  required GrantQueue grants,
   required int contentVersion,
 }) => SaveState(
   items: game.snapshotItems(),
@@ -47,6 +49,7 @@ SaveState buildSnapshot({
   adDay: ads.tally.day,
   adMannaWatched: ads.tally.mannaAds,
   levelRewarded: levels.rewardedLevel,
+  pendingGrants: grants.waiting,
 );
 
 /// The saver for a session: what it writes, and what makes it write.
@@ -61,6 +64,7 @@ GameSaver buildSaver({
   required PurchasesController purchases,
   required AdRewardsController ads,
   required LevelController levels,
+  required GrantQueue grants,
   required int contentVersion,
 }) => GameSaver(
   repository: repository,
@@ -74,6 +78,7 @@ GameSaver buildSaver({
     purchases: purchases,
     ads: ads,
     levels: levels,
+    grants: grants,
     contentVersion: contentVersion,
   ),
   // Manna spends always come with a board change, so the per-second Manna
@@ -87,6 +92,7 @@ GameSaver buildSaver({
     purchases,
     ads.tallyChanged,
     levels,
+    grants,
   ],
 );
 

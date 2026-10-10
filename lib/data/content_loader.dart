@@ -214,6 +214,7 @@ class ContentLoader {
           name: t['name'] as String,
           asset: t['asset'] as String? ?? '',
           sell: t['sell'] as int,
+          use: ItemUse.fromJson(t['use']),
         );
         itemTiers[itemId] = tier;
         tierToItemId['${chainId}_$tier'] = itemId;

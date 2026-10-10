@@ -1,4 +1,5 @@
-// Checks the kind-of-generator fields in content/generators.json. Pure Dart.
+// Checks the kind-of-generator fields in content/generators.json, and the
+// "use" of items that can be used. Pure Dart.
 
 const _kinds = {'standard', 'charged', 'free', 'temporary'};
 
@@ -35,5 +36,32 @@ void checkGeneratorType(
       }
     case 'temporary':
       need('taps');
+  }
+}
+
+/// Adds a line to [problems] if an item's "use" ([what] names the item) is
+/// not one the game understands.
+void checkItemUse(String what, Object? use, List<String> problems) {
+  if (use == null) return;
+  if (use is! Map<String, dynamic>) {
+    problems.add('$what: use must be a record');
+    return;
+  }
+  final manna = use['manna'];
+  final seconds = use['skip_seconds'];
+  final all = use['skip_all'];
+  if (manna != null && (manna is! int || manna < 1)) {
+    problems.add('$what: use.manna must be 1 or more');
+  }
+  if (seconds != null && (seconds is! int || seconds < 1)) {
+    problems.add('$what: use.skip_seconds must be 1 or more');
+  }
+  if (all != null && all is! bool) {
+    problems.add('$what: use.skip_all must be true or false');
+  }
+  final gives = manna != null;
+  final skips = seconds != null || all == true;
+  if (gives == skips) {
+    problems.add('$what: use must give Manna or skip time, one or the other');
   }
 }

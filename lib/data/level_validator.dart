@@ -4,6 +4,7 @@ const _textKeys = [
   'title',
   'manna',
   'talents',
+  'gift',
   'unlocked',
   'continue',
   'badge',
@@ -14,6 +15,10 @@ void checkLevels(
   Map<String, dynamic> json, {
   required Set<int> chapterNumbers,
   required List<String> problems,
+
+  /// Ids a level may give; null skips that check.
+  Set<String>? itemIds,
+  Set<String>? generatorIds,
 }) {
   final perChapter = json['xp_per_task_by_chapter'];
   if (perChapter is! Map<String, dynamic>) {
@@ -66,6 +71,24 @@ void checkLevels(
       }
       if (talents is! int || talents < 0) {
         problems.add('Levels: level $level has a bad Talents reward');
+      }
+      final items = entry['items'] ?? const <dynamic>[];
+      if (items is! List<dynamic>) {
+        problems.add('Levels: level $level items must be a list');
+      } else if (itemIds != null) {
+        for (final item in items) {
+          if (!itemIds.contains(item)) {
+            problems.add('Levels: level $level gives unknown item "$item"');
+          }
+        }
+      }
+      final generator = entry['generator'];
+      if (generator != null &&
+          generatorIds != null &&
+          !generatorIds.contains(generator)) {
+        problems.add(
+          'Levels: level $level gives unknown generator "$generator"',
+        );
       }
       expected++;
     }

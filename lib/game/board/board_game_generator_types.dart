@@ -123,4 +123,49 @@ extension BoardGeneratorTypes on BoardGame {
             _dragOriginCell != _cells[c][r])
           (c, r),
   ];
+
+  void _onItemTapped(int col, int row) {
+    final item = _board[col][row];
+    if (item == null || item.use == null) return;
+    onUsableItemTapped?.call(item, () => useItemAt(col, row));
+  }
+
+  /// Uses the Manna item in ([col], [row]): it leaves the board and its
+  /// Manna is added (over the bar if need be). Returns false, changing
+  /// nothing, if that cell no longer holds such an item.
+  bool useItemAt(int col, int row) {
+    if (col < 0 || col >= gridCols || row < 0 || row >= gridRows) return false;
+    final item = _board[col][row];
+    final use = item?.use;
+    if (use == null || !use.givesManna) return false;
+    _board[col][row] = null;
+    _cells[col][row].clearItem();
+    manna.add(use.manna);
+    _boardTouched();
+    return true;
+  }
+
+  /// An hourglass let go over a generator: if that generator is waiting,
+  /// the wait is shortened and the hourglass is used up. Returns whether
+  /// it was.
+  bool _dropOnGenerator(ItemComponent dragging, CellComponent origin) {
+    final use = dragging.item.use;
+    if (use == null || !use.skipsTime) return false;
+    for (final placement in generatorPlacements) {
+      final cell = _cells[placement.col][placement.row];
+      if (!cell.containsPoint(dragging.center)) continue;
+      final used = skipGeneratorWait(
+        placement.gen.generatorId,
+        seconds: use.skipAll ? null : use.skipSeconds,
+      );
+      if (!used) return false;
+      _board[origin.col][origin.row] = null;
+      dragging.removeFromParent();
+      _dragging = null;
+      _dragOriginCell = null;
+      _boardTouched();
+      return true;
+    }
+    return false;
+  }
 }

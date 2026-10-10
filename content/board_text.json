@@ -1,0 +1,7 @@
+{
+  "use_manna": "+{manna} Manna",
+  "use": "Use",
+  "keep": "Keep",
+  "hourglass_hint": "Drag it onto a resting generator to shorten the wait.",
+  "ok": "OK"
+}

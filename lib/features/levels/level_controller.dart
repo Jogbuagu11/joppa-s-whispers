@@ -14,6 +14,9 @@ class LevelController extends ChangeNotifier {
   /// Fills the Manna bar.
   final VoidCallback refillManna;
 
+  /// Hands over gift items and temporary generators, by id.
+  final void Function(List<String> itemIds, List<String> generatorIds)? give;
+
   int _rewarded;
 
   /// [rewardedLevel] comes from the save; 0 means "not recorded yet" (a new
@@ -26,6 +29,7 @@ class LevelController extends ChangeNotifier {
     required this.story,
     required this.addTalents,
     required this.refillManna,
+    this.give,
     int rewardedLevel = 0,
   }) : config = config ?? noLevels,
        _rewarded = rewardedLevel {
@@ -59,6 +63,9 @@ class LevelController extends ChangeNotifier {
     _rewarded = owed.to;
     if (owed.talents > 0) addTalents(owed.talents);
     refillManna();
+    if (owed.items.isNotEmpty || owed.generators.isNotEmpty) {
+      give?.call(owed.items, owed.generators);
+    }
     notifyListeners();
     return owed;
   }

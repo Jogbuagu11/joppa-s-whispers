@@ -121,5 +121,86 @@
       { "tier": 5, "item_id": "oil_05", "name": "Alabaster jar",   "sell": 10, "asset": "assets/items/item_oil_05.jpg" },
       { "tier": 6, "item_id": "oil_06", "name": "Horn of oil",     "sell": 12, "asset": "assets/items/item_oil_06.jpg" }
     ]
+  },
+  {
+    "id": "hourglass",
+    "placeholder_color": "#8FA7B8",
+    "name": "Hourglasses",
+    "kind": "gift",
+    "unlock_chapter": 1,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "hourglass_01",
+        "name": "Small hourglass",
+        "sell": 5,
+        "use": {
+          "skip_seconds": 900
+        }
+      },
+      {
+        "tier": 2,
+        "item_id": "hourglass_02",
+        "name": "Hourglass",
+        "sell": 15,
+        "use": {
+          "skip_seconds": 3600
+        }
+      },
+      {
+        "tier": 3,
+        "item_id": "hourglass_03",
+        "name": "Great hourglass",
+        "sell": 40,
+        "use": {
+          "skip_all": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "manna_jar",
+    "placeholder_color": "#E8D9A8",
+    "name": "Manna jars",
+    "kind": "gift",
+    "unlock_chapter": 1,
+    "tiers": [
+      {
+        "tier": 1,
+        "item_id": "manna_jar_01",
+        "name": "Pinch of Manna",
+        "sell": 2,
+        "use": {
+          "manna": 5
+        }
+      },
+      {
+        "tier": 2,
+        "item_id": "manna_jar_02",
+        "name": "Cup of Manna",
+        "sell": 5,
+        "use": {
+          "manna": 15
+        }
+      },
+      {
+        "tier": 3,
+        "item_id": "manna_jar_03",
+        "name": "Jar of Manna",
+        "sell": 12,
+        "use": {
+          "manna": 40
+        }
+      },
+      {
+        "tier": 4,
+        "item_id": "manna_jar_04",
+        "name": "Manna potion",
+        "sell": 30,
+        "use": {
+          "manna": 100
+        }
+      }
+    ]
   }
 ]

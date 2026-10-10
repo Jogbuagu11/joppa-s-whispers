@@ -115,6 +115,10 @@ class SaveState {
   /// (a game saved before levels existed): nothing is owed for past levels.
   final int levelRewarded;
 
+  /// Gifts (items, temporary generators) still waiting for room on the
+  /// board, as `item:<id>` or `gen:<id>`.
+  final List<String> pendingGrants;
+
   const SaveState({
     required this.items,
     required this.generators,
@@ -137,6 +141,7 @@ class SaveState {
     this.adDay = '',
     this.adMannaWatched = 0,
     this.levelRewarded = 0,
+    this.pendingGrants = const [],
   });
 
   Map<String, dynamic> toJson() => {
@@ -160,6 +165,7 @@ class SaveState {
     'content_version': contentVersion,
     'last_order_skip': lastOrderSkip?.toUtc().toIso8601String(),
     'level_rewarded': levelRewarded,
+    'pending_grants': pendingGrants,
     'ad_day': adDay,
     'ad_manna_watched': adMannaWatched,
   };
@@ -211,6 +217,10 @@ class SaveState {
         adDay: json['ad_day'] as String,
         adMannaWatched: json['ad_manna_watched'] as int,
         levelRewarded: json['level_rewarded'] as int,
+        // Added without a new save version: absent in older saves.
+        pendingGrants: List<String>.from(
+          json['pending_grants'] as List<dynamic>? ?? const [],
+        ),
       );
     } on TypeError catch (e) {
       throw FormatException('Save file is missing or has a wrong field: $e');

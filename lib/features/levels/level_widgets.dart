@@ -68,8 +68,11 @@ class LevelBadge extends StatelessWidget {
 Future<void> showLevelUp(
   BuildContext context,
   Map<String, String> text,
-  LevelUp up,
-) => showDialog<void>(
+  LevelUp up, {
+
+  /// The names of the gift items and generators that came with it.
+  List<String> giftNames = const [],
+}) => showDialog<void>(
   context: context,
   builder: (context) => AlertDialog(
     key: const Key('level_up'),
@@ -96,6 +99,14 @@ Future<void> showLevelUp(
               key: const Key('level_up_talents'),
               textAlign: TextAlign.center,
               style: const TextStyle(color: _gold, fontWeight: FontWeight.bold),
+            ),
+          ],
+          for (final name in giftNames) ...[
+            const SizedBox(height: 8),
+            Text(
+              _fill(text['gift'], 'name', name),
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: _gold),
             ),
           ],
           for (final unlock in up.unlocked) ...[

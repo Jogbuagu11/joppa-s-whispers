@@ -9,7 +9,19 @@ class LevelStep {
   final int xp;
   final int talents;
 
-  const LevelStep({required this.level, required this.xp, this.talents = 0});
+  /// Item ids given on reaching it (an hourglass, a Manna jar).
+  final List<String> items;
+
+  /// A temporary generator given on reaching it, if any.
+  final String? generator;
+
+  const LevelStep({
+    required this.level,
+    required this.xp,
+    this.talents = 0,
+    this.items = const [],
+    this.generator,
+  });
 }
 
 /// A feature that opens at a level.
@@ -65,6 +77,8 @@ class LevelsConfig {
           level: (l as Map<String, dynamic>)['level'] as int,
           xp: l['xp'] as int,
           talents: l['talents'] as int? ?? 0,
+          items: List<String>.from(l['items'] as List<dynamic>? ?? const []),
+          generator: l['generator'] as String?,
         ),
     ],
     unlocks: [
@@ -150,11 +164,17 @@ class LevelUp {
   /// Features that opened on the way and exist in the game.
   final List<FeatureUnlock> unlocked;
 
+  /// Gift items and temporary generators, by id.
+  final List<String> items;
+  final List<String> generators;
+
   const LevelUp({
     required this.from,
     required this.to,
     required this.talents,
     required this.unlocked,
+    this.items = const [],
+    this.generators = const [],
   });
 }
 
@@ -168,13 +188,20 @@ LevelUp? levelUpOwed(
 }) {
   if (current <= rewarded) return null;
   var talents = 0;
+  final items = <String>[];
+  final generators = <String>[];
   for (final step in config.steps) {
-    if (step.level > rewarded && step.level <= current) talents += step.talents;
+    if (step.level <= rewarded || step.level > current) continue;
+    talents += step.talents;
+    items.addAll(step.items);
+    if (step.generator case final generator?) generators.add(generator);
   }
   return LevelUp(
     from: rewarded,
     to: current,
     talents: talents,
+    items: items,
+    generators: generators,
     unlocked: [
       for (final unlock in config.unlocks)
         if (unlock.available &&

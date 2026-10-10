@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:whispers_of_joppa/data/content_bundle.dart';
 import 'package:whispers_of_joppa/data/content_validator.dart';
 
 Object? _read(String name) =>
@@ -26,6 +27,7 @@ void main() {
     notificationsJson: _read('notifications'),
     levelsJson: _read('levels'),
   );
+  problems.addAll(boardTextProblems(_read('board_text')));
   if (problems.isEmpty) {
     stdout.writeln('Content OK');
     return;

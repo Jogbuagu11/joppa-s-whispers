@@ -22,6 +22,7 @@ import 'package:whispers_of_joppa/features/story/endings_tracker.dart';
 import 'package:whispers_of_joppa/features/story/story_controller.dart';
 import 'package:whispers_of_joppa/features/story/tutorial_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
+import 'package:whispers_of_joppa/game/board/grant_queue.dart';
 import 'package:whispers_of_joppa/game/board/chapter_wiring.dart';
 import 'package:whispers_of_joppa/game/board/manna_controller.dart';
 import 'package:whispers_of_joppa/game/board/new_game.dart';
@@ -46,6 +47,7 @@ class BoardSession {
   /// Optional rewarded ads and today's count of them.
   final AdRewardsController ads;
   final LevelController levels;
+  final GrantQueue grants;
 
   /// scene_id -> scene, for the scenes that tasks play.
   final Map<String, SceneModel> scenes;
@@ -83,6 +85,7 @@ class BoardSession {
     required this.purchases,
     required this.ads,
     required this.levels,
+    required this.grants,
     required this.scenes,
     required this.locations,
     required this.letters,
@@ -181,12 +184,19 @@ class BoardSession {
       startIndex: playTutorial ? save.tutorialStep : tutorialFinished,
       freeTapsAlreadyUsed: save.tutorialFreeTapsUsed,
     );
+    final grants = GrantQueue(
+      game: game,
+      items: loader.items,
+      generators: loader.generators,
+      waiting: save.pendingGrants,
+    );
     // Levels follow the story; a level reached refills Manna and pays Talents.
     final levels = LevelController(
       config: loader.levels,
       story: story,
       addTalents: orders.addTalents,
       refillManna: () => manna.add(manna.maxManna - manna.manna),
+      give: (items, gens) => grants.give(itemIds: items, generatorIds: gens),
       rewardedLevel: save.levelRewarded,
     );
     wireTutorial(game: game, orders: orders, story: story, tutorial: tutorial);
@@ -220,6 +230,7 @@ class BoardSession {
       purchases: purchases,
       ads: ads,
       levels: levels,
+      grants: grants,
       contentVersion: contentVersion,
     );
     // A game that has lost parts to older content is played from memory only:
@@ -236,6 +247,7 @@ class BoardSession {
       purchases: purchases,
       ads: ads,
       levels: levels,
+      grants: grants,
       scenes: loader.scenes,
       locations: loader.locations,
       letters: loader.letters,
@@ -268,6 +280,7 @@ class BoardSession {
 
   void _disposeParts() {
     levels.dispose();
+    grants.dispose();
     ads.dispose();
     purchases.dispose();
     endings.dispose();

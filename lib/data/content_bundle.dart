@@ -25,6 +25,7 @@ const contentFileNames = [
   'products',
   'notifications',
   'levels',
+  'board_text',
 ];
 
 class ContentBundle {
@@ -72,6 +73,8 @@ class ContentBundle {
     if (missing.isNotEmpty) return missing;
     // Levels came later than the other files: an empty one must not pass.
     if (files['levels'] == null) return ['Content file "levels" is empty'];
+    final wording = boardTextProblems(files['board_text']);
+    if (wording.isNotEmpty) return wording;
     return validateContent(
       chainsJson: files['chains'],
       generatorsJson: files['generators'],
@@ -102,3 +105,18 @@ ContentBundle chooseContent({
   if (cached.version <= bundled.version) return bundled;
   return cached.problems().isEmpty ? cached : bundled;
 }
+
+/// The small wording used on the board (content/board_text.json).
+const boardTextKeys = ['use_manna', 'use', 'keep', 'hourglass_hint', 'ok'];
+
+/// Plain-English problems with the board wording; empty if it is sound.
+List<String> boardTextProblems(Object? json) => [
+  if (json is! Map<String, dynamic>)
+    'Board text: the file is missing or has the wrong shape'
+  else
+    for (final key in boardTextKeys)
+      if (json[key] is! String ||
+          (json[key] as String).isEmpty ||
+          (json[key] as String).length > 80)
+        'Board text: "$key" is missing or longer than 80 letters',
+];

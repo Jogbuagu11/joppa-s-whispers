@@ -64,6 +64,7 @@ SaveState sanitizeSave(
     adDay: save.adDay,
     adMannaWatched: save.adMannaWatched < 0 ? 0 : save.adMannaWatched,
     levelRewarded: save.levelRewarded < 0 ? 0 : save.levelRewarded,
+    pendingGrants: save.pendingGrants,
   );
 }
 

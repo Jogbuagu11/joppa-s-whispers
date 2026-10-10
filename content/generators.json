@@ -183,5 +183,50 @@
         }
       }
     ]
+  },
+  {
+    "id": "gen_loaves",
+    "name": "Basket of Loaves",
+    "chain_id": "bakery",
+    "unlock_chapter": 1,
+    "type": "temporary",
+    "taps": 10,
+    "levels": [
+      {
+        "level": 1,
+        "odds": {
+          "2": 0.6,
+          "3": 0.4
+        }
+      },
+      {
+        "level": 2,
+        "odds": {
+          "2": 0.6,
+          "3": 0.4
+        }
+      },
+      {
+        "level": 3,
+        "odds": {
+          "2": 0.6,
+          "3": 0.4
+        }
+      },
+      {
+        "level": 4,
+        "odds": {
+          "2": 0.6,
+          "3": 0.4
+        }
+      },
+      {
+        "level": 5,
+        "odds": {
+          "2": 0.6,
+          "3": 0.4
+        }
+      }
+    ]
   }
 ]

@@ -90,6 +90,12 @@ extension BoardGenerators on BoardGame {
     _log.fine('Generator $genId spawned ${item.itemId}, manna=${manna.manna}');
   }
 
+  /// True once the board is drawn and can take items.
+  bool get isBuilt => _built;
+
+  /// Whether any cell can take a new item.
+  bool get hasFreeCell => _built && _hasSpaceForItem();
+
   bool _hasSpaceForItem() {
     for (int c = 0; c < gridCols; c++) {
       for (int r = 0; r < gridRows; r++) {

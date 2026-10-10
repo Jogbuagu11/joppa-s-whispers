@@ -11,6 +11,10 @@ class ItemModel {
   final String asset; // asset path, may be empty (uses placeholder)
   final int sell; // Talents earned when sold
 
+  /// What using this item does, for the few items that can be used (Manna
+  /// jars, hourglasses); null for everything else.
+  final ItemUse? use;
+
   const ItemModel({
     required this.itemId,
     required this.chainId,
@@ -18,7 +22,36 @@ class ItemModel {
     required this.name,
     required this.asset,
     this.sell = 0,
+    this.use,
   });
+}
+
+/// The effect of using an item.
+class ItemUse {
+  /// Manna given when it is used (it may take Manna over the bar).
+  final int manna;
+
+  /// Seconds taken off a generator's wait when it is dropped on one.
+  final int skipSeconds;
+
+  /// True if it ends a generator's wait outright.
+  final bool skipAll;
+
+  const ItemUse({this.manna = 0, this.skipSeconds = 0, this.skipAll = false});
+
+  /// Null if [json] describes no effect.
+  static ItemUse? fromJson(Object? json) {
+    if (json is! Map<String, dynamic>) return null;
+    final use = ItemUse(
+      manna: json['manna'] as int? ?? 0,
+      skipSeconds: json['skip_seconds'] as int? ?? 0,
+      skipAll: json['skip_all'] as bool? ?? false,
+    );
+    return use.givesManna || use.skipsTime ? use : null;
+  }
+
+  bool get givesManna => manna > 0;
+  bool get skipsTime => skipAll || skipSeconds > 0;
 }
 
 /// One cell on the 7×9 board.

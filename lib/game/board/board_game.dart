@@ -78,6 +78,10 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
   /// The time (tests pass their own).
   final DateTime Function() now;
 
+  /// Called when an item that can be used is tapped; [use] uses it (and
+  /// returns false if it could not be used). The screen asks first.
+  void Function(ItemModel item, bool Function() use)? onUsableItemTapped;
+
   /// When this returns true, generator taps cost nothing (tutorial).
   bool Function()? freeGeneratorTaps;
 
@@ -218,6 +222,7 @@ class BoardGame extends FlameGame with DragCallbacks implements BoardInventory {
           row: r,
           cellSize: cellSize,
           position: Vector2(offsetX + c * cellSize, offsetY + r * cellSize),
+          onItemTapped: _onItemTapped,
         );
         add(cell);
         return cell;

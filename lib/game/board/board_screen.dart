@@ -16,6 +16,7 @@ import 'package:whispers_of_joppa/features/orders/orders_bar.dart';
 import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/events.dart';
+import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/features/events/event_screen.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
 import 'package:whispers_of_joppa/domain/comfort.dart';
@@ -39,6 +40,7 @@ import 'package:whispers_of_joppa/services/analytics_service.dart';
 
 part 'board_screen_actions.dart';
 part 'board_screen_events.dart';
+part 'board_screen_items.dart';
 part 'board_screen_notifications.dart';
 part 'board_screen_routes.dart';
 
@@ -128,6 +130,7 @@ class _BoardScreenState extends State<BoardScreen>
         _BoardRoutes,
         _BoardNotifications,
         _BoardEvents,
+        _BoardItems,
         _BoardScreenActions {
   @override
   Widget build(BuildContext context) {

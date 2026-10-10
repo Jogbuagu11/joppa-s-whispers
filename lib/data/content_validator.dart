@@ -65,7 +65,8 @@ List<String> validateContent({
     final generatorIds = _checkGenerators(generators, maxTierByChain, problems);
     for (final chain in chains) {
       final genId = chain['generator_id'];
-      if (!generatorIds.contains(genId)) {
+      // A chain of gift items (hourglasses, Manna jars) has no generator.
+      if (genId != null && !generatorIds.contains(genId)) {
         problems.add('Chain ${chain['id']}: unknown generator "$genId"');
       }
     }
@@ -126,6 +127,12 @@ List<String> validateContent({
       checkLevels(
         levelsJson as Map<String, dynamic>,
         chapterNumbers: {for (final c in chapters) c['number'] as int},
+        itemIds: {
+          for (final chain in chains)
+            for (final tier in chain['tiers'] as List<dynamic>)
+              (tier as Map<String, dynamic>)['item_id'] as String,
+        },
+        generatorIds: generatorIds,
         problems: problems,
       );
     }
@@ -201,6 +208,7 @@ Map<String, int> _checkChains(
           'Chain $id tier ${i + 1}: asset must be assets/items/item_…_NN.png or .jpg',
         );
       }
+      checkItemUse('Chain $id tier ${i + 1}', tier['use'], problems);
       final sell = tier['sell'];
       if (sell is! int || sell < 0) {
         problems.add('Chain $id tier ${i + 1}: sell must be a whole number');
