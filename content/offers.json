@@ -84,7 +84,9 @@
     "deal_free": "Free",
     "deal_price": "{pearls} Pearls",
     "deal_taken": "Taken",
-    "deals_note": "New deals every day."
+    "deals_note": "New deals every day.",
+    "shop_unavailable": "The shop is not available right now. Please try again later.",
+    "shop_owned": "Owned"
   },
   "special": {
     "title": "Joppa Special",

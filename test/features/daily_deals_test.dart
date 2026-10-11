@@ -82,4 +82,42 @@ void main() {
     pearls.dispose();
     extras.dispose();
   });
+
+  test('a deal that is not one of today\'s cannot be taken, and a taken '
+      'deal is not given again by winding the clock back and forth', () {
+    var now = DateTime(2026, 10, 12, 9);
+    final extras = SaveExtras();
+    final pearls = ValueNotifier<int>(50);
+    final given = <String>[];
+    final deals = DailyDeals(
+      config: _config,
+      extras: extras,
+      text: _text,
+      pearls: pearls,
+      spendPearls: (n) {
+        pearls.value -= n;
+        return true;
+      },
+      give: (deal) => given.add(deal.id),
+      clock: () => now,
+    );
+    const stranger = DailyDeal(id: 'old', name: 'Old', manna: 99);
+    expect(deals.take(stranger), isFalse);
+    expect(given, isEmpty);
+    expect(pearls.value, 50);
+
+    final gift = _config.free.single;
+    expect(deals.take(gift), isTrue);
+    expect(deals.take(gift), isFalse);
+    // Forward a day (a new gift, as on any new day), then back again.
+    now = now.add(const Duration(days: 1));
+    expect(deals.take(gift), isTrue);
+    now = now.subtract(const Duration(days: 1));
+    expect(deals.take(gift), isFalse);
+    now = now.add(const Duration(days: 1));
+    expect(deals.take(gift), isFalse);
+    expect(given, ['gift', 'gift']);
+    pearls.dispose();
+    extras.dispose();
+  });
 }

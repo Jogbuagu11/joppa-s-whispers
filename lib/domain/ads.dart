@@ -40,6 +40,10 @@ bool bannerAllowed({
 /// The height kept for the banner (a standard 320 by 50 one).
 const bannerHeight = 50.0;
 
+/// Empty room kept between the board and the banner, so a move on the
+/// board's bottom row is not a tap on an ad by mistake.
+const bannerGap = 6.0;
+
 /// Whether a Manna ad may be offered: never during the tutorial, and only
 /// while today's allowance lasts.
 bool canOfferMannaAd(

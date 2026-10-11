@@ -13,7 +13,7 @@ Save it as `docs/EXPANSION.md`.
 | GDD section | Original | Now |
 |---|---|---|
 | 7. Jars of Clay | Contents shown before opening; no surprise paid contents | Random contents from a published loot table; can be earned or bought with Pearls (see 20.4) |
-| 13. Monetization principles | "Paid items always show exactly what you get; no paid random boxes" | No purchases during the tutorial; ads always optional; every random reward (paid or free) shows its odds before the player buys or spins, as Apple and Google require. Full offer and pop-up system in section 21. |
+| 13. Monetization principles | "Paid items always show exactly what you get; no paid random boxes" | No purchases during the tutorial; rewarded ads always optional, plus one small banner under the board (added by Jennifer 2026-10-10; never in the tutorial, never for a player who has bought anything; no interstitial, native or app-open ads); every random reward (paid or free) shows its odds before the player buys or spins, as Apple and Google require. Full offer and pop-up system in section 21. |
 | 13. Season pass | Free track + paid track ($4.99) | Three tiers: Free; **Premium** ($4.99): more Manna, Pearls, merge items, an exclusive decoration; **Premium Plus** ($9.99): everything in Premium + bonus points + an endless reward track after the last milestone |
 | 13. New products | — | **Treasure Jar** (piggy bank): fills with Pearls as the player plays; break it open for $2.99–$9.99 depending on size. **Bundles and offers:** section 21. **Paid spins and jars:** Pearls buy extra Blessing Wheel spins and Golden Jars (section 20.4). |
 | 13. Rewarded ads | Manna, double reward, daily jar | Also a free wheel spin. Fewer ad placements for players who have paid. |

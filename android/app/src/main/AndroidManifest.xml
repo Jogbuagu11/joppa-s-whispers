@@ -34,7 +34,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- AdMob App ID. Replace with real ID at Milestone 18. Using Google test ID for dev. -->
+        <!-- AdMob App ID (the real one; ad units come from tool/release_defines.json). -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-7519175373921809~1188970842"/>

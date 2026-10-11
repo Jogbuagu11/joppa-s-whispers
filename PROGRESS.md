@@ -1412,6 +1412,29 @@ Where it stands (she has seen each step; the last one is not yet approved):
   interstitial); under Blocking controls block the categories unfit for this game
   (gambling, dating, alcohol…); add her phone as a test device. Builds from 19 on show
   REAL ads from this account: never tap them when testing.
+- **Jennifer, 2026-10-10: done in the new account** — consent messages published, both
+  "Rewarded" units confirmed as the Rewarded format, blocking controls set. Still to do
+  ("later"): add her phone as a test device. So real ads can now appear in build 19+.
+- **Code review of Milestone 30 part 1 and the banner (2026-10-10): no MUST FIX.** Fixed
+  from its SHOULD FIX list: a phone clock wound back no longer gives today's deals again
+  (skipping the clock *forward* still gives a new day's gift, like the daily ad limit —
+  needs server time, noted below); the banner is put away while the shop, a story scene
+  or any whole screen covers the board, and has a 6-point gap from the board; the shop's
+  "not available" and "Owned" wording moved into `content/offers.json` (content version
+  39); tests added for all of these; `docs/EXPANSION.md` and `docs/TECH_SPEC.md` now
+  mention the banner. Known and accepted: a paying player on a new phone may see the
+  banner for a moment until their purchases arrive from the server.
+- **Build 19** (2026-10-10): `~/Downloads/whispers-of-joppa-1.0.0-19.aab` — new AdMob
+  account, banner, review fixes. Full device run: 26/26 on the iPhone simulator and 26/26
+  on the Android emulator; the five tests touched by the review fixes rerun on both.
+  The real banner has not been seen on a real phone yet.
+- **Assumption to confirm:** daily limits (deals, Manna ads) use the phone's clock. A
+  player who sets the clock forward gets tomorrow's free gift early. Server time would
+  close this; it needs a live-server change, so it waits for Jennifer's answer on those.
+- The Android emulator's system crashed during the first full device run (nothing to do
+  with the game); if `adb shell pm list packages` says "Can't find service", stop it,
+  move `/tmp/android-mini/emu-crash-*.db` aside (a waiting crash dialog blocks the next
+  start) and cold-boot it again.
 - The shop now scrolls as one list (today's deals had pushed the last Pearl pack out of
   reach; the device run caught it).
 

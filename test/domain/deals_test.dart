@@ -63,6 +63,11 @@ void main() {
     tally = tally.after(deal, monday);
     expect(tally.hasTaken(deal, monday), isTrue);
     expect(tally.hasTaken(deal, monday.add(const Duration(days: 1))), isFalse);
+    // A clock wound back to an earlier day forgets nothing.
+    final tuesday = monday.add(const Duration(days: 1));
+    final later = tally.after(deal, tuesday);
+    expect(later.hasTaken(deal, monday), isTrue);
+    expect(later.on(monday).day, later.day);
     final back = DealsTally.fromJson(tally.toJson());
     expect(back.hasTaken(deal, monday), isTrue);
     // Damage counts as nothing taken.

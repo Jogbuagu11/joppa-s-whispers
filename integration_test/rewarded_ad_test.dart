@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
 import '../test/support/ad_fakes.dart';
+import '../test/support/store_fakes.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -138,6 +140,56 @@ void main() {
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 3));
     await SaveRepository().clear();
+  });
+
+  testWidgets('the banner is put away while the shop covers the board, and '
+      'is gone for good once the player has bought something', (tester) async {
+    final ads = FakeAdService()
+      ..fakeBanner = const SizedBox(key: Key('fake_banner'), height: 50);
+    final shop = PurchaseCoordinator(
+      store: FakeStore(),
+      backend: FakePurchaseBackend(),
+    );
+    await SaveRepository().clear();
+    addTearDown(SaveRepository().clear);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BoardScreen(
+          playOpeningScene: false,
+          playTutorial: false,
+          ads: ads,
+          shop: shop,
+        ),
+      ),
+    );
+    final board = find.byType(GameWidget<BoardGame>);
+    for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    await tester.pump(const Duration(seconds: 1));
+    final banner = find.byKey(const Key('fake_banner'), skipOffstage: false);
+    expect(banner, findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('pearls_chip')));
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const Key('shop_screen')), findsOneWidget);
+    // Covered by the shop: no ad is kept where it cannot be seen.
+    expect(banner, findsNothing);
+
+    await tester.tap(find.byKey(const Key('shop_buy_pearls_tier1')));
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(seconds: 1));
+    tester.state<NavigatorState>(find.byType(Navigator)).pop();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const Key('shop_screen')), findsNothing);
+    // A player who has bought anything sees no banner again.
+    expect(find.byKey(const Key('banner_strip')), findsNothing);
+    expect(banner, findsNothing);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 3));
   });
 
   testWidgets('no banner during the tutorial', (tester) async {

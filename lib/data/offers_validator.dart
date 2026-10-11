@@ -8,6 +8,8 @@ const offersTextKeys = [
   'deal_price',
   'deal_taken',
   'deals_note',
+  'shop_unavailable',
+  'shop_owned',
 ];
 
 /// Plain-English problems with the offers file; empty if it is sound.

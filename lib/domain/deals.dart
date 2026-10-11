@@ -106,8 +106,10 @@ class DealsTally {
   Map<String, dynamic> toJson() => {'day': day, 'taken': taken.toList()};
 
   /// This tally as it stands on the day of [now]: a new day starts empty.
+  /// A clock set back to an earlier day does not: what was taken stays
+  /// taken, so winding the phone's clock back and forth gives nothing.
   DealsTally on(DateTime now) =>
-      day == dayStamp(now) ? this : DealsTally(day: dayStamp(now));
+      dayStamp(now).compareTo(day) <= 0 ? this : DealsTally(day: dayStamp(now));
 
   bool hasTaken(DailyDeal deal, DateTime now) =>
       on(now).taken.contains(deal.id);

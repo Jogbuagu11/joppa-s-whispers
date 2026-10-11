@@ -8,7 +8,7 @@
 | State | flutter_riverpod |
 | Backend | Supabase (auth, cloud save, content, events) |
 | Purchases | `in_app_purchase` (official Flutter package) + Supabase Edge Functions for verification |
-| Ads | `google_mobile_ads` (rewarded only) |
+| Ads | `google_mobile_ads` (rewarded, and one banner under the board) |
 | Crash reporting | Firebase Crashlytics (`firebase_crashlytics`) |
 | Analytics | Firebase Analytics (`firebase_analytics`) |
 | Push notifications | Firebase Cloud Messaging (`firebase_messaging`) |

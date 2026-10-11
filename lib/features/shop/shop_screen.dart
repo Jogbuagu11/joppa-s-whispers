@@ -17,7 +17,11 @@ class ShopScreen extends StatefulWidget {
     required this.purchases,
     this.onBuy,
     this.top,
+    this.text = const {},
   });
+
+  /// The shop's wording, from the content being played.
+  final Map<String, String> text;
 
   /// Shown above the store's products (today's deals).
   final Widget? top;
@@ -73,14 +77,13 @@ class _ShopScreenState extends State<ShopScreen> {
                           );
                         }
                         if (products.isEmpty) {
-                          return const Padding(
-                            padding: EdgeInsets.all(24),
+                          return Padding(
+                            padding: const EdgeInsets.all(24),
                             child: Text(
-                              'The shop is not available right now. '
-                              'Please try again later.',
-                              key: Key('shop_unavailable'),
+                              widget.text['shop_unavailable'] ?? '',
+                              key: const Key('shop_unavailable'),
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: _cream),
+                              style: const TextStyle(color: _cream),
                             ),
                           );
                         }
@@ -166,7 +169,7 @@ class _ShopScreenState extends State<ShopScreen> {
             foregroundColor: GamePalette.onAction,
           ),
           // The price is the store's own, never written in the app.
-          child: Text(owned ? 'Owned' : product.price),
+          child: Text(owned ? widget.text['shop_owned'] ?? '' : product.price),
         ),
       ),
     );

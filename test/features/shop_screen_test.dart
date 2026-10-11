@@ -56,7 +56,14 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
       MaterialApp(
-        home: ShopScreen(shop: shop, purchases: wallet),
+        home: ShopScreen(
+          shop: shop,
+          purchases: wallet,
+          text: const {
+            'shop_owned': 'Owned',
+            'shop_unavailable': 'The shop is closed.',
+          },
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -146,6 +153,7 @@ void main() {
     store.available = false;
     await show(tester);
     expect(find.byKey(const Key('shop_unavailable')), findsOneWidget);
+    expect(find.text('The shop is closed.'), findsOneWidget);
   });
 
   testWidgets('restore delivers a purchase the server already holds', (

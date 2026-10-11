@@ -99,11 +99,17 @@ mixin _BoardWheel on _BoardItems {
         downgraded: session.downgraded,
       );
       if (banner == null || !allowed) return const SizedBox.shrink();
-      return SizedBox(
+      return Container(
         key: const Key('banner_strip'),
-        height: bannerHeight,
+        height: bannerHeight + bannerGap,
         width: double.infinity,
-        child: Center(child: banner),
+        padding: const EdgeInsets.only(top: bannerGap),
+        // No ad is kept loading where it cannot be seen: while the shop, a
+        // story scene or another whole screen covers the board, the room
+        // for it stays but the banner itself is put away.
+        child: TickerMode.valuesOf(context).enabled
+            ? Center(child: banner)
+            : null,
       );
     },
   );

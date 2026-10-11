@@ -196,7 +196,12 @@ class _BoardScreenState extends State<BoardScreen>
             child: HeaderBackdrop(
               asset: _boardText['header_background'] ?? '',
               boardKey: _boardKey,
-              relayout: Listenable.merge([session.tutorial, session.orders]),
+              relayout: Listenable.merge([
+                session.tutorial,
+                session.orders,
+                // A first purchase takes the banner away: the board grows.
+                session.purchases,
+              ]),
             ),
           ),
           SafeArea(

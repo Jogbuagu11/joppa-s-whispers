@@ -59,6 +59,7 @@ mixin _BoardRoutes on _BoardState {
             purchases: session.purchases,
             onBuy: _events?.purchaseStarted,
             top: _dailyDeals(session),
+            text: _offersText(session),
           ),
         ),
       );
@@ -66,6 +67,15 @@ mixin _BoardRoutes on _BoardState {
       _busy = false;
     }
   }
+
+  /// The wording of the shop and its deals, from the content being played.
+  Map<String, String> _offersText(BoardSession session) => {
+    if (session.contentBundle.files['offers'] case {
+      'text': final Map<String, dynamic> text,
+    })
+      for (final e in text.entries)
+        if (e.value case final String words) e.key: words,
+  };
 
   /// Today's deals, for the top of the shop; nothing if this content has
   /// none, or in a game played from memory only (older content).
@@ -77,11 +87,7 @@ mixin _BoardRoutes on _BoardState {
     return DailyDeals(
       config: DealsConfig.fromJson(deals),
       extras: session.extras,
-      text: {
-        if (offers['text'] case final Map<String, dynamic> text)
-          for (final e in text.entries)
-            if (e.value case final String words) e.key: words,
-      },
+      text: _offersText(session),
       pearls: session.purchases.pearlsListenable,
       spendPearls: session.purchases.spendPearls,
       give: (deal) {
