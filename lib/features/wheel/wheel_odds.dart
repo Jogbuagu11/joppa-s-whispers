@@ -1,4 +1,5 @@
 // The list of prizes with their chances, and the "See odds" panel.
+import 'package:whispers_of_joppa/features/wheel/wheel_font.dart';
 import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
@@ -112,49 +113,51 @@ Future<void> showWheelOdds(
   List<OddsSection> more = const [],
 }) => showDialog<void>(
   context: context,
-  builder: (context) => GameDialog(
-    key: const Key('odds_panel'),
-    icon: Icons.percent,
-    title: Text(
-      text['odds_title'] ?? '',
-      style: const TextStyle(color: GamePalette.gold),
-    ),
-    content: SizedBox(
-      width: double.maxFinite,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          OddsList(
-            title: text['odds_free'] ?? '',
-            odds: free,
-            freeOnlyNote: text['free_only_note'] ?? '',
-          ),
-          if (paid.isNotEmpty)
+  builder: (context) => WheelFont(
+    child: GameDialog(
+      key: const Key('odds_panel'),
+      icon: Icons.percent,
+      title: Text(
+        text['odds_title'] ?? '',
+        style: const TextStyle(color: GamePalette.gold),
+      ),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
             OddsList(
-              key: const Key('odds_paid'),
-              title: text['odds_paid'] ?? '',
-              odds: paid,
+              title: text['odds_free'] ?? '',
+              odds: free,
+              freeOnlyNote: text['free_only_note'] ?? '',
             ),
-          for (final section in more)
-            OddsList(title: section.title, odds: section.odds),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Text(
-              text['odds_note'] ?? '',
-              style: const TextStyle(color: GamePalette.muted, fontSize: 12),
+            if (paid.isNotEmpty)
+              OddsList(
+                key: const Key('odds_paid'),
+                title: text['odds_paid'] ?? '',
+                odds: paid,
+              ),
+            for (final section in more)
+              OddsList(title: section.title, odds: section.odds),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                text['odds_note'] ?? '',
+                style: const TextStyle(color: GamePalette.muted, fontSize: 12),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+      actions: [
+        FilledButton(
+          key: const Key('odds_close'),
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(text['close'] ?? ''),
+        ),
+      ],
     ),
-    actions: [
-      FilledButton(
-        key: const Key('odds_close'),
-        onPressed: () => Navigator.of(context).pop(),
-        child: Text(text['close'] ?? ''),
-      ),
-    ],
   ),
 );
 
@@ -165,24 +168,26 @@ Future<void> showPrize(
   required Prize prize,
 }) => showDialog<void>(
   context: context,
-  builder: (context) => GameDialog(
-    key: const Key('wheel_prize'),
-    icon: Icons.card_giftcard,
-    title: Text(
-      text['won_title'] ?? '',
-      style: const TextStyle(color: GamePalette.gold),
-    ),
-    content: Text(
-      prize.name,
-      key: const Key('wheel_prize_name'),
-      style: const TextStyle(color: Color(0xFFF3E5C8), fontSize: 18),
-    ),
-    actions: [
-      FilledButton(
-        key: const Key('wheel_prize_ok'),
-        onPressed: () => Navigator.of(context).pop(),
-        child: Text(text['won_button'] ?? ''),
+  builder: (context) => WheelFont(
+    child: GameDialog(
+      key: const Key('wheel_prize'),
+      icon: Icons.card_giftcard,
+      title: Text(
+        text['won_title'] ?? '',
+        style: const TextStyle(color: GamePalette.gold),
       ),
-    ],
+      content: Text(
+        prize.name,
+        key: const Key('wheel_prize_name'),
+        style: const TextStyle(color: Color(0xFFF3E5C8), fontSize: 18),
+      ),
+      actions: [
+        FilledButton(
+          key: const Key('wheel_prize_ok'),
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(text['won_button'] ?? ''),
+        ),
+      ],
+    ),
   ),
 );

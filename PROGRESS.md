@@ -1510,6 +1510,21 @@ times." Built:
 - Offers now come round again after **20 hours** (`repeat_after_hours`), not 7 days, so
   the pool is fresh each day. A countdown still never restarts within its day.
 
+**Jennifer, 2026-10-11, look of the offer pop-up and the wheel:**
+- "add more graphics on the edges of the modal make it attractive, and confetti": gold
+  corner sprays, scalloped trim, studs, gems, rays behind the title, sparkles, a warm
+  glow, and a 4-second confetti shower in the game's warm colours (none with "reduce
+  motion"). All drawn in code (`lib/features/offers/offer_festive.dart`,
+  `offer_confetti.dart`).
+- "update the text and make different colors, not too dramatic": in the gift list each
+  amount is larger and in its gift's colour (Pearls rose, Manna gold, Talents coin gold),
+  item names a soft sea blue. Claude's reading of her words; she was told so.
+- "use a different font on the wheel spin modals": the Blessing Wheel screen and its
+  pop-ups (prize, odds, buy a jar, open a jar) use a serif (Georgia on iPhone, Android's
+  serif), as the title screen does (`lib/features/wheel/wheel_font.dart`). No font file
+  or package was added. Pictures: `Downloads/WhispersofJoppa-art-review/wheel-font/` and
+  `timed-offer/`. A bundled font (the same on both phones) would need her choice of font.
+
 **NOT live.** The live server is unchanged. See "Deploy order" in TECH_SPEC section 6:
 migration 1, then `verify-purchase`, then the seed, then a build. Jennifer has said yes
 to these live changes (2026-10-11, question 3).

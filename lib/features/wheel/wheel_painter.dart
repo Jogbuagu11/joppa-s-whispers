@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/features/wheel/wheel_font.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/domain/chance.dart';
 
@@ -93,6 +94,8 @@ class WheelPainter extends CustomPainter {
               color: GamePalette.talents,
               fontSize: 12,
               fontWeight: FontWeight.bold,
+              fontFamily: wheelFontFamily,
+              fontFamilyFallback: wheelFontFallback,
             ),
           ),
           textDirection: TextDirection.ltr,

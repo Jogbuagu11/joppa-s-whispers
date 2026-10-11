@@ -1,5 +1,6 @@
 // The jars that can be bought with Pearls, under the Blessing Wheel. What
 // each may hold, and how likely, is one tap away before buying.
+import 'package:whispers_of_joppa/features/wheel/wheel_font.dart';
 import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
@@ -111,28 +112,30 @@ extension on JarShop {
     final name = names[jar.id] ?? '';
     final yes = await showDialog<bool>(
       context: context,
-      builder: (context) => GameDialog(
-        key: const Key('jar_buy_dialog'),
-        icon: Icons.inventory_2,
-        title: Text((text['jar_buy_title'] ?? '').replaceAll('{name}', name)),
-        content: OddsList(title: text['jar_holds'] ?? '', odds: jar.odds),
-        actions: [
-          TextButton(
-            key: const Key('jar_buy_no'),
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(text['jar_buy_no'] ?? ''),
-          ),
-          FilledButton(
-            key: const Key('jar_buy_yes'),
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              (text['jar_buy_yes'] ?? '').replaceAll(
-                '{pearls}',
-                '${jar.pearlPrice}',
+      builder: (context) => WheelFont(
+        child: GameDialog(
+          key: const Key('jar_buy_dialog'),
+          icon: Icons.inventory_2,
+          title: Text((text['jar_buy_title'] ?? '').replaceAll('{name}', name)),
+          content: OddsList(title: text['jar_holds'] ?? '', odds: jar.odds),
+          actions: [
+            TextButton(
+              key: const Key('jar_buy_no'),
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(text['jar_buy_no'] ?? ''),
+            ),
+            FilledButton(
+              key: const Key('jar_buy_yes'),
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                (text['jar_buy_yes'] ?? '').replaceAll(
+                  '{pearls}',
+                  '${jar.pearlPrice}',
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
     if (yes ?? false) onBuy(jar);
@@ -147,33 +150,35 @@ Future<void> showJarOdds(
   required JarKind jar,
 }) => showDialog<void>(
   context: context,
-  builder: (context) => GameDialog(
-    key: const Key('jar_odds_panel'),
-    icon: Icons.percent,
-    title: Text(title, style: const TextStyle(color: GamePalette.gold)),
-    content: SizedBox(
-      width: double.maxFinite,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          OddsList(title: text['jar_holds'] ?? '', odds: jar.odds),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Text(
-              text['odds_note'] ?? '',
-              style: const TextStyle(color: GamePalette.muted, fontSize: 12),
+  builder: (context) => WheelFont(
+    child: GameDialog(
+      key: const Key('jar_odds_panel'),
+      icon: Icons.percent,
+      title: Text(title, style: const TextStyle(color: GamePalette.gold)),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            OddsList(title: text['jar_holds'] ?? '', odds: jar.odds),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                text['odds_note'] ?? '',
+                style: const TextStyle(color: GamePalette.muted, fontSize: 12),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+      actions: [
+        FilledButton(
+          key: const Key('odds_close'),
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(text['close'] ?? ''),
+        ),
+      ],
     ),
-    actions: [
-      FilledButton(
-        key: const Key('odds_close'),
-        onPressed: () => Navigator.of(context).pop(),
-        child: Text(text['close'] ?? ''),
-      ),
-    ],
   ),
 );

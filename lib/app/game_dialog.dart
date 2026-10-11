@@ -187,6 +187,13 @@ class _Buttons extends StatelessWidget {
   Widget build(BuildContext context) {
     const shape = StadiumBorder();
     const padding = EdgeInsets.symmetric(horizontal: 16, vertical: 10);
+    // The buttons keep the lettering of the pop-up they are in.
+    final around = DefaultTextStyle.of(context).style;
+    TextStyle lettering(FontWeight weight) => TextStyle(
+      fontWeight: weight,
+      fontFamily: around.fontFamily,
+      fontFamilyFallback: around.fontFamilyFallback,
+    );
     return Theme(
       data: Theme.of(context).copyWith(
         textButtonTheme: TextButtonThemeData(
@@ -197,7 +204,7 @@ class _Buttons extends StatelessWidget {
             foregroundColor: _cream,
             disabledForegroundColor: GamePalette.panelEdge,
             side: const BorderSide(color: GamePalette.panelEdge, width: 1.5),
-            textStyle: const TextStyle(fontWeight: FontWeight.w600),
+            textStyle: lettering(FontWeight.w600),
           ),
         ),
         filledButtonTheme: FilledButtonThemeData(
@@ -209,7 +216,7 @@ class _Buttons extends StatelessWidget {
             disabledBackgroundColor: GamePalette.panelLight,
             disabledForegroundColor: GamePalette.muted,
             side: const BorderSide(color: GamePalette.actionEdge, width: 1.5),
-            textStyle: const TextStyle(fontWeight: FontWeight.bold),
+            textStyle: lettering(FontWeight.bold),
           ),
         ),
       ),

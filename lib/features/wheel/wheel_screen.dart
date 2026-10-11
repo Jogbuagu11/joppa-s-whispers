@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:whispers_of_joppa/features/wheel/wheel_font.dart';
 import 'package:whispers_of_joppa/app/game_app_bar.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/domain/chance.dart';
@@ -102,7 +103,9 @@ class _WheelScreenState extends State<WheelScreen>
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => WheelFont(child: _screen(context));
+
+  Widget _screen(BuildContext context) => Scaffold(
     key: const Key('wheel_screen'),
     backgroundColor: GamePalette.background,
     appBar: gameAppBar(Text(_t('wheel_title'))),
@@ -272,7 +275,12 @@ class _WheelScreenState extends State<WheelScreen>
           foregroundColor: GamePalette.onAction,
           disabledBackgroundColor: GamePalette.panelLight,
           disabledForegroundColor: GamePalette.muted,
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            fontFamily: wheelFontFamily,
+            fontFamilyFallback: wheelFontFallback,
+          ),
         ),
         onPressed: enabled ? () => _spin(kind) : null,
         icon: Icon(icon, size: 20),
