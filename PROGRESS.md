@@ -1545,6 +1545,20 @@ times." Built:
   yet. After any change to `content/chance.json` run `python3 tool/sync_server_chance.py`
   (a server test fails otherwise).
 
+- **Build 21** (2026-10-11): `~/Downloads/whispers-of-joppa-1.0.0-21.aab` — timed and
+  daily offers, the server deciding what a purchase gives, the festive offer and "You
+  received" pop-ups, the wheel's lettering, jar pictures. Full device run on its code:
+  27/27 on the iPhone simulator and 27/27 on the Android emulator; 885 unit tests, 52
+  server tests. It shows no offers until the server has them (below).
+- **Going live is waiting on Jennifer running one command.** This Mac's safety system
+  refused to let Claude apply the database change (`supabase db push`) unattended. She
+  was given: `~/development/supabase/supabase db push --yes` (applies
+  `…_offers.sql`, `…_offer_seed.sql`, `…_rolls.sql` to project sincvubcsnqzjefzsifq).
+  **Straight after it, deploy `verify-purchase`** (it writes the new columns; the old
+  one cannot grant offers) and then `roll`. Until both are done, do not test purchases.
+  Running the three migrations together is safe today only because no build that shows
+  offers has reached a player.
+
 **NOT live.** The live server is unchanged. See "Deploy order" in TECH_SPEC section 6:
 migration 1, then `verify-purchase`, then the seed, then a build. Jennifer has said yes
 to these live changes (2026-10-11, question 3).
