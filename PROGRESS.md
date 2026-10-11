@@ -1466,7 +1466,13 @@ Where it stands (she has seen each step; the last one is not yet approved):
   `GOOGLE_PLAY_SERVICE_ACCOUNT` (project sincvubcsnqzjefzsifq), from the file she made
   (`joppa-play-purchases`, left in her Downloads folder; not copied into the project).
   Not yet proven with a real purchase; Google can take a day to honour a new key.
-- **Still missing on the server: the Apple In-App Purchase key** (`APPLE_IAP_KEY_ID`,
+- **2026-10-11: Apple In-App Purchase key stored** as the Supabase secrets
+  `APPLE_IAP_KEY_ID` (7P7LNATCVJ), `APPLE_IAP_ISSUER_ID`, `APPLE_IAP_PRIVATE_KEY`, from
+  `SubscriptionKey_7P7LNATCVJ.p8` in her Downloads (not copied into the project). Checked
+  by asking Apple about a made-up transaction: the **sandbox** answers "not found" (key
+  accepted); **production** answers 401, which is usual until the app is on the App
+  Store — check again after release. Not yet proven with a sandbox purchase.
+- (Earlier note, now out of date:) **the Apple In-App Purchase key was missing** (`APPLE_IAP_KEY_ID`,
   `APPLE_IAP_ISSUER_ID`, `APPLE_IAP_PRIVATE_KEY`). Claude wrongly told her on 2026-10-11
   that Apple's side was already set up; corrected the same day. Until it is stored,
   iPhone purchases answer "try again later". Also still open from the list above: store
