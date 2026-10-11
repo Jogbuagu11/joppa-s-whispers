@@ -37,7 +37,7 @@
 | 27 | Boost & rare chains | BUILT — not tagged: Jennifer has not yet played it; the new items have no approved art yet |
 | 28 | Board extras | BUILT — not tagged: Jennifer has not yet played it; the new items have no art |
 | 29 | Chance features | BUILT — not tagged: Jennifer has not yet played it; store age-rating answers must be updated before release |
-| 30 | Offers & pop-ups | Not started |
+| 30 | Offers & pop-ups | Built; not live on the server; needs Jennifer's sandbox purchase |
 | 31 | Treasure Jar & pass tiers | Not started |
 | 32 | Event suite | Not started |
 | 33 | Pilgrim's Road | Not started |
@@ -1471,6 +1471,71 @@ Where it stands (she has seen each step; the last one is not yet approved):
   that Apple's side was already set up; corrected the same day. Until it is stored,
   iPhone purchases answer "try again later". Also still open from the list above: store
   notification addresses (Apple and Google), and the daily sweep.
+
+## Milestone 30, the rest — state (2026-10-11)
+
+**Built** (after Jennifer's "yes 1-5" and "continue")
+- **Timed offers.** Read from the server's `offers` table; shown at four moments (opening
+  the game, out of Manna after the usual pop-up, every fifth level, a finished chapter).
+  Each lists exactly what it gives, a countdown from when it was first shown (it does not
+  start over), the store's own price, "No thanks" and a close cross. Turned down, its
+  `next_offer_id` (bigger) comes next time. Picture:
+  `Downloads/WhispersofJoppa-art-review/timed-offer/`.
+- **Rules** (in `content/offers.json`, `rules`): 3 a session, 1 at the start, 1 start
+  offer a day, level offers every 5 levels. Never in the tutorial, over a story scene,
+  another screen or pop-up, or while an item is held; only for a signed-in player; one
+  offer at most after a story task.
+- **The server decides what a purchase gives** and writes it on the purchase
+  (`grant_contents`); the game hands over exactly that (Pearls, Manna, Talents, items).
+- **First-purchase bonus:** a player's first Pearl pack gives double Pearls, once (the
+  database refuses a second). The shop says so until the first purchase.
+- Content is version 41. Unit tests 879, server tests 45.
+- Code review (2026-10-11): 6 MUST FIX, all fixed (double bonus by racing two purchases;
+  paying for a switched-off offer and getting less; deploy order; an offer over a story
+  scene; the level-up offer never firing; a long test file).
+
+**NOT live.** The live server is unchanged. See "Deploy order" in TECH_SPEC section 6:
+migration 1, then `verify-purchase`, then the seed, then a build. Jennifer has said yes
+to these live changes (2026-10-11, question 3).
+
+**The first eight offers** (`supabase/migrations/20261011000002_offer_seed.sql`), written
+by Claude, **for Jennifer to check**; all are better value than the shop at the price:
+| Offer | When | Price | Gives | If turned down, next time |
+|---|---|---|---|---|
+| Harbor Welcome | opening the game, never bought | $0.99 | 40 Pearls, 50 Manna | 50 Pearls, 50 Manna, a Manna jar |
+| Market Day | opening the game, has bought | $2.99 | 110 Pearls, 100 Manna, an hourglass | 130 Pearls, 100 Manna, an hourglass, a Manna jar |
+| Bread for the Road | out of Manna | $0.99 | 20 Pearls, 100 Manna | 25 Pearls, 120 Manna |
+| A Good Day's Work | every fifth level | $2.99 | 100 Pearls, 300 Talents, an hourglass | — |
+| Chapter's End | a finished chapter | $4.99 | 180 Pearls, 200 Manna, a knife, a Golden Thread | — |
+Fallbacks (given only if the server cannot tell which offer was paid for): 30 / 60 / 95 /
+160 / 340 / 720 / 1,900 Pearls for $0.99 … $49.99.
+
+**Assumptions to confirm**
+- An offer that was shown (bought, refused or left to run out) may come round again
+  after 7 days with a fresh countdown (`repeat_after_days`; 0 = never). Without this each
+  offer would be seen once in a lifetime.
+- "First purchase" means the player's very first purchase of any kind, and the bonus
+  applies only if that purchase is a Pearl pack. A player whose first purchase is the
+  starter pack or an offer gets no doubling.
+- "Payers see offers near their past spend" is, for now, simply two groups: never bought,
+  and has bought.
+- A refund takes back Pearls only; Manna, Talents and items from a refunded offer stay
+  (as the starter pack's Manna already did).
+- A tampered app could name another live offer at the same price meant for its own kind
+  of player. It still pays the price each time, so nothing is free.
+- Daily limits and countdowns use the phone's clock.
+- Offer names and subtitles were written by Claude, not the content-writer agent.
+
+**Not done**
+- Event-ending, Treasure Jar and pass offers (they belong to Milestones 31 and 32);
+  flash sales and themed bundles work but none is set up; the admin panel cannot edit
+  offers yet (rows are edited in Supabase).
+- No device test reaches a level-up or chapter-end offer on the board (the rule and the
+  controller are unit tested).
+- Server-side prize roll (her yes to question 4): not started.
+- Per CLAUDE.md this is purchase code: the IAP test list and Jennifer's sandbox purchase
+  on a real phone are required before it counts as done. That needs the Apple In-App
+  Purchase key on the server.
 
 ## Milestone 30 — state (2026-10-10, in progress)
 

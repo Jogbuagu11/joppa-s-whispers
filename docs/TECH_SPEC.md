@@ -253,7 +253,17 @@ On every launch and when the app returns to the foreground, read the purchase st
 ### Refunds
 - **Apple:** App Store Server Notifications V2 sent to the **`store-notifications-apple`** Edge Function (URL set in App Store Connect).
 - **Google:** Real-time developer notifications via a Google Cloud Pub/Sub push subscription to the **`store-notifications-google`** Edge Function; plus a daily check of the Voided Purchases API.
-- On refund: mark the purchase `refunded`, remove the remaining unspent Pearls from that purchase (never below zero), remove the starter-pack items if unused, log in `wallet_grants`.
+- On refund: mark the purchase `refunded`, remove the remaining unspent Pearls that purchase really gave (never below zero) and ownership of a one-time product, log in `wallet_grants`. Manna, Talents, items and generator levels stay: once the player has played on, there is no telling which were the purchase's.
+
+### Offers (Milestone 30, EXPANSION section 21)
+- Reusable store products `offer_099` … `offer_4999` carry only a price. They are listed in `content/offers.json` (`offer_products`), never in `content/products.json`.
+- Table **`offers`**: `id`, `kind` (session_start, out_of_manna, level_up, chapter_complete, flash_sale, themed, fallback), `product_id`, `title`, `subtitle`, `contents` (`{pearls, manna, talents, items[]}`), `audience` (any / non_payer / payer), `min_level`, `next_offer_id` (shown next time if this one is turned down), `duration_seconds` (countdown from first shown), `starts_at`, `ends_at`, `priority`, `is_active`, `is_fallback`, `updated_at` (kept by a trigger). Players can read only rows that are switched on, not fallbacks, and already started. One `is_fallback` row per product is the safety net.
+- Table **`offer_impressions`**: `user_id`, `offer_id`, `product_id`, `outcome` (shown / dismissed by the player; bought by the server).
+- **`purchases.grant_contents`** is exactly what a purchase gave, decided by `verify-purchase` and written with the purchase; **`purchases.offer_id`** names the offer; **`purchases.first_bonus`** marks the one doubled first Pearl pack per player (a unique index refuses a second).
+- The app sends `offer_id` with the purchase. The server believes it only for a real offer at that price, for that kind of player, switched on (or switched off / ended within 7 days). Otherwise: the offer this player was last shown at that price, then the fallback. With no fallback it answers 500 and the purchase is retried, never lost.
+- The game gives what `grant_contents` says; a purchase row from before that column gives what its product gives.
+- Rules for when offers appear are in `content/offers.json` (`rules`: `max_per_session`, `max_at_session_start`, `session_start_per_day`, `level_every`, `repeat_after_days`) and `lib/domain/offers.dart`. The player's memory of offers is in the save under `extras.offers`.
+- **Deploy order (it matters):** 1. migration `…_offers.sql`; 2. the `verify-purchase` function; 3. migration `…_offer_seed.sql`; 4. an app build that knows offers. A build from before offers (20 or earlier) must not be used for purchases once step 2 is live: it would give a single first pack where the server recorded a double.
 
 ### IAP tests (all must pass before Milestone 17 is done)
 - Unit tests: grant logic, duplicate transaction ignored, refund removal never goes below zero
