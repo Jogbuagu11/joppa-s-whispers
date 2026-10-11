@@ -1525,8 +1525,8 @@ times." Built:
   Open Font License, bundled in `assets/fonts/` with its licence, no package added),
   on the wheel's own screen, its odds panel and the prize of a spin only
   (`lib/features/wheel/wheel_font.dart`). Jar pop-ups are back in the game's usual
-  lettering. Pictures: `Downloads/WhispersofJoppa-art-review/wheel-font/`. Not yet
-  approved by her.
+  lettering. Pictures: `Downloads/WhispersofJoppa-art-review/wheel-font/`.
+  **Approved by Jennifer ("good", 2026-10-11).**
 
 **NOT live.** The live server is unchanged. See "Deploy order" in TECH_SPEC section 6:
 migration 1, then `verify-purchase`, then the seed, then a build. Jennifer has said yes
