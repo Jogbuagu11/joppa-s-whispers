@@ -265,11 +265,19 @@ On every launch and when the app returns to the foreground, read the purchase st
 - Rules for when offers appear are in `content/offers.json` (`rules`: `max_per_session`, `max_at_session_start`, `session_start_per_day`, `level_every`, `repeat_after_days`) and `lib/domain/offers.dart`. The player's memory of offers is in the save under `extras.offers`.
 - **Deploy order (it matters):** 1. migration `…_offers.sql`; 2. the `verify-purchase` function; 3. migration `…_offer_seed.sql`; 4. an app build that knows offers. A build from before offers (20 or earlier) must not be used for purchases once step 2 is live: it would give a single first pack where the server recorded a double.
 
+### Treasure Jar (Milestone 31, EXPANSION sections 13 and 21.1)
+- Settings are in `content/offers.json` under `treasure_jar`: `sizes` (`id`, `product_id`, `pearls` held when full, smallest first), `earn` (Pearls saved per `order`, `task` and `level`), and its `text`. It opens at the level named in `content/levels.json` (`treasure_jar`).
+- The jar's count is kept in the save under `extras.treasure` (`saved`, `opened`, `told_full`). It only decides when the jar may be opened and what the player sees.
+- Opening is a purchase of that size's store product (`treasure_jar_small` / `_medium` / `_large`), possible only when the jar is full. What it gives is decided by `verify-purchase` like any product: the fixed amount in `PRODUCTS` (`rules.ts`), which a server test keeps equal to the content file. It is never doubled by the first-purchase bonus.
+- When the purchase is put into the game the wallet tells the jar (`PurchasesController.onApplied`), which becomes an empty jar of the next size; the last size repeats. A jar purchase is not marked as delivered until the jar is there to be emptied.
+- Limit: the server does not check that the jar was really full. A tampered app could only pay the full price for the fixed amount.
+- Changing a size's Pearls means changing `content/offers.json` AND `PRODUCTS` in `rules.ts`, then redeploying `verify-purchase`.
+
 ### Paid chance: the `roll` function (Milestone 29/30)
 - A Pearl spin of the Blessing Wheel and a bought Jar of Clay are drawn by the `roll` Edge Function when it can be reached (signed in, online, answer within 4 seconds, same content version); otherwise the phone draws from the same table. Free tries never go to the server.
 - The app asks the server FIRST and takes the Pearls (or the jar) only once it has an answer or has given up, in the same step that gives the prize. Closing the game while waiting costs nothing.
 - The app accepts only a prize that try could give (`prizeNamed`): never Pearls for a paid try, never an unknown id.
-- `supabase/functions/roll/tables.ts` is generated from `content/chance.json` by `tool/sync_server_chance.py`. After ANY content version change, run it and redeploy `roll`, or the function answers 409 and every draw quietly falls back to the phone.
+- `supabase/functions/roll/tables.ts` is generated from `content/chance.json` by `tool/sync_server_chance.py`. The app sends `tables_version` (a number at the top of `content/chance.json`); the function draws only if it holds that same number, otherwise it answers 409 and the phone draws. Whenever a prize or a weight changes: raise `tables_version`, run the tool, and redeploy `roll`. Other content changes need nothing.
 - The function only draws paid tries, refuses more than 20 draws a minute per player, and records each draw in `rolls` (players read their own rows; only the server writes). The table records draws, not prizes handed over: a draw answered too late is recorded but not used.
 - Limits: Pearls and prizes live in the save on the phone, so this does not stop a tampered app; the country switch is applied in the app only.
 
