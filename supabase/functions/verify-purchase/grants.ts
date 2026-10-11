@@ -84,25 +84,37 @@ export async function offerGrant(
 /**
  * What a payment for a season pass records: its tier and the event it is
  * for (see choosePassEvent). The pass itself gives nothing at once; the
- * game pays its rewards as the event is played. Throws if there are no
- * events at all: the purchase is then retried later, never lost.
+ * game pays its rewards as the event is played. Throws if no event can be
+ * told at all: the purchase is then retried later, never lost.
  */
 export async function passGrant(
   supabase: Db,
+  userId: string,
   productId: string,
   claimedEventId: unknown,
 ): Promise<{ grant: Grant }> {
   const { data: events, error } = await supabase
     .from('events')
-    .select('id, starts_at, ends_at, is_active');
+    .select('id, starts_at, ends_at, is_active, config');
   if (error) throw error;
-  const event = choosePassEvent({
+  // The app notes which event's pass it is showing before the store opens.
+  const { data: shown, error: shownError } = await supabase
+    .from('offer_impressions')
+    .select('offer_id')
+    .eq('user_id', userId)
+    .eq('product_id', productId)
+    .eq('outcome', 'shown')
+    .order('created_at', { ascending: false })
+    .limit(1);
+  if (shownError) throw shownError;
+  const eventId = choosePassEvent({
     claimedEventId,
+    lastShownEventId: shown?.[0]?.offer_id,
     events: (events ?? []) as EventRow[],
     now: new Date(),
   });
-  if (!event) throw new Error(`No event for ${productId}`);
+  if (!eventId) throw new Error(`No event for ${productId}`);
   return {
-    grant: { pearls: 0, manna: 0, talents: 0, items: [], pass: passGrantFor(productId, event) },
+    grant: { pearls: 0, manna: 0, talents: 0, items: [], pass: passGrantFor(productId, eventId) },
   };
 }

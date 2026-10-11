@@ -13,6 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
+import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/domain/offers.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
@@ -93,8 +94,25 @@ void main() {
         tutorialStep: tutorialFinished,
         endingsSeen: [for (final c in chapters.take(2)) c['id'] as String],
         lastOrderSkip: null,
+        // A Treasure Jar that has just filled.
+        extras: const {
+          'treasure': {'saved': 150, 'opened': 0, 'told_full': true},
+        },
       ),
     );
+    // The game's own event (and its season pass), on now.
+    final event = Map<String, dynamic>.of(
+      ((await _content('events')) as List<dynamic>).first
+          as Map<String, dynamic>,
+    );
+    event['starts_at'] = DateTime.now()
+        .toUtc()
+        .subtract(const Duration(days: 1))
+        .toIso8601String();
+    event['ends_at'] = DateTime.now()
+        .toUtc()
+        .add(const Duration(days: 9))
+        .toIso8601String();
     await tester.pumpWidget(
       MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -103,6 +121,17 @@ void main() {
           playTutorial: false,
           luck: _First(),
           country: 'US',
+          events: EventsRepository(
+            loadBundled: () async => [event],
+            directory: () async =>
+                Directory('${docs.path}/look_events')
+                  ..createSync(recursive: true),
+          ),
+          eventProgress: EventProgressRepository(
+            directory: () async =>
+                Directory('${docs.path}/look_events')
+                  ..createSync(recursive: true),
+          ),
           shop: PurchaseCoordinator(
             store: FakeStore(),
             backend: FakePurchaseBackend(),
@@ -216,6 +245,29 @@ void main() {
     await tapKey('jar_buy_treasure');
     await shot('11_buy_jar');
     await tapKey('jar_buy_no');
+    await tester.pageBack();
+    await wait(10);
+
+    // The Treasure Jar (the piggy bank), full.
+    await tapOnStrip(tester, 'treasure_jar_button');
+    await wait(10);
+    await shot('12_treasure_jar');
+    await tapKey('treasure_jar_close');
+
+    // The event, and its season pass.
+    await tapOnStrip(tester, 'event_banner');
+    final pass = find.byKey(const Key('event_pass_button'));
+    for (int i = 0; i < 100 && pass.evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    await wait(10);
+    await shot('13_event');
+    await tapKey('event_pass_button');
+    await wait(10);
+    await shot('14_season_pass');
+    await tapKey('season_pass_close');
+    await tester.pageBack();
+    await wait(10);
 
     await tester.pumpWidget(const SizedBox());
     await wait(30);

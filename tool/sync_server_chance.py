@@ -26,7 +26,7 @@ try:
     if old_version == chance['tables_version'] and old_tables != tables:
         sys.exit('The prize tables changed but "tables_version" in '
                  'content/chance.json did not. Raise it, then run this again.')
-except (FileNotFoundError, AttributeError, ValueError):
+except FileNotFoundError:
     pass  # No earlier tables to compare with.
 
 out = (

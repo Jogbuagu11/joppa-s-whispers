@@ -129,6 +129,9 @@ List<String> seasonPassProblems(Map<String, dynamic> offersJson) {
     ('pearls', '{n}'),
     ('manna', '{n}'),
     ('talents', '{n}'),
+    ('plus_note', '{percent}'),
+    ('endless', '{reward}'),
+    ('endless', '{points}'),
   ]) {
     final words = text is Map<String, dynamic> ? text[key] : null;
     if (words is String && !words.contains(place)) {

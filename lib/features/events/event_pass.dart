@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/domain/season_pass.dart';
+import 'package:whispers_of_joppa/features/events/event_controller.dart';
+import 'package:whispers_of_joppa/features/events/season_pass_dialog.dart';
 import 'package:whispers_of_joppa/features/events/season_pass_ledger.dart';
 import 'package:whispers_of_joppa/game/board/save_extras.dart';
 
@@ -57,13 +59,53 @@ class EventPass {
     ].join(' + ');
   }
 
-  /// Says what a pass has just paid, in the pass's own words.
-  void announce(BuildContext context, List<PassReward> paid) =>
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          key: const Key('event_pass_reward'),
-          content: Text(paid.map(words).join('  ')),
-          duration: const Duration(seconds: 3),
-        ),
+  /// Says what a pass has just paid, added up, in the pass's own words.
+  void announce(BuildContext context, List<PassReward> paid) {
+    int sum(int Function(PassReward r) of) => paid.fold(0, (n, r) => n + of(r));
+    final total = PassReward(
+      pearls: sum((r) => r.pearls),
+      manna: sum((r) => r.manna),
+      talents: sum((r) => r.talents),
+      items: [for (final r in paid) ...r.items],
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        key: const Key('event_pass_reward'),
+        content: Text(words(total)),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  bool _open = false;
+
+  /// Opens the pass's pop-up for [controller]'s event. [unasked] is the
+  /// once-an-event showing to a player without the pass: that one opens
+  /// only if a pass can really be bought now and [quiet] says nothing else
+  /// is going on (no item being moved, nothing over the event screen).
+  Future<void> open(
+    BuildContext context,
+    EventController controller, {
+    bool unasked = false,
+    bool Function()? quiet,
+  }) async {
+    if (_open) return;
+    _open = true;
+    try {
+      final store = await prices();
+      if (!context.mounted || !controller.isLive) return;
+      if (unasked) {
+        if (store[premiumProduct] == null || !(quiet?.call() ?? true)) return;
+        if (!ledger.takeUpsell(controller.event.id)) return;
+      }
+      await showSeasonPass(
+        context,
+        controller: controller,
+        pass: this,
+        prices: store,
       );
+    } finally {
+      _open = false;
+    }
+  }
 }

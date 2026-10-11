@@ -1,25 +1,18 @@
 // The season pass in play: which passes the server's records give, what a
-// pass pays as the event is played, and buying one from its pop-up. Uses a
-// stand-in store and server.
+// pass pays as the event is played. (Its pop-up: season_pass_dialog_test.)
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
+import 'package:whispers_of_joppa/app/purchase_target.dart';
 import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/domain/events.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/domain/season_pass.dart';
 import 'package:whispers_of_joppa/features/events/event_controller.dart';
-import 'package:whispers_of_joppa/features/events/event_pass.dart';
-import 'package:whispers_of_joppa/features/events/season_pass_dialog.dart';
 import 'package:whispers_of_joppa/features/events/season_pass_ledger.dart';
-import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
 import 'package:whispers_of_joppa/game/board/save_extras.dart';
-import 'package:whispers_of_joppa/services/purchase_backend.dart';
 
 import '../support/event_fixtures.dart';
-import '../support/store_fakes.dart';
 
 const _offers = <String, dynamic>{
   'season_pass': {
@@ -27,24 +20,6 @@ const _offers = <String, dynamic>{
     'plus_product': 'pass_premium_plus',
   },
 };
-const _text = {
-  'title': 'Season Pass',
-  'have_free': 'Free track',
-  'have_premium': 'You have Premium',
-  'have_plus': 'You have Premium Plus',
-  'buy_premium': 'Premium {price}',
-  'buy_plus': 'Premium Plus {price}',
-  'upgrade': 'Upgrade {price}',
-  'at_points': '{points} points',
-  'pearls': '{n} Pearls',
-  'manna': '{n} Manna',
-  'talents': '{n} Talents',
-  'endless': 'Then {reward} every {points} points',
-  'sign_in': 'Sign in to buy a pass.',
-  'unavailable': 'The market is closed.',
-  'close': 'Close',
-};
-
 PurchaseRecord _pass(String tx, {bool plus = false, bool granted = true}) =>
     PurchaseRecord(
       transactionId: tx,
@@ -227,155 +202,37 @@ void main() {
     expect(old.endlessPaid, 0);
   });
 
-  group('the pop-up', () {
-    late FakeStore store;
-    late FakePurchaseBackend backend;
-    late PurchasesController wallet;
-    late PurchaseCoordinator shop;
-    late EventController controller;
+  test('the next reward is told from the points that count (with the Plus '
+      'bonus)', () {
+    ledger.serverRecords([_pass('a', plus: true)]);
+    final c = make()..onMerged(4);
+    // 4 earned count as 6: the milestones at 2 and 5 are behind.
+    expect(c.next?.points, 9);
+    c.onMerged(2);
+    expect(c.points, 9);
+    expect(c.next, isNull);
+    expect(c.trackFinished, isTrue);
+    c.dispose();
+  });
 
-    setUp(() {
-      store = FakeStore();
-      backend = FakePurchaseBackend();
-      wallet = PurchasesController(
-        products: products,
-        addManna: (_) {},
-        raiseGenerators: (_) {},
-      )..onServerRecords = ledger.serverRecords;
-      shop =
-          PurchaseCoordinator(
-              store: store,
-              backend: backend,
-              products: products,
-            )
-            ..target = PurchaseTarget(
-              applyConfirmed: wallet.applyConfirmed,
-              hasApplied: wallet.hasApplied,
-              applyRefunds: wallet.applyRefunds,
-              saveNow: () async {},
-            )
-            ..start();
-      controller = make();
-    });
-    tearDown(() {
-      shop.dispose();
-      controller.dispose();
-    });
-
-    Future<void> open(
-      WidgetTester tester, {
-      Map<String, String> prices = const {
-        'pass_premium': r'$4.99',
-        'pass_premium_plus': r'$9.99',
-      },
-    }) async {
-      tester.view.physicalSize = const Size(390, 844);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.reset);
-      final pass = EventPass(
-        extras: extras,
-        shop: shop,
-        prices: () async => prices,
-        text: _text,
-        premiumProduct: 'pass_premium',
-        plusProduct: 'pass_premium_plus',
-        earnPearls: (n) => pearls += n,
-        giveItems: items.addAll,
-        itemName: (id) => 'Golden Thread',
-      );
-      extras.addListener(controller.settle);
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
-            builder: (context) => TextButton(
-              onPressed: () => showSeasonPass(
-                context,
-                controller: controller,
-                pass: pass,
-                prices: prices,
-              ),
-              child: const Text('open'),
-            ),
-          ),
-        ),
-      );
-      await tester.tap(find.text('open'));
-      await tester.pumpAndSettle();
+  test('a pass refunded and bought again never pays anything twice', () {
+    ledger.serverRecords([_pass('a', plus: true)]);
+    final c = make();
+    for (var i = 0; i < 7; i++) {
+      c.onMerged(6);
     }
-
-    Future<void> tapAndWait(WidgetTester tester, String key) async {
-      await tester.runAsync(() async {
-        await tester.tap(find.byKey(Key(key)));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
-      });
-      await tester.pump();
-      await tester.pump();
-    }
-
-    testWidgets('both tracks are listed; Premium is bought at the store\'s '
-        'price for this event, pays what was reached, and can be made Plus', (
-      tester,
-    ) async {
-      controller.onMerged(2);
-      backend.offerGrants['boat_festival'] = const PurchaseGrant(
-        passEventId: 'boat_festival',
-      );
-      await open(tester);
-      expect(find.text('Free track'), findsOneWidget);
-      expect(find.text('2 points'), findsOneWidget);
-      expect(find.text('10 Manna'), findsOneWidget);
-      expect(find.text('4 Pearls'), findsOneWidget);
-      expect(find.text('30 Talents + Golden Thread'), findsOneWidget);
-      expect(find.text('Then 7 Talents every 50 points'), findsOneWidget);
-      expect(find.text(r'Premium $4.99'), findsOneWidget);
-      expect(find.text(r'Premium Plus $9.99'), findsOneWidget);
-      expect(manna, 10);
-
-      await tapAndWait(tester, 'season_pass_buy_premium');
-      // The event went with the purchase.
-      expect(backend.offerIds, ['boat_festival']);
-      expect(store.finishedAsConsumable, [true]);
-      expect(find.text('You have Premium'), findsOneWidget);
-      expect(manna, 15);
-      expect(controller.premiumPaid, 1);
-      expect(find.byKey(const Key('season_pass_buy_plus')), findsNothing);
-      expect(find.text(r'Upgrade $4.99'), findsOneWidget);
-
-      await tapAndWait(tester, 'season_pass_upgrade');
-      expect(find.text('You have Premium Plus'), findsOneWidget);
-      expect(find.byKey(const Key('season_pass_upgrade')), findsNothing);
-      // 2 earned now count as 3.
-      expect(controller.points, 3);
-      await tester.tap(find.byKey(const Key('season_pass_close')));
-      await tester.pumpAndSettle();
-      expect(find.byKey(const Key('season_pass_popup')), findsNothing);
-    });
-
-    testWidgets('signed out, with no price, or with a payment on its way, '
-        'nothing can be bought', (tester) async {
-      await open(tester, prices: const {});
-      expect(find.text('The market is closed.'), findsOneWidget);
-      OutlinedButton premium() =>
-          tester.widget(find.byKey(const Key('season_pass_buy_premium')));
-      expect(premium().onPressed, isNull);
-      await tester.tap(find.byKey(const Key('season_pass_close')));
-      await tester.pumpAndSettle();
-
-      backend.signedIn = false;
-      await open(tester);
-      expect(find.text('Sign in to buy a pass.'), findsOneWidget);
-      expect(premium().onPressed, isNull);
-      await tester.tap(find.byKey(const Key('season_pass_close')));
-      await tester.pumpAndSettle();
-
-      backend
-        ..signedIn = true
-        ..answer = VerifyResult.unavailable;
-      await open(tester);
-      await tapAndWait(tester, 'season_pass_buy_premium');
-      expect(shop.isWaitingFor('pass_premium'), isTrue);
-      expect(premium().onPressed, isNull);
-      expect(store.accountIds.length, 1);
-    });
+    // 42 earned count as 63.
+    expect(c.premiumPaid, 3);
+    expect(c.endlessPaid, 1);
+    final had = (manna, talents, pearls, items.length);
+    // Refunded: the points fall back to 42; nothing is paid, nothing lost.
+    ledger.serverRecords(const []);
+    expect(c.settle(), isFalse);
+    expect(c.points, 42);
+    // Bought again: everything already paid stays paid.
+    ledger.serverRecords([_pass('b', plus: true)]);
+    expect(c.settle(), isFalse);
+    expect((manna, talents, pearls, items.length), had);
+    c.dispose();
   });
 }

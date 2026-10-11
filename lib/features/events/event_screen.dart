@@ -14,7 +14,6 @@ import 'package:whispers_of_joppa/domain/season_pass.dart';
 import 'package:whispers_of_joppa/features/events/event_controller.dart';
 import 'package:whispers_of_joppa/features/events/event_header.dart';
 import 'package:whispers_of_joppa/features/events/event_pass.dart';
-import 'package:whispers_of_joppa/features/events/season_pass_dialog.dart';
 import 'package:whispers_of_joppa/features/settings/comfort_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_feedback.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
@@ -76,7 +75,6 @@ class _EventScreenState extends State<EventScreen> {
   Timer? _clock;
   VoidCallback? _keep;
   VoidCallback? _quiet;
-  bool _passOpen = false;
 
   @override
   void initState() {
@@ -157,7 +155,6 @@ class _EventScreenState extends State<EventScreen> {
     game.boardChanged.addListener(keep);
     controller.justPaid.addListener(_announce);
     controller.justPaidPass.addListener(_announcePass);
-    widget.pass?.changes.addListener(_passChanged);
     await game.loadArt();
     if (!mounted) {
       _quiet?.call();
@@ -168,6 +165,10 @@ class _EventScreenState extends State<EventScreen> {
       _controller = controller;
       _game = game;
     });
+    widget.pass?.changes.addListener(_passChanged);
+    // A pass delivered while this screen was closed pays what it has
+    // already earned.
+    _passChanged();
     // Keeps the time left fresh, and closes the board when the event ends.
     _clock = Timer.periodic(const Duration(seconds: 20), (_) {
       if (!mounted) return;
@@ -184,10 +185,7 @@ class _EventScreenState extends State<EventScreen> {
     final paid = _controller?.justPaid.value ?? const [];
     if (paid.isEmpty || !mounted) return;
     // A reward reached without the pass: the pass is shown, once an event.
-    if (widget.event.pass != null &&
-        (widget.pass?.ledger.takeUpsell(widget.event.id) ?? false)) {
-      unawaited(_openPass());
-    }
+    if (_controller?.tier() == PassTier.free) unawaited(_openPass(true));
     final manna = paid.fold(0, (sum, m) => sum + m.manna);
     final talents = paid.fold(0, (sum, m) => sum + m.talents);
     final parts = [
@@ -216,23 +214,17 @@ class _EventScreenState extends State<EventScreen> {
     if (controller.settle()) controller.save();
   }
 
-  Future<void> _openPass() async {
+  Future<void> _openPass([bool unasked = false]) async {
     final controller = _controller;
-    final pass = widget.pass;
-    if (controller == null || pass == null || _passOpen) return;
-    _passOpen = true;
-    try {
-      final prices = await pass.prices();
-      if (!mounted) return;
-      await showSeasonPass(
-        context,
-        controller: controller,
-        pass: pass,
-        prices: prices,
-      );
-    } finally {
-      _passOpen = false;
-    }
+    if (controller == null || widget.event.pass == null) return;
+    await widget.pass?.open(
+      context,
+      controller,
+      unasked: unasked,
+      quiet: () =>
+          !(_game?.isDragging ?? false) &&
+          (ModalRoute.of(context)?.isCurrent ?? false),
+    );
   }
 
   @override

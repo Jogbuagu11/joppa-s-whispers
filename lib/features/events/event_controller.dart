@@ -61,7 +61,7 @@ class EventController extends ChangeNotifier {
   /// Reward steps already paid out.
   int get paid => _paid;
 
-  EventMilestone? get next => nextMilestone(event.milestones, _points);
+  EventMilestone? get next => nextMilestone(event.milestones, points);
   bool get trackFinished => next == null;
   bool get isLive => isEventLive(event, _now());
   Duration get timeLeft => eventTimeLeft(event, _now());
@@ -93,10 +93,10 @@ class EventController extends ChangeNotifier {
   bool settle() {
     final held = tier();
     final due = milestonesToPay(event.milestones, points, _paid);
+    // Counted as paid before anything is handed over, so nothing that
+    // happens while handing over can pay the same step twice.
+    _paid += due.length;
     for (final step in due) {
-      // Counted as paid before it is handed over, so one merge cannot pay
-      // the same step twice.
-      _paid++;
       _gameSaveOwed = true;
       if (step.manna > 0) addManna(step.manna);
       if (step.talents > 0) addTalents(step.talents);

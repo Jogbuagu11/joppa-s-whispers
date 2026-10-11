@@ -118,7 +118,7 @@ serve(async (req: Request) => {
       let { grant, offerId, firstBonus } = isOffer
         ? { ...await offerGrant(supabase, user.id, product_id, body.offer_id), firstBonus: false }
         : isPass
-        ? { ...await passGrant(supabase, product_id, body.offer_id), offerId: null, firstBonus: false }
+        ? { ...await passGrant(supabase, user.id, product_id, body.offer_id), offerId: null, firstBonus: false }
         : { ...await productGrant(supabase, user.id, product!), offerId: null };
       // (`product!`: not an offer or a pass, so the check above proved it
       // is in PRODUCTS.)
@@ -166,7 +166,11 @@ serve(async (req: Request) => {
             ...(grant.talents ? [{ type: 'talents', amount: grant.talents }] : []),
             ...grant.items.map((id) => ({ type: 'item', id })),
           ],
-          note: offerId ? `Purchase: ${product_id} (offer ${offerId})` : `Purchase: ${product_id}`,
+          note: offerId
+            ? `Purchase: ${product_id} (offer ${offerId})`
+            : grant.pass
+            ? `Purchase: ${product_id} (${grant.pass.tier} pass for ${grant.pass.event_id})`
+            : `Purchase: ${product_id}`,
         });
         if (offerId) {
           // For the record only; a failure here changes nothing for the player.

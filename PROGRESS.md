@@ -1518,11 +1518,13 @@ BUILT, NOT TAGGED. Nothing here is live on the server yet (see "Server steps").
   Plus by paying $4.99 again. A pass is for that one event.
 - Bought late, a pass pays every Premium reward already reached. The pass is shown
   unasked once per event, the first time a player without it reaches a reward.
-- The server records which event a pass is for. If the payment arrives after that event
-  ended, it goes to an event that can still be played.
+- The server records which event a pass is for: the one the game named, or (if the game
+  was closed mid-payment) the one it last noted as on the screen. If that event is over
+  or has no pass, the pass goes to an event with a pass that can still be played. A pass
+  cannot be bought for an event that has ended.
 - A refunded pass stops working the next time the game reads the player's purchases.
 
-**Tests:** 928 unit tests, 59 server tests, content checker OK. Device tests: see the
+**Tests:** 932 unit tests, 61 server tests, content checker OK. Device tests: see the
 build note below.
 
 **Server steps (all need Jennifer's OK; none done)**
@@ -1559,6 +1561,11 @@ build note below.
 - The server does not check that a jar was really full (a tampered game could only pay
   full price for the fixed amount).
 - Painted art for the jar; review screenshots for the Apple products.
+- A pass reward that names an item the game does not have is counted as paid and gives
+  nothing (the event checker does not know the item list). Take care when editing pass
+  rewards in the admin panel.
+- `test/app/cloud_sync_test.dart` is 304 lines (over the 300 rule; from an earlier
+  milestone). To be split.
 - The twelve reusable products are not yet created on Google.
 
 ## Milestone 30, the rest — state (2026-10-11)

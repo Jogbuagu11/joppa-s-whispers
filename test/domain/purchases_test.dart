@@ -150,4 +150,30 @@ void main() {
       expect(canBuy('nope', _products, {}), isFalse);
     });
   });
+
+  test('a product that carries only a price waits for the server\'s record '
+      'of what it gives: never applied as nothing', () {
+    const products = {
+      'offer_099': ProductModel(
+        id: 'offer_099',
+        consumable: true,
+        reusable: true,
+      ),
+    };
+    const bare = PurchaseRecord(
+      transactionId: 'a',
+      productId: 'offer_099',
+      granted: true,
+    );
+    const recorded = PurchaseRecord(
+      transactionId: 'b',
+      productId: 'offer_099',
+      granted: true,
+      grant: PurchaseGrant(pearls: 40),
+    );
+    expect(
+      purchasesToApply([bare, recorded], const {}, products).single,
+      same(recorded),
+    );
+  });
 }

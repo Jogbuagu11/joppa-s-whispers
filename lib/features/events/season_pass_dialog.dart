@@ -64,8 +64,17 @@ class _PassDialog extends StatelessWidget {
         shop.isWaitingFor(pass.plusProduct);
     VoidCallback? buy(String productId, String? price) {
       if (shop == null || price == null || waiting || !signedIn) return null;
+      // Not for an event that is over: the pass would be worth nothing.
+      if (!controller.isLive) return null;
       return () {
         pass.onBuy?.call(productId);
+        // The server is told which event's pass is on the screen, in case
+        // the game is closed before the payment comes back.
+        shop.backend.noteOffer(
+          offerId: event.id,
+          productId: productId,
+          outcome: 'shown',
+        );
         // The event goes with the purchase: the pass is for it alone.
         shop.buy(productId, offerId: event.id);
       };
