@@ -83,52 +83,47 @@ mixin _BoardJars on _BoardBubbles {
     try {
       final choice = await showDialog<String>(
         context: context,
-        builder: (context) => WheelFont(
-          child: GameDialog(
-            key: const Key('jar_dialog'),
-            icon: Icons.inventory_2,
-            title: Text(
-              item.name,
-              style: const TextStyle(color: GamePalette.gold),
-            ),
-            content: SizedBox(
-              width: double.maxFinite,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  OddsList(title: text['jar_holds'] ?? '', odds: jar.odds),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                key: const Key('use_item_keep'),
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(
-                  board['keep'] ?? '',
-                  style: const TextStyle(color: Color(0xFFF3E5C8)),
-                ),
-              ),
-              if (sell != null)
-                TextButton(
-                  key: const Key('use_item_sell'),
-                  onPressed: () => Navigator.of(context).pop('sell'),
-                  child: Text(
-                    (board['sell'] ?? '').replaceAll(
-                      '{talents}',
-                      '${item.sell}',
-                    ),
-                    style: const TextStyle(color: GamePalette.talents),
-                  ),
-                ),
-              FilledButton(
-                key: const Key('jar_open'),
-                onPressed: () => Navigator.of(context).pop('open'),
-                child: Text(text['jar_open'] ?? ''),
-              ),
-            ],
+        builder: (context) => GameDialog(
+          key: const Key('jar_dialog'),
+          icon: Icons.inventory_2,
+          title: Text(
+            item.name,
+            style: const TextStyle(color: GamePalette.gold),
           ),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                OddsList(title: text['jar_holds'] ?? '', odds: jar.odds),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              key: const Key('use_item_keep'),
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                board['keep'] ?? '',
+                style: const TextStyle(color: Color(0xFFF3E5C8)),
+              ),
+            ),
+            if (sell != null)
+              TextButton(
+                key: const Key('use_item_sell'),
+                onPressed: () => Navigator.of(context).pop('sell'),
+                child: Text(
+                  (board['sell'] ?? '').replaceAll('{talents}', '${item.sell}'),
+                  style: const TextStyle(color: GamePalette.talents),
+                ),
+              ),
+            FilledButton(
+              key: const Key('jar_open'),
+              onPressed: () => Navigator.of(context).pop('open'),
+              child: Text(text['jar_open'] ?? ''),
+            ),
+          ],
         ),
       );
       // The game may have been swapped for the cloud's meanwhile.

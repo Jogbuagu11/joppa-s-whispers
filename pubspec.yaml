@@ -50,3 +50,11 @@ flutter:
     - assets/locations/
     - assets/ui/
     - assets/audio/
+    # The licence that comes with the wheel's lettering.
+    - assets/fonts/LilitaOne-OFL.txt
+
+  fonts:
+    # The Blessing Wheel's lettering (SIL Open Font License).
+    - family: LilitaOne
+      fonts:
+        - asset: assets/fonts/LilitaOne-Regular.ttf

@@ -1519,11 +1519,14 @@ times." Built:
 - "update the text and make different colors, not too dramatic": in the gift list each
   amount is larger and in its gift's colour (Pearls rose, Manna gold, Talents coin gold),
   item names a soft sea blue. Claude's reading of her words; she was told so.
-- "use a different font on the wheel spin modals": the Blessing Wheel screen and its
-  pop-ups (prize, odds, buy a jar, open a jar) use a serif (Georgia on iPhone, Android's
-  serif), as the title screen does (`lib/features/wheel/wheel_font.dart`). No font file
-  or package was added. Pictures: `Downloads/WhispersofJoppa-art-review/wheel-font/` and
-  `timed-offer/`. A bundled font (the same on both phones) would need her choice of font.
+- "use a different font on the wheel spin modals": first tried a serif on the wheel and
+  every jar pop-up. Her answer: "i didnt say every screen just the wheel. and i dont
+  like it choose another." Now **Lilita One** (a round, friendly game lettering; SIL
+  Open Font License, bundled in `assets/fonts/` with its licence, no package added),
+  on the wheel's own screen, its odds panel and the prize of a spin only
+  (`lib/features/wheel/wheel_font.dart`). Jar pop-ups are back in the game's usual
+  lettering. Pictures: `Downloads/WhispersofJoppa-art-review/wheel-font/`. Not yet
+  approved by her.
 
 **NOT live.** The live server is unchanged. See "Deploy order" in TECH_SPEC section 6:
 migration 1, then `verify-purchase`, then the seed, then a build. Jennifer has said yes

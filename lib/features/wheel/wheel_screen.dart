@@ -96,7 +96,7 @@ class _WheelScreenState extends State<WheelScreen>
       _to = _from.floorToDouble() + 4 + rest;
       await _turn.forward(from: 0);
       if (!mounted) return;
-      await showPrize(context, text: widget.text, prize: prize);
+      await showPrize(context, text: widget.text, prize: prize, onWheel: true);
     } finally {
       if (mounted) setState(() => _spinning = false);
     }

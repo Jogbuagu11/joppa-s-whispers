@@ -166,9 +166,12 @@ Future<void> showPrize(
   BuildContext context, {
   required Map<String, String> text,
   required Prize prize,
+  bool onWheel = false,
 }) => showDialog<void>(
   context: context,
   builder: (context) => WheelFont(
+    // The wheel's own lettering only for a prize from the wheel.
+    enabled: onWheel,
     child: GameDialog(
       key: const Key('wheel_prize'),
       icon: Icons.card_giftcard,
