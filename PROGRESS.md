@@ -1499,6 +1499,21 @@ Built in parts. Milestone 31 is not yet approved by a real purchase; Jennifer sa
 - Tests: 944 unit, 70 server and admin-panel tests; device test `goal_events_test`.
 - Picture: `~/Downloads/WhispersofJoppa-art-review/milestone-32/15_events.png`.
 
+**Build 26** (2026-10-11): `~/Downloads/whispers-of-joppa-1.0.0-26.aab`. All 29 device
+tests pass on both simulators (58 runs) on this code; 949 unit tests, 70 server and
+admin tests. Code-reviewed; the MUST FIX items are fixed: a generator's item now lands
+before the Manna spend is announced (an event reward could have taken its square), and
+`onSpent` is tested. Also from the review: progress survives an event dropping off the
+server's list until its end has passed; counting starts at once from what the phone last
+knew; the Events button follows the list.
+- Do NOT publish content version 43 to the server while any build older than 26 is in
+  use: older builds would announce the four event kinds at their levels without having
+  them.
+- To run an event again, make a new one with a new id (players keep their place in an
+  old id).
+- Apply `…000005_first_goal_events.sql` only once build 26 is on the phone: the two
+  events start the moment it is run.
+
 **Assumptions to confirm (Part 1)**
 - A collect event's item is a count, not a thing on the board (it never takes a square).
 - Rewards and names of the two first events are Claude's.
