@@ -1527,6 +1527,12 @@ BUILT, NOT TAGGED. Nothing here is live on the server yet (see "Server steps").
 **Tests:** 932 unit tests, 61 server tests, content checker OK. Device tests: see the
 build note below.
 
+**Build 23** (2026-10-11): `~/Downloads/whispers-of-joppa-1.0.0-23.aab`. All 28 device
+tests pass on the iOS Simulator and the Android Emulator (56 runs) on this code, with 932
+unit tests and 61 server tests. Three code reviews done; their MUST FIX items are fixed.
+Pictures of the new pop-ups: `~/Downloads/WhispersofJoppa-art-review/milestone-31/`
+(the prices in them are the test store's, not the real ones).
+
 **Server steps (all need Jennifer's OK; none done)**
 1. Deploy `verify-purchase` (knows the Treasure Jar and pass products). Until then a
    Treasure Jar or pass payment is refused by the server and waits, undelivered: no
