@@ -5,6 +5,7 @@ import 'package:flame/components.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/generator.dart';
+import 'package:whispers_of_joppa/domain/merge.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/generator_component.dart';
