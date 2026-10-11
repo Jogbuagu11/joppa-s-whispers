@@ -31,6 +31,7 @@ import 'package:whispers_of_joppa/services/google_rewarded_ads.dart';
 import 'package:whispers_of_joppa/services/device_feedback_player.dart';
 import 'package:whispers_of_joppa/services/device_notification_service.dart';
 import 'package:whispers_of_joppa/services/in_app_purchase_store.dart';
+import 'package:whispers_of_joppa/services/offers_source.dart';
 import 'package:whispers_of_joppa/services/purchase_backend.dart';
 import 'package:whispers_of_joppa/services/supabase_auth_service.dart';
 import 'package:whispers_of_joppa/services/supabase_device_tokens.dart';
@@ -59,6 +60,11 @@ class WhispersApp extends ConsumerWidget {
   static final PurchaseCoordinator _shop = PurchaseCoordinator(
     store: InAppPurchaseStore(),
     backend: SupabasePurchaseBackend(Supabase.instance.client),
+  );
+
+  // Timed offers, set on the server.
+  static final OffersSource _offers = SupabaseOffersSource(
+    Supabase.instance.client,
   );
 
   // Optional rewarded ads (bonus Manna). Never shown unless asked for.
@@ -149,6 +155,7 @@ class WhispersApp extends ConsumerWidget {
                 cloud: _cloud,
                 content: _content,
                 shop: _shop,
+                offers: _offers,
                 ads: _ads,
                 analytics: analytics,
                 notifications: _notifications,

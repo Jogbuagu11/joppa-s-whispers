@@ -10,6 +10,13 @@ const offersTextKeys = [
   'deals_note',
   'shop_unavailable',
   'shop_owned',
+  'offer_subtitle',
+  'offer_ends_in',
+  'offer_no_thanks',
+  'offer_close',
+  'offer_pearls',
+  'offer_manna',
+  'offer_talents',
 ];
 
 /// Plain-English problems with the offers file; empty if it is sound.
@@ -34,6 +41,7 @@ List<String> offersProblems(
       problems: problems,
     );
     _checkSpecial(json['special'], productsJson, problems);
+    _checkOfferSetup(json, productsJson, problems);
     final text = json['text'];
     for (final key in offersTextKeys) {
       final words = text is Map<String, dynamic> ? text[key] : null;
@@ -103,6 +111,45 @@ void _checkSpecial(
     }
     if (pack['featured'] is! bool?) {
       problems.add('Special: pack "$id": featured must be true or false');
+    }
+  }
+}
+
+/// The reusable offer products (store products that carry only a price)
+/// and how often offers may appear.
+void _checkOfferSetup(
+  Map<String, dynamic> json,
+  Object? productsJson,
+  List<String> problems,
+) {
+  final ids = json['offer_products'];
+  if (ids is! List<dynamic> || ids.isEmpty || ids.any((id) => id is! String)) {
+    problems.add('Offers: offer_products must be a list of product ids');
+  } else {
+    final shop = {
+      if (productsJson is List<dynamic>)
+        for (final p in productsJson)
+          if (p case {'id': final String id}) id,
+    };
+    for (final id in ids) {
+      if (shop.contains(id)) {
+        problems.add('Offers: "$id" is a shop product, not an offer product');
+      }
+    }
+    if (ids.toSet().length != ids.length) {
+      problems.add('Offers: offer_products lists a product twice');
+    }
+  }
+  final rules = json['rules'];
+  for (final key in const [
+    'max_per_session',
+    'max_at_session_start',
+    'session_start_per_day',
+    'level_every',
+  ]) {
+    final value = rules is Map<String, dynamic> ? rules[key] : null;
+    if (value is! int || value < 0 || value > 20) {
+      problems.add('Offers: rules.$key must be a whole number from 0 to 20');
     }
   }
 }

@@ -14,10 +14,13 @@ import 'package:integration_test/integration_test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
+import 'package:whispers_of_joppa/domain/offers.dart';
+import 'package:whispers_of_joppa/domain/purchases.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
 
+import '../test/support/offer_fakes.dart';
 import '../test/support/store_fakes.dart';
 import 'helpers.dart';
 
@@ -104,6 +107,20 @@ void main() {
             store: FakeStore(),
             backend: FakePurchaseBackend(),
           ),
+          offers: FakeOffersSource(const [
+            Offer(
+              id: 'market',
+              kind: 'session_start',
+              productId: 'offer_299',
+              title: 'Market Day',
+              subtitle: 'Fresh from the harbor market',
+              contents: PurchaseGrant(
+                pearls: 110,
+                manna: 100,
+                items: ['hourglass_02', 'manna_jar_02'],
+              ),
+            ),
+          ]),
         ),
       ),
     );
@@ -132,6 +149,11 @@ void main() {
       await tester.tap(find.byKey(Key(key)));
       await wait();
     }
+
+    // The timed offer that greets the player.
+    await wait(10);
+    await shot('00_timed_offer');
+    await tapKey('offer_no_thanks');
 
     // The Joppa Special.
     await tapOnStrip(tester, 'special_button');

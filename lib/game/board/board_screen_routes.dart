@@ -17,6 +17,9 @@ mixin _BoardState on State<BoardScreen> {
   /// The bubbles afloat over the board; null until a game is loaded.
   BubbleController? _bubbles;
 
+  /// Timed offers; null where there are none (no shop, tests).
+  OffersController? _offers;
+
   /// The event that is on now, if any.
   EventModel? _event;
 

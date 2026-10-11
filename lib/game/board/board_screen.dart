@@ -32,6 +32,11 @@ import 'package:whispers_of_joppa/domain/deals.dart';
 import 'package:whispers_of_joppa/features/shop/daily_deals.dart';
 import 'package:whispers_of_joppa/features/shop/special_offer.dart';
 import 'package:whispers_of_joppa/domain/lucky.dart';
+import 'package:whispers_of_joppa/domain/offers.dart';
+import 'package:whispers_of_joppa/features/offers/offer_parts.dart';
+import 'package:whispers_of_joppa/features/offers/offer_popup.dart';
+import 'package:whispers_of_joppa/features/offers/offers_controller.dart';
+import 'package:whispers_of_joppa/services/offers_source.dart';
 import 'package:whispers_of_joppa/features/wheel/jar_shop.dart';
 import 'package:whispers_of_joppa/features/wheel/wheel_odds.dart';
 import 'package:whispers_of_joppa/features/wheel/wheel_controller.dart';
@@ -70,6 +75,7 @@ part 'board_screen_items.dart';
 part 'board_screen_jars.dart';
 part 'board_screen_layout.dart';
 part 'board_screen_notifications.dart';
+part 'board_screen_offers.dart';
 part 'board_screen_routes.dart';
 part 'board_screen_wheel.dart';
 
@@ -95,7 +101,11 @@ class BoardScreen extends StatefulWidget {
     this.onOpenPage,
     this.luck,
     this.country,
+    this.offers,
   });
+
+  /// Where timed offers come from. Null (in most tests) means none.
+  final OffersSource? offers;
 
   /// Decides everything left to chance (bubbles, the wheel). Tests pass
   /// their own; the app leaves it to chance.
@@ -170,6 +180,7 @@ class _BoardScreenState extends State<BoardScreen>
         _BoardWheel,
         _BoardBubbles,
         _BoardJars,
+        _BoardOffers,
         _BoardLayout,
         _BoardScreenActions {
   @override

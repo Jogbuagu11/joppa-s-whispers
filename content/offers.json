@@ -88,6 +88,12 @@
     "offer_1999",
     "offer_4999"
   ],
+  "rules": {
+    "max_per_session": 3,
+    "max_at_session_start": 1,
+    "session_start_per_day": 1,
+    "level_every": 5
+  },
   "text": {
     "deals_title": "Today's deals",
     "deal_free": "Free",
@@ -95,7 +101,14 @@
     "deal_taken": "Taken",
     "deals_note": "New deals every day.",
     "shop_unavailable": "The shop is not available right now. Please try again later.",
-    "shop_owned": "Owned"
+    "shop_owned": "Owned",
+    "offer_subtitle": "A special offer, for a short time",
+    "offer_ends_in": "Ends in {time}",
+    "offer_no_thanks": "No thanks",
+    "offer_close": "Close",
+    "offer_pearls": "{n} Pearls",
+    "offer_manna": "{n} Manna",
+    "offer_talents": "{n} Talents"
   },
   "special": {
     "title": "Joppa Special",

@@ -10,6 +10,7 @@ mixin _BoardScreenActions
         _BoardEvents,
         _BoardItems,
         _BoardJars,
+        _BoardOffers,
         _BoardLayout {
   @override
   void initState() {
@@ -36,8 +37,11 @@ mixin _BoardScreenActions
     _popupOpen = true;
     widget.comfort?.cue(GameCue.empty);
     _events?.outOfEnergy();
+    final before = manna.manna;
     await showOutOfMannaPopup(context, manna, ads: _session?.ads);
     _popupOpen = false;
+    // Still out: an offer that would help, if there is one.
+    if (manna.manna <= before) await _maybeOffer(OfferTrigger.outOfManna);
   }
 
   /// Pays for the next story task, then plays its scene. While this (or any
@@ -74,8 +78,14 @@ mixin _BoardScreenActions
       final area = task.restoresArea;
       if (area != null) await _showLocation(locationId, justRestored: area);
       // The chapter's last task ends with its closing message.
+      final ended = session.pendingEnding != null;
+      final level = session.levels.level;
       await _showPendingEnding();
       await _showLevelUp();
+      if (ended) await _maybeOffer(OfferTrigger.chapterComplete);
+      if (session.levels.level > level) {
+        await _maybeOffer(OfferTrigger.levelUp);
+      }
       await _maybeAskAboutNotifications();
     } finally {
       _busy = false;
@@ -244,6 +254,7 @@ mixin _BoardScreenActions
       setState(() => _session = session);
       // These read the content of the game now in play, so they come after.
       _wireChance(session);
+      _wireOffers(session);
       // Back in the game: saved choices are read, old reminders cleared.
       unawaited(
         widget.notifications?.load().then(
@@ -279,6 +290,7 @@ mixin _BoardScreenActions
       // A signed-in player's game is checked against their account.
       if (widget.cloud?.signedIn ?? false) await _syncWithAccount();
       _startAdsWhenQuiet();
+      unawaited(_offerAtStart());
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e.toString());
