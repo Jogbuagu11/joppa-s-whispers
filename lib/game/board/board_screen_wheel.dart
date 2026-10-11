@@ -212,6 +212,13 @@ mixin _BoardWheel on _BoardItems {
       grant: (prize) => _givePrize(session, prize),
       adReady: () => session.ads.rewardAdReady,
       watchAd: session.ads.watchForReward,
+      serverDraw: switch (widget.roller) {
+        final PrizeRoller roller => () => roller.roll(
+          kind: 'wheel',
+          contentVersion: session.contentBundle.version,
+        ),
+        null => null,
+      },
       random: widget.luck,
     );
     try {

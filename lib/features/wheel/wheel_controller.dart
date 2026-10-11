@@ -27,6 +27,10 @@ class WheelController extends ChangeNotifier {
   /// was watched to the end).
   final bool Function() adReady;
   final Future<bool> Function() watchAd;
+
+  /// Asks the server to draw the prize of a Pearl spin; it answers with
+  /// the prize's id, or null if it cannot (the wheel then draws itself).
+  final Future<String?> Function()? serverDraw;
   final Random _random;
   final DateTime Function() _now;
   bool _busy = false;
@@ -41,6 +45,7 @@ class WheelController extends ChangeNotifier {
     required this.grant,
     required this.adReady,
     required this.watchAd,
+    this.serverDraw,
     Random? random,
     DateTime Function()? clock,
   }) : _random = random ?? Random(),
@@ -96,7 +101,20 @@ class WheelController extends ChangeNotifier {
         final price = pearlSpinPrice;
         if (price == null || !spendPearls(price)) return null;
     }
-    final prize = drawPrize(rules.prizes, paid: paid, random: _random);
+    // A Pearl spin is drawn by the server where it can be; otherwise, and
+    // for every free spin, here. The odds are the same table either way.
+    String? drawn;
+    if (paid && serverDraw != null) {
+      _busy = true;
+      try {
+        drawn = await serverDraw?.call();
+      } finally {
+        _busy = false;
+      }
+    }
+    final prize =
+        prizeNamed(rules.prizes, drawn, paid: paid) ??
+        drawPrize(rules.prizes, paid: paid, random: _random);
     extras.write(wheelRecord, afterSpin(_tally, kind, _now()).toJson());
     if (prize != null) grant(prize);
     notifyListeners();

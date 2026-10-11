@@ -32,6 +32,7 @@ import 'package:whispers_of_joppa/services/device_feedback_player.dart';
 import 'package:whispers_of_joppa/services/device_notification_service.dart';
 import 'package:whispers_of_joppa/services/in_app_purchase_store.dart';
 import 'package:whispers_of_joppa/services/offers_source.dart';
+import 'package:whispers_of_joppa/services/prize_roller.dart';
 import 'package:whispers_of_joppa/services/purchase_backend.dart';
 import 'package:whispers_of_joppa/services/supabase_auth_service.dart';
 import 'package:whispers_of_joppa/services/supabase_device_tokens.dart';
@@ -64,6 +65,11 @@ class WhispersApp extends ConsumerWidget {
 
   // Timed offers, set on the server.
   static final OffersSource _offers = SupabaseOffersSource(
+    Supabase.instance.client,
+  );
+
+  // Paid chance prizes are drawn on the server.
+  static final PrizeRoller _roller = SupabasePrizeRoller(
     Supabase.instance.client,
   );
 
@@ -156,6 +162,7 @@ class WhispersApp extends ConsumerWidget {
                 content: _content,
                 shop: _shop,
                 offers: _offers,
+                roller: _roller,
                 ads: _ads,
                 analytics: analytics,
                 notifications: _notifications,

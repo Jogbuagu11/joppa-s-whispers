@@ -37,6 +37,7 @@ import 'package:whispers_of_joppa/features/offers/offer_parts.dart';
 import 'package:whispers_of_joppa/features/offers/offer_popup.dart';
 import 'package:whispers_of_joppa/features/offers/offers_controller.dart';
 import 'package:whispers_of_joppa/services/offers_source.dart';
+import 'package:whispers_of_joppa/services/prize_roller.dart';
 import 'package:whispers_of_joppa/features/wheel/jar_shop.dart';
 import 'package:whispers_of_joppa/features/wheel/wheel_odds.dart';
 import 'package:whispers_of_joppa/features/wheel/wheel_controller.dart';
@@ -102,7 +103,11 @@ class BoardScreen extends StatefulWidget {
     this.luck,
     this.country,
     this.offers,
+    this.roller,
   });
+
+  /// Draws paid chance prizes on the server. Null (in most tests): here.
+  final PrizeRoller? roller;
 
   /// Where timed offers come from. Null (in most tests) means none.
   final OffersSource? offers;

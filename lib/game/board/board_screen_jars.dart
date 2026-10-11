@@ -131,8 +131,19 @@ mixin _BoardJars on _BoardBubbles {
       if (choice == 'sell') sell?.call();
       // The jar leaves the board first; only then is its prize drawn.
       if (choice == 'open' && use()) {
-        final prize = jar.open(random: widget.luck);
-        if (prize == null) return;
+        // A bought jar is drawn by the server where it can be; otherwise,
+        // and for every jar that was given, here. The odds are the same.
+        final drawn = jar.paid
+            ? await widget.roller?.roll(
+                kind: 'jar',
+                jar: jar.id,
+                contentVersion: session.contentBundle.version,
+              )
+            : null;
+        final prize =
+            prizeNamed(jar.prizes, drawn, paid: jar.paid) ??
+            jar.open(random: widget.luck);
+        if (prize == null || !mounted) return;
         _givePrize(session, prize);
         await showPrize(
           context,

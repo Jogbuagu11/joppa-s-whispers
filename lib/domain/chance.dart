@@ -83,6 +83,17 @@ Prize? drawPrize(List<Prize> prizes, {required bool paid, Random? random}) {
   return odds.last.prize;
 }
 
+/// The prize called [id] among those a try can give (a paid try can never
+/// give a free-only one), or null: a draw made elsewhere is only accepted
+/// if it is a prize this try could have given.
+Prize? prizeNamed(List<Prize> prizes, String? id, {required bool paid}) {
+  if (id == null) return null;
+  for (final entry in oddsFor(prizes, paid: paid)) {
+    if (entry.prize.id == id) return entry.prize;
+  }
+  return null;
+}
+
 /// A chance as the player reads it: "25%", "12.5%", "0.99%". Never shown
 /// as nothing: the smallest is "under 0.01%".
 String formatChance(double chance) {
