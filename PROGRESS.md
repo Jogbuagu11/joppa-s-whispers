@@ -1550,6 +1550,15 @@ times." Built:
   received" pop-ups, the wheel's lettering, jar pictures. Full device run on its code:
   27/27 on the iPhone simulator and 27/27 on the Android emulator; 885 unit tests, 52
   server tests. It shows no offers until the server has them (below).
+- **Build 22** (2026-10-11): `~/Downloads/whispers-of-joppa-1.0.0-22.aab` — build 21
+  plus the server-side draw: a Pearl spin and a bought jar are drawn by the `roll`
+  function (4-second limit; otherwise, and for every free try, on the phone by the same
+  odds). The game accepts only a prize that try could give. Tests: 891 unit, 52 server;
+  wheel, jars, bubbles, offers, smoke and shop device tests on both simulators (the other
+  21 last ran on build 21's code). Not code-reviewed separately. The server draws only
+  while its tables match the game's content version (41 now): after any change to
+  `content/chance.json`, run `tool/sync_server_chance.py` and deploy `roll` again, or
+  the phone quietly draws for itself.
 - **LIVE on the server since 2026-10-11** (project sincvubcsnqzjefzsifq):
   - Jennifer ran `supabase db push --yes` herself (this Mac's safety system would not
     let Claude apply a database change unattended): `…_offers.sql`, `…_offer_seed.sql`
