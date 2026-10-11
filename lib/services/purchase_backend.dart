@@ -29,7 +29,17 @@ abstract mixin class PurchaseBackend {
     required String productId,
     required String transactionId,
     required String receipt,
+    String? offerId,
   });
+
+  /// Tells the server an offer was shown to this player (so a payment for
+  /// it can be matched to it even if the app is closed mid-purchase), or
+  /// turned down. Never throws: it is a note, not part of the purchase.
+  Future<void> noteOffer({
+    required String offerId,
+    required String productId,
+    required String outcome,
+  }) async {}
 
   /// Every purchase the server has recorded for this player. Throws if the
   /// server cannot be reached.
@@ -53,6 +63,7 @@ class SupabasePurchaseBackend implements PurchaseBackend {
     required String productId,
     required String transactionId,
     required String receipt,
+    String? offerId,
   }) async {
     try {
       final response = await _client.functions.invoke(
@@ -62,6 +73,7 @@ class SupabasePurchaseBackend implements PurchaseBackend {
           'product_id': productId,
           'transaction_id': transactionId,
           'receipt_data': receipt,
+          'offer_id': ?offerId,
         },
       );
       final data = response.data;
@@ -79,10 +91,30 @@ class SupabasePurchaseBackend implements PurchaseBackend {
   }
 
   @override
+  Future<void> noteOffer({
+    required String offerId,
+    required String productId,
+    required String outcome,
+  }) async {
+    final user = userId;
+    if (user == null) return;
+    try {
+      await _client.from('offer_impressions').insert({
+        'user_id': user,
+        'offer_id': offerId,
+        'product_id': productId,
+        'outcome': outcome,
+      });
+    } on Exception catch (e) {
+      _log.info('Could not note offer $offerId as $outcome: $e');
+    }
+  }
+
+  @override
   Future<List<PurchaseRecord>> myPurchases() async {
     final rows = await _client
         .from('purchases')
-        .select('transaction_id, product_id, status')
+        .select('transaction_id, product_id, status, grant_contents')
         .order('created_at');
     return [
       for (final row in rows)
@@ -91,6 +123,7 @@ class SupabasePurchaseBackend implements PurchaseBackend {
           productId: row['product_id'] as String,
           granted: row['status'] == 'granted',
           refunded: row['status'] == 'refunded',
+          grant: PurchaseGrant.fromJson(row['grant_contents']),
         ),
     ];
   }

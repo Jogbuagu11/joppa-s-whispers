@@ -79,6 +79,15 @@
       }
     ]
   },
+  "offer_products": [
+    "offer_099",
+    "offer_199",
+    "offer_299",
+    "offer_499",
+    "offer_999",
+    "offer_1999",
+    "offer_4999"
+  ],
   "text": {
     "deals_title": "Today's deals",
     "deal_free": "Free",

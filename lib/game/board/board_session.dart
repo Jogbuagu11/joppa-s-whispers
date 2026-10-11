@@ -169,7 +169,7 @@ class BoardSession {
       endings: loader.endings,
       seen: save.endingsSeen,
     );
-    final purchases = buildPurchases(loader.products, manna, game, save);
+    final purchases = buildPurchases(loader, bundle, manna, game, save);
 
     final tutorial = TutorialController(
       steps: loader.tutorial,
@@ -185,6 +185,7 @@ class BoardSession {
       generators: loader.generators,
       waiting: save.pendingGrants,
     );
+    wirePurchaseGifts(purchases, orders, grants);
     // Levels follow the story; a level reached refills Manna and pays Talents.
     final levels = LevelController(
       config: loader.levels,

@@ -44,6 +44,10 @@ class PurchaseCoordinator {
   // so purchases the store re-sends by itself stay silent.
   final Set<String> _asked = {};
 
+  // For an offer product: the offer the player was shown when they tapped
+  // Buy, sent with the purchase so the server knows what was paid for.
+  final Map<String, String> _offerAsked = {};
+
   // Deliveries run one at a time.
   Future<void> _queue = Future<void>.value();
 
@@ -62,19 +66,24 @@ class PurchaseCoordinator {
     );
   }
 
-  /// The store's listing (with its own prices) for the game's products.
-  Future<List<StoreProduct>> loadProducts() async {
+  /// The store's listing (with its own prices) for the game's products:
+  /// the shop's own, or with [offers] the reusable offer products.
+  Future<List<StoreProduct>> loadProducts({bool offers = false}) async {
     try {
       if (!await store.isAvailable()) return const [];
-      return await store.loadProducts(products.keys.toSet());
+      return await store.loadProducts({
+        for (final product in products.values)
+          if (product.reusable == offers) product.id,
+      });
     } on Exception catch (e) {
       _log.warning('Could not load products from the store: $e');
       return const [];
     }
   }
 
-  /// Opens the store's payment sheet for [productId].
-  Future<void> buy(String productId) async {
+  /// Opens the store's payment sheet for [productId]. For an offer product,
+  /// [offerId] is the offer on the screen.
+  Future<void> buy(String productId, {String? offerId}) async {
     final product = products[productId];
     if (product == null || busy.value) return;
     final accountId = backend.userId;
@@ -84,6 +93,7 @@ class PurchaseCoordinator {
     }
     message.value = null;
     _asked.add(productId);
+    if (offerId != null) _offerAsked[productId] = offerId;
     try {
       await store.buy(product, accountId: accountId);
     } on Object catch (e) {
@@ -145,7 +155,7 @@ class PurchaseCoordinator {
     final added = await deliverConfirmed();
     message.value = added.isEmpty
         ? 'Nothing new to restore.'
-        : '${_describe(added)} restored.';
+        : '${describeGrant(added)} restored.';
   }
 
   /// Stops delivering into a game that is being closed or replaced.
@@ -192,7 +202,7 @@ class PurchaseCoordinator {
       // Already in the game (the store re-sends owned one-time products):
       // no server call needed, just make sure the store knows it is done.
       _waiting.remove(transactionId);
-      await _finish(purchase, product);
+      await finishWithStore(store, purchase, product);
       return;
     }
     busy.value = true;
@@ -202,6 +212,7 @@ class PurchaseCoordinator {
         productId: purchase.productId,
         transactionId: transactionId,
         receipt: purchase.receipt,
+        offerId: _offerAsked[purchase.productId],
       );
       switch (result) {
         case VerifyResult.rejected:
@@ -255,9 +266,9 @@ class PurchaseCoordinator {
         purchase,
         added.isEmpty
             ? 'Your purchase is already in your game.'
-            : 'Thank you! ${_describe(added)} added.',
+            : 'Thank you! ${describeGrant(added)} added.',
       );
-      await _finish(purchase, product);
+      await finishWithStore(store, purchase, product);
     } on Exception catch (e, stack) {
       _log.severe('Purchase delivery failed', e, stack);
       _waiting[transactionId] = purchase;
@@ -270,26 +281,6 @@ class PurchaseCoordinator {
       busy.value = false;
     }
   }
-
-  /// Tells the store the purchase is delivered. A store that fails or never
-  /// answers must not hold up the game: it will report the purchase again.
-  Future<void> _finish(StorePurchase purchase, ProductModel product) async {
-    try {
-      await store
-          .finish(purchase, consumable: product.consumable)
-          .timeout(const Duration(seconds: 15));
-    } on Object catch (e) {
-      _log.warning(
-        'The store did not confirm finishing ${purchase.productId}: $e',
-      );
-    }
-  }
-
-  String _describe(GrantTotals t) => [
-    if (t.pearls > 0) '${t.pearls} Pearls',
-    if (t.manna > 0) '${t.manna} Manna',
-    if (t.generatorLevel != null) 'a level-${t.generatorLevel} generator',
-  ].join(', ');
 
   Future<void> dispose() async {
     await _subscription?.cancel();

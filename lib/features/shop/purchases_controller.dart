@@ -15,6 +15,11 @@ class PurchasesController extends ChangeNotifier {
   /// Raises the player's generators to at least this level.
   final void Function(int level) raiseGenerators;
 
+  /// Adds bought Talents, and hands over bought items (an offer's). Set by
+  /// the game once the parts that do so exist.
+  void Function(int amount)? addTalents;
+  void Function(List<String> itemIds)? giveItems;
+
   int _pearls;
   final Set<String> _applied;
   final Set<String> _owned;
@@ -75,6 +80,8 @@ class PurchasesController extends ChangeNotifier {
     }
     _pearls += totals.pearls;
     if (totals.manna > 0) addManna(totals.manna);
+    if (totals.talents > 0) addTalents?.call(totals.talents);
+    if (totals.items.isNotEmpty) giveItems?.call(totals.items);
     final level = totals.generatorLevel;
     if (level != null) raiseGenerators(level);
     notifyListeners();

@@ -13,12 +13,17 @@ class ProductModel {
   /// If set, the player's generators are raised to at least this level.
   final int? generatorLevel;
 
+  /// True for a store product that carries only a price (an offer): what
+  /// it gives is decided by the server and comes with each purchase.
+  final bool reusable;
+
   const ProductModel({
     required this.id,
     required this.consumable,
     this.pearls = 0,
     this.manna = 0,
     this.generatorLevel,
+    this.reusable = false,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
@@ -28,6 +33,56 @@ class ProductModel {
     manna: json['manna'] as int? ?? 0,
     generatorLevel: json['generator_level'] as int?,
   );
+}
+
+/// The reusable offer products named in content/offers.json
+/// ("offer_products"), as products that can be bought again and again.
+Map<String, ProductModel> offerProductsFrom(Object? offersJson) => {
+  if (offersJson case {'offer_products': final List<dynamic> ids})
+    for (final id in ids)
+      if (id is String)
+        id: ProductModel(id: id, consumable: true, reusable: true),
+};
+
+/// Exactly what the server recorded one purchase as giving.
+class PurchaseGrant {
+  final int pearls;
+  final int manna;
+  final int talents;
+  final List<String> items;
+  final int? generatorLevel;
+
+  const PurchaseGrant({
+    this.pearls = 0,
+    this.manna = 0,
+    this.talents = 0,
+    this.items = const [],
+    this.generatorLevel,
+  });
+
+  /// Reads the server's record; null if there is none (a purchase made
+  /// before grants were recorded). Anything odd in it counts as nothing.
+  static PurchaseGrant? fromJson(Object? json) {
+    if (json is! Map<String, dynamic>) return null;
+    int amount(String key) => switch (json[key]) {
+      final int n when n > 0 => n,
+      _ => 0,
+    };
+    return PurchaseGrant(
+      pearls: amount('pearls'),
+      manna: amount('manna'),
+      talents: amount('talents'),
+      items: [
+        if (json['items'] case final List<dynamic> ids)
+          for (final id in ids)
+            if (id is String) id,
+      ],
+      generatorLevel: switch (json['generator_level']) {
+        final int level when level > 0 => level,
+        _ => null,
+      },
+    );
+  }
 }
 
 /// A purchase as the server recorded it for this player.
@@ -41,11 +96,17 @@ class PurchaseRecord {
   /// True once the store has given the player their money back.
   final bool refunded;
 
+  /// What the server recorded this purchase as giving (an offer's contents,
+  /// a doubled first pack). Null for purchases recorded before that was
+  /// kept: those give what the product gives.
+  final PurchaseGrant? grant;
+
   const PurchaseRecord({
     required this.transactionId,
     required this.productId,
     required this.granted,
     this.refunded = false,
+    this.grant,
   });
 }
 
@@ -53,11 +114,24 @@ class PurchaseRecord {
 class GrantTotals {
   final int pearls;
   final int manna;
+  final int talents;
+  final List<String> items;
   final int? generatorLevel;
 
-  const GrantTotals({this.pearls = 0, this.manna = 0, this.generatorLevel});
+  const GrantTotals({
+    this.pearls = 0,
+    this.manna = 0,
+    this.talents = 0,
+    this.items = const [],
+    this.generatorLevel,
+  });
 
-  bool get isEmpty => pearls == 0 && manna == 0 && generatorLevel == null;
+  bool get isEmpty =>
+      pearls == 0 &&
+      manna == 0 &&
+      talents == 0 &&
+      items.isEmpty &&
+      generatorLevel == null;
 }
 
 /// The server-confirmed purchases that have not been applied to this game
@@ -94,23 +168,43 @@ List<int> raisedGeneratorLevels(List<int> currentLevels, int level) => [
   for (final current in currentLevels) current < level ? level : current,
 ];
 
-/// What [records] give in total.
+/// What [records] give in total: for each, what the server recorded it as
+/// giving, or (for an older record without that) what its product gives.
 GrantTotals totalGrant(
   List<PurchaseRecord> records,
   Map<String, ProductModel> products,
 ) {
   var pearls = 0;
   var manna = 0;
+  var talents = 0;
+  final items = <String>[];
   int? level;
   for (final record in records) {
     final product = products[record.productId];
     if (product == null) continue;
-    pearls += product.pearls;
-    manna += product.manna;
-    final wanted = product.generatorLevel;
+    // What the server recorded wins; the product's own contents are for
+    // purchases recorded before grants were kept.
+    final grant =
+        record.grant ??
+        PurchaseGrant(
+          pearls: product.pearls,
+          manna: product.manna,
+          generatorLevel: product.generatorLevel,
+        );
+    pearls += grant.pearls;
+    manna += grant.manna;
+    talents += grant.talents;
+    items.addAll(grant.items);
+    final wanted = grant.generatorLevel;
     if (wanted != null && (level == null || wanted > level)) level = wanted;
   }
-  return GrantTotals(pearls: pearls, manna: manna, generatorLevel: level);
+  return GrantTotals(
+    pearls: pearls,
+    manna: manna,
+    talents: talents,
+    items: items,
+    generatorLevel: level,
+  );
 }
 
 /// Whether [productId] may be bought now: a one-time product can only be

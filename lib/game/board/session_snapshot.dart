@@ -1,6 +1,8 @@
 // Turns the live pieces of a play session into the state that gets saved.
 import 'package:flutter/services.dart';
 import 'package:whispers_of_joppa/app/game_saver.dart';
+import 'package:whispers_of_joppa/data/content_bundle.dart';
+import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/domain/ads.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
@@ -152,15 +154,29 @@ AdRewardsController buildAds({
 
 /// The Pearl purse for a session, carrying on from the save.
 PurchasesController buildPurchases(
-  Map<String, ProductModel> products,
+  ContentLoader loader,
+  ContentBundle bundle,
   MannaController manna,
   BoardGame game,
   SaveState save,
 ) => PurchasesController(
-  products: products,
+  // The shop's products, and the reusable ones that carry an offer's price.
+  products: {...loader.products, ...offerProductsFrom(bundle.files['offers'])},
   addManna: manna.add,
   raiseGenerators: game.raiseGeneratorsTo,
   startingPearls: save.pearls,
   appliedTransactions: save.appliedTransactions,
   ownedProducts: save.ownedProducts,
 );
+
+/// Lets a purchase hand over Talents and items (an offer's contents) as
+/// well as Pearls and Manna.
+void wirePurchaseGifts(
+  PurchasesController purchases,
+  OrdersController orders,
+  GrantQueue grants,
+) {
+  purchases
+    ..addTalents = orders.addTalents
+    ..giveItems = (ids) => grants.give(itemIds: ids);
+}

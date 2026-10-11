@@ -120,14 +120,32 @@ class FakePurchaseBackend with PurchaseBackend {
   final List<PurchaseRecord> recorded = [];
   final List<String> verified = [];
 
+  /// The offer named with each verification (null for a shop product).
+  final List<String?> offerIds = [];
+
+  /// offer id -> what the server records a payment for it as giving.
+  final Map<String?, PurchaseGrant> offerGrants = {};
+
+  /// Offers the app has told the server about: "offer:outcome".
+  final List<String> noted = [];
+
+  @override
+  Future<void> noteOffer({
+    required String offerId,
+    required String productId,
+    required String outcome,
+  }) async => noted.add('$offerId:$outcome');
+
   @override
   Future<VerifyResult> verify({
     required String platform,
     required String productId,
     required String transactionId,
     required String receipt,
+    String? offerId,
   }) async {
     verified.add(transactionId);
+    offerIds.add(offerId);
     if (answer == VerifyResult.confirmed &&
         !recordForSomeoneElse &&
         !recorded.any((r) => r.transactionId == transactionId)) {
@@ -136,6 +154,8 @@ class FakePurchaseBackend with PurchaseBackend {
           transactionId: transactionId,
           productId: productId,
           granted: true,
+          // As the server does: an offer's contents are recorded with it.
+          grant: offerGrants[offerId],
         ),
       );
     }
@@ -152,6 +172,7 @@ class FakePurchaseBackend with PurchaseBackend {
       productId: recorded[i].productId,
       granted: false,
       refunded: true,
+      grant: recorded[i].grant,
     );
   }
 
