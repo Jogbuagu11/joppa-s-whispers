@@ -1,6 +1,7 @@
 // A prize the player staked Pearls on is drawn by the server where it can
 // be; the game accepts only a prize that try could have given, and draws
 // for itself whenever the server cannot.
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -121,6 +122,49 @@ void main() {
         w.dispose();
       }
       expect(given, ['manna', 'manna']);
+    });
+
+    test('no Pearls are taken until the server has answered, and none at '
+        'all if the wheel is closed while waiting', () async {
+      final waiting = Completer<String?>();
+      final w = WheelController(
+        rules: _rules,
+        extras: extras,
+        paidAllowed: true,
+        pearls: () => pearls,
+        spendPearls: (n) {
+          pearls -= n;
+          return true;
+        },
+        grant: (prize) => given.add(prize.id),
+        adReady: () => false,
+        watchAd: () async => false,
+        serverDraw: () => waiting.future,
+        random: _First(),
+        clock: () => DateTime(2026, 10, 12, 9),
+      );
+      final spinning = w.spin(SpinKind.pearls);
+      await Future<void>.delayed(Duration.zero);
+      expect(w.busy, isTrue);
+      expect(pearls, 20);
+      expect(extras.read(wheelRecord), isNull);
+      // A second tap while waiting does nothing.
+      expect(await w.spin(SpinKind.pearls), isNull);
+      w.dispose();
+      waiting.complete('talents');
+      expect(await spinning, isNull);
+      expect(pearls, 20);
+      expect(given, isEmpty);
+      expect(extras.read(wheelRecord), isNull);
+    });
+
+    test('a Pearl spin the player cannot pay for is not sent anywhere', () async {
+      pearls = 2;
+      final w = wheel();
+      expect(await w.spin(SpinKind.pearls), isNull);
+      expect(asked, 0);
+      expect(pearls, 2);
+      w.dispose();
     });
 
     test('where there is no server to ask, nothing changes', () async {

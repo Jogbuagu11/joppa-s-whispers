@@ -99,22 +99,36 @@ class WheelController extends ChangeNotifier {
         }
       case SpinKind.pearls:
         final price = pearlSpinPrice;
-        if (price == null || !spendPearls(price)) return null;
+        if (price == null || pearls() < price) return null;
     }
     // A Pearl spin is drawn by the server where it can be; otherwise, and
     // for every free spin, here. The odds are the same table either way.
+    // The server is asked BEFORE any Pearls are taken: if the game is
+    // closed while waiting, nothing has been paid.
     String? drawn;
     if (paid && serverDraw != null) {
       _busy = true;
+      notifyListeners();
       try {
         drawn = await serverDraw?.call();
       } finally {
         _busy = false;
       }
+      // The wheel was closed while waiting: nothing taken, nothing given.
+      if (_disposed) return null;
     }
     final prize =
         prizeNamed(rules.prizes, drawn, paid: paid) ??
         drawPrize(rules.prizes, paid: paid, random: _random);
+    // From here to the end nothing waits: the Pearls are taken, the spin
+    // counted and the prize given together, or none of them.
+    if (paid) {
+      final price = pearlSpinPrice;
+      if (prize == null || price == null || !spendPearls(price)) {
+        notifyListeners();
+        return null;
+      }
+    }
     extras.write(wheelRecord, afterSpin(_tally, kind, _now()).toJson());
     if (prize != null) grant(prize);
     notifyListeners();

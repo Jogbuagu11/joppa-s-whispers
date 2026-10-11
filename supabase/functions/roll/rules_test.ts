@@ -1,6 +1,14 @@
 // Run with: deno test --allow-read supabase/functions/roll/rules_test.ts
 import { assertEquals } from 'https://deno.land/std@0.177.0/testing/asserts.ts';
-import { openPrizes, pickPrize, type Prize, secureRandom, tableFor } from './rules.ts';
+import {
+  MAX_ROLLS_PER_WINDOW,
+  openPrizes,
+  pickPrize,
+  type Prize,
+  secureRandom,
+  tableFor,
+  tooManyRolls,
+} from './rules.ts';
 import { CONTENT_VERSION, TABLES } from './tables.ts';
 
 const prizes: Prize[] = [
@@ -81,4 +89,10 @@ Deno.test('no sold jar holds Pearls for a paid try', () => {
     openPrizes(TABLES.wheel, true).some((p) => (p.pearls ?? 0) > 0),
     false,
   );
+});
+
+Deno.test('a player asking far faster than anyone plays is turned away', () => {
+  assertEquals(tooManyRolls(0), false);
+  assertEquals(tooManyRolls(MAX_ROLLS_PER_WINDOW - 1), false);
+  assertEquals(tooManyRolls(MAX_ROLLS_PER_WINDOW), true);
 });

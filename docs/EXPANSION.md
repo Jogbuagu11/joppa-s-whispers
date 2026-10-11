@@ -91,7 +91,7 @@ Some generators occasionally drop a rare chain (about 10%), worth more in orders
 - Earned from events, wheel, and jars; bought with Pearls.
 
 ### 20.4 Chance-based rewards (casino-style)
-All odds are published in a tappable "See odds" panel on every one of these, as Apple and Google require. (As built, Milestone 29: the wheel, jars, lucky boost, mystery bubbles and the country list are all in one file, `content/chance.json`, and outcomes are drawn on the phone; see PROGRESS.md.) Paid random items are switched off in countries that ban them (currently Belgium; the list lives in `economy.json`).
+All odds are published in a tappable "See odds" panel on every one of these, as Apple and Google require. (As built, Milestone 29: the wheel, jars, lucky boost, mystery bubbles and the country list are all in one file, `content/chance.json`, see PROGRESS.md. Where the player stakes Pearls (a Pearl spin, a bought jar) the prize is drawn by the server's `roll` function when it can be reached, and on the phone by the same table otherwise; free spins, the lucky boost and mystery bubbles are always drawn on the phone.) Paid random items are switched off in countries that ban them (currently Belgium; the list lives in `economy.json`).
 | Feature | How it works |
 |---|---|
 | **Blessing Wheel** | One free spin a day, one more per ad, extra spins for Pearls (cost rises per spin each day). Prizes: Manna, Talents, Pearls, hourglasses, generators, a jackpot Golden Jar. |
@@ -221,7 +221,7 @@ Insert these **before "Release builds"**, which becomes the last milestone (40).
 | `manna_links` | Free Manna link codes, expiry, and claims (one claim per player) |
 
 **Rules:**
-- All chance outcomes are rolled on the server (Edge Function `roll`), so they can't be faked and the odds match what's published.
+- Chance outcomes the player paid Pearls for are rolled on the server (Edge Function `roll`) whenever it can be reached, from the same published table, and every server draw is recorded (`rolls` table: a record of draws, not of prizes handed over). Offline, or if the server holds a different content version, the phone draws by the same odds. As built this keeps honest play honest and auditable; it does not stop a tampered app, because Pearls and prizes are kept in the save on the phone.
 - Social and race data sync when online; the main game stays playable offline.
 
 ---

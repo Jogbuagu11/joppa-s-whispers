@@ -1,6 +1,7 @@
 // Milestone 29: Jars of Clay. A jar on the board shows what it may hold and
 // is opened only on "Open"; jars are sold under the wheel, except where the
 // law forbids buying random rewards.
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -13,6 +14,7 @@ import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
 import 'package:whispers_of_joppa/game/board/board_screen.dart';
+import 'package:whispers_of_joppa/services/prize_roller.dart';
 
 import 'helpers.dart';
 
@@ -26,20 +28,41 @@ class _First implements Random {
   int nextInt(int max) => 0;
 }
 
+/// A server that answers only when the test lets it.
+class _SlowRoller implements PrizeRoller {
+  final answer = Completer<String?>();
+  final asked = <String>[];
+
+  @override
+  Future<String?> roll({
+    required String kind,
+    required int contentVersion,
+    String? jar,
+  }) {
+    asked.add('$kind:$jar');
+    return answer.future;
+  }
+}
+
 Future<dynamic> _content(String name) async =>
     jsonDecode(await rootBundle.loadString('content/$name.json'));
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  Future<BoardGame> open(WidgetTester tester, String country) async {
+  Future<BoardGame> open(
+    WidgetTester tester,
+    String country, {
+    String jar = 'clayjar_01',
+    PrizeRoller? roller,
+  }) async {
     final chapters = (await _content('chapters') as List<dynamic>)
         .cast<Map<String, dynamic>>();
     final orders = (await _content('orders') as List<dynamic>)
         .cast<Map<String, dynamic>>();
     await SaveRepository().save(
       SaveState(
-        items: const [SavedItem(itemId: 'clayjar_01', col: 3, row: 4)],
+        items: [SavedItem(itemId: jar, col: 3, row: 4)],
         generators: const [
           SavedGenerator(generatorId: 'gen_pantry', level: 1, col: 2, row: 8),
         ],
@@ -72,6 +95,7 @@ void main() {
           playTutorial: false,
           luck: _First(),
           country: country,
+          roller: roller,
         ),
       ),
     );
@@ -176,6 +200,45 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(text('pearls_count'), '${20 - price}');
     expect(game.itemCounts()['treasurejar_01'], 1);
+    await close(tester);
+  });
+
+  testWidgets('a bought jar stays on the board while the server draws, and '
+      'gives the prize the server drew', (tester) async {
+    final chance = await _content('chance') as Map<String, dynamic>;
+    final kinds =
+        (chance['jars'] as Map<String, dynamic>)['kinds']
+            as Map<String, dynamic>;
+    // The last prize a paid try can give: not what local luck would draw.
+    final drawn =
+        ((kinds['treasure'] as Map<String, dynamic>)['prizes'] as List<dynamic>)
+            .cast<Map<String, dynamic>>()
+            .lastWhere((p) => p['free_only'] != true);
+    final roller = _SlowRoller();
+    final game = await open(
+      tester,
+      'US',
+      jar: 'treasurejar_01',
+      roller: roller,
+    );
+    await tester.tapAt(centre(tester, 3, 4));
+    await settle(tester);
+    await tester.tap(find.byKey(const Key('jar_open')));
+    await settle(tester);
+    // Asked, not yet answered: the jar is still the player's.
+    expect(roller.asked, ['jar:treasure']);
+    expect(game.itemCounts()['treasurejar_01'], 1);
+    expect(find.byKey(const Key('wheel_prize')), findsNothing);
+    roller.answer.complete(drawn['id'] as String);
+    await settle(tester);
+    expect(
+      tester.widget<Text>(find.byKey(const Key('wheel_prize_name'))).data,
+      drawn['name'],
+    );
+    expect(game.itemCounts()['treasurejar_01'], isNull);
+    await tester.tap(find.byKey(const Key('wheel_prize_ok')));
+    await settle(tester);
+    expect(tester.takeException(), isNull);
     await close(tester);
   });
 

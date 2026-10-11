@@ -129,29 +129,33 @@ mixin _BoardJars on _BoardBubbles {
       // The game may have been swapped for the cloud's meanwhile.
       if (!identical(session, _session) || !mounted) return;
       if (choice == 'sell') sell?.call();
-      // The jar leaves the board first; only then is its prize drawn.
-      if (choice == 'open' && use()) {
-        // A bought jar is drawn by the server where it can be; otherwise,
-        // and for every jar that was given, here. The odds are the same.
-        final drawn = jar.paid
-            ? await widget.roller?.roll(
-                kind: 'jar',
-                jar: jar.id,
-                contentVersion: session.contentBundle.version,
-              )
-            : null;
-        final prize =
-            prizeNamed(jar.prizes, drawn, paid: jar.paid) ??
-            jar.open(random: widget.luck);
-        if (prize == null || !mounted) return;
-        _givePrize(session, prize);
-        await showPrize(
-          context,
-          text: text,
-          prize: prize,
-          picture: _prizePicture(session, prize),
-        );
-      }
+      if (choice != 'open') return;
+      // A bought jar is drawn by the server where it can be; otherwise,
+      // and for every jar that was given, here. The odds are the same.
+      // The jar stays on the board while the server is asked: if the game
+      // is closed while waiting, the jar is still there.
+      final drawn = jar.paid
+          ? await widget.roller?.roll(
+              kind: 'jar',
+              jar: jar.id,
+              contentVersion: session.contentBundle.version,
+            )
+          : null;
+      if (!identical(session, _session)) return;
+      final prize =
+          prizeNamed(jar.prizes, drawn, paid: jar.paid) ??
+          jar.open(random: widget.luck);
+      // Nothing waits between the jar leaving the board and its prize
+      // being given: both happen, or neither.
+      if (prize == null || !use()) return;
+      _givePrize(session, prize);
+      if (!mounted) return;
+      await showPrize(
+        context,
+        text: text,
+        prize: prize,
+        picture: _prizePicture(session, prize),
+      );
     } finally {
       _popupOpen = false;
     }

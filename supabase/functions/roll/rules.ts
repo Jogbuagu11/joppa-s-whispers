@@ -61,3 +61,11 @@ export function secureRandom(): number {
   crypto.getRandomValues(buffer);
   return buffer[0] / 0x100000000;
 }
+
+// A player cannot stake Pearls faster than this; a program asking over and
+// over (to fill the table, or to fish for a prize) is turned away.
+export const ROLL_WINDOW_MS = 60_000;
+export const MAX_ROLLS_PER_WINDOW = 20;
+
+/** Whether a player with [recent] draws in the last window has had enough. */
+export const tooManyRolls = (recent: number): boolean => recent >= MAX_ROLLS_PER_WINDOW;
