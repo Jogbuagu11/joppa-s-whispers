@@ -23,6 +23,11 @@ abstract final class GamePalette {
   /// Pearls: pearl white with a touch of rose.
   static const pearls = Color(0xFFF1DDD0);
 
+  /// In an offer's list of gifts: Pearls a warm rose, items a soft sea
+  /// blue, so each kind of gift reads apart from the cream text.
+  static const offerPearls = Color(0xFFF2B8A8);
+  static const offerItem = Color(0xFF8FC4CF);
+
   /// Manna: honey.
   static const manna = Color(0xFFF2CE7E);
 

@@ -28,12 +28,43 @@ class OfferGift {
   /// The item's picture, if it has one.
   final String? asset;
 
+  /// The part of [words] to pick out in the gift's own colour (its
+  /// amount); empty colours the whole line softly instead.
+  final String amount;
+
   const OfferGift({
     required this.words,
     required this.icon,
     required this.color,
     this.asset,
+    this.amount = '',
   });
+
+  /// [words] as pieces of text: the amount large and in the gift's colour,
+  /// the rest in cream. A gift with no amount (an item) is tinted whole.
+  List<TextSpan> get spans {
+    final at = amount.isEmpty ? -1 : words.indexOf(amount);
+    if (at < 0) {
+      return [
+        TextSpan(
+          text: words,
+          style: TextStyle(color: Color.lerp(_cream, color, 0.45)),
+        ),
+      ];
+    }
+    return [
+      if (at > 0) TextSpan(text: words.substring(0, at)),
+      TextSpan(
+        text: amount,
+        style: TextStyle(
+          color: color,
+          fontSize: 21,
+          fontWeight: FontWeight.w900,
+        ),
+      ),
+      TextSpan(text: words.substring(at + amount.length)),
+    ];
+  }
 }
 
 /// "2:05:09" for a time left; "0:00" once it is over.
@@ -99,7 +130,11 @@ class OfferCountdown extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.hourglass_bottom, size: 16, color: _cream),
+            const Icon(
+              Icons.hourglass_bottom,
+              size: 16,
+              color: GamePalette.manna,
+            ),
             const SizedBox(width: 6),
             Text(
               words.replaceAll('{time}', formatTimeLeft(left)),
@@ -170,8 +205,8 @@ class OfferGiftList extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      gift.words,
+                    child: Text.rich(
+                      TextSpan(children: gift.spans),
                       style: const TextStyle(
                         color: _cream,
                         fontSize: 17,

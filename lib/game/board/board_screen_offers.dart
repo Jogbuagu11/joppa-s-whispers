@@ -107,18 +107,21 @@ mixin _BoardOffers on _BoardWheel {
       if (gives.pearls > 0)
         OfferGift(
           words: say('offer_pearls', gives.pearls),
+          amount: '${gives.pearls}',
           icon: Icons.circle,
-          color: GamePalette.pearls,
+          color: GamePalette.offerPearls,
         ),
       if (gives.manna > 0)
         OfferGift(
           words: say('offer_manna', gives.manna),
+          amount: '${gives.manna}',
           icon: Icons.bolt,
           color: GamePalette.manna,
         ),
       if (gives.talents > 0)
         OfferGift(
           words: say('offer_talents', gives.talents),
+          amount: '${gives.talents}',
           icon: Icons.paid,
           color: GamePalette.talents,
         ),
@@ -127,7 +130,7 @@ mixin _BoardOffers on _BoardWheel {
           OfferGift(
             words: item.name,
             icon: Icons.card_giftcard,
-            color: GamePalette.gold,
+            color: GamePalette.offerItem,
             asset: item.asset.isEmpty ? null : item.asset,
           ),
     ];
