@@ -1528,6 +1528,17 @@ times." Built:
   lettering. Pictures: `Downloads/WhispersofJoppa-art-review/wheel-font/`.
   **Approved by Jennifer ("good", 2026-10-11).**
 
+- "the you received manna modal needs to be enhanced": the "You received" pop-up (wheel,
+  jars, mystery bubbles) is rebuilt (`lib/features/wheel/prize_popup.dart`): the prize in
+  a gold medallion that springs in, in a burst of light of the prize's own colour (the
+  item's picture for an item), its name large and tinted, the offer pop-up's gold edge
+  ornaments, and the confetti shower. Pictures:
+  `Downloads/WhispersofJoppa-art-review/you-received/`. Not yet approved by her.
+- Server-side roll (her yes to question 4): `supabase/functions/roll/` and
+  `…_rolls.sql` are written and tested but not deployed, and the game does not call them
+  yet. After any change to `content/chance.json` run `python3 tool/sync_server_chance.py`
+  (a server test fails otherwise).
+
 **NOT live.** The live server is unchanged. See "Deploy order" in TECH_SPEC section 6:
 migration 1, then `verify-purchase`, then the seed, then a build. Jennifer has said yes
 to these live changes (2026-10-11, question 3).

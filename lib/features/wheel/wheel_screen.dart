@@ -20,7 +20,11 @@ class WheelScreen extends StatefulWidget {
     this.below,
     this.moreOdds = const [],
     this.pearlsChanged,
+    this.pictureOf,
   });
+
+  /// The picture of a prize that is an item, if it has one.
+  final String? Function(Prize prize)? pictureOf;
 
   /// Fires when the player's Pearls change (a jar bought below), so the
   /// Pearl spin's button keeps up.
@@ -96,7 +100,13 @@ class _WheelScreenState extends State<WheelScreen>
       _to = _from.floorToDouble() + 4 + rest;
       await _turn.forward(from: 0);
       if (!mounted) return;
-      await showPrize(context, text: widget.text, prize: prize, onWheel: true);
+      await showPrize(
+        context,
+        text: widget.text,
+        prize: prize,
+        picture: widget.pictureOf?.call(prize),
+        onWheel: true,
+      );
     } finally {
       if (mounted) setState(() => _spinning = false);
     }
@@ -275,12 +285,7 @@ class _WheelScreenState extends State<WheelScreen>
           foregroundColor: GamePalette.onAction,
           disabledBackgroundColor: GamePalette.panelLight,
           disabledForegroundColor: GamePalette.muted,
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            fontFamily: wheelFontFamily,
-            fontFamilyFallback: wheelFontFallback,
-          ),
+          textStyle: wheelButtonText,
         ),
         onPressed: enabled ? () => _spin(kind) : null,
         icon: Icon(icon, size: 20),

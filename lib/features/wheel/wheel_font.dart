@@ -6,6 +6,14 @@ import 'package:flutter/material.dart';
 const wheelFontFamily = 'LilitaOne';
 const wheelFontFallback = <String>[];
 
+/// The lettering of the wheel's own big buttons.
+const wheelButtonText = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.bold,
+  fontFamily: wheelFontFamily,
+  fontFamilyFallback: wheelFontFallback,
+);
+
 /// Gives everything under it the wheel's lettering.
 class WheelFont extends StatelessWidget {
   const WheelFont({super.key, required this.child, this.enabled = true});

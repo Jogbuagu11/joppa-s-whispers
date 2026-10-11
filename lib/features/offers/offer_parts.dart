@@ -224,8 +224,14 @@ class OfferGiftList extends StatelessWidget {
 }
 
 class OfferBuyButton extends StatelessWidget {
-  const OfferBuyButton({super.key, required this.label, this.onPressed});
+  const OfferBuyButton({
+    super.key,
+    required this.label,
+    this.onPressed,
+    this.buttonKey = const Key('offer_buy'),
+  });
 
+  final Key buttonKey;
   final String label;
   final VoidCallback? onPressed;
 
@@ -235,7 +241,7 @@ class OfferBuyButton extends StatelessWidget {
     child: SizedBox(
       width: double.infinity,
       child: FilledButton(
-        key: const Key('offer_buy'),
+        key: buttonKey,
         onPressed: onPressed,
         style: FilledButton.styleFrom(
           backgroundColor: GamePalette.action,

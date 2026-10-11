@@ -9,7 +9,10 @@ import 'package:whispers_of_joppa/app/game_palette.dart';
 /// studs down the sides, gems at the middle of each edge, rays of light
 /// behind the title and a scatter of sparkles.
 class OfferEdgePainter extends CustomPainter {
-  const OfferEdgePainter();
+  const OfferEdgePainter({this.rays = true});
+
+  /// The rays behind a title ribbon at the top (for a panel that has one).
+  final bool rays;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -29,10 +32,10 @@ class OfferEdgePainter extends CustomPainter {
     // Rays of light fanning out behind the title ribbon.
     const from = Offset(0, 96);
     final centre = from.translate(size.width / 2, 0);
-    final rays = Paint()..color = const Color(0x22FFE9A8);
+    final light = Paint()..color = const Color(0x22FFE9A8);
     canvas
       ..save()
-      ..clipRect(Rect.fromLTWH(0, 0, size.width, 132));
+      ..clipRect(Rect.fromLTWH(0, 0, size.width, rays ? 132 : 0));
     for (int i = 0; i < 14; i++) {
       final a = -pi + i * pi / 13;
       const half = 0.045;
@@ -48,7 +51,7 @@ class OfferEdgePainter extends CustomPainter {
             centre.dy + sin(a + half) * 400,
           )
           ..close(),
-        rays,
+        light,
       );
     }
     canvas.restore();
@@ -200,5 +203,33 @@ class OfferEdgePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(OfferEdgePainter old) => false;
+  bool shouldRepaint(OfferEdgePainter old) => old.rays != rays;
+}
+
+/// The edge ornaments as a decoration, so they are drawn over a panel.
+class OfferOrnaments extends Decoration {
+  const OfferOrnaments({this.rays = true});
+
+  final bool rays;
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) =>
+      _OrnamentBox(OfferEdgePainter(rays: rays));
+}
+
+class _OrnamentBox extends BoxPainter {
+  _OrnamentBox(this.painter);
+
+  final OfferEdgePainter painter;
+
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final size = configuration.size;
+    if (size == null) return;
+    canvas
+      ..save()
+      ..translate(offset.dx, offset.dy);
+    painter.paint(canvas, size);
+    canvas.restore();
+  }
 }

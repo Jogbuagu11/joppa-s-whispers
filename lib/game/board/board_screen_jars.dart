@@ -134,7 +134,12 @@ mixin _BoardJars on _BoardBubbles {
         final prize = jar.open(random: widget.luck);
         if (prize == null) return;
         _givePrize(session, prize);
-        await showPrize(context, text: text, prize: prize);
+        await showPrize(
+          context,
+          text: text,
+          prize: prize,
+          picture: _prizePicture(session, prize),
+        );
       }
     } finally {
       _popupOpen = false;

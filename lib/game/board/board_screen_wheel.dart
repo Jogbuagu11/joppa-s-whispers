@@ -84,6 +84,12 @@ mixin _BoardWheel on _BoardItems {
     return WheelRules.fromJson(wheel);
   }
 
+  /// The picture of a prize that is an item, if the item has one.
+  String? _prizePicture(BoardSession session, Prize prize) {
+    final item = session.game.itemCatalog[prize.items.firstOrNull ?? prize.id];
+    return item == null || item.asset.isEmpty ? null : item.asset;
+  }
+
   /// The banner ad under the board. A fixed height is kept for it whenever
   /// it may show, so the board does not jump when an ad arrives; players
   /// who have bought anything never see it, nor does anyone in the tutorial.
@@ -216,6 +222,7 @@ mixin _BoardWheel on _BoardItems {
             text: _chanceText,
             below: _jarShop(session),
             pearlsChanged: session.purchases,
+            pictureOf: (prize) => _prizePicture(session, prize),
             moreOdds: [
               if (_luckyBoost case final lucky?)
                 (

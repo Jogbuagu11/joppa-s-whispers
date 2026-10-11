@@ -145,6 +145,7 @@ mixin _BoardBubbles on _BoardWheel {
           context,
           text: _chanceText,
           prize: Prize(id: held.itemId, name: held.name, weight: 1),
+          picture: held.asset.isEmpty ? null : held.asset,
         );
       }
     } finally {

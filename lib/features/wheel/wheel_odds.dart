@@ -1,4 +1,6 @@
 // The list of prizes with their chances, and the "See odds" panel.
+export 'package:whispers_of_joppa/features/wheel/prize_popup.dart';
+
 import 'package:whispers_of_joppa/features/wheel/wheel_font.dart';
 import 'package:whispers_of_joppa/app/game_dialog.dart';
 import 'package:flutter/material.dart';
@@ -155,40 +157,6 @@ Future<void> showWheelOdds(
           key: const Key('odds_close'),
           onPressed: () => Navigator.of(context).pop(),
           child: Text(text['close'] ?? ''),
-        ),
-      ],
-    ),
-  ),
-);
-
-/// Tells the player what they have just been given.
-Future<void> showPrize(
-  BuildContext context, {
-  required Map<String, String> text,
-  required Prize prize,
-  bool onWheel = false,
-}) => showDialog<void>(
-  context: context,
-  builder: (context) => WheelFont(
-    // The wheel's own lettering only for a prize from the wheel.
-    enabled: onWheel,
-    child: GameDialog(
-      key: const Key('wheel_prize'),
-      icon: Icons.card_giftcard,
-      title: Text(
-        text['won_title'] ?? '',
-        style: const TextStyle(color: GamePalette.gold),
-      ),
-      content: Text(
-        prize.name,
-        key: const Key('wheel_prize_name'),
-        style: const TextStyle(color: Color(0xFFF3E5C8), fontSize: 18),
-      ),
-      actions: [
-        FilledButton(
-          key: const Key('wheel_prize_ok'),
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(text['won_button'] ?? ''),
         ),
       ],
     ),

@@ -130,7 +130,7 @@ class _OfferDialogState extends State<_OfferDialog> {
                   margin: const EdgeInsets.only(top: 14, right: 6),
                   decoration: offerPanelDecoration,
                   // Gold ornaments along the edges, over the picture too.
-                  foregroundDecoration: const _Ornaments(),
+                  foregroundDecoration: const OfferOrnaments(),
                   clipBehavior: Clip.antiAlias,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -218,26 +218,5 @@ class _OfferDialogState extends State<_OfferDialog> {
         ),
       ),
     );
-  }
-}
-
-/// The edge ornaments as a decoration, so they are drawn over the panel.
-class _Ornaments extends Decoration {
-  const _Ornaments();
-
-  @override
-  BoxPainter createBoxPainter([VoidCallback? onChanged]) => _OrnamentBox();
-}
-
-class _OrnamentBox extends BoxPainter {
-  @override
-  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
-    final size = configuration.size;
-    if (size == null) return;
-    canvas
-      ..save()
-      ..translate(offset.dx, offset.dy);
-    const OfferEdgePainter().paint(canvas, size);
-    canvas.restore();
   }
 }
