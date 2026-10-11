@@ -128,6 +128,14 @@ void main() {
     for (int i = 0; i < 200 && board.evaluate().isEmpty; i++) {
       await tester.pump(const Duration(milliseconds: 100));
     }
+    // The timed offer that greets the player, while its confetti falls.
+    final offer = find.byKey(const Key('offer_popup'));
+    for (int i = 0; i < 100 && offer.evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
+    await wait(4);
+    await shot('00_timed_offer');
+    await tester.tap(find.byKey(const Key('offer_no_thanks')));
     await wait(15);
 
     Offset centre(int col, int row) {
@@ -149,11 +157,6 @@ void main() {
       await tester.tap(find.byKey(Key(key)));
       await wait();
     }
-
-    // The timed offer that greets the player.
-    await wait(10);
-    await shot('00_timed_offer');
-    await tapKey('offer_no_thanks');
 
     // The Joppa Special.
     await tapOnStrip(tester, 'special_button');

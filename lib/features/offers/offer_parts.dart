@@ -12,6 +12,8 @@ const offerPanelDecoration = BoxDecoration(
     BorderSide(color: GamePalette.talents, width: 3),
   ),
   boxShadow: [
+    // A warm glow round the whole panel, over a deep shadow.
+    BoxShadow(color: Color(0x88E9B44C), blurRadius: 26, spreadRadius: 2),
     BoxShadow(color: Color(0xCC000000), blurRadius: 28, offset: Offset(0, 12)),
   ],
 );
@@ -139,9 +141,20 @@ class OfferGiftList extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: Row(
                 children: [
-                  SizedBox(
-                    width: 40,
-                    height: 40,
+                  Container(
+                    width: 44,
+                    height: 44,
+                    // A soft glow behind each gift.
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          gift.color.withValues(alpha: 0.35),
+                          gift.color.withValues(alpha: 0),
+                        ],
+                      ),
+                    ),
+                    alignment: Alignment.center,
                     child: switch (gift.asset) {
                       final String asset => ClipRRect(
                         borderRadius: BorderRadius.circular(8),

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/app/purchase_coordinator.dart';
 import 'package:whispers_of_joppa/domain/offers.dart';
+import 'package:whispers_of_joppa/features/offers/offer_confetti.dart';
+import 'package:whispers_of_joppa/features/offers/offer_festive.dart';
 import 'package:whispers_of_joppa/features/offers/offer_parts.dart';
 import 'package:whispers_of_joppa/features/shop/special_parts.dart';
 
@@ -127,6 +129,8 @@ class _OfferDialogState extends State<_OfferDialog> {
                 Container(
                   margin: const EdgeInsets.only(top: 14, right: 6),
                   decoration: offerPanelDecoration,
+                  // Gold ornaments along the edges, over the picture too.
+                  foregroundDecoration: const _Ornaments(),
                   clipBehavior: Clip.antiAlias,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -199,6 +203,8 @@ class _OfferDialogState extends State<_OfferDialog> {
                     ],
                   ),
                 ),
+                // A short shower of confetti as it opens.
+                const Positioned.fill(child: OfferConfetti()),
                 Positioned(
                   top: 0,
                   right: 0,
@@ -212,5 +218,26 @@ class _OfferDialogState extends State<_OfferDialog> {
         ),
       ),
     );
+  }
+}
+
+/// The edge ornaments as a decoration, so they are drawn over the panel.
+class _Ornaments extends Decoration {
+  const _Ornaments();
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) => _OrnamentBox();
+}
+
+class _OrnamentBox extends BoxPainter {
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final size = configuration.size;
+    if (size == null) return;
+    canvas
+      ..save()
+      ..translate(offset.dx, offset.dy);
+    const OfferEdgePainter().paint(canvas, size);
+    canvas.restore();
   }
 }
