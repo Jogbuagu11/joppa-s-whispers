@@ -187,7 +187,7 @@ $("signoutBtn").onclick = async () => {
   await db.auth.signOut();
   await enter();
 };
-$("newEventBtn").onclick = () => openEvent(null);
+$("newEventBtn").onclick = () => openEvent(null, $("newEventKind").value);
 $("cancelEventBtn").onclick = () => {
   $("eventForm").hidden = true;
 };

@@ -39,7 +39,7 @@
 | 29 | Chance features | BUILT — not tagged: Jennifer has not yet played it; store age-rating answers must be updated before release |
 | 30 | Offers & pop-ups | Built and live on the server; needs Jennifer's sandbox purchase |
 | 31 | Treasure Jar & pass tiers | Built; server NOT yet updated (needs Jennifer's OK); needs Jennifer's sandbox purchase |
-| 32 | Event suite | Not started |
+| 32 | Event suite | In progress: part 1 built (milestone, energy, collect, order events); daily tasks, race and global goal to come |
 | 33 | Pilgrim's Road | Not started |
 | 34 | Social: profiles & friends | Not started |
 | 35 | Prayer & Church Circles | Not started |
@@ -1477,6 +1477,40 @@ Where it stands (she has seen each step; the last one is not yet approved):
   that Apple's side was already set up; corrected the same day. Until it is stored,
   iPhone purchases answer "try again later". Also still open from the list above: store
   notification addresses (Apple and Google), and the daily sweep.
+
+## Milestone 32 — state (2026-10-11, in progress): the event suite
+
+Built in parts. Milestone 31 is not yet approved by a real purchase; Jennifer said
+"continue", so this was started (her standing instruction of 2026-10-05).
+
+**Part 1, BUILT: four goal events on the ordinary board**
+- Milestone event (counts Talents earned from orders), energy event (Manna spent),
+  collect event (a token found in some merges), order event (tokens with each order).
+  Several can run at once.
+- An "Events" button (a cup) appears in the row above the board while any is on for the
+  player. Its pop-up lists each event: what to do, a progress bar, the count, the next
+  reward and the time left. A line at the bottom of the screen says when a reward is won.
+- They open at the levels already planned: milestone events at 7, the other three at 18.
+- The admin panel can make all four ("New event" now has a kind to choose) and checks
+  them the way the game does. The published copy (`web/public/admin`) is updated.
+- Two first events are written as a server change for Jennifer to run
+  (`supabase/migrations/20261011000005_first_goal_events.sql`): "Harvest Gathering"
+  (milestone, 5 days) and "Lamps of Joppa" (energy, 2 days), starting when it is run.
+- Tests: 944 unit, 70 server and admin-panel tests; device test `goal_events_test`.
+- Picture: `~/Downloads/WhispersofJoppa-art-review/milestone-32/15_events.png`.
+
+**Assumptions to confirm (Part 1)**
+- A collect event's item is a count, not a thing on the board (it never takes a square).
+- Rewards and names of the two first events are Claude's.
+- Energy events also count Manna spent on the feast event's board.
+
+**Still to build in Milestone 32**
+- Daily tasks (5 a day, a chest for all 5, a weekly chest).
+- Race to the Harbor (planned: the four rivals are named townsfolk of Joppa played by
+  the game, not presented as real players).
+- Global feast goal (needs a new server table and function).
+- Event-ending offers (EXPANSION 21.1).
+- Prayer Circle challenge belongs with Milestone 35, Pilgrim's Road is Milestone 33.
 
 ## Milestone 31 — state (2026-10-11): Treasure Jar and season pass tiers
 

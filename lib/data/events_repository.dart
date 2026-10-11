@@ -6,6 +6,8 @@ import 'dart:io';
 
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:whispers_of_joppa/data/goal_event_validator.dart';
+import 'package:whispers_of_joppa/domain/goal_events.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/event_validator.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
@@ -38,8 +40,18 @@ class EventsRepository {
   /// Every playable event known right now. Never throws.
   Future<List<EventModel>> load() async {
     final rows = await _fromServer() ?? await _fromCache() ?? await _bundled();
+    _rows = rows;
     return playableEvents(rows);
   }
+
+  List<Object?> _rows = const [];
+
+  /// The goal events (played on the ordinary board) among the rows that
+  /// [load] last read.
+  List<GoalEvent> goalEvents() => playableGoalEvents(
+    _rows,
+    problems: (p) => _log.warning('Goal event left out: $p'),
+  );
 
   Future<List<Object?>?> _fromServer() async {
     final source = remote;
@@ -84,6 +96,8 @@ List<EventModel> playableEvents(List<Object?> rows) {
   final seen = <String>{};
   final events = <EventModel>[];
   for (final row in rows) {
+    // A goal event has no board of its own: it is read elsewhere.
+    if (isGoalEventRow(row)) continue;
     final problems = eventProblems(row);
     if (problems.isNotEmpty) {
       _log.warning('Event left out: ${problems.join('; ')}');

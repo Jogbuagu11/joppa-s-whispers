@@ -282,6 +282,13 @@ On every launch and when the app returns to the foreground, read the purchase st
 - Limits: rewards a pass has already paid are not taken back on refund; the exclusive decoration waits for decorations (Milestone 36).
 - **Server steps for a pass to work:** deploy `verify-purchase`; add `pass` to the event's `config` in the `events` table (the admin panel's event editor).
 
+### Goal events (Milestone 32 part 1, EXPANSION section 22)
+- Short events played on the ordinary board, several at once. They are rows of the same `events` table; what marks one is `config.type`: `milestone` (counts Talents earned from orders), `energy` (Manna spent, on either board), `collect` (a token drops from `drop_percent` of merges), `order` (`per_order` tokens with each order). A row with no `type` is a feast event with its own board.
+- `config` also carries `blurb` (what to do), `token` (what is counted, in words) and `milestones` (`points` plus `pearls`, `manna`, `talents`, `items`). Checked by `lib/data/goal_event_validator.dart` and, in the admin panel, `admin/event_rules.js` (kept in step by hand; both have tests).
+- Each kind opens at its level in `content/levels.json` (`milestone_event`, `energy_event`, `collect_event`, `order_event`), after the tutorial.
+- Progress is in the save under `extras.goal_events` (`{event id: {points, paid}}`); progress in events the server no longer lists is dropped. Rewards are given on the phone, like the feast event's.
+- Builds before 26 pass over rows with a `type`.
+
 ### Paid chance: the `roll` function (Milestone 29/30)
 - A Pearl spin of the Blessing Wheel and a bought Jar of Clay are drawn by the `roll` Edge Function when it can be reached (signed in, online, answer within 4 seconds, same content version); otherwise the phone draws from the same table. Free tries never go to the server.
 - The app asks the server FIRST and takes the Pearls (or the jar) only once it has an answer or has given up, in the same step that gives the prize. Closing the game while waiting costs nothing.

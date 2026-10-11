@@ -33,7 +33,10 @@ mixin _BoardLayout on _BoardItems, _BoardEvents, _BoardBubbles, _BoardWheel {
                         session.extras,
                       ]),
                       builder: (context, _) => BoardStrip(
-                        moreButtons: _wheelButton(session),
+                        moreButtons: [
+                          ?_goalsButton(session),
+                          ..._wheelButton(session),
+                        ],
                         story: session.story,
                         onDoTask: _doNextTask,
                         onOpenLocation: _openLocation,

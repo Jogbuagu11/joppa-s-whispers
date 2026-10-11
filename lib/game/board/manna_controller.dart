@@ -43,13 +43,18 @@ class MannaController extends ChangeNotifier {
 
   /// Sets Manna after a spend. The regen clock starts now if the bar was full.
   void setAfterSpend(int manna) {
+    final spent = _state.manna - manna;
     final wasFull = _state.manna >= config.maxManna;
     _state = MannaState(
       manna: manna,
       lastRegen: wasFull ? _now() : _state.lastRegen,
     );
     notifyListeners();
+    if (spent > 0) onSpent?.call(spent);
   }
+
+  /// Told how much Manna each spend took (an energy event counts it).
+  void Function(int amount)? onSpent;
 
   /// Adds bought or gifted Manna. It may go above the bar; the bar then
   /// simply stops refilling until Manna is spent back below it.

@@ -34,6 +34,13 @@
       <h2>Events</h2>
       <div class="card">
         <table><thead><tr><th>Event</th><th>Starts</th><th>Ends</th><th>Players see it?</th><th></th></tr></thead><tbody id="eventRows"></tbody></table>
+        <select id="newEventKind" aria-label="Kind of event">
+          <option value="">Feast event (its own board)</option>
+          <option value="milestone">Milestone event (Talents from orders)</option>
+          <option value="energy">Energy event (Manna spent)</option>
+          <option value="collect">Collect event (found in merges)</option>
+          <option value="order">Order event (comes with orders)</option>
+        </select>
         <button id="newEventBtn">New event</button>
         <div id="eventsMsg" class="msg"></div>
       </div>
@@ -48,7 +55,7 @@
           <div><label for="evEnd">Ends (your local time)</label><input id="evEnd" type="datetime-local"></div>
         </div>
         <label><input id="evActive" type="checkbox">Switched on (players can see it between its start and end)</label>
-        <label for="evConfig">Board, chain, generator and reward steps</label>
+        <label for="evConfig">Settings (a feast event: board, chain, generator, reward steps; the other kinds: what to do, what is counted, reward steps)</label>
         <textarea id="evConfig" spellcheck="false"></textarea>
         <div class="hint">On an event that is already running, only add reward steps at the end. Do not insert, reorder or remove steps.</div>
         <button id="saveEventBtn">Check and save</button>

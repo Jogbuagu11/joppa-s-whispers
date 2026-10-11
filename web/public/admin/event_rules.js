@@ -38,6 +38,8 @@ function eventProblems(ev) {
   else if (e <= s) p.push("The event must end after it starts.");
   const c = ev.config;
   if (!c || typeof c !== "object") return p.concat("The settings box is empty.");
+  // A goal event (played on the ordinary board) has its own checks.
+  if (c.type != null) return p.concat(goalConfigProblems(c));
   const cols = c.board && c.board.cols, rows = c.board && c.board.rows;
   if (
     !Number.isInteger(cols) || !Number.isInteger(rows) || cols < 3 || cols > 7 || rows < 3 ||
@@ -120,6 +122,91 @@ function eventProblems(ev) {
       else if (manna > 500 || talents > 5000) {
         p.push("Step at " + step.points + " gives too much (max 500 Manna, 5000 Talents).");
       }
+    }
+  }
+  return p;
+}
+
+// Goal events: short events played on the ordinary board. The settings to
+// start each kind from, and the checks the game makes.
+// Keep in step with lib/data/goal_event_validator.dart.
+const GOAL_TEMPLATES = {
+  milestone: {
+    type: "milestone",
+    blurb: "Deliver orders: every Talent you earn counts.",
+    token: "Talents earned",
+    milestones: [{ points: 100, manna: 15 }, { points: 300, talents: 60 }],
+  },
+  energy: {
+    type: "energy",
+    blurb: "Every Manna you spend counts.",
+    token: "Manna spent",
+    milestones: [{ points: 50, talents: 40 }, { points: 150, manna: 20 }],
+  },
+  collect: {
+    type: "collect",
+    blurb: "Merge items: now and then one is found.",
+    token: "Olive branches",
+    drop_percent: 20,
+    milestones: [{ points: 5, manna: 15 }, { points: 15, talents: 80 }],
+  },
+  order: {
+    type: "order",
+    blurb: "Every order you deliver comes with one.",
+    token: "Festival ribbons",
+    per_order: 1,
+    milestones: [{ points: 5, manna: 15 }, { points: 15, talents: 80 }],
+  },
+};
+
+function goalConfigProblems(c) {
+  const p = [];
+  if (!Object.keys(GOAL_TEMPLATES).includes(c.type)) {
+    return ['"type" must be milestone, energy, collect or order (or left out for a board event).'];
+  }
+  for (const key of ["blurb", "token"]) {
+    const w = c[key];
+    if (typeof w !== "string" || w.trim() === "" || w.length > 120) {
+      p.push('"' + key + '" must be 1 to 120 characters.');
+    }
+  }
+  if (
+    c.type === "collect" &&
+    (!Number.isInteger(c.drop_percent) || c.drop_percent < 1 || c.drop_percent > 100)
+  ) p.push("drop_percent must be 1 to 100.");
+  const per = c.per_order == null ? 1 : c.per_order;
+  if (c.type === "order" && (!Number.isInteger(per) || per < 1 || per > 20)) {
+    p.push("per_order must be 1 to 20.");
+  }
+  const m = c.milestones;
+  if (!Array.isArray(m) || m.length === 0 || m.length > 40) {
+    return p.concat("There must be 1 to 40 reward steps.");
+  }
+  const most = { pearls: 100, manna: 500, talents: 5000 };
+  let last = 0;
+  for (const step of m) {
+    if (!step || !Number.isInteger(step.points) || step.points <= last) {
+      p.push("Reward step points must keep rising.");
+      break;
+    }
+    last = step.points;
+    let gives = false, bad = false;
+    for (const [key, max] of Object.entries(most)) {
+      const n = step[key] == null ? 0 : step[key];
+      if (!Number.isInteger(n) || n < 0 || n > max) bad = true;
+      else if (n > 0) gives = true;
+    }
+    const items = step.items == null ? [] : step.items;
+    if (
+      !Array.isArray(items) || items.length > 3 ||
+      items.some((id) => typeof id !== "string" || id === "")
+    ) bad = true;
+    else if (items.length > 0) gives = true;
+    if (bad || !gives) {
+      p.push(
+        "Step at " + step.points +
+          " gives nothing or too much (max 100 Pearls, 500 Manna, 5000 Talents, 3 items).",
+      );
     }
   }
   return p;

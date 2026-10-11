@@ -77,7 +77,7 @@ async function loadEvents() {
   else say("eventsMsg", "");
 }
 
-function openEvent(ev) {
+function openEvent(ev, kind) {
   editingId = ev ? ev.id : null;
   $("eventForm").hidden = false;
   $("eventFormTitle").textContent = ev ? "Edit event" : "New event";
@@ -87,7 +87,9 @@ function openEvent(ev) {
   $("evStart").value = ev ? toLocalInput(ev.starts_at) : "";
   $("evEnd").value = ev ? toLocalInput(ev.ends_at) : "";
   $("evActive").checked = ev ? ev.is_active : false;
-  $("evConfig").value = JSON.stringify(ev ? ev.config : TEMPLATE, null, 2);
+  // A new event starts from the settings of the kind chosen.
+  const start = (kind && GOAL_TEMPLATES[kind]) || TEMPLATE;
+  $("evConfig").value = JSON.stringify(ev ? ev.config : start, null, 2);
   $("deleteEventBtn").hidden = !ev;
   say("eventMsg", "");
   $("eventForm").scrollIntoView({ behavior: "smooth" });

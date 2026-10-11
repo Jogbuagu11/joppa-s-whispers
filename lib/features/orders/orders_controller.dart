@@ -91,6 +91,9 @@ class OrdersController extends ChangeNotifier {
       (skipAllowed?.call() ?? true) &&
       canSkipOrder(config, _book, _now(), available: _available);
 
+  /// The Talents the order called [orderId] pays (0 if there is none).
+  int talentsFor(String orderId) => _orders[orderId]?.talents ?? 0;
+
   /// Takes the items off the board, pays the rewards and shows the next order.
   /// Returns false, changing nothing, if the board does not have the items.
   bool deliver(String orderId) {

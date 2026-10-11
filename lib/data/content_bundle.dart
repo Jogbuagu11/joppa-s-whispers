@@ -141,6 +141,19 @@ const boardTextKeys = [
   'bubble_pearls',
   'bubble_ad',
   'bubble_leave',
+  // Goal events (EXPANSION section 22).
+  'goal_button',
+  'goal_title',
+  'goal_none',
+  'goal_left',
+  'goal_count',
+  'goal_next',
+  'goal_done',
+  'goal_toast',
+  'goal_pearls',
+  'goal_manna',
+  'goal_talents',
+  'goal_close',
   // Not words: the picture behind everything above the board.
   'header_background',
   // The first-launch welcome.

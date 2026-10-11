@@ -13,8 +13,130 @@ mixin _BoardEvents on _BoardRoutes {
     final events = widget.events;
     if (events == null) return;
     final event = currentEvent(await events.load(), DateTime.now());
+    if (!mounted) return;
+    _wireGoals(events.goalEvents());
     // Always the freshest copy, so a correction on the server is picked up.
-    if (mounted && !_eventOpen) setState(() => _event = event);
+    if (!_eventOpen) setState(() => _event = event);
+  }
+
+  /// The board's small wording (see the items part of this screen).
+  Map<String, String> get _boardText;
+
+  /// The goal events (played on this board) of the game in play.
+  GoalEventsController? _goals;
+  BoardSession? _goalsFor;
+
+  /// Whether goal events of [kind] are open to this player: from that
+  /// kind's level on, after the tutorial, not in a game played from memory.
+  bool _goalOpen(BoardSession session, GoalKind kind) {
+    final unlock = session.levels.config.unlock(goalKindFeatures[kind] ?? '');
+    return unlock != null &&
+        session.tutorial.isOver &&
+        !session.downgraded &&
+        session.levels.level >= unlock.level;
+  }
+
+  /// Starts goal events for the game in play (once for each game), or
+  /// hands the one already started the freshest list.
+  void _wireGoals(List<GoalEvent> events) {
+    final session = _session;
+    if (session == null) return;
+    if (identical(session, _goalsFor)) return _goals?.replaceEvents(events);
+    _goals?.dispose();
+    _goalsFor = session;
+    final goals = _goals = GoalEventsController(
+      events: events,
+      extras: session.extras,
+      open: (kind) => _goalOpen(session, kind),
+      grant: (reward) {
+        if (reward.manna > 0) session.manna.add(reward.manna);
+        if (reward.talents > 0) session.orders.addTalents(reward.talents);
+        if (reward.pearls > 0) session.purchases.earnPearls(reward.pearls);
+        if (reward.items.isNotEmpty) {
+          session.grants.give(itemIds: reward.items);
+        }
+      },
+      random: widget.luck,
+    );
+    final onDelivered = session.orders.onDelivered;
+    session.orders.onDelivered = (id) {
+      onDelivered?.call(id);
+      goals.orderDelivered(session.orders.talentsFor(id));
+    };
+    final onMerge = session.game.onMerge;
+    session.game.onMerge = () {
+      onMerge?.call();
+      goals.merged();
+    };
+    session.manna.onSpent = goals.mannaSpent;
+    goals.justPaid.addListener(() => _announceGoals(session, goals));
+    setState(() {});
+  }
+
+  String _itemName(BoardSession session, String id) =>
+      session.game.itemCatalog[id]?.name ?? '';
+
+  /// Says which milestone was just reached and what it gave.
+  void _announceGoals(BoardSession session, GoalEventsController goals) {
+    if (!mounted || !identical(session, _session)) return;
+    final text = _boardText;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          key: const Key('goal_toast'),
+          duration: const Duration(seconds: 3),
+          backgroundColor: GamePalette.panel,
+          content: Text(
+            [
+              for (final paid in goals.justPaid.value)
+                (text['goal_toast'] ?? '')
+                    .replaceAll('{event}', paid.event.name)
+                    .replaceAll(
+                      '{reward}',
+                      goalRewardWords(
+                        paid.reward,
+                        text,
+                        (id) => _itemName(session, id),
+                      ),
+                    ),
+            ].join('\n'),
+            style: const TextStyle(color: GamePalette.talents),
+          ),
+        ),
+      );
+  }
+
+  /// The goal events' round button, shown while any is on for this player.
+  Widget? _goalsButton(BoardSession session) {
+    final goals = _goals;
+    if (goals == null || !identical(session, _goalsFor)) return null;
+    if (goals.live.isEmpty) return null;
+    return StripButton(
+      buttonKey: const Key('goal_events_button'),
+      icon: Icons.emoji_events,
+      tooltip: _boardText['goal_button'] ?? '',
+      onTap: () => _openGoals(session, goals),
+      lit: true,
+    );
+  }
+
+  Future<void> _openGoals(
+    BoardSession session,
+    GoalEventsController goals,
+  ) async {
+    if (_busy || _syncing || _popupOpen || !mounted) return;
+    _popupOpen = true;
+    try {
+      await showGoalEvents(
+        context,
+        controller: goals,
+        text: _boardText,
+        itemName: (id) => _itemName(session, id),
+      );
+    } finally {
+      _popupOpen = false;
+    }
   }
 
   /// The event banner: opens the event board.

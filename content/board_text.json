@@ -19,5 +19,17 @@
   "bubble_pearls": "Keep for {pearls} Pearls",
   "bubble_ad": "Watch an ad to keep",
   "bubble_leave": "Leave it",
-  "sealed_hint": "Sealed. Merge two {chain} items beside it to break the seal."
+  "sealed_hint": "Sealed. Merge two {chain} items beside it to break the seal.",
+  "goal_button": "Events",
+  "goal_title": "Events in Joppa",
+  "goal_none": "No events just now. Come back soon!",
+  "goal_left": "{time} left",
+  "goal_count": "{points} {token}",
+  "goal_next": "Next: {reward} at {points}",
+  "goal_done": "Every reward earned. Well done!",
+  "goal_toast": "{event}: {reward}",
+  "goal_pearls": "{n} Pearls",
+  "goal_manna": "{n} Manna",
+  "goal_talents": "{n} Talents",
+  "goal_close": "Close"
 }

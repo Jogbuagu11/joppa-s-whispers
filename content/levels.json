@@ -88,7 +88,7 @@
         "max_at_once": 2
       }
     },
-    { "level": 7, "feature": "milestone_event", "name": "Milestone events", "available": false },
+    { "level": 7, "feature": "milestone_event", "name": "Milestone events", "available": true },
     { "level": 7, "feature": "treasure_jar", "name": "Treasure Jar: saves Pearls as you play", "available": true },
     { "level": 9, "feature": "order_quests", "name": "Order quests", "available": false },
     { "level": 10, "feature": "races", "name": "Races", "available": false },
@@ -105,9 +105,9 @@
       }
     },
     { "level": 15, "feature": "prayer_circles", "name": "Prayer Circles", "available": false },
-    { "level": 18, "feature": "collect_event", "name": "Collect events", "available": false },
-    { "level": 18, "feature": "energy_event", "name": "Energy events", "available": false },
-    { "level": 18, "feature": "order_event", "name": "Order events", "available": false },
+    { "level": 18, "feature": "collect_event", "name": "Collect events", "available": true },
+    { "level": 18, "feature": "energy_event", "name": "Energy events", "available": true },
+    { "level": 18, "feature": "order_event", "name": "Order events", "available": true },
     { "level": 20, "feature": "pilgrims_road", "name": "Pilgrim's Road", "available": false },
     { "level": 25, "feature": "album_trading", "name": "Keepsake album trading", "available": false },
     {

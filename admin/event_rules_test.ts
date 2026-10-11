@@ -4,10 +4,12 @@
 import { assertEquals } from 'https://deno.land/std@0.177.0/testing/asserts.ts';
 
 const source = Deno.readTextFileSync(new URL('./event_rules.js', import.meta.url));
-const { eventProblems, TEMPLATE } = new Function(
-  `${source}; return { eventProblems, TEMPLATE };`,
+const { eventProblems, TEMPLATE, GOAL_TEMPLATES } = new Function(
+  `${source}; return { eventProblems, TEMPLATE, GOAL_TEMPLATES };`,
 )() as {
   eventProblems: (ev: unknown) => string[];
+  // deno-lint-ignore no-explicit-any
+  GOAL_TEMPLATES: Record<string, any>;
   // deno-lint-ignore no-explicit-any
   TEMPLATE: any;
 };
@@ -94,4 +96,41 @@ Deno.test('reward steps must rise and give something sensible', () => {
   ev = fresh();
   ev.config.milestones = [];
   assertEquals(eventProblems(ev).length, 1);
+});
+
+// deno-lint-ignore no-explicit-any
+const goal = (kind: string, over: Record<string, unknown> = {}): any => ({
+  id: 'my_goal',
+  name: 'My goal event',
+  starts_at: '2026-10-06T00:00:00Z',
+  ends_at: '2026-10-09T00:00:00Z',
+  config: { ...structuredClone(GOAL_TEMPLATES[kind]), ...over },
+});
+
+Deno.test('each kind of goal event passes as the panel starts it', () => {
+  for (const kind of Object.keys(GOAL_TEMPLATES)) {
+    assertEquals(eventProblems(goal(kind)), [], kind);
+  }
+});
+
+Deno.test('mistakes in a goal event are caught', () => {
+  assertEquals(eventProblems(goal('energy', { type: 'party' })).length, 1);
+  assertEquals(eventProblems(goal('energy', { blurb: '' })).length, 1);
+  assertEquals(eventProblems(goal('collect', { drop_percent: 0 })).length, 1);
+  assertEquals(eventProblems(goal('order', { per_order: 99 })).length, 1);
+  assertEquals(eventProblems(goal('energy', { milestones: [] })).length, 1);
+  assertEquals(
+    eventProblems(goal('energy', { milestones: [{ points: 5 }] })).length,
+    1,
+  );
+  assertEquals(
+    eventProblems(goal('energy', { milestones: [{ points: 5, pearls: 500 }] })).length,
+    1,
+  );
+  assertEquals(
+    eventProblems(
+      goal('energy', { milestones: [{ points: 5, manna: 5 }, { points: 5, manna: 5 }] }),
+    ).length,
+    1,
+  );
 });

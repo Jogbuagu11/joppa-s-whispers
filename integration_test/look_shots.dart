@@ -24,6 +24,7 @@ import 'package:whispers_of_joppa/game/board/board_screen.dart';
 import '../test/support/offer_fakes.dart';
 import '../test/support/store_fakes.dart';
 import 'helpers.dart';
+import 'look_fixtures.dart';
 
 class _First implements Random {
   @override
@@ -122,7 +123,7 @@ void main() {
           luck: _First(),
           country: 'US',
           events: EventsRepository(
-            loadBundled: () async => [event],
+            loadBundled: () async => [event, ...lookGoalEvents(event)],
             directory: () async =>
                 Directory('${docs.path}/look_events')
                   ..createSync(recursive: true),
@@ -253,6 +254,12 @@ void main() {
     await wait(10);
     await shot('12_treasure_jar');
     await tapKey('treasure_jar_close');
+
+    // The goal events that are on.
+    await tapOnStrip(tester, 'goal_events_button');
+    await wait(10);
+    await shot('15_events');
+    await tapKey('goal_close');
 
     // The event, and its season pass.
     await tapOnStrip(tester, 'event_banner');
