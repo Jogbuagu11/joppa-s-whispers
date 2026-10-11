@@ -5,6 +5,7 @@
 //   deno run -A tool/create_store_products.ts --apply --apple
 //   deno run -A tool/create_store_products.ts --apply --google
 //   ... --only=pearls_tier5,pearls_tier6      # just these products
+//   ... --reusable                            # just the offer, pass and jar products
 //
 // What to create is in tool/store_products.json. The amounts in each
 // description ({pearls}, {manna}) are filled in from content/products.json,
@@ -66,8 +67,10 @@ function products(): Product[] {
   const only = Deno.args.find((x) => x.startsWith("--only="))?.slice(7).split(
     ",",
   );
+  // --reusable limits a run to the offer, pass and Treasure Jar products.
+  const reusable = args.has("--reusable");
   return (config.products as Product[]).filter((p) =>
-    !only || only.includes(p.id)
+    (!only || only.includes(p.id)) && (!reusable || p.reusable === true)
   ).map((p) => {
     if (p.reusable) return p;
     const gives = content.find((c) => c.id === p.id);
