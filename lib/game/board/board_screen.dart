@@ -23,6 +23,7 @@ import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/features/bubbles/bubble_controller.dart';
 import 'package:whispers_of_joppa/features/bubbles/bubble_layer.dart';
+import 'package:whispers_of_joppa/features/events/event_pass.dart';
 import 'package:whispers_of_joppa/features/events/event_screen.dart';
 import 'package:whispers_of_joppa/domain/chance.dart';
 import 'package:whispers_of_joppa/domain/wheel.dart';

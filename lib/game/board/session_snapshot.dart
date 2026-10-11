@@ -6,6 +6,7 @@ import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/domain/ads.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
+import 'package:whispers_of_joppa/domain/season_pass.dart';
 import 'package:whispers_of_joppa/domain/treasure_jar.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
@@ -166,6 +167,7 @@ PurchasesController buildPurchases(
     ...loader.products,
     ...offerProductsFrom(bundle.files['offers']),
     ...treasureJarProductsFrom(bundle.files['offers']),
+    ...seasonPassProductsFrom(bundle.files['offers']),
   },
   // Opening a Treasure Jar also empties it: that waits for the jar.
   announced: treasureJarProductsFrom(bundle.files['offers']).keys.toSet(),

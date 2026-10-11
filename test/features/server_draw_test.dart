@@ -158,14 +158,17 @@ void main() {
       expect(extras.read(wheelRecord), isNull);
     });
 
-    test('a Pearl spin the player cannot pay for is not sent anywhere', () async {
-      pearls = 2;
-      final w = wheel();
-      expect(await w.spin(SpinKind.pearls), isNull);
-      expect(asked, 0);
-      expect(pearls, 2);
-      w.dispose();
-    });
+    test(
+      'a Pearl spin the player cannot pay for is not sent anywhere',
+      () async {
+        pearls = 2;
+        final w = wheel();
+        expect(await w.spin(SpinKind.pearls), isNull);
+        expect(asked, 0);
+        expect(pearls, 2);
+        w.dispose();
+      },
+    );
 
     test('where there is no server to ask, nothing changes', () async {
       final w = wheel(server: false);

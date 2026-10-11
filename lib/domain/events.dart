@@ -1,5 +1,6 @@
 // Time-limited events: when one is on, how points are earned and which
 // rewards they unlock. Pure Dart, fully unit tested.
+import 'package:whispers_of_joppa/domain/season_pass.dart';
 
 /// One step on an event's reward track.
 class EventMilestone {
@@ -44,6 +45,9 @@ class EventModel {
   /// Reward steps, in rising order of points.
   final List<EventMilestone> milestones;
 
+  /// The event's season pass, or null if it has none.
+  final SeasonPass? pass;
+
   const EventModel({
     required this.id,
     required this.name,
@@ -56,6 +60,7 @@ class EventModel {
     required this.generatorCol,
     required this.generatorRow,
     required this.milestones,
+    this.pass,
   });
 
   /// Reads one event: a row of the `events` table or an entry of
@@ -79,6 +84,7 @@ class EventModel {
         for (final m in config['milestones'] as List<dynamic>)
           EventMilestone.fromJson(m as Map<String, dynamic>),
       ],
+      pass: SeasonPass.fromJson(config['pass']),
     );
   }
 }
@@ -151,17 +157,26 @@ class EventProgress {
   final int paid;
   final List<EventItem> items;
 
+  /// How many Premium rewards, and how many steps of the endless track,
+  /// have been paid (season pass).
+  final int premiumPaid;
+  final int endlessPaid;
+
   const EventProgress({
     required this.eventId,
     this.points = 0,
     this.paid = 0,
     this.items = const [],
+    this.premiumPaid = 0,
+    this.endlessPaid = 0,
   });
 
   Map<String, dynamic> toJson() => {
     'event_id': eventId,
     'points': points,
     'paid': paid,
+    'premium_paid': premiumPaid,
+    'endless_paid': endlessPaid,
     'items': [
       for (final i in items) {'item_id': i.itemId, 'col': i.col, 'row': i.row},
     ],
@@ -171,6 +186,9 @@ class EventProgress {
     eventId: json['event_id'] as String,
     points: json['points'] as int,
     paid: json['paid'] as int,
+    // Absent in progress saved before the season pass.
+    premiumPaid: json['premium_paid'] as int? ?? 0,
+    endlessPaid: json['endless_paid'] as int? ?? 0,
     items: [
       for (final i in json['items'] as List<dynamic>)
         (

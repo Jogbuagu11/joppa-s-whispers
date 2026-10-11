@@ -9,6 +9,7 @@ import {
   grantForProduct,
   type OfferRow,
 } from './offer_rules.ts';
+import { choosePassEvent, type EventRow, passGrantFor } from './pass_rules.ts';
 import { PRODUCTS } from './rules.ts';
 
 // deno-lint-ignore no-explicit-any
@@ -78,4 +79,30 @@ export async function offerGrant(
   });
   if (!offer) throw new Error(`No offer or fallback for ${productId}`);
   return { grant: contentsToGrant(offer.contents), offerId: offer.id };
+}
+
+/**
+ * What a payment for a season pass records: its tier and the event it is
+ * for (see choosePassEvent). The pass itself gives nothing at once; the
+ * game pays its rewards as the event is played. Throws if there are no
+ * events at all: the purchase is then retried later, never lost.
+ */
+export async function passGrant(
+  supabase: Db,
+  productId: string,
+  claimedEventId: unknown,
+): Promise<{ grant: Grant }> {
+  const { data: events, error } = await supabase
+    .from('events')
+    .select('id, starts_at, ends_at, is_active');
+  if (error) throw error;
+  const event = choosePassEvent({
+    claimedEventId,
+    events: (events ?? []) as EventRow[],
+    now: new Date(),
+  });
+  if (!event) throw new Error(`No event for ${productId}`);
+  return {
+    grant: { pearls: 0, manna: 0, talents: 0, items: [], pass: passGrantFor(productId, event) },
+  };
 }

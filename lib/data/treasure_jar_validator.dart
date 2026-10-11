@@ -76,5 +76,17 @@ List<String> treasureJarProblems(Object? jar, Map<String, dynamic> offersJson) {
       );
     }
   }
+  // The words that carry a number must have a place for it.
+  for (final (key, places) in const [
+    ('count', ['{saved}', '{pearls}']),
+    ('open', ['{price}']),
+  ]) {
+    final words = text is Map<String, dynamic> ? text[key] : null;
+    if (words is String && !places.every(words.contains)) {
+      problems.add(
+        'Treasure Jar: text "$key" must contain ${places.join(' and ')}',
+      );
+    }
+  }
   return problems;
 }

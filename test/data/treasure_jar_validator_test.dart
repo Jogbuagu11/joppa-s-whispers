@@ -54,6 +54,9 @@ void main() {
     expect(treasureJarProblems(idle, offers).single, contains('nothing fills'));
     final odd = jar()..['earn'] = {'order': -1, 'task': 3};
     expect(treasureJarProblems(odd, offers).single, contains('"order"'));
+    final blank = jar();
+    (blank['text'] as Map<String, dynamic>)['open'] = 'Open it';
+    expect(treasureJarProblems(blank, offers).single, contains('{price}'));
     final mute = jar()..['text'] = {'title': 'Treasure Jar'};
     expect(
       treasureJarProblems(mute, offers),

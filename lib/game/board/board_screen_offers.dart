@@ -155,11 +155,13 @@ mixin _BoardOffers on _BoardWheel {
       (ModalRoute.of(context)?.isCurrent ?? true);
 
   /// The store's prices for the products that carry only a price (offers,
-  /// the Treasure Jar), read once a session.
+  /// the Treasure Jar), read once a session (once the store answers).
   Future<Map<String, String>> _reusablePrices(PurchaseCoordinator shop) =>
-      _offerPrices ??= shop
-          .loadProducts(offers: true)
-          .then((list) => {for (final p in list) p.id: p.price});
+      _offerPrices ??= shop.loadProducts(offers: true).then((list) {
+        // A store that could not be reached is asked again next time.
+        if (list.isEmpty) _offerPrices = null;
+        return {for (final p in list) p.id: p.price};
+      });
 
   /// Shows the offer for [trigger], if one fits this player and the rules
   /// allow another now. Never in the tutorial (no purchase is ever offered

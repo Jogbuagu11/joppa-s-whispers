@@ -3,7 +3,7 @@
 // says so once when it is full.
 part of 'board_screen.dart';
 
-mixin _BoardTreasure on _BoardOffers {
+mixin _BoardTreasure on _BoardOffers, _BoardEvents {
   TreasureJarController? _treasure;
 
   Map<String, dynamic>? _treasureJson(BoardSession session) =>
@@ -40,6 +40,8 @@ mixin _BoardTreasure on _BoardOffers {
             extras: session.extras,
             level: session.levels.level,
           );
+    // The season passes held are read from every list the server sends.
+    session.purchases.onServerRecords = EventPass.reader(session.extras);
     // Always listening: a purchase that opened a jar is never left waiting.
     session.purchases.onApplied = (applied) => jar?.purchasesApplied(applied);
     if (jar == null) return;
@@ -54,9 +56,45 @@ mixin _BoardTreasure on _BoardOffers {
       onTaskDone?.call(id);
       if (_treasureOpen(session)) jar.taskDone();
     };
-    session.levels.addListener(() {
-      if (_treasureOpen(session)) jar.levelIs(session.levels.level);
-    });
+    session.levels.addListener(
+      () => jar.levelIs(session.levels.level, open: _treasureOpen(session)),
+    );
+  }
+
+  /// The season pass for the event screen: none in a game played from
+  /// memory only, or with content that has no pass.
+  @override
+  EventPass? _eventPass(BoardSession session) {
+    final json = switch (session.contentBundle.files['offers']) {
+      {'season_pass': final Map<String, dynamic> pass} => pass,
+      _ => null,
+    };
+    final shop = widget.shop;
+    if (session.downgraded) return null;
+    if (json case {
+      'premium_product': final String premium,
+      'plus_product': final String plus,
+      'text': final Map<String, dynamic> text,
+    }) {
+      return EventPass(
+        extras: session.extras,
+        shop: shop,
+        prices: () async => shop == null || !shop.backend.signedIn
+            ? const {}
+            : _reusablePrices(shop),
+        text: {
+          for (final e in text.entries)
+            if (e.value case final String words) e.key: words,
+        },
+        premiumProduct: premium,
+        plusProduct: plus,
+        earnPearls: session.purchases.earnPearls,
+        giveItems: (ids) => session.grants.give(itemIds: ids),
+        itemName: (id) => session.game.itemCatalog[id]?.name ?? '',
+        onBuy: _events?.purchaseStarted,
+      );
+    }
+    return null;
   }
 
   /// The jar's round button (gold when the jar is full), or nothing while
@@ -67,7 +105,7 @@ mixin _BoardTreasure on _BoardOffers {
     if (jar == null || !_treasureOpen(session)) return null;
     return StripButton(
       buttonKey: const Key('treasure_jar_button'),
-      icon: Icons.savings,
+      icon: Icons.diamond,
       tooltip: _treasureText(session)['button'] ?? '',
       onTap: _openTreasure,
       lit: jar.isFull,
@@ -86,20 +124,29 @@ mixin _BoardTreasure on _BoardOffers {
     await _openTreasure();
   }
 
+  /// Whether the jar's pop-up may open at this moment.
+  bool _treasureCanOpen(BoardSession session) =>
+      mounted &&
+      identical(session, _session) &&
+      _treasureOpen(session) &&
+      !(_busy || _syncing || _popupOpen || _offering) &&
+      !session.game.isDragging &&
+      (ModalRoute.of(context)?.isCurrent ?? true);
+
   Future<void> _openTreasure() async {
     final session = _session;
     final jar = _treasure;
-    if (session == null || jar == null || !_treasureOpen(session)) return;
-    if (_busy || _syncing || _popupOpen || _offering || !mounted) return;
+    if (session == null || jar == null || !_treasureCanOpen(session)) return;
     final shop = widget.shop;
+    // The store's price for this jar, if the store can be asked.
+    final prices = shop == null || !jar.isFull || !shop.backend.signedIn
+        ? const <String, String>{}
+        : await _reusablePrices(shop);
+    // Things may have changed while the store was being asked.
+    if (!_treasureCanOpen(session) || !mounted) return;
     _popupOpen = true;
     try {
       jar.toldFull();
-      // The store's price for this jar, if the store can be asked.
-      final prices = shop == null || !jar.isFull || !shop.backend.signedIn
-          ? const <String, String>{}
-          : await _reusablePrices(shop);
-      if (!mounted || !identical(session, _session)) return;
       await showTreasureJar(
         context,
         rules: jar.rules,

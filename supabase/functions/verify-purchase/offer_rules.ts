@@ -1,5 +1,6 @@
 // What a purchase gives, decided on the server and kept free of network and
 // database calls so it can be tested (see offer_rules_test.ts).
+import type { PassGrant } from './pass_rules.ts';
 import type { ProductGrant } from './rules.ts';
 
 /** Exactly what one purchase gives. Written onto the purchase record. */
@@ -9,6 +10,8 @@ export interface Grant {
   talents: number;
   items: string[];
   generator_level?: number;
+  /** For a season pass: its tier and the event it is for. */
+  pass?: PassGrant;
 }
 
 /** A row of the `offers` table, as far as these rules need it. */
@@ -75,7 +78,7 @@ export function contentsToGrant(contents: unknown): Grant {
 
 export const grantIsEmpty = (g: Grant): boolean =>
   g.pearls === 0 && g.manna === 0 && g.talents === 0 && g.items.length === 0 &&
-  g.generator_level == null;
+  g.generator_level == null && g.pass == null;
 
 /** Whether [offer] may be paid for at [now] (with the grace after its end). */
 export function offerCanBePaidFor(offer: OfferRow, now: Date): boolean {

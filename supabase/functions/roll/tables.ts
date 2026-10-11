@@ -5,7 +5,7 @@ import type { Tables } from './rules.ts';
 // Which set of tables these are (chance.json, "tables_version"); the
 // content version they were copied at is kept for the record only.
 export const TABLES_VERSION = 1;
-export const CONTENT_VERSION = 41;
+export const CONTENT_VERSION = 42;
 
 // deno-fmt-ignore
 export const TABLES: Tables = {

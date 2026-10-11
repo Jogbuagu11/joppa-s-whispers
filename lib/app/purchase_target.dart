@@ -56,4 +56,5 @@ String describeGrant(GrantTotals t) => [
   if (t.items.length == 1) '1 gift',
   if (t.items.length > 1) '${t.items.length} gifts',
   if (t.generatorLevel != null) 'a level-${t.generatorLevel} generator',
+  if (t.passes > 0) 'your Season Pass',
 ].join(', ');

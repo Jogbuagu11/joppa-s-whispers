@@ -112,6 +112,9 @@ void main() {
     await settle();
     expect(wallet.pearls, 0);
     expect(items, isEmpty);
+    // Nor is it marked as delivered: the server holds the payment, and it
+    // is given whenever the server's record of what it gives can be read.
+    expect(wallet.hasApplied('tx1'), isFalse);
   });
 
   test('a shop pack gives what the server recorded (a doubled first pack), '

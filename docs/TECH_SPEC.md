@@ -273,6 +273,15 @@ On every launch and when the app returns to the foreground, read the purchase st
 - Limit: the server does not check that the jar was really full. A tampered app could only pay the full price for the fixed amount.
 - Changing a size's Pearls means changing `content/offers.json` AND `PRODUCTS` in `rules.ts`, then redeploying `verify-purchase`.
 
+### Season pass (Milestone 31, EXPANSION section 13)
+- An event has a pass if its `config` carries `pass`: `premium` (one reward per milestone, in order: `pearls`, `manna`, `talents`, `items`) and optionally `plus` (`bonus_percent`, and `endless`: `every` N points past the last milestone, with a reward that may not contain Pearls). Checked by `lib/data/season_pass_validator.dart`; a bad pass keeps the event from being shown.
+- The pass's two store products and its words are in `content/offers.json` under `season_pass`.
+- **Buying:** the app sends the event's id as `offer_id` with the purchase. `verify-purchase` records `grant_contents.pass = {tier, event_id}` (`pass_rules.ts`): the event the app named if it is on now; otherwise the event on now that ends last, else the next to start, so a late payment is never spent on an event that is over. The pass gives nothing at once.
+- **Holding:** the app reads the passes held from the server's purchase list every time it is read (`SeasonPassLedger`, kept in the save under `extras.passes` for offline play). A refunded pass is gone at the next read. Premium bought twice for one event counts as Premium Plus (the same money), which is how Premium is upgraded.
+- **Paying:** `EventController.settle()` pays free milestones, Premium rewards for milestones reached, and endless steps, each once (`premium_paid` and `endless_paid` in the event progress file). A pass bought late pays everything already reached. Premium Plus points are the points earned plus the bonus, also for points earned before it was bought.
+- Limits: rewards a pass has already paid are not taken back on refund; the exclusive decoration waits for decorations (Milestone 36).
+- **Server steps for a pass to work:** deploy `verify-purchase`; add `pass` to the event's `config` in the `events` table (the admin panel's event editor).
+
 ### Paid chance: the `roll` function (Milestone 29/30)
 - A Pearl spin of the Blessing Wheel and a bought Jar of Clay are drawn by the `roll` Edge Function when it can be reached (signed in, online, answer within 4 seconds, same content version); otherwise the phone draws from the same table. Free tries never go to the server.
 - The app asks the server FIRST and takes the Pearls (or the jar) only once it has an answer or has given up, in the same step that gives the prize. Closing the game while waiting costs nothing.

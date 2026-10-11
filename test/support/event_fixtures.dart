@@ -7,6 +7,7 @@ Map<String, dynamic> eventRow({
   String name = 'Joppa Boat Festival',
   DateTime? startsAt,
   DateTime? endsAt,
+  Map<String, dynamic>? pass,
 }) {
   final now = DateTime.now().toUtc();
   return {
@@ -50,6 +51,23 @@ Map<String, dynamic> eventRow({
         {'points': 5, 'talents': 50},
         {'points': 9, 'manna': 20, 'talents': 100},
       ],
+      'pass': ?pass,
     },
   };
 }
+
+/// A season pass for [eventRow]'s three milestones.
+const testPass = <String, dynamic>{
+  'premium': [
+    {'manna': 5},
+    {'pearls': 4},
+    {
+      'talents': 30,
+      'items': ['thread_01'],
+    },
+  ],
+  'plus': {
+    'bonus_percent': 50,
+    'endless': {'every': 50, 'talents': 7},
+  },
+};

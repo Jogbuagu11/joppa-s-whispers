@@ -16,7 +16,8 @@ import {
   type Check,
 } from './rules.ts';
 import { isOfferProduct } from './offer_rules.ts';
-import { offerGrant, productGrant } from './grants.ts';
+import { offerGrant, passGrant, productGrant } from './grants.ts';
+import { isPassProduct } from './pass_rules.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -70,10 +71,13 @@ serve(async (req: Request) => {
     const product = typeof product_id === 'string' ? PRODUCTS[product_id] : undefined;
     // An offer product carries only a price; the offers table says what it gives.
     const isOffer = isOfferProduct(product_id);
-    const consumable = isOffer || (product?.consumable ?? false);
+    // A season pass is bought afresh for each event; `offer_id` then names
+    // the event whose pass the player was shown.
+    const isPass = isPassProduct(product_id);
+    const consumable = isOffer || isPass || (product?.consumable ?? false);
     if (
       (platform !== 'ios' && platform !== 'android') ||
-      (!product && !isOffer) || typeof product_id !== 'string' ||
+      (!product && !isOffer && !isPass) || typeof product_id !== 'string' ||
       typeof transaction_id !== 'string' || transaction_id.length === 0
     ) {
       return json({ success: false, error: 'Bad request' }, 400);
@@ -113,8 +117,11 @@ serve(async (req: Request) => {
       //    and is what the game hands over; the app's own idea is not used.
       let { grant, offerId, firstBonus } = isOffer
         ? { ...await offerGrant(supabase, user.id, product_id, body.offer_id), firstBonus: false }
+        : isPass
+        ? { ...await passGrant(supabase, product_id, body.offer_id), offerId: null, firstBonus: false }
         : { ...await productGrant(supabase, user.id, product!), offerId: null };
-      // (`product!`: not an offer, so the check above proved it is in PRODUCTS.)
+      // (`product!`: not an offer or a pass, so the check above proved it
+      // is in PRODUCTS.)
 
       // 4. Record it. The unique transaction id makes a double grant impossible.
       const record = () =>

@@ -52,12 +52,19 @@ class PurchaseGrant {
   final List<String> items;
   final int? generatorLevel;
 
+  /// For a season pass: the event it is for, and whether it is Premium
+  /// Plus. Null for every other purchase.
+  final String? passEventId;
+  final bool passPlus;
+
   const PurchaseGrant({
     this.pearls = 0,
     this.manna = 0,
     this.talents = 0,
     this.items = const [],
     this.generatorLevel,
+    this.passEventId,
+    this.passPlus = false,
   });
 
   /// Reads the server's record; null if there is none (a purchase made
@@ -80,6 +87,14 @@ class PurchaseGrant {
       generatorLevel: switch (json['generator_level']) {
         final int level when level > 0 => level,
         _ => null,
+      },
+      passEventId: switch (json['pass']) {
+        {'event_id': final String id} when id.isNotEmpty => id,
+        _ => null,
+      },
+      passPlus: switch (json['pass']) {
+        {'tier': 'plus'} => true,
+        _ => false,
       },
     );
   }
@@ -118,12 +133,16 @@ class GrantTotals {
   final List<String> items;
   final int? generatorLevel;
 
+  /// How many of the purchases were a season pass.
+  final int passes;
+
   const GrantTotals({
     this.pearls = 0,
     this.manna = 0,
     this.talents = 0,
     this.items = const [],
     this.generatorLevel,
+    this.passes = 0,
   });
 
   bool get isEmpty =>
@@ -131,7 +150,8 @@ class GrantTotals {
       manna == 0 &&
       talents == 0 &&
       items.isEmpty &&
-      generatorLevel == null;
+      generatorLevel == null &&
+      passes == 0;
 }
 
 /// The server-confirmed purchases that have not been applied to this game
@@ -155,6 +175,9 @@ List<PurchaseRecord> purchasesToApply(
     final product = products[record.productId];
     if (!record.granted || product == null) continue;
     if (record.transactionId.isEmpty) continue;
+    // A product that carries only a price gives what the server recorded:
+    // with no record of that it is left for later, never given as nothing.
+    if (product.reusable && record.grant == null) continue;
     if (!seen.add(record.transactionId)) continue;
     if (!product.consumable && !owned.add(product.id)) continue;
     out.add(record);
@@ -178,6 +201,7 @@ GrantTotals totalGrant(
   var manna = 0;
   var talents = 0;
   final items = <String>[];
+  var passes = 0;
   int? level;
   for (final record in records) {
     final product = products[record.productId];
@@ -195,6 +219,7 @@ GrantTotals totalGrant(
     manna += grant.manna;
     talents += grant.talents;
     items.addAll(grant.items);
+    if (grant.passEventId != null) passes++;
     final wanted = grant.generatorLevel;
     if (wanted != null && (level == null || wanted > level)) level = wanted;
   }
@@ -204,6 +229,7 @@ GrantTotals totalGrant(
     talents: talents,
     items: items,
     generatorLevel: level,
+    passes: passes,
   );
 }
 

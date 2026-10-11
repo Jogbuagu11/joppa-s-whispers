@@ -1,4 +1,5 @@
 // Checks content/offers.json (the shop's daily deals). Pure Dart.
+import 'package:whispers_of_joppa/data/season_pass_validator.dart';
 import 'package:whispers_of_joppa/data/treasure_jar_validator.dart';
 import 'package:whispers_of_joppa/domain/deals.dart';
 
@@ -45,6 +46,7 @@ List<String> offersProblems(
     _checkSpecial(json['special'], productsJson, problems);
     _checkOfferSetup(json, productsJson, problems);
     problems.addAll(treasureJarProblems(json['treasure_jar'], json));
+    problems.addAll(seasonPassProblems(json));
     final text = json['text'];
     for (final key in offersTextKeys) {
       final words = text is Map<String, dynamic> ? text[key] : null;

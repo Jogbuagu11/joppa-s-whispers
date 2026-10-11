@@ -9,6 +9,7 @@ import 'package:whispers_of_joppa/features/shop/purchases_controller.dart';
 import 'package:whispers_of_joppa/features/shop/treasure_jar_controller.dart';
 import 'package:whispers_of_joppa/features/shop/treasure_jar_popup.dart';
 import 'package:whispers_of_joppa/game/board/save_extras.dart';
+import 'package:whispers_of_joppa/services/purchase_backend.dart';
 
 import '../support/store_fakes.dart';
 
@@ -90,12 +91,12 @@ void main() {
   });
 
   test('each level won saves its Pearls, once', () {
-    jar.levelIs(7);
+    jar.levelIs(7, open: true);
     expect(jar.state.saved, 0);
-    jar.levelIs(8);
+    jar.levelIs(8, open: true);
     expect(jar.state.saved, 5);
-    jar.levelIs(8);
-    jar.levelIs(6);
+    jar.levelIs(8, open: true);
+    jar.levelIs(6, open: true);
     expect(jar.state.saved, 5);
     // Two levels at once.
     final big = TreasureJarController(
@@ -104,8 +105,18 @@ void main() {
         treasureJarRecord: const TreasureJarState(opened: 1).toJson(),
       }),
       level: 7,
-    )..levelIs(9);
+    )..levelIs(9, open: true);
     expect(big.state.saved, 10);
+  });
+
+  test('levels won before the jar is open save nothing, then or later', () {
+    final early = TreasureJarController(rules: rules, extras: extras, level: 3)
+      ..levelIs(4, open: false)
+      ..levelIs(6, open: false);
+    expect(early.state.saved, 0);
+    // The jar opens at 7: only that level counts.
+    early.levelIs(7, open: true);
+    expect(early.state.saved, 5);
   });
 
   test('only a confirmed jar purchase empties the jar, and the next is '
@@ -216,6 +227,27 @@ void main() {
       expect(store.finishedAsConsumable, [true]);
       expect(find.text('0 of 30 Pearls'), findsOneWidget);
       expect(button(tester).onPressed, isNull);
+    });
+
+    testWidgets('a jar already paid for, whose payment could not be checked '
+        'yet, cannot be paid for again', (tester) async {
+      wallet.onApplied = jar.purchasesApplied;
+      backend.answer = VerifyResult.unavailable;
+      jar
+        ..orderDelivered()
+        ..taskDone();
+      await open(tester);
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const Key('treasure_jar_open')));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pump();
+      await tester.pump();
+      // Still full (nothing delivered yet), but the button is off.
+      expect(find.text('10 of 10 Pearls'), findsOneWidget);
+      expect(shop.isWaitingFor('treasure_jar_small'), isTrue);
+      expect(button(tester).onPressed, isNull);
+      expect(store.accountIds.length, 1);
     });
 
     testWidgets('signed out, or with no price from the store, it says why '

@@ -26,6 +26,10 @@ class PurchasesController extends ChangeNotifier {
   void Function(List<PurchaseRecord> applied)? onApplied;
   final Set<String> announced;
 
+  /// Shown every list of this player's purchases the server sends, before
+  /// anything is done with it (the season pass is read from them).
+  void Function(List<PurchaseRecord> fromServer)? onServerRecords;
+
   int _pearls;
   final Set<String> _applied;
   final Set<String> _owned;
@@ -71,6 +75,7 @@ class PurchasesController extends ChangeNotifier {
   /// Puts every server-confirmed purchase that is not in the game yet into
   /// it, each exactly once. Returns what was added (empty if nothing was).
   GrantTotals applyConfirmed(List<PurchaseRecord> fromServer) {
+    onServerRecords?.call(fromServer);
     final fresh = purchasesToApply(
       fromServer,
       _applied,

@@ -44,7 +44,7 @@ Future<bool> showTreasureJar(
                 : null);
         return GameDialog(
           key: const Key('treasure_jar_popup'),
-          icon: Icons.savings,
+          icon: Icons.diamond,
           title: Text(
             text['title'] ?? '',
             style: const TextStyle(color: GamePalette.gold),
@@ -111,8 +111,15 @@ Future<bool> showTreasureJar(
               key: const Key('treasure_jar_open'),
               // Only a full jar can be opened, by a signed-in player (a
               // purchase belongs to an account), at a price the store gave.
+              // Never twice: not while a payment for this jar is still
+              // on its way.
               onPressed:
-                  full && signedIn && price != null && !busy && shop != null
+                  full &&
+                      signedIn &&
+                      price != null &&
+                      !busy &&
+                      shop != null &&
+                      !shop.isWaitingFor(size.productId)
                   ? () {
                       asked = true;
                       onBuy?.call(size.productId);

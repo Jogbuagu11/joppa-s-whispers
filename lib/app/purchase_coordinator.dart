@@ -161,6 +161,10 @@ class PurchaseCoordinator {
   /// Stops delivering into a game that is being closed or replaced.
   void detach() => target = null;
 
+  /// Whether a payment for [productId] is still waiting to be delivered.
+  bool isWaitingFor(String productId) =>
+      _waiting.values.any((p) => p.productId == productId);
+
   void _say(StorePurchase purchase, String? text) {
     if (_asked.contains(purchase.productId)) message.value = text;
   }

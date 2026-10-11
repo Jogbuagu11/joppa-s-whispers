@@ -1,6 +1,7 @@
 // Checks an event before the game will show it. Events come from the
 // server, so a mistake in one must be caught here, never crash the game.
 // Pure Dart.
+import 'package:whispers_of_joppa/data/season_pass_validator.dart';
 
 /// Plain-English problems with one event ({id, name, starts_at, ends_at,
 /// config}). An empty list means it can be played.
@@ -129,6 +130,9 @@ List<String> eventProblems(Object? raw) {
         problems.add('$label: milestone at $points gives too much');
       }
     }
+    problems.addAll(
+      eventPassProblems(config['pass'], milestones.length, label),
+    );
   }
   return problems;
 }

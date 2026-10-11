@@ -10,7 +10,11 @@ import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/events.dart';
+import 'package:whispers_of_joppa/domain/season_pass.dart';
 import 'package:whispers_of_joppa/features/events/event_controller.dart';
+import 'package:whispers_of_joppa/features/events/event_header.dart';
+import 'package:whispers_of_joppa/features/events/event_pass.dart';
+import 'package:whispers_of_joppa/features/events/season_pass_dialog.dart';
 import 'package:whispers_of_joppa/features/settings/comfort_controller.dart';
 import 'package:whispers_of_joppa/game/board/board_feedback.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
@@ -21,7 +25,6 @@ final _log = Logger('EventScreen');
 
 const _gold = Color(0xFFD4802A);
 const _ink = Color(0xFF1A1205);
-const _cream = Color(0xFFF3E5C8);
 
 class EventScreen extends StatefulWidget {
   const EventScreen({
@@ -35,7 +38,12 @@ class EventScreen extends StatefulWidget {
     required this.markGameChanged,
     this.repository,
     this.comfort,
+    this.pass,
   });
+
+  /// The season pass's hooks; null where there is none (tests, older
+  /// content).
+  final EventPass? pass;
 
   /// Sounds, vibration and tier numbers. Null (in tests) means none.
   final ComfortController? comfort;
@@ -68,6 +76,7 @@ class _EventScreenState extends State<EventScreen> {
   Timer? _clock;
   VoidCallback? _keep;
   VoidCallback? _quiet;
+  bool _passOpen = false;
 
   @override
   void initState() {
@@ -125,6 +134,9 @@ class _EventScreenState extends State<EventScreen> {
       addManna: widget.manna.add,
       addTalents: widget.addTalents,
       saveGame: widget.saveGame,
+      tier: () => widget.pass?.ledger.tierFor(event.id) ?? PassTier.free,
+      addPearls: widget.pass?.earnPearls,
+      giveItems: widget.pass?.giveItems,
     );
     controller.boardItems = () => [
       for (final i in game.snapshotItems())
@@ -144,6 +156,8 @@ class _EventScreenState extends State<EventScreen> {
     _keep = keep;
     game.boardChanged.addListener(keep);
     controller.justPaid.addListener(_announce);
+    controller.justPaidPass.addListener(_announcePass);
+    widget.pass?.changes.addListener(_passChanged);
     await game.loadArt();
     if (!mounted) {
       _quiet?.call();
@@ -169,6 +183,11 @@ class _EventScreenState extends State<EventScreen> {
   void _announce() {
     final paid = _controller?.justPaid.value ?? const [];
     if (paid.isEmpty || !mounted) return;
+    // A reward reached without the pass: the pass is shown, once an event.
+    if (widget.event.pass != null &&
+        (widget.pass?.ledger.takeUpsell(widget.event.id) ?? false)) {
+      unawaited(_openPass());
+    }
     final manna = paid.fold(0, (sum, m) => sum + m.manna);
     final talents = paid.fold(0, (sum, m) => sum + m.talents);
     final parts = [
@@ -184,15 +203,49 @@ class _EventScreenState extends State<EventScreen> {
     );
   }
 
+  void _announcePass() {
+    final paid = _controller?.justPaidPass.value ?? const [];
+    if (paid.isNotEmpty && mounted) widget.pass?.announce(context, paid);
+  }
+
+  /// A pass may just have been bought (or refunded): what it has earned so
+  /// far is paid now.
+  void _passChanged() {
+    final controller = _controller;
+    if (controller == null || !mounted) return;
+    if (controller.settle()) controller.save();
+  }
+
+  Future<void> _openPass() async {
+    final controller = _controller;
+    final pass = widget.pass;
+    if (controller == null || pass == null || _passOpen) return;
+    _passOpen = true;
+    try {
+      final prices = await pass.prices();
+      if (!mounted) return;
+      await showSeasonPass(
+        context,
+        controller: controller,
+        pass: pass,
+        prices: prices,
+      );
+    } finally {
+      _passOpen = false;
+    }
+  }
+
   @override
   void dispose() {
     _clock?.cancel();
+    widget.pass?.changes.removeListener(_passChanged);
     final controller = _controller;
     final keep = _keep;
     _quiet?.call();
     if (controller != null) {
       if (keep != null) _game?.boardChanged.removeListener(keep);
       controller.justPaid.removeListener(_announce);
+      controller.justPaidPass.removeListener(_announcePass);
       // The last write (the game too: Manna was spent here) finishes by
       // itself; then the controller can go.
       unawaited(
@@ -221,7 +274,13 @@ class _EventScreenState extends State<EventScreen> {
                       Expanded(
                         child: ListenableBuilder(
                           listenable: controller,
-                          builder: (context, _) => _EventHeader(controller),
+                          builder: (context, _) => EventHeader(
+                            controller,
+                            passLabel: widget.event.pass == null
+                                ? null
+                                : widget.pass?.text['button'],
+                            onOpenPass: _openPass,
+                          ),
                         ),
                       ),
                       Padding(
@@ -234,58 +293,6 @@ class _EventScreenState extends State<EventScreen> {
                 ],
               ),
             ),
-    );
-  }
-}
-
-class _EventHeader extends StatelessWidget {
-  const _EventHeader(this.controller);
-
-  final EventController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    final next = controller.next;
-    final reward = next == null
-        ? null
-        : [
-            if (next.manna > 0) '${next.manna} Manna',
-            if (next.talents > 0) '${next.talents} Talents',
-          ].join(' + ');
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '${controller.points} points',
-                key: const Key('event_points'),
-                style: const TextStyle(
-                  color: _gold,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '${formatTimeLeft(controller.timeLeft)} left',
-                key: const Key('event_time_left'),
-                style: const TextStyle(color: _cream, fontSize: 13),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            next == null
-                ? 'Every reward earned. Well done!'
-                : 'Next reward at ${next.points}: $reward',
-            key: const Key('event_next'),
-            style: const TextStyle(color: _cream, fontSize: 13),
-          ),
-        ],
-      ),
     );
   }
 }

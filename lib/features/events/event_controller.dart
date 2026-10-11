@@ -3,6 +3,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/domain/events.dart';
+import 'package:whispers_of_joppa/domain/season_pass.dart';
+
+PassTier _freeTier() => PassTier.free;
 
 class EventController extends ChangeNotifier {
   final EventModel event;
@@ -20,8 +23,16 @@ class EventController extends ChangeNotifier {
   List<EventItem> Function() boardItems = () => const [];
   final DateTime Function() _now;
 
+  /// The season pass tier this player holds for the event (the server's
+  /// purchase records decide it), and handing over what only a pass pays.
+  final PassTier Function() tier;
+  final void Function(int amount)? addPearls;
+  final void Function(List<String> itemIds)? giveItems;
+
   int _points;
   int _paid;
+  int _premiumPaid;
+  int _endlessPaid;
   Future<void>? _saving;
 
   // True from the moment a reward is paid until the main game is written.
@@ -34,12 +45,18 @@ class EventController extends ChangeNotifier {
     required this.addManna,
     required this.addTalents,
     required this.saveGame,
+    this.tier = _freeTier,
+    this.addPearls,
+    this.giveItems,
     DateTime Function()? clock,
   }) : _points = progress.points < 0 ? 0 : progress.points,
+       _premiumPaid = progress.premiumPaid < 0 ? 0 : progress.premiumPaid,
+       _endlessPaid = progress.endlessPaid < 0 ? 0 : progress.endlessPaid,
        _paid = progress.paid.clamp(0, event.milestones.length),
        _now = clock ?? DateTime.now;
 
-  int get points => _points;
+  /// The points that count: Premium Plus adds its bonus to those earned.
+  int get points => passPoints(_points, tier(), event.pass);
 
   /// Reward steps already paid out.
   int get paid => _paid;
@@ -58,7 +75,24 @@ class EventController extends ChangeNotifier {
   void onMerged(int resultTier) {
     if (!isLive) return;
     _points += eventPointsForMerge(resultTier);
-    final due = milestonesToPay(event.milestones, _points, _paid);
+    settle();
+    save();
+  }
+
+  /// The Premium rewards and endless steps just paid (season pass).
+  final ValueNotifier<List<PassReward>> justPaidPass =
+      ValueNotifier<List<PassReward>>(const []);
+
+  int get premiumPaid => _premiumPaid;
+  int get endlessPaid => _endlessPaid;
+
+  /// Pays everything the player's points and pass have earned and not yet
+  /// had. Called after every merge, and when the pass changes: a pass
+  /// bought late pays what was already reached. Returns whether anything
+  /// was paid (the caller then saves).
+  bool settle() {
+    final held = tier();
+    final due = milestonesToPay(event.milestones, points, _paid);
     for (final step in due) {
       // Counted as paid before it is handed over, so one merge cannot pay
       // the same step twice.
@@ -67,9 +101,40 @@ class EventController extends ChangeNotifier {
       if (step.manna > 0) addManna(step.manna);
       if (step.talents > 0) addTalents(step.talents);
     }
+    final pass = event.pass;
+    final extra = <PassReward>[
+      ...premiumToPay(
+        pass,
+        held,
+        reached: milestonesReached(event.milestones, points),
+        alreadyPaid: _premiumPaid,
+      ),
+    ];
+    _premiumPaid += extra.length;
+    final steps = event.milestones.isEmpty
+        ? 0
+        : endlessReached(
+                pass,
+                held,
+                points: points,
+                lastMilestone: event.milestones.last.points,
+              ) -
+              _endlessPaid;
+    for (var i = 0; i < steps; i++) {
+      _endlessPaid++;
+      if (pass != null) extra.add(pass.endless);
+    }
+    for (final reward in extra) {
+      _gameSaveOwed = true;
+      if (reward.manna > 0) addManna(reward.manna);
+      if (reward.talents > 0) addTalents(reward.talents);
+      if (reward.pearls > 0) addPearls?.call(reward.pearls);
+      if (reward.items.isNotEmpty) giveItems?.call(reward.items);
+    }
     if (due.isNotEmpty) justPaid.value = due;
+    if (extra.isNotEmpty) justPaidPass.value = extra;
     notifyListeners();
-    save();
+    return due.isNotEmpty || extra.isNotEmpty;
   }
 
   /// Writes progress and the event board to the phone. Writes run one after
@@ -91,6 +156,8 @@ class EventController extends ChangeNotifier {
           eventId: event.id,
           points: _points,
           paid: _paid,
+          premiumPaid: _premiumPaid,
+          endlessPaid: _endlessPaid,
           items: boardItems(),
         ),
       );
@@ -100,6 +167,7 @@ class EventController extends ChangeNotifier {
   @override
   void dispose() {
     justPaid.dispose();
+    justPaidPass.dispose();
     super.dispose();
   }
 }

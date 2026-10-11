@@ -40,13 +40,15 @@ class TreasureJarController {
   void orderDelivered() => _save(rules.perOrder);
   void taskDone() => _save(rules.perTask);
 
-  /// The player's level is [now]: each level won since the last
-  /// look saves its Pearls.
-  void levelIs(int now) {
+  /// The player's level is [now]: each level won since the last look
+  /// saves its Pearls, but only while the jar is [open] to the player
+  /// (levels won before the jar, or in the tutorial, save nothing, then or
+  /// later).
+  void levelIs(int now, {required bool open}) {
     final won = now - level;
     if (won <= 0) return;
     level = now;
-    _save(rules.perLevel * won);
+    if (open) _save(rules.perLevel * won);
   }
 
   /// The player has seen that the jar is full.

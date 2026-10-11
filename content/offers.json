@@ -172,5 +172,30 @@
       "sign_in": "Sign in to your account to open your jar.",
       "unavailable": "The market is closed just now. Please try again later."
     }
+  },
+  "season_pass": {
+    "premium_product": "pass_premium",
+    "plus_product": "pass_premium_plus",
+    "text": {
+      "button": "Season Pass",
+      "title": "Season Pass",
+      "buy_premium": "Premium {price}",
+      "buy_plus": "Premium Plus {price}",
+      "upgrade": "Upgrade to Plus {price}",
+      "have_free": "You are on the free track.",
+      "have_premium": "You have Premium.",
+      "have_plus": "You have Premium Plus.",
+      "premium_note": "Premium: an extra reward at every milestone, also for the ones you have already reached.",
+      "plus_note": "Premium Plus: all of Premium, {percent}% more points, and rewards that keep coming after the last milestone.",
+      "endless": "After the last milestone: {reward} every {points} points",
+      "this_event": "A pass is for this event only.",
+      "at_points": "{points} points",
+      "pearls": "{n} Pearls",
+      "manna": "{n} Manna",
+      "talents": "{n} Talents",
+      "sign_in": "Sign in to your account to buy a pass.",
+      "unavailable": "The market is closed just now. Please try again later.",
+      "close": "Close"
+    }
   }
 }

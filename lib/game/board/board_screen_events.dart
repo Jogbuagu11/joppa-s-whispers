@@ -3,6 +3,10 @@
 part of 'board_screen.dart';
 
 mixin _BoardEvents on _BoardRoutes {
+  /// The season pass's hooks for the event screen (see the treasure part
+  /// of this screen); null where passes cannot be had.
+  EventPass? _eventPass(BoardSession session);
+
   /// Looks for an event that is on now. Runs in the background; the banner
   /// appears if one is found.
   Future<void> _loadEvent() async {
@@ -41,6 +45,7 @@ mixin _BoardEvents on _BoardRoutes {
             markGameChanged: session.saver.markChanged,
             repository: widget.eventProgress,
             comfort: widget.comfort,
+            pass: _eventPass(session),
           ),
         ),
       );
