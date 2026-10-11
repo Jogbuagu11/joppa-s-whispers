@@ -6,6 +6,8 @@ import 'package:whispers_of_joppa/features/wheel/wheel_font.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
 import 'package:whispers_of_joppa/domain/chance.dart';
 
+part 'wheel_rim.dart';
+
 /// The colours of the slices, in turn (warm and flat, like the rest).
 const wheelColors = [
   Color(0xFFD4802A),
@@ -32,6 +34,25 @@ double sliceMiddle(List<PrizeOdds> odds, int index) {
   return before + odds[index].chance / 2;
 }
 
+// The rim's golds, round the wheel: light where the lamp catches it.
+const _rimGold = [
+  Color(0xFFF6D98A),
+  Color(0xFFB8741E),
+  Color(0xFFEFC25A),
+  Color(0xFF8A5412),
+  Color(0xFFF6D98A),
+  Color(0xFFB8741E),
+  Color(0xFFEFC25A),
+  Color(0xFF8A5412),
+  Color(0xFFF6D98A),
+];
+const _lampLit = Color(0xFFFFF1C2);
+const _lampDim = Color(0xFFE0A03C);
+const _band = [Color(0xFF5A2A14), Color(0xFF2E1408)];
+
+/// How wide the rim is, for a wheel of [radius].
+double wheelRim(double radius) => radius * 0.15;
+
 class WheelPainter extends CustomPainter {
   WheelPainter(this.odds);
 
@@ -41,52 +62,52 @@ class WheelPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final centre = size.center(Offset.zero);
     final radius = size.shortestSide / 2;
-    // The rim: dark wood between two gold lines, set with small studs.
-    canvas.drawCircle(centre, radius, Paint()..color = GamePalette.gold);
-    canvas.drawCircle(
-      centre,
-      radius - 3,
-      Paint()..color = GamePalette.backgroundBottom,
-    );
-    canvas.drawCircle(
-      centre,
-      radius - 13,
-      Paint()..color = GamePalette.talents,
-    );
-    const studs = 24;
-    for (var i = 0; i < studs; i++) {
-      final angle = 2 * pi * i / studs;
-      canvas.drawCircle(
-        centre + Offset(cos(angle), sin(angle)) * (radius - 8),
-        2.2,
-        Paint()..color = GamePalette.talents,
-      );
-    }
-    final inner = radius - 15;
+    final rim = wheelRim(radius);
+    final inner = radius - rim;
+    _paintSlices(canvas, centre, inner);
+    paintWheelRim(canvas, centre, radius, [
+      for (var i = 0; i < odds.length; i++)
+        sliceMiddle(odds, i) - odds[i].chance / 2,
+    ]);
+    paintWheelHub(canvas, centre, inner * 0.2);
+  }
+
+  void _paintSlices(Canvas canvas, Offset centre, double inner) {
     final rect = Rect.fromCircle(center: centre, radius: inner);
     var start = -pi / 2;
     for (var i = 0; i < odds.length; i++) {
       final sweep = odds[i].chance * 2 * pi;
       canvas.drawArc(rect, start, sweep, true, Paint()..color = wheelColor(i));
-      canvas.drawArc(
-        rect,
-        start,
-        sweep,
-        true,
+      start += sweep;
+    }
+    // Depth: a little light at the middle, a little shade at the edge.
+    canvas.drawCircle(
+      centre,
+      inner,
+      Paint()
+        ..shader = const RadialGradient(
+          colors: [Color(0x30FFFFFF), Color(0x00000000), Color(0x55000000)],
+          stops: [0, 0.62, 1],
+        ).createShader(rect),
+    );
+    start = -pi / 2;
+    for (var i = 0; i < odds.length; i++) {
+      final sweep = odds[i].chance * 2 * pi;
+      // A gold line between slices.
+      canvas.drawLine(
+        centre,
+        centre + Offset(cos(start), sin(start)) * inner,
         Paint()
-          ..color = GamePalette.backgroundBottom
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5,
+          ..color = _rimGold[0]
+          ..strokeWidth = 1.6,
       );
       // Its number, on a small dark disc, which the list beneath explains.
       final middle = start + sweep / 2;
       if (sweep > 0.16) {
-        final at = centre + Offset(cos(middle), sin(middle)) * inner * 0.68;
-        canvas.drawCircle(
-          at,
-          11,
-          Paint()..color = GamePalette.backgroundBottom,
-        );
+        final at = centre + Offset(cos(middle), sin(middle)) * inner * 0.66;
+        canvas
+          ..drawCircle(at, 12.5, Paint()..color = _rimGold[0])
+          ..drawCircle(at, 11, Paint()..color = GamePalette.backgroundBottom);
         final number = TextPainter(
           text: TextSpan(
             text: '${i + 1}',
@@ -104,46 +125,8 @@ class WheelPainter extends CustomPainter {
       }
       start += sweep;
     }
-    // The hub.
-    canvas.drawCircle(centre, inner * 0.2, Paint()..color = GamePalette.gold);
-    canvas.drawCircle(
-      centre,
-      inner * 0.15,
-      Paint()..color = GamePalette.backgroundBottom,
-    );
-    canvas.drawCircle(
-      centre,
-      inner * 0.06,
-      Paint()..color = GamePalette.talents,
-    );
   }
 
   @override
   bool shouldRepaint(WheelPainter old) => old.odds != odds;
-}
-
-/// The marker at the top of the wheel that the prize comes to rest under.
-class WheelPointer extends CustomPainter {
-  const WheelPointer();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final shape = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width / 2, size.height)
-      ..close();
-    canvas.drawShadow(shape, const Color(0xFF000000), 3, false);
-    canvas.drawPath(shape, Paint()..color = GamePalette.talents);
-    canvas.drawPath(
-      shape,
-      Paint()
-        ..color = GamePalette.backgroundBottom
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5,
-    );
-  }
-
-  @override
-  bool shouldRepaint(WheelPointer old) => false;
 }

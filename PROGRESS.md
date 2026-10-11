@@ -1533,7 +1533,23 @@ unit tests and 61 server tests. Three code reviews done; their MUST FIX items ar
 Pictures of the new pop-ups: `~/Downloads/WhispersofJoppa-art-review/milestone-31/`
 (the prices in them are the test store's, not the real ones).
 
-**Server steps (all need Jennifer's OK; none done)**
+**Jennifer's answers (2026-10-11): yes to all four.** The three server steps are
+approved; "Blue Jar" stands; the jar and pass numbers stand; the two pop-ups are fine
+as they are (Claude read her "yes" that way; to be dressed up if she asks).
+- DONE 2026-10-11: `verify-purchase` and `roll` deployed to the live project.
+- WAITING: the Boat Festival's pass is written as
+  `supabase/migrations/20261011000004_boat_festival_pass.sql`; Jennifer runs
+  `supabase db push --yes` herself (this Mac does not let Claude change the live
+  database unattended).
+
+**Build 24** (2026-10-11): `~/Downloads/whispers-of-joppa-1.0.0-24.aab` — build 23 plus
+the wheel's new frame, asked for by Jennifer ("enhance to look like wheel of fortune"):
+a polished gold rim, a dark band set with lamps, a gold peg where each slice begins, a
+domed hub and a flapper pointer (`lib/features/wheel/wheel_rim.dart`). Wheel and smoke
+device tests pass on both simulators; 932 unit tests. Pictures:
+`~/Downloads/WhispersofJoppa-art-review/wheel-rim/`.
+
+**Server steps (approved 2026-10-11; see above for what is done)**
 1. Deploy `verify-purchase` (knows the Treasure Jar and pass products). Until then a
    Treasure Jar or pass payment is refused by the server and waits, undelivered: no
    build with Milestone 31 may be used for those purchases before this.

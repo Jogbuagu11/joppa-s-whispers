@@ -214,7 +214,7 @@ class _WheelScreenState extends State<WheelScreen>
           ),
         ),
         // The pointer the prize comes to rest under.
-        const CustomPaint(size: Size(30, 34), painter: WheelPointer()),
+        const CustomPaint(size: Size(34, 42), painter: WheelPointer()),
       ],
     ),
   );
