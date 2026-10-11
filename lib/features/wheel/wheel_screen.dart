@@ -247,6 +247,7 @@ class _WheelScreenState extends State<WheelScreen>
           idle && _wheel.pearls() >= price,
           SpinKind.pearls,
           Icons.brightness_1,
+          yellow: true,
         ),
     ];
     // Nothing to spin with just now (all used, or no ad ready): say so
@@ -271,8 +272,9 @@ class _WheelScreenState extends State<WheelScreen>
     String label,
     bool enabled,
     SpinKind kind,
-    IconData icon,
-  ) => Padding(
+    IconData icon, {
+    bool yellow = false, // The Pearl spin: told apart from the free one.
+  }) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 4),
     child: SizedBox(
       width: double.infinity,
@@ -281,8 +283,10 @@ class _WheelScreenState extends State<WheelScreen>
         key: Key(key),
         style: FilledButton.styleFrom(
           shape: const StadiumBorder(),
-          backgroundColor: GamePalette.action,
-          foregroundColor: GamePalette.onAction,
+          backgroundColor: yellow ? GamePalette.talents : GamePalette.action,
+          foregroundColor: yellow
+              ? GamePalette.backgroundBottom
+              : GamePalette.onAction,
           disabledBackgroundColor: GamePalette.panelLight,
           disabledForegroundColor: GamePalette.muted,
           textStyle: wheelButtonText,

@@ -1549,6 +1549,13 @@ domed hub and a flapper pointer (`lib/features/wheel/wheel_rim.dart`). Wheel and
 device tests pass on both simulators; 932 unit tests. Pictures:
 `~/Downloads/WhispersofJoppa-art-review/wheel-rim/`.
 
+**Build 25** (2026-10-11): `~/Downloads/whispers-of-joppa-1.0.0-25.aab` — asked for by
+Jennifer: on the wheel the Pearl spin button is yellow (the free spin stays green; the
+ad spin is green too), and in the Joppa Special each heap of Pearls has light shining
+from behind it (a glow with rays). Smoke, wheel and shop device tests pass on both
+simulators; 932 unit tests. The Joppa Special has no device test of its own (only the
+look pictures). Pictures: `~/Downloads/WhispersofJoppa-art-review/buttons-and-pearls/`.
+
 **Server steps (approved 2026-10-11; see above for what is done)**
 1. Deploy `verify-purchase` (knows the Treasure Jar and pass products). Until then a
    Treasure Jar or pass payment is refused by the server and waits, undelivered: no

@@ -1,4 +1,6 @@
 // One pack in the Joppa Special pop-up.
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_palette.dart';
 
@@ -135,6 +137,48 @@ class SpecialPackCard extends StatelessWidget {
   );
 }
 
+/// Light shining from behind a heap [tall] high: a warm glow with rays
+/// fanning out of it.
+void _paintLight(Canvas canvas, Size size, double tall) {
+  final centre = Offset(size.width / 2, size.height - tall / 2 - 2);
+  final reach = size.width * 0.62;
+  final rect = Rect.fromCircle(center: centre, radius: reach);
+  // The rays: a dozen soft wedges, every other one longer.
+  const rays = 12;
+  for (var i = 0; i < rays; i++) {
+    final angle = 2 * pi * i / rays - pi / 2;
+    final far = reach * (i.isEven ? 1 : 0.74);
+    const half = 0.11;
+    canvas.drawPath(
+      Path()
+        ..moveTo(centre.dx, centre.dy)
+        ..lineTo(
+          centre.dx + cos(angle - half) * far,
+          centre.dy + sin(angle - half) * far,
+        )
+        ..lineTo(
+          centre.dx + cos(angle + half) * far,
+          centre.dy + sin(angle + half) * far,
+        )
+        ..close(),
+      Paint()
+        ..shader = const RadialGradient(
+          colors: [Color(0xCCFFC94A), Color(0x00FFC94A)],
+        ).createShader(rect),
+    );
+  }
+  // The glow itself, brightest right behind the Pearls.
+  canvas.drawCircle(
+    centre,
+    reach * 0.7,
+    Paint()
+      ..shader = const RadialGradient(
+        colors: [Color(0xFFFFFFFF), Color(0xD9FFE08A), Color(0x00FFD25E)],
+        stops: [0, 0.4, 1],
+      ).createShader(Rect.fromCircle(center: centre, radius: reach * 0.7)),
+  );
+}
+
 /// A little heap of Pearls: more of them for a bigger pack.
 class _PearlHeapPainter extends CustomPainter {
   const _PearlHeapPainter(this.count);
@@ -151,6 +195,7 @@ class _PearlHeapPainter extends CustomPainter {
       rows.add(inRow);
       left -= inRow;
     }
+    _paintLight(canvas, size, rows.length * radius * 1.7);
     var y = size.height - radius - 2;
     for (final inRow in rows) {
       final width = inRow * radius * 1.9;
