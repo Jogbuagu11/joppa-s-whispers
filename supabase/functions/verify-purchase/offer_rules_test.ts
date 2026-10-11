@@ -209,3 +209,16 @@ Deno.test('only a first Pearl pack earns the first-purchase bonus', () => {
   assertEquals(earnsFirstBonus(PRODUCTS.pearls_tier1, false), false);
   assertEquals(earnsFirstBonus(PRODUCTS.starter_pack, true), false);
 });
+
+Deno.test('opening a Treasure Jar gives what it holds, never doubled', () => {
+  assertEquals(earnsFirstBonus(PRODUCTS.treasure_jar_small, true), false);
+  assertEquals(
+    grantForProduct(PRODUCTS.treasure_jar_small, { firstPurchase: true }),
+    { pearls: 150, manna: 0, talents: 0, items: [] },
+  );
+  assertEquals(
+    grantForProduct(PRODUCTS.treasure_jar_large, { firstPurchase: false }).pearls,
+    560,
+  );
+  assertEquals(isOfferProduct('treasure_jar_small'), false);
+});

@@ -6,6 +6,7 @@ import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/domain/ads.dart';
 import 'package:whispers_of_joppa/domain/economy.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
+import 'package:whispers_of_joppa/domain/treasure_jar.dart';
 import 'package:whispers_of_joppa/data/save_repository.dart';
 import 'package:whispers_of_joppa/domain/save_state.dart';
 import 'package:whispers_of_joppa/domain/tutorial.dart';
@@ -161,7 +162,13 @@ PurchasesController buildPurchases(
   SaveState save,
 ) => PurchasesController(
   // The shop's products, and the reusable ones that carry an offer's price.
-  products: {...loader.products, ...offerProductsFrom(bundle.files['offers'])},
+  products: {
+    ...loader.products,
+    ...offerProductsFrom(bundle.files['offers']),
+    ...treasureJarProductsFrom(bundle.files['offers']),
+  },
+  // Opening a Treasure Jar also empties it: that waits for the jar.
+  announced: treasureJarProductsFrom(bundle.files['offers']).keys.toSet(),
   addManna: manna.add,
   raiseGenerators: game.raiseGeneratorsTo,
   startingPearls: save.pearls,

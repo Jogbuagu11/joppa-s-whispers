@@ -20,6 +20,12 @@ class PurchasesController extends ChangeNotifier {
   void Function(int amount)? addTalents;
   void Function(List<String> itemIds)? giveItems;
 
+  /// Told which purchases have just been put into the game (the Treasure
+  /// Jar is emptied by one). A purchase of a product in [announced] waits,
+  /// undelivered, until someone is listening.
+  void Function(List<PurchaseRecord> applied)? onApplied;
+  final Set<String> announced;
+
   int _pearls;
   final Set<String> _applied;
   final Set<String> _owned;
@@ -28,6 +34,7 @@ class PurchasesController extends ChangeNotifier {
     required this.products,
     required this.addManna,
     required this.raiseGenerators,
+    this.announced = const {},
     int startingPearls = 0,
     Iterable<String> appliedTransactions = const [],
     Iterable<String> ownedProducts = const [],
@@ -73,7 +80,9 @@ class PurchasesController extends ChangeNotifier {
     if (fresh.isEmpty) return const GrantTotals();
     final totals = totalGrant(fresh, products);
     if ((totals.talents > 0 && addTalents == null) ||
-        (totals.items.isNotEmpty && giveItems == null)) {
+        (totals.items.isNotEmpty && giveItems == null) ||
+        (onApplied == null &&
+            fresh.any((r) => announced.contains(r.productId)))) {
       // Nothing is marked as delivered that cannot be handed over in full:
       // it is tried again once the game is ready for it.
       return const GrantTotals();
@@ -90,6 +99,7 @@ class PurchasesController extends ChangeNotifier {
     if (totals.items.isNotEmpty) giveItems?.call(totals.items);
     final level = totals.generatorLevel;
     if (level != null) raiseGenerators(level);
+    onApplied?.call(fresh);
     notifyListeners();
     return totals;
   }

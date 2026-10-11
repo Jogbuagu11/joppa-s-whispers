@@ -89,7 +89,7 @@
       }
     },
     { "level": 7, "feature": "milestone_event", "name": "Milestone events", "available": false },
-    { "level": 7, "feature": "treasure_jar", "name": "Treasure Jar", "available": false },
+    { "level": 7, "feature": "treasure_jar", "name": "Treasure Jar: saves Pearls as you play", "available": true },
     { "level": 9, "feature": "order_quests", "name": "Order quests", "available": false },
     { "level": 10, "feature": "races", "name": "Races", "available": false },
     { "level": 10, "feature": "profile", "name": "Profile and avatar", "available": false },

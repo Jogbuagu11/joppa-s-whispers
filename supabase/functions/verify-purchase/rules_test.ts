@@ -180,11 +180,25 @@ Deno.test('b64url has no +, / or = (required for JWTs)', () => {
   assertEquals(/[+/=]/.test(out), false);
 });
 
-Deno.test('products match the app\'s content/products.json', async () => {
-  const content = JSON.parse(
-    await Deno.readTextFile(new URL('../../../content/products.json', import.meta.url)),
-  ) as Array<Record<string, unknown>>;
-  assertEquals(Object.keys(PRODUCTS).sort(), content.map((p) => p.id as string).sort());
+Deno.test('products match the app\'s content (shop products and Treasure Jars)', async () => {
+  const read = async (name: string) =>
+    JSON.parse(
+      await Deno.readTextFile(new URL(`../../../content/${name}.json`, import.meta.url)),
+    );
+  const content = await read('products') as Array<Record<string, unknown>>;
+  // A Treasure Jar gives what its size holds when full.
+  const jars = (await read('offers')).treasure_jar.sizes as Array<Record<string, unknown>>;
+  assertEquals(
+    Object.keys(PRODUCTS).sort(),
+    [...content.map((p) => p.id as string), ...jars.map((j) => j.product_id as string)].sort(),
+  );
+  for (const jar of jars) {
+    const server = PRODUCTS[jar.product_id as string];
+    assertEquals(server.consumable, true, `${jar.product_id} type`);
+    assertEquals(server.pearls, jar.pearls, `${jar.product_id} pearls`);
+    assertEquals(server.no_first_bonus, true, `${jar.product_id} bonus`);
+    assertEquals(server.manna ?? 0, 0);
+  }
   for (const p of content) {
     const server = PRODUCTS[p.id as string];
     assertEquals(server.consumable, p.type === 'consumable', `${p.id} type`);

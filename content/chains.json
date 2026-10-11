@@ -402,7 +402,7 @@
   {
     "id": "treasurejar",
     "placeholder_color": "#3F7F8C",
-    "name": "Treasure Jar",
+    "name": "Blue Jar",
     "kind": "gift",
     "unlock_chapter": 1,
     "tiers": [
@@ -410,7 +410,7 @@
         "tier": 1,
         "item_id": "treasurejar_01",
         "asset": "assets/items/item_treasurejar_01.jpg",
-        "name": "Treasure Jar",
+        "name": "Blue Jar",
         "sell": 10,
         "use": { "jar": "treasure" }
       }

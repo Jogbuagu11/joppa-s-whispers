@@ -8,12 +8,12 @@ final _log = Logger('PrizeRoller');
 
 abstract class PrizeRoller {
   /// The id of the prize the server drew for a paid try at [kind] ('wheel'
-  /// or 'jar', with [jar] the kind of jar), from the tables of
-  /// [contentVersion]. Null if the server could not be asked or holds
+  /// or 'jar', with [jar] the kind of jar), from the prize tables numbered
+  /// [tablesVersion] (content/chance.json, "tables_version"). Null if the server could not be asked or holds
   /// other tables: the game then draws for itself, by the same odds.
   Future<String?> roll({
     required String kind,
-    required int contentVersion,
+    required int tablesVersion,
     String? jar,
   });
 }
@@ -26,7 +26,7 @@ class SupabasePrizeRoller implements PrizeRoller {
   @override
   Future<String?> roll({
     required String kind,
-    required int contentVersion,
+    required int tablesVersion,
     String? jar,
   }) async {
     if (_client.auth.currentUser == null) return null;
@@ -38,7 +38,7 @@ class SupabasePrizeRoller implements PrizeRoller {
               'kind': kind,
               'jar': ?jar,
               'paid': true,
-              'content_version': contentVersion,
+              'tables_version': tablesVersion,
             },
           )
           // A player waiting on a spin is not kept waiting on the network.

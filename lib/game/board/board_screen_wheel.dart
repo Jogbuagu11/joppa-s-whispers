@@ -3,6 +3,9 @@
 part of 'board_screen.dart';
 
 mixin _BoardWheel on _BoardItems {
+  /// The Treasure Jar's button (see the treasure part of this screen).
+  Widget? _treasureButton(BoardSession session);
+
   /// The jars sold under the wheel (see the jars part of this screen).
   Widget? _jarShop(BoardSession session);
 
@@ -12,6 +15,13 @@ mixin _BoardWheel on _BoardItems {
         final Map<String, dynamic> json => json,
         _ => null,
       };
+
+  /// Which set of prize tables this content carries: the server draws
+  /// only if it holds the same set.
+  int get _tablesVersion => switch (_chance?['tables_version']) {
+    final int n => n,
+    _ => 0,
+  };
 
   Map<String, String> get _chanceText => {
     if (_chance?['text'] case final Map<String, dynamic> text)
@@ -168,7 +178,8 @@ mixin _BoardWheel on _BoardItems {
             lit: true,
           );
     final rules = _wheelRules(session);
-    if (rules == null) return [?special];
+    final treasure = _treasureButton(session);
+    if (rules == null) return [?special, ?treasure];
     final tally = WheelTally.fromJson(session.extras.read(wheelRecord));
     return [
       ?special,
@@ -179,6 +190,7 @@ mixin _BoardWheel on _BoardItems {
         onTap: _openWheel,
         lit: freeSpinsLeft(rules, tally, DateTime.now()) > 0,
       ),
+      ?treasure,
     ];
   }
 
@@ -215,7 +227,7 @@ mixin _BoardWheel on _BoardItems {
       serverDraw: switch (widget.roller) {
         final PrizeRoller roller => () => roller.roll(
           kind: 'wheel',
-          contentVersion: session.contentBundle.version,
+          tablesVersion: _tablesVersion,
         ),
         null => null,
       },

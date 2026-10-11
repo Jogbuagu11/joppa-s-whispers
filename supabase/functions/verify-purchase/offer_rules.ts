@@ -138,7 +138,8 @@ export function chooseOffer(args: {
 /**
  * What an ordinary shop product gives. A player's very first purchase of a
  * Pearl pack gives double Pearls (EXPANSION 21.1, first-purchase bonus);
- * the starter pack is its own bargain and is not doubled.
+ * the starter pack and the Treasure Jar are bargains of their own and are
+ * not doubled.
  */
 export function grantForProduct(
   product: ProductGrant,
@@ -158,7 +159,8 @@ export function grantForProduct(
 
 /** Whether this purchase is the one that gets the first-purchase bonus. */
 export const earnsFirstBonus = (product: ProductGrant, firstPurchase: boolean): boolean =>
-  firstPurchase && product.consumable && (product.pearls ?? 0) > 0;
+  firstPurchase && product.consumable && !product.no_first_bonus &&
+  (product.pearls ?? 0) > 0;
 
 /** The Pearls recorded on a purchase's grant, or null if it has none. */
 export function recordedPearls(grantContents: unknown): number | null {

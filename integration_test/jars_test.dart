@@ -36,7 +36,7 @@ class _SlowRoller implements PrizeRoller {
   @override
   Future<String?> roll({
     required String kind,
-    required int contentVersion,
+    required int tablesVersion,
     String? jar,
   }) {
     asked.add('$kind:$jar');

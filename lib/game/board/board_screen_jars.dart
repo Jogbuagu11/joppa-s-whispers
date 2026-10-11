@@ -138,7 +138,7 @@ mixin _BoardJars on _BoardBubbles {
           ? await widget.roller?.roll(
               kind: 'jar',
               jar: jar.id,
-              contentVersion: session.contentBundle.version,
+              tablesVersion: _tablesVersion,
             )
           : null;
       if (!identical(session, _session)) return;

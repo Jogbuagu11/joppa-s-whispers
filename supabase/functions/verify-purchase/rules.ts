@@ -6,6 +6,8 @@ export interface ProductGrant {
   pearls?: number;
   manna?: number;
   generator_level?: number;
+  /** True for a product that is a bargain of its own: never doubled. */
+  no_first_bonus?: boolean;
 }
 
 // Product catalog — must match content/products.json in the app.
@@ -17,6 +19,12 @@ export const PRODUCTS: Record<string, ProductGrant> = {
   pearls_tier5: { consumable: true, pearls: 1750 },
   pearls_tier6: { consumable: true, pearls: 3750 },
   starter_pack: { consumable: false, pearls: 100, manna: 100, generator_level: 2 },
+  // The Treasure Jar: opening one gives what that size holds when full.
+  // Must match "treasure_jar" in content/offers.json (rules_test.ts fails if
+  // they differ).
+  treasure_jar_small: { consumable: true, pearls: 150, no_first_bonus: true },
+  treasure_jar_medium: { consumable: true, pearls: 260, no_first_bonus: true },
+  treasure_jar_large: { consumable: true, pearls: 560, no_first_bonus: true },
 };
 
 export type Check =

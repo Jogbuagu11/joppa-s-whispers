@@ -51,6 +51,11 @@ List<String> chanceProblems(
     if (json is! Map<String, dynamic>) {
       return ['Chance: the file is missing or has the wrong shape'];
     }
+    // Optional (older content has none: the server is then not asked).
+    final tables = json['tables_version'];
+    if (tables != null && (tables is! int || tables < 1)) {
+      problems.add('Chance: "tables_version" must be a whole number above 0');
+    }
     final itemIds = {
       for (final chain in chainsJson as List<dynamic>)
         for (final tier

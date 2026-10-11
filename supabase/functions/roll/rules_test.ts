@@ -9,7 +9,7 @@ import {
   tableFor,
   tooManyRolls,
 } from './rules.ts';
-import { CONTENT_VERSION, TABLES } from './tables.ts';
+import { TABLES, TABLES_VERSION } from './tables.ts';
 
 const prizes: Prize[] = [
   { id: 'a', name: 'A', weight: 50 },
@@ -72,7 +72,7 @@ Deno.test('the server\'s tables are the game\'s own (content/chance.json)', asyn
       await Deno.readTextFile(new URL(`../../../content/${name}.json`, import.meta.url)),
     );
   const chance = await read('chance');
-  assertEquals(CONTENT_VERSION, (await read('version')).version);
+  assertEquals(TABLES_VERSION, chance.tables_version);
   assertEquals(TABLES.wheel, chance.wheel.prizes);
   assertEquals(Object.keys(TABLES.jars).sort(), Object.keys(chance.jars.kinds).sort());
   for (const [kind, jar] of Object.entries(chance.jars.kinds)) {

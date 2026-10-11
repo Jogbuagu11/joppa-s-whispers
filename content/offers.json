@@ -135,5 +135,42 @@
         "name": "Harbor treasure"
       }
     ]
+  },
+  "treasure_jar": {
+    "sizes": [
+      {
+        "id": "small",
+        "product_id": "treasure_jar_small",
+        "pearls": 150
+      },
+      {
+        "id": "medium",
+        "product_id": "treasure_jar_medium",
+        "pearls": 260
+      },
+      {
+        "id": "large",
+        "product_id": "treasure_jar_large",
+        "pearls": 560
+      }
+    ],
+    "earn": {
+      "order": 4,
+      "task": 6,
+      "level": 15
+    },
+    "text": {
+      "button": "Treasure Jar",
+      "title": "Treasure Jar",
+      "filling": "Every order, every task and every new level drops Pearls into your jar. When it is full, you can open it.",
+      "full": "Your jar is full! Open it and every Pearl inside is yours.",
+      "count": "{saved} of {pearls} Pearls",
+      "open": "Open for {price}",
+      "not_full": "Keep playing to fill it",
+      "next": "Each jar you open is followed by a bigger one.",
+      "close": "Later",
+      "sign_in": "Sign in to your account to open your jar.",
+      "unavailable": "The market is closed just now. Please try again later."
+    }
   }
 }

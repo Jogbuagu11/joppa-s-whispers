@@ -5,6 +5,8 @@ part of 'board_screen.dart';
 const _newSessionAfter = Duration(minutes: 30);
 
 mixin _BoardOffers on _BoardWheel {
+  void _wireTreasure(BoardSession session);
+
   /// The store's prices for the offer products, read once a session.
   Future<Map<String, String>>? _offerPrices;
 
@@ -42,6 +44,8 @@ mixin _BoardOffers on _BoardWheel {
   /// Starts offers for [session]: none where there is no shop or no source
   /// of offers (tests), and none in a game played from memory only.
   void _wireOffers(BoardSession session) {
+    // The Treasure Jar is started with them (see the treasure part).
+    _wireTreasure(session);
     final source = widget.offers;
     final shop = widget.shop;
     final before = _offers;
@@ -150,6 +154,13 @@ mixin _BoardOffers on _BoardWheel {
       !session.game.isDragging &&
       (ModalRoute.of(context)?.isCurrent ?? true);
 
+  /// The store's prices for the products that carry only a price (offers,
+  /// the Treasure Jar), read once a session.
+  Future<Map<String, String>> _reusablePrices(PurchaseCoordinator shop) =>
+      _offerPrices ??= shop
+          .loadProducts(offers: true)
+          .then((list) => {for (final p in list) p.id: p.price});
+
   /// Shows the offer for [trigger], if one fits this player and the rules
   /// allow another now. Never in the tutorial (no purchase is ever offered
   /// in it), never over a story scene, another screen or pop-up, or an item
@@ -170,9 +181,7 @@ mixin _BoardOffers on _BoardWheel {
     try {
       // The server's present offers and the store's prices, before deciding.
       await offers.refreshIfStale();
-      final prices = await (_offerPrices ??= shop
-          .loadProducts(offers: true)
-          .then((list) => {for (final p in list) p.id: p.price}));
+      final prices = await _reusablePrices(shop);
       // Things may have changed while those were being read.
       if (!identical(offers, _offers)) return false;
       if (!_quietForOffer(session, inTask: inTask)) return false;

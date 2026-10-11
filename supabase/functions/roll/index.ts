@@ -15,7 +15,7 @@ import {
   tableFor,
   tooManyRolls,
 } from './rules.ts';
-import { CONTENT_VERSION, TABLES } from './tables.ts';
+import { CONTENT_VERSION, TABLES, TABLES_VERSION } from './tables.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -57,8 +57,8 @@ serve(async (req: Request) => {
     // The game says which tables it is showing the player. If they are not
     // the ones this function holds, it must not draw: the game then draws
     // on the phone, from the table on the screen.
-    if (body.content_version !== CONTENT_VERSION) {
-      return json({ success: false, error: 'Other tables', version: CONTENT_VERSION }, 409);
+    if (body.tables_version !== TABLES_VERSION) {
+      return json({ success: false, error: 'Other tables', version: TABLES_VERSION }, 409);
     }
     const table = tableFor(TABLES, body);
     if (!table) return json({ success: false, error: 'Bad request' }, 400);

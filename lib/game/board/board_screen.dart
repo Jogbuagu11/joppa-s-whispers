@@ -44,6 +44,9 @@ import 'package:whispers_of_joppa/features/wheel/wheel_controller.dart';
 import 'package:whispers_of_joppa/features/wheel/wheel_screen.dart';
 import 'package:whispers_of_joppa/game/board/strip_button.dart';
 import 'package:whispers_of_joppa/domain/reminders.dart';
+import 'package:whispers_of_joppa/domain/treasure_jar.dart';
+import 'package:whispers_of_joppa/features/shop/treasure_jar_controller.dart';
+import 'package:whispers_of_joppa/features/shop/treasure_jar_popup.dart';
 import 'package:whispers_of_joppa/domain/comfort.dart';
 import 'package:whispers_of_joppa/features/settings/account_screen.dart';
 import 'package:whispers_of_joppa/features/settings/comfort_controller.dart';
@@ -78,6 +81,7 @@ part 'board_screen_layout.dart';
 part 'board_screen_notifications.dart';
 part 'board_screen_offers.dart';
 part 'board_screen_routes.dart';
+part 'board_screen_treasure.dart';
 part 'board_screen_wheel.dart';
 
 final _log = Logger('BoardScreen');
@@ -186,6 +190,7 @@ class _BoardScreenState extends State<BoardScreen>
         _BoardBubbles,
         _BoardJars,
         _BoardOffers,
+        _BoardTreasure,
         _BoardLayout,
         _BoardScreenActions {
   @override
