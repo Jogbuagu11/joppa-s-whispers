@@ -37,8 +37,8 @@
 | 27 | Boost & rare chains | BUILT — not tagged: Jennifer has not yet played it; the new items have no approved art yet |
 | 28 | Board extras | BUILT — not tagged: Jennifer has not yet played it; the new items have no art |
 | 29 | Chance features | BUILT — not tagged: Jennifer has not yet played it; store age-rating answers must be updated before release |
-| 30 | Offers & pop-ups | Built; not live on the server; needs Jennifer's sandbox purchase |
-| 31 | Treasure Jar & pass tiers | Not started |
+| 30 | Offers & pop-ups | Built and live on the server; needs Jennifer's sandbox purchase |
+| 31 | Treasure Jar & pass tiers | Built; server NOT yet updated (needs Jennifer's OK); needs Jennifer's sandbox purchase |
 | 32 | Event suite | Not started |
 | 33 | Pilgrim's Road | Not started |
 | 34 | Social: profiles & friends | Not started |
@@ -1477,6 +1477,89 @@ Where it stands (she has seen each step; the last one is not yet approved):
   that Apple's side was already set up; corrected the same day. Until it is stored,
   iPhone purchases answer "try again later". Also still open from the list above: store
   notification addresses (Apple and Google), and the daily sweep.
+
+## Milestone 31 — state (2026-10-11): Treasure Jar and season pass tiers
+
+BUILT, NOT TAGGED. Nothing here is live on the server yet (see "Server steps").
+
+**Fix to build 22 first (found by code review of the server prize roll)**
+- In build 22 a Pearl spin took the Pearls, and a bought jar left the board, BEFORE the
+  server was asked for the prize. Closing the game during that wait (up to 4 seconds on
+  a slow connection) could lose the Pearls or the jar with no prize. Now the server is
+  asked first and the Pearls (or the jar) are taken in the same step that gives the
+  prize. **Build 22 should not be given to testers; use the next build.**
+- The `roll` function now only draws paid tries, turns away more than 20 draws a minute
+  per player, and answers bad requests properly. NOT deployed yet.
+- The server now checks a small number in `content/chance.json` (`tables_version`)
+  instead of the whole content version, so ordinary content changes no longer switch
+  the server draw off. When a prize or weight changes: raise that number, run
+  `tool/sync_server_chance.py` (it refuses if the number was not raised), deploy `roll`.
+
+**Treasure Jar (the piggy bank)**
+- From level 7 (after the tutorial) a jar fills with Pearls as the player plays: 4 for
+  each order delivered, 6 for each story task, 15 for each level won. Its button is in
+  the row above the board and turns gold when the jar is full; the game says so once.
+- Only a FULL jar can be opened, by buying it: small 150 Pearls ($2.99), then medium 260
+  ($4.99), then large 560 ($9.99, repeats for ever). The server decides what the
+  purchase gives (the fixed amount for that size), never doubled by the first-purchase
+  bonus. After opening, the next jar is the next size, empty.
+- A jar that has been paid for but not yet delivered (no connection) cannot be paid for
+  a second time.
+- Settings and words: `content/offers.json`, `treasure_jar`. The jar picture is drawn in
+  code (a placeholder until Jennifer approves a painted one).
+
+**Season pass tiers**
+- An event can carry a pass. The Boat Festival now has one: a Premium reward beside each
+  of its 20 milestones (140 Pearls in all, plus Manna, Talents, an hourglass, a cup of
+  Manna, a knife and a Golden Thread), and Premium Plus: 20% more points and, after the
+  last milestone, 60 Talents and 15 Manna for every 400 points, without end.
+- The event screen has a "Season Pass" button: both tracks side by side, what Plus adds,
+  the store's prices. Premium $4.99, Premium Plus $9.99; a Premium holder upgrades to
+  Plus by paying $4.99 again. A pass is for that one event.
+- Bought late, a pass pays every Premium reward already reached. The pass is shown
+  unasked once per event, the first time a player without it reaches a reward.
+- The server records which event a pass is for. If the payment arrives after that event
+  ended, it goes to an event that can still be played.
+- A refunded pass stops working the next time the game reads the player's purchases.
+
+**Tests:** 928 unit tests, 59 server tests, content checker OK. Device tests: see the
+build note below.
+
+**Server steps (all need Jennifer's OK; none done)**
+1. Deploy `verify-purchase` (knows the Treasure Jar and pass products). Until then a
+   Treasure Jar or pass payment is refused by the server and waits, undelivered: no
+   build with Milestone 31 may be used for those purchases before this.
+2. Deploy `roll` (the hardening above).
+3. Add the `pass` block to the Boat Festival's row in the live `events` table (the same
+   block as in `content/events.json`), or live players see no pass.
+4. Do NOT publish content version 42 to the server's `content_versions` table while
+   anyone still has a build older than 23: an older build would announce the Treasure
+   Jar at level 7 and not have one.
+
+**Assumptions to confirm**
+- One of the Jars of Clay was called "Treasure Jar" (as in the GDD's "Clay jar →
+  Treasure jar → Golden chest"), and EXPANSION's piggy bank is also "Treasure Jar". Two
+  things with one name would confuse players, so the blue chance jar is now named
+  "Blue Jar" in the game. Jennifer may prefer other names.
+- Treasure Jar amounts and how fast it fills (above) are Claude's numbers.
+- The jar can only be opened when full (no early opening for fewer Pearls).
+- A Treasure Jar or pass bought as a player's very first purchase uses up "first
+  purchase": their next Pearl pack is not doubled (same as offers).
+- Pass rewards and the Plus bonus (above) are Claude's numbers. The endless track never
+  gives Pearls.
+- Premium bought twice = Premium Plus (so the upgrade costs exactly the difference).
+- Rewards a pass has already paid stay with the player if the pass is refunded.
+- The pass's button and pop-up words were written by Claude.
+
+**Not done**
+- The exclusive decoration of the pass (decorations are Milestone 36).
+- "Event-ending" offers (Milestone 32, with the event suite).
+- A store payment the store itself holds as "pending" (Ask to Buy) is not tracked: the
+  buy button comes back while it waits.
+- The server does not check that a jar was really full (a tampered game could only pay
+  full price for the fixed amount).
+- Painted art for the jar; review screenshots for the Apple products.
+- The twelve reusable products are not yet created on Google.
 
 ## Milestone 30, the rest — state (2026-10-11)
 
