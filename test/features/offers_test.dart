@@ -17,6 +17,7 @@ Object? _read(String name) =>
     jsonDecode(File('content/$name.json').readAsStringSync());
 
 const _welcome = Offer(
+  badge: '60% more than the shop',
   id: 'welcome',
   kind: 'session_start',
   productId: 'offer_099',
@@ -121,6 +122,7 @@ void main() {
       expect(find.text('50 Manna'), findsOneWidget);
       expect(find.text(r'$0.99'), findsOneWidget);
       expect(find.text('Ends in 2:00:00'), findsOneWidget);
+      expect(find.text('60% more than the shop'), findsOneWidget);
       expect(tester.takeException(), isNull);
 
       await tester.tap(find.byKey(const Key('offer_no_thanks')));

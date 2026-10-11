@@ -45,6 +45,36 @@ String formatTimeLeft(Duration left) {
   return h > 0 ? '$h:${two(m)}:${two(s)}' : '$m:${two(s)}';
 }
 
+/// The tag on a sale: a short, true comparison with the shop.
+class OfferBadge extends StatelessWidget {
+  const OfferBadge({super.key, required this.words});
+
+  final String words;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 10),
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        color: GamePalette.talents,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        child: Text(
+          words,
+          key: const Key('offer_badge'),
+          style: const TextStyle(
+            color: Color(0xFF2A1F0C),
+            fontWeight: FontWeight.w800,
+            fontSize: 15,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 class OfferCountdown extends StatelessWidget {
   const OfferCountdown({super.key, required this.left, required this.words});
 

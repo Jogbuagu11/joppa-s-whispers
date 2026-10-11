@@ -2,12 +2,42 @@
 // which one fits the moment, showing it, and noting how it ended.
 part of 'board_screen.dart';
 
+const _newSessionAfter = Duration(minutes: 30);
+
 mixin _BoardOffers on _BoardWheel {
   /// The store's prices for the offer products, read once a session.
   Future<Map<String, String>>? _offerPrices;
 
   /// True while an offer is being got ready or is on the screen.
   bool _offering = false;
+
+  /// When the game was last put in the background.
+  DateTime? _leftAt;
+
+  /// Coming back after a good while away counts as opening the game again:
+  /// a new session, with a greeting offer of its own.
+  void _offersOnLifecycle(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _leftAt = DateTime.now();
+    } else if (state == AppLifecycleState.resumed) {
+      final left = _leftAt;
+      _leftAt = null;
+      if (left == null || DateTime.now().difference(left) < _newSessionAfter) {
+        return;
+      }
+      _offers?.newSession();
+      unawaited(_greetAfterReturn());
+    }
+  }
+
+  /// The greeting offer for a player who has come back, once the check of
+  /// their account (which starts at the same moment) is out of the way.
+  Future<void> _greetAfterReturn() async {
+    for (int i = 0; i < 20 && _syncing && mounted; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+    }
+    await _maybeOffer(OfferTrigger.sessionStart);
+  }
 
   /// Starts offers for [session]: none where there is no shop or no source
   /// of offers (tests), and none in a game played from memory only.

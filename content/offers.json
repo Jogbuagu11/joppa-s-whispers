@@ -91,9 +91,9 @@
   "rules": {
     "max_per_session": 3,
     "max_at_session_start": 1,
-    "session_start_per_day": 1,
+    "session_start_per_day": 4,
     "level_every": 5,
-    "repeat_after_days": 7
+    "repeat_after_hours": 20
   },
   "text": {
     "deals_title": "Today's deals",

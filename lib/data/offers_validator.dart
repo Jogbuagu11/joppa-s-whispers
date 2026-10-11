@@ -147,11 +147,16 @@ void _checkOfferSetup(
     'max_at_session_start',
     'session_start_per_day',
     'level_every',
-    'repeat_after_days',
   ]) {
     final value = rules is Map<String, dynamic> ? rules[key] : null;
     if (value is! int || value < 0 || value > 20) {
       problems.add('Offers: rules.$key must be a whole number from 0 to 20');
     }
+  }
+  final repeat = rules is Map<String, dynamic>
+      ? rules['repeat_after_hours']
+      : null;
+  if (repeat is! int || repeat < 0 || repeat > 24 * 60) {
+    problems.add('Offers: rules.repeat_after_hours must be 0 (never) to 1440');
   }
 }

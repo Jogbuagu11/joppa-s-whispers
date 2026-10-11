@@ -39,7 +39,7 @@ void main() {
     Future<OffersController> make() async {
       final controller = OffersController(
         source: FakeOffersSource([_welcome, _more, _thirsty]),
-        rules: const OfferRules(),
+        rules: const OfferRules(sessionStartPerDay: 4),
         extras: extras,
         note: (offer, outcome) => notes.add('${offer.id}:$outcome'),
         clock: () => now,
@@ -71,22 +71,52 @@ void main() {
       );
     });
 
-    test('one offer at the start, a day; turned down, its next comes the '
-        'day after', () async {
+    test('one greeting each time the game is opened, up to the day\'s '
+        'limit; turned down, its next comes at the next opening', () async {
       expect(next(OfferTrigger.sessionStart)?.id, 'welcome');
       final ends = offers.shown(_welcome, OfferTrigger.sessionStart);
       expect(ends, now.add(const Duration(hours: 2)));
+      // Only one at one opening.
       expect(next(OfferTrigger.sessionStart), isNull);
       offers.declined(_welcome);
       expect(notes, ['welcome:shown', 'welcome:dismissed']);
 
-      // The game closed and opened again the same day: still none.
-      offers = await make();
-      expect(next(OfferTrigger.sessionStart), isNull);
-      // The next day: the bigger one.
-      now = now.add(const Duration(days: 1));
+      // Opened again later the same day: the bigger one.
+      now = now.add(const Duration(hours: 1));
       offers = await make();
       expect(next(OfferTrigger.sessionStart)?.id, 'welcome_more');
+      offers.shown(_more, OfferTrigger.sessionStart);
+      offers.declined(_more);
+      // Both turned down: nothing more today.
+      offers = await make();
+      expect(next(OfferTrigger.sessionStart), isNull);
+      // Tomorrow they come round again.
+      now = now.add(const Duration(days: 1));
+      offers = await make();
+      expect(next(OfferTrigger.sessionStart)?.id, 'welcome');
+    });
+
+    test('a day\'s limit of greetings, and a fresh count after a break', () {
+      final tight = OffersController(
+        source: FakeOffersSource([_welcome]),
+        rules: const OfferRules(sessionStartPerDay: 1),
+        extras: extras,
+        clock: () => now,
+      );
+      tight.shown(_welcome, OfferTrigger.sessionStart);
+      tight.newSession();
+      // A new session, but the day's one greeting is used.
+      expect(
+        tight.next(OfferTrigger.sessionStart, level: 5, hasPaid: false),
+        isNull,
+      );
+      offers
+        ..shown(_thirsty, OfferTrigger.outOfManna)
+        ..shown(_thirsty, OfferTrigger.outOfManna)
+        ..shown(_thirsty, OfferTrigger.outOfManna);
+      expect(next(OfferTrigger.sessionStart), isNull);
+      offers.newSession();
+      expect(next(OfferTrigger.sessionStart)?.id, 'welcome');
     });
 
     test('at most three offers in one session', () {

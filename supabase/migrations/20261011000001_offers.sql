@@ -22,6 +22,12 @@ create table if not exists offers (
   )),
   title text not null default '',
   subtitle text not null default '',
+  -- A short tag on a sale ("80% more than the shop"). It must be TRUE: a
+  -- plain comparison with what the Pearl shop gives at the same price.
+  badge text not null default '',
+  -- The days of the week it is offered on (1 Monday … 7 Sunday, by the
+  -- player's own calendar); null means every day.
+  weekdays smallint[],
   -- Exactly what the player receives:
   -- {"pearls": 0, "manna": 0, "talents": 0, "items": ["item_id", …]}
   contents jsonb not null default '{}'::jsonb,

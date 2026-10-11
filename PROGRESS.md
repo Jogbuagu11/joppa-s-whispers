@@ -1494,6 +1494,22 @@ Where it stands (she has seen each step; the last one is not yet approved):
   paying for a switched-off offer and getting less; deploy order; an offer over a story
   scene; the level-up offer never firing; a long test file).
 
+**Jennifer, 2026-10-11:** "gossip harbor has daily offers. different amounts, sometimes
+sales, or 1 item offers or packs. do these several times a day if the user is on several
+times." Built:
+- Up to **4 greeting offers a day** (`session_start_per_day`), one each time the game is
+  opened, or reopened after 30 minutes away (a new session, with its own count of 3).
+  This replaces EXPANSION 21.1's "max once a day" for the session-start offer.
+- A **daily pool** of six offers at $0.99–$4.99 (single items: Great hourglass, Golden
+  Thread, Manna potion; packs: Weaver's Kit, Pouch of Pearls, Merchant's Basket). After
+  the day's first greeting each further opening brings another, in an order that turns
+  with the day. No offer holds a Jar of Clay (nothing left to chance is sold).
+- **Weekend sales** (Fri–Sun): Weekend Market $0.99 = 45 Pearls ("80% more than the
+  shop"), Weekend Chest $4.99 = 210 Pearls ("50% more than the shop"). New `badge` and
+  `weekdays` columns. A badge must be a true comparison with the shop at that price.
+- Offers now come round again after **20 hours** (`repeat_after_hours`), not 7 days, so
+  the pool is fresh each day. A countdown still never restarts within its day.
+
 **NOT live.** The live server is unchanged. See "Deploy order" in TECH_SPEC section 6:
 migration 1, then `verify-purchase`, then the seed, then a build. Jennifer has said yes
 to these live changes (2026-10-11, question 3).

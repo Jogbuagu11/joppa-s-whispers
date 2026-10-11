@@ -138,6 +138,8 @@ class _OfferDialogState extends State<_OfferDialog> {
                             ? text['offer_subtitle'] ?? ''
                             : offer.subtitle,
                       ),
+                      if (offer.badge.isNotEmpty)
+                        OfferBadge(words: offer.badge),
                       OfferCountdown(
                         left: _left,
                         words: text['offer_ends_in'] ?? '',

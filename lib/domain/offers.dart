@@ -30,6 +30,13 @@ class Offer {
   final String title;
   final String subtitle;
 
+  /// A short true tag on a sale ("80% more than the shop"), or empty.
+  final String badge;
+
+  /// The days of the week it is offered on (1 Monday … 7 Sunday); empty
+  /// means every day.
+  final Set<int> weekdays;
+
   /// Exactly what it gives, as the server will grant it.
   final PurchaseGrant contents;
 
@@ -53,6 +60,8 @@ class Offer {
     required this.title,
     required this.contents,
     this.subtitle = '',
+    this.badge = '',
+    this.weekdays = const {},
     this.audience = 'any',
     this.minLevel = 1,
     this.nextOfferId,
@@ -83,6 +92,15 @@ class Offer {
         subtitle: switch (json['subtitle']) {
           final String words => words,
           _ => '',
+        },
+        badge: switch (json['badge']) {
+          final String words => words,
+          _ => '',
+        },
+        weekdays: {
+          if (json['weekdays'] case final List<dynamic> days)
+            for (final day in days)
+              if (day is int && day >= 1 && day <= 7) day,
         },
         audience: switch (json['audience']) {
           final String who => who,
@@ -133,7 +151,7 @@ class OfferRules {
     this.maxAtSessionStart = 1,
     this.sessionStartPerDay = 1,
     this.levelEvery = 5,
-    this.repeatAfter = const Duration(days: 7),
+    this.repeatAfter = const Duration(hours: 20),
   });
 
   factory OfferRules.fromJson(Object? json) {
@@ -147,7 +165,7 @@ class OfferRules {
       maxAtSessionStart: read('max_at_session_start', 1),
       sessionStartPerDay: read('session_start_per_day', 1),
       levelEvery: read('level_every', 5),
-      repeatAfter: Duration(days: read('repeat_after_days', 7)),
+      repeatAfter: Duration(hours: read('repeat_after_hours', 20)),
     );
   }
 }
@@ -198,6 +216,9 @@ Offer? chooseOffer({
 }) {
   final byId = {for (final offer in offers) offer.id: offer};
   bool running(Offer o) {
+    if (o.weekdays.isNotEmpty && !o.weekdays.contains(now.weekday)) {
+      return false;
+    }
     final starts = o.startsAt;
     if (starts != null && now.isBefore(starts)) return false;
     final shown = memory.firstShown[o.id];
@@ -214,8 +235,9 @@ Offer? chooseOffer({
 
   // Offers that are only ever reached as another's "next".
   final follow = {for (final o in offers) ?o.nextOfferId};
-  Offer? best;
-  var bestPriority = 0;
+  // Every offer that could be shown now, with the priority of the head of
+  // its chain.
+  final fits = <({Offer offer, int priority})>[];
   for (final first in offers) {
     final atThisMoment = trigger == OfferTrigger.sessionStart
         ? _atSessionStart.contains(first.kind)
@@ -233,10 +255,18 @@ Offer? chooseOffer({
       offer = byId[offer.nextOfferId];
     }
     if (bought || offer == null || spent(offer) || !forPlayer(offer)) continue;
-    if (best == null || first.priority > bestPriority) {
-      best = offer;
-      bestPriority = first.priority;
-    }
+    fits.add((offer: offer, priority: first.priority));
   }
-  return best;
+  if (fits.isEmpty) return null;
+  final top = fits.map((f) => f.priority).reduce((a, b) => a > b ? a : b);
+  // Among equals the pick turns with the calendar, so each day (and each
+  // opening of the game that day, as shown ones drop out) brings another.
+  final equals = [
+    for (final f in fits)
+      if (f.priority == top) f.offer,
+  ]..sort((a, b) => a.id.compareTo(b.id));
+  final day =
+      DateTime.utc(now.year, now.month, now.day).millisecondsSinceEpoch ~/
+      Duration.millisecondsPerDay;
+  return equals[day % equals.length];
 }

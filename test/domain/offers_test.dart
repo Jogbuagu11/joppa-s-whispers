@@ -15,6 +15,7 @@ Offer _offer(
   Duration duration = const Duration(hours: 24),
   DateTime? startsAt,
   DateTime? endsAt,
+  Set<int> weekdays = const {},
 }) => Offer(
   id: id,
   kind: kind,
@@ -28,6 +29,7 @@ Offer _offer(
   duration: duration,
   startsAt: startsAt,
   endsAt: endsAt,
+  weekdays: weekdays,
 );
 
 Offer? _choose(
@@ -62,6 +64,8 @@ void main() {
       'min_level': 3,
       'next_offer_id': 'welcome_more',
       'duration_seconds': 7200,
+      'badge': '80% more than the shop',
+      'weekdays': [5, 6, 7, 9, 'x'],
       'ends_at': '2026-10-20T00:00:00Z',
       'priority': 5,
     });
@@ -74,6 +78,8 @@ void main() {
     expect(offer?.duration, const Duration(hours: 2));
     expect(offer?.endsAt, DateTime.utc(2026, 10, 20));
     expect(offer?.priority, 5);
+    expect(offer?.badge, '80% more than the shop');
+    expect(offer?.weekdays, {5, 6, 7});
 
     expect(Offer.fromJson(null), isNull);
     expect(Offer.fromJson(<String, dynamic>{'id': 'x'}), isNull);
@@ -120,6 +126,40 @@ void main() {
     expect(_choose(offers, hasPaid: true)?.id, 'large');
     expect(_choose([_offer('late', minLevel: 20)], level: 19), isNull);
     expect(_choose([_offer('late', minLevel: 20)], level: 20)?.id, 'late');
+  });
+
+  test('among equals the pick turns with the calendar: another each day, '
+      'and another each time one has been shown that day', () {
+    final pool = [_offer('a'), _offer('b'), _offer('c')];
+    final days = {
+      for (int d = 0; d < 3; d++)
+        _choose(pool, now: _now.add(Duration(days: d)))?.id,
+    };
+    expect(days, {'a', 'b', 'c'});
+    // The same day: turn each down and the rest still come, one by one.
+    var memory = const OfferMemory();
+    final seen = <String?>[];
+    for (int i = 0; i < 3; i++) {
+      final offer = _choose(pool, memory: memory);
+      seen.add(offer?.id);
+      if (offer != null) memory = memory.afterDeclined(offer);
+    }
+    expect(seen.toSet(), {'a', 'b', 'c'});
+    expect(_choose(pool, memory: memory), isNull);
+    // A higher priority still comes before the pool.
+    expect(_choose([...pool, _offer('first', priority: 3)])?.id, 'first');
+  });
+
+  test('an offer for certain days of the week is offered only on them', () {
+    // 2026-10-12 is a Monday.
+    expect(_now.weekday, DateTime.monday);
+    final weekend = _offer('weekend', weekdays: {5, 6, 7});
+    expect(_choose([weekend]), isNull);
+    expect(
+      _choose([weekend], now: _now.add(const Duration(days: 4)))?.id,
+      'weekend',
+    );
+    expect(_choose([weekend], now: _now.add(const Duration(days: 7))), isNull);
   });
 
   test('the higher priority wins', () {

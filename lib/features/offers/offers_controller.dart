@@ -100,7 +100,14 @@ class OffersController {
     return offerEndsAt(offer, now, firstShown: memory.firstShown[offer.id]);
   }
 
-  /// Records that [offer] was bought: it is not offered again.
+  /// The player has come back after a good while away: a new session, with
+  /// its own greeting and its own count.
+  void newSession() {
+    _shownThisSession = 0;
+    _shownAtThisStart = 0;
+  }
+
+  /// Records that [offer] was bought: it is not offered again for now.
   void bought(Offer offer) =>
       extras.write(offersRecord, _memory.afterBought(offer).toJson());
 

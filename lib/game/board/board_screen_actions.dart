@@ -197,6 +197,7 @@ mixin _BoardScreenActions
   /// account again, in case the game moved on from another phone meanwhile.
   void _onLifecycle(AppLifecycleState state) {
     _notificationsOnLifecycle(state);
+    _offersOnLifecycle(state);
     final cloud = widget.cloud;
     final session = _session;
     if (state == AppLifecycleState.resumed) {
