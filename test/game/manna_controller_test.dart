@@ -111,4 +111,17 @@ void main() {
     await tester.pump(const Duration(seconds: 3));
     expect(notified, 3);
   });
+
+  test('each spend is told, with how much it took; a set that takes '
+      'nothing is not', () {
+    final c = make(10);
+    final told = <(int, int)>[];
+    c.onSpent = (amount) => told.add((amount, c.manna));
+    c.setAfterSpend(7);
+    c.setAfterSpend(7);
+    c.setAfterSpend(9);
+    c.add(5);
+    c.setAfterSpend(13);
+    expect(told, [(3, 7), (1, 13)]);
+  });
 }

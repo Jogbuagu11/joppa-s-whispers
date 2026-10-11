@@ -143,4 +143,34 @@ void main() {
     );
     expect(problems.single, contains('token'));
   });
+
+  test('settings of another kind are not read (a stray one cannot break '
+      'the event)', () {
+    final event = _event('milestone', {'per_order': '2', 'drop_percent': 2.5});
+    expect(event.perOrder, 1);
+    expect(event.dropPercent, 0);
+    expect(goalEventProblems(goalRow(more: {'per_order': '2'})), isEmpty);
+  });
+
+  test('progress is forgotten only for an event that is no longer listed '
+      'AND is over', () {
+    final now = DateTime.utc(2026, 10, 12);
+    Map<String, dynamic> saved(DateTime? ends) =>
+        GoalProgress(points: 5, paid: 1, endsAt: ends).toJson();
+    final record = {
+      'listed': saved(DateTime.utc(2026, 10, 14)),
+      'switched_off_for_now': saved(DateTime.utc(2026, 10, 14)),
+      'over': saved(DateTime.utc(2026, 10, 11)),
+      'old_save_without_end': saved(null),
+    };
+    expect(goalProgressToKeep(record, {'listed'}, now).keys, [
+      'listed',
+      'switched_off_for_now',
+    ]);
+    // Listed again later, the player is where they were.
+    final back = GoalProgress.fromJson(record['switched_off_for_now']);
+    expect(back.points, 5);
+    expect(back.paid, 1);
+    expect(back.endsAt, DateTime.utc(2026, 10, 14));
+  });
 }

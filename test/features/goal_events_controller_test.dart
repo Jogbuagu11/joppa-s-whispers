@@ -111,14 +111,35 @@ void main() {
     again.dispose();
   });
 
-  test('a fresh list from the server replaces the old; progress in events '
-      'no longer listed is forgotten', () {
+  test('an event that drops off the server\'s list for a while keeps the '
+      'player\'s place: nothing is earned twice', () {
     final c = make([harvest, energy])
       ..orderDelivered(12)
       ..mannaSpent(4)
+      // Switched off to be corrected: not listed, not over.
       ..replaceEvents([energy]);
-    expect(extras.read(goalEventsRecord)?.keys, ['energy']);
     expect(c.live.single.id, 'energy');
+    expect(extras.read(goalEventsRecord)?.keys, ['harvest', 'energy']);
+    c.replaceEvents([harvest, energy]);
+    expect(c.progressOf(harvest).points, 12);
+    c.orderDelivered(1);
+    expect(given.length, 1);
+    c.dispose();
+  });
+
+  test('progress in an event that is over and no longer listed is '
+      'forgotten', () {
+    var now = DateTime.now();
+    final c = GoalEventsController(
+      events: [harvest],
+      extras: extras,
+      open: (_) => true,
+      grant: given.add,
+      clock: () => now,
+    )..orderDelivered(12);
+    now = now.add(const Duration(days: 30));
+    c.replaceEvents(const []);
+    expect(extras.read(goalEventsRecord), isEmpty);
     c.dispose();
   });
 

@@ -12,6 +12,11 @@ mixin _BoardEvents on _BoardRoutes {
   Future<void> _loadEvent() async {
     final events = widget.events;
     if (events == null) return;
+    // Goal events count from the first moment, from what this phone last
+    // knew; the server's list replaces it when it answers.
+    final kept = await events.goalEventsKept();
+    if (!mounted) return;
+    if (kept.isNotEmpty) _wireGoals(kept);
     final event = currentEvent(await events.load(), DateTime.now());
     if (!mounted) return;
     _wireGoals(events.goalEvents());
@@ -41,7 +46,11 @@ mixin _BoardEvents on _BoardRoutes {
   void _wireGoals(List<GoalEvent> events) {
     final session = _session;
     if (session == null) return;
-    if (identical(session, _goalsFor)) return _goals?.replaceEvents(events);
+    if (identical(session, _goalsFor)) {
+      _goals?.replaceEvents(events);
+      // The button comes and goes with the list.
+      return setState(() {});
+    }
     _goals?.dispose();
     _goalsFor = session;
     final goals = _goals = GoalEventsController(

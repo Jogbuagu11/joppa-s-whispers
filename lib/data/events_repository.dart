@@ -46,6 +46,11 @@ class EventsRepository {
 
   List<Object?> _rows = const [];
 
+  /// The goal events as last kept on this phone, without waiting for the
+  /// server (empty if nothing was kept).
+  Future<List<GoalEvent>> goalEventsKept() async =>
+      playableGoalEvents(await _fromCache() ?? const []);
+
   /// The goal events (played on the ordinary board) among the rows that
   /// [load] last read.
   List<GoalEvent> goalEvents() => playableGoalEvents(

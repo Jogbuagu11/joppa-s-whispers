@@ -27,6 +27,7 @@ mixin _BoardScreenActions
     widget.shop?.detach();
     // Saves any unsaved change, then stops the timers.
     _bubbles?.dispose();
+    _goals?.dispose();
     _session?.dispose();
     super.dispose();
   }

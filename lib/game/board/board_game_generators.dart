@@ -97,8 +97,10 @@ extension BoardGenerators on BoardGame {
       return;
     }
 
-    if (rules.costsManna) manna.setAfterSpend(result.mannaAfter);
+    // The item lands first: a spend can win an event reward that takes a
+    // square, and that must never be the square this item needed.
     placeItem(item);
+    if (rules.costsManna) manna.setAfterSpend(result.mannaAfter);
     _afterGave(placement);
     onGeneratorSpawn?.call(wasFree: free || !rules.costsManna);
     if (lucky > 1) onLucky?.call(lucky);

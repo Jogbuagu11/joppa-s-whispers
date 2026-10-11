@@ -52,19 +52,16 @@ class GoalEventsController extends ChangeNotifier {
   GoalProgress progressOf(GoalEvent event) =>
       GoalProgress.fromJson(extras.read(goalEventsRecord)?[event.id]);
 
-  /// The freshest list from the server. Progress in events that are no
-  /// longer listed is forgotten.
+  /// The freshest list from the server. Progress is forgotten only for
+  /// events that are no longer listed AND whose end has passed.
   void replaceEvents(List<GoalEvent> fresh) {
     events = fresh;
     final record = extras.read(goalEventsRecord);
     if (record != null) {
-      final known = {for (final e in fresh) e.id};
-      if (record.keys.any((id) => !known.contains(id))) {
-        extras.write(goalEventsRecord, {
-          for (final e in record.entries)
-            if (known.contains(e.key)) e.key: e.value,
-        });
-      }
+      final kept = goalProgressToKeep(record, {
+        for (final e in fresh) e.id,
+      }, _now());
+      if (kept.length != record.length) extras.write(goalEventsRecord, kept);
     }
     notifyListeners();
   }
@@ -86,7 +83,11 @@ class GoalEventsController extends ChangeNotifier {
       );
       final due = goalsToPay(event, after);
       // Counted as paid before anything is handed over.
-      after = GoalProgress(points: after.points, paid: after.paid + due.length);
+      after = GoalProgress(
+        points: after.points,
+        paid: after.paid + due.length,
+        endsAt: event.endsAt,
+      );
       (record ??= {...?extras.read(goalEventsRecord)})[event.id] = after
           .toJson();
       paid.addAll([for (final m in due) (event: event, reward: m.reward)]);

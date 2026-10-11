@@ -68,17 +68,19 @@ class GoalEvent {
   /// kinds. (Check it with goalEventProblems first.)
   factory GoalEvent.fromJson(Map<String, dynamic> json) {
     final config = json['config'] as Map<String, dynamic>;
+    // Safe: goalEventProblems has checked the type is one of these.
+    final kind = goalKindNames[config['type']]!;
     return GoalEvent(
       id: json['id'] as String,
       name: json['name'] as String,
-      // Safe: goalEventProblems has checked the type is one of these.
-      kind: goalKindNames[config['type']]!,
+      kind: kind,
       startsAt: DateTime.parse(json['starts_at'] as String),
       endsAt: DateTime.parse(json['ends_at'] as String),
       blurb: config['blurb'] as String? ?? '',
       token: config['token'] as String? ?? '',
-      dropPercent: config['drop_percent'] as int? ?? 0,
-      perOrder: config['per_order'] as int? ?? 1,
+      // Each read only for its own kind (the only one it is checked for).
+      dropPercent: kind == GoalKind.collect ? config['drop_percent'] as int : 0,
+      perOrder: kind == GoalKind.order ? config['per_order'] as int? ?? 1 : 1,
       milestones: [
         for (final m in config['milestones'] as List<dynamic>)
           GoalMilestone(
@@ -143,7 +145,11 @@ class GoalProgress {
   /// How many milestones have been paid.
   final int paid;
 
-  const GoalProgress({this.points = 0, this.paid = 0});
+  /// When the event was last known to end (so its progress can be
+  /// forgotten once that has passed, and not before).
+  final DateTime? endsAt;
+
+  const GoalProgress({this.points = 0, this.paid = 0, this.endsAt});
 
   factory GoalProgress.fromJson(Object? json) {
     int count(String key) =>
@@ -151,10 +157,20 @@ class GoalProgress {
           final int n when n > 0 => n,
           _ => 0,
         };
-    return GoalProgress(points: count('points'), paid: count('paid'));
+    return GoalProgress(
+      points: count('points'),
+      paid: count('paid'),
+      endsAt: json is Map<String, dynamic>
+          ? DateTime.tryParse('${json['ends_at']}')
+          : null,
+    );
   }
 
-  Map<String, dynamic> toJson() => {'points': points, 'paid': paid};
+  Map<String, dynamic> toJson() => {
+    'points': points,
+    'paid': paid,
+    'ends_at': ?endsAt?.toUtc().toIso8601String(),
+  };
 }
 
 /// The milestones [progress] has reached and not been paid for.
@@ -185,3 +201,18 @@ double goalFraction(GoalEvent event, GoalProgress progress) {
   }
   return (progress.points - from) / (next.points - from);
 }
+
+/// The saved progress worth keeping at [now]: that of events still
+/// [listed], and of events not listed whose end has not passed. (An event
+/// can drop off the list for a while, switched off to be corrected, say;
+/// a player's progress in it must survive that.)
+Map<String, dynamic> goalProgressToKeep(
+  Map<String, dynamic> record,
+  Set<String> listed,
+  DateTime now,
+) => {
+  for (final e in record.entries)
+    if (listed.contains(e.key) ||
+        (GoalProgress.fromJson(e.value).endsAt?.isAfter(now) ?? false))
+      e.key: e.value,
+};
