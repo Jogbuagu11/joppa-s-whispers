@@ -1454,7 +1454,9 @@ Where it stands (she has seen each step; the last one is not yet approved):
 - She was given click-by-click steps for the Play service account JSON; the file is to
   be left in Downloads and its name told to Claude (stored only as the Supabase secret
   `GOOGLE_PLAY_SERVICE_ACCOUNT`).
-- Not in a build yet: the jar pictures and lucky boost came after build 19.
+- **Build 20** (2026-10-11): `~/Downloads/whispers-of-joppa-1.0.0-20.aab` — build 19
+  plus the jar pictures and the softer lucky boost (jars, boost, wheel and smoke device
+  tests passed on both simulators; the other 22 last ran on build 19's code).
 - **2026-10-11: the twelve reusable products exist on Apple** (app 6819075333). Jennifer
   ran `deno run -A tool/create_store_products.ts --apply --apple --reusable` herself;
   all twelve reported created, English text added, US price set, 175 countries. Like the
