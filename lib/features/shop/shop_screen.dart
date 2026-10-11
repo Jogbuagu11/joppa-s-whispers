@@ -66,6 +66,26 @@ class _ShopScreenState extends State<ShopScreen> {
                 child: Column(
                   children: [
                     ?widget.top,
+                    // Before a first purchase: what the first pack gives.
+                    ListenableBuilder(
+                      listenable: widget.purchases,
+                      builder: (context, _) =>
+                          widget.purchases.appliedTransactions.isEmpty &&
+                              (widget.text['first_purchase'] ?? '').isNotEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                              child: Text(
+                                widget.text['first_purchase'] ?? '',
+                                key: const Key('shop_first_purchase'),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: GamePalette.talents,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
                     FutureBuilder<List<StoreProduct>>(
                       future: _products,
                       builder: (context, snapshot) {

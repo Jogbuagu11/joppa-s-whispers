@@ -61,6 +61,7 @@ void main() {
           purchases: wallet,
           text: const {
             'shop_owned': 'Owned',
+            'first_purchase': 'First pack: double Pearls.',
             'shop_unavailable': 'The shop is closed.',
           },
         ),
@@ -112,9 +113,12 @@ void main() {
 
   testWidgets('buying adds the Pearls and says so', (tester) async {
     await show(tester);
+    // Before a first purchase the shop says what the first pack gives.
+    expect(find.byKey(const Key('shop_first_purchase')), findsOneWidget);
     await buy(tester, 'pearls_tier1');
     expect(text(tester, 'shop_pearls'), 'You have 50 Pearls');
     expect(text(tester, 'shop_message'), contains('50 Pearls'));
+    expect(find.byKey(const Key('shop_first_purchase')), findsNothing);
   });
 
   testWidgets(

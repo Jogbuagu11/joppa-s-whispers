@@ -105,6 +105,9 @@ extension BoardGenerators on BoardGame {
     _log.fine('Generator $genId spawned ${item.itemId}, manna=${manna.manna}');
   }
 
+  /// True while the player is holding an item.
+  bool get isDragging => _dragging != null;
+
   /// True once the board is drawn and can take items.
   bool get isBuilt => _built;
 

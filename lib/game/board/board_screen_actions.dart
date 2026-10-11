@@ -58,6 +58,7 @@ mixin _BoardScreenActions
       // last task moves the story on to the next chapter.
       final chapter = session.story.chapter;
       final locationId = chapter?.locationId;
+      final level = session.levels.level;
       final task = session.story.doNext();
       if (task == null) return;
       final scene = session.scenes[task.sceneId];
@@ -79,13 +80,9 @@ mixin _BoardScreenActions
       if (area != null) await _showLocation(locationId, justRestored: area);
       // The chapter's last task ends with its closing message.
       final ended = session.pendingEnding != null;
-      final level = session.levels.level;
       await _showPendingEnding();
       await _showLevelUp();
-      if (ended) await _maybeOffer(OfferTrigger.chapterComplete);
-      if (session.levels.level > level) {
-        await _maybeOffer(OfferTrigger.levelUp);
-      }
+      await _offerAfterTask(ended: ended, fromLevel: level);
       await _maybeAskAboutNotifications();
     } finally {
       _busy = false;
@@ -289,8 +286,8 @@ mixin _BoardScreenActions
       await _showLevelUp();
       // A signed-in player's game is checked against their account.
       if (widget.cloud?.signedIn ?? false) await _syncWithAccount();
-      _startAdsWhenQuiet();
-      unawaited(_offerAtStart());
+      // The greeting offer first; ads (which may ask about privacy) after.
+      unawaited(_offerAtStart().whenComplete(_startAdsWhenQuiet));
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e.toString());

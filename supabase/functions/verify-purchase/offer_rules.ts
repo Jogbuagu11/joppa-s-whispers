@@ -20,6 +20,10 @@ export interface OfferRow {
   is_fallback: boolean;
   starts_at?: string | null;
   ends_at?: string | null;
+  /** 'any', 'non_payer' or 'payer'. */
+  audience?: string | null;
+  /** When the row was last changed (set by the database). */
+  updated_at?: string | null;
 }
 
 /** The reusable store products whose contents the `offers` table sets. */
@@ -36,9 +40,10 @@ export const OFFER_PRODUCTS = [
 export const isOfferProduct = (productId: unknown): productId is string =>
   typeof productId === 'string' && OFFER_PRODUCTS.includes(productId);
 
-// A purchase may reach the server after its offer has ended (the app was
-// closed mid-payment, or the phone was offline). The player still paid for
-// what they were shown, for this long after the offer ends.
+// A purchase may reach the server after its offer has ended or been switched
+// off (the app was closed mid-payment, the phone was offline, or the player
+// was still looking at it). The player still paid for what they were shown,
+// for this long afterwards.
 export const OFFER_GRACE_MS = 7 * 24 * 60 * 60 * 1000;
 
 // No single purchase gives more than this, whatever a row says: a slip of
@@ -75,7 +80,11 @@ export const grantIsEmpty = (g: Grant): boolean =>
 /** Whether [offer] may be paid for at [now] (with the grace after its end). */
 export function offerCanBePaidFor(offer: OfferRow, now: Date): boolean {
   if (offer.is_fallback) return true;
-  if (!offer.is_active) return false;
+  if (!offer.is_active) {
+    // Switched off: still honoured for the grace after that change.
+    const changed = offer.updated_at ? Date.parse(offer.updated_at) : NaN;
+    if (Number.isNaN(changed) || now.getTime() > changed + OFFER_GRACE_MS) return false;
+  }
   const starts = offer.starts_at ? Date.parse(offer.starts_at) : null;
   const ends = offer.ends_at ? Date.parse(offer.ends_at) : null;
   if (starts != null && !Number.isNaN(starts) && now.getTime() < starts) return false;
@@ -85,13 +94,20 @@ export function offerCanBePaidFor(offer: OfferRow, now: Date): boolean {
   return true;
 }
 
+/** Whether [offer] is meant for a player who has, or has not, paid before. */
+function forAudience(offer: OfferRow, hasPaid: boolean | undefined): boolean {
+  if (hasPaid == null || !offer.audience || offer.audience === 'any') return true;
+  return (offer.audience === 'payer') === hasPaid;
+}
+
 /**
  * Which offer a confirmed payment for [productId] was for.
  *
  * The store only says which price was paid. The app says which offer it
  * showed ([claimedOfferId]); that is believed only if it is a real, current
- * offer AT THAT PRICE, so the most a tampered app can do is pick another
- * live offer that costs the same. Failing that: the offer this player was
+ * offer AT THAT PRICE and meant for this kind of player ([hasPaid]), so the
+ * most a tampered app can do is pick another live offer for its own kind
+ * that costs the same. Failing that: the offer this player was
  * last shown at that price, then the price's fallback. Null only if the
  * table has no fallback (a set-up mistake: nothing is granted and the
  * purchase is retried later, never lost).
@@ -102,12 +118,15 @@ export function chooseOffer(args: {
   lastShownOfferId?: unknown;
   offers: OfferRow[];
   now: Date;
+  /** Whether this player had bought anything before this purchase. */
+  hasPaid?: boolean;
 }): OfferRow | null {
   const atPrice = args.offers.filter((o) => o.product_id === args.productId);
   const usable = (id: unknown) =>
     typeof id === 'string'
       ? atPrice.find((o) =>
         o.id === id && !o.is_fallback && offerCanBePaidFor(o, args.now) &&
+        forAudience(o, args.hasPaid) &&
         !grantIsEmpty(contentsToGrant(o.contents))
       )
       : undefined;
@@ -126,7 +145,7 @@ export function grantForProduct(
   opts: { firstPurchase: boolean },
 ): Grant {
   const pearls = product.pearls ?? 0;
-  const doubled = opts.firstPurchase && product.consumable;
+  const doubled = earnsFirstBonus(product, opts.firstPurchase);
   const grant: Grant = {
     pearls: doubled ? pearls * 2 : pearls,
     manna: product.manna ?? 0,
@@ -136,6 +155,10 @@ export function grantForProduct(
   if (product.generator_level != null) grant.generator_level = product.generator_level;
   return grant;
 }
+
+/** Whether this purchase is the one that gets the first-purchase bonus. */
+export const earnsFirstBonus = (product: ProductGrant, firstPurchase: boolean): boolean =>
+  firstPurchase && product.consumable && (product.pearls ?? 0) > 0;
 
 /** The Pearls recorded on a purchase's grant, or null if it has none. */
 export function recordedPearls(grantContents: unknown): number | null {

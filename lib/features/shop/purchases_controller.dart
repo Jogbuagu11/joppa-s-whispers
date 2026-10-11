@@ -72,6 +72,12 @@ class PurchasesController extends ChangeNotifier {
     );
     if (fresh.isEmpty) return const GrantTotals();
     final totals = totalGrant(fresh, products);
+    if ((totals.talents > 0 && addTalents == null) ||
+        (totals.items.isNotEmpty && giveItems == null)) {
+      // Nothing is marked as delivered that cannot be handed over in full:
+      // it is tried again once the game is ready for it.
+      return const GrantTotals();
+    }
     for (final record in fresh) {
       _applied.add(record.transactionId);
       if (!(products[record.productId]?.consumable ?? true)) {
@@ -92,8 +98,9 @@ class PurchasesController extends ChangeNotifier {
   /// zero) and ownership of a refunded one-time product. Each refund is
   /// taken once. Returns the number of refunds handled.
   ///
-  /// Manna and generator levels from a refunded starter pack stay: once the
-  /// player has played on, there is no telling which Manna was the pack's.
+  /// Manna, Talents, items and generator levels from a refunded purchase
+  /// stay: once the player has played on, there is no telling which were
+  /// the purchase's.
   int applyRefunds(List<PurchaseRecord> fromServer) {
     final refunds = refundsToApply(fromServer, _applied, products);
     if (refunds.isEmpty) return 0;

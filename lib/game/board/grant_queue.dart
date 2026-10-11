@@ -2,8 +2,11 @@
 // level-ups and, later, other rewards). A gift that finds no free cell
 // waits here, is saved with the game, and is placed as soon as there is room.
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/game/board/board_game.dart';
+
+final _log = Logger('Grants');
 
 const _itemPrefix = 'item:';
 const _generatorPrefix = 'gen:';
@@ -63,7 +66,10 @@ class GrantQueue extends ChangeNotifier {
   bool _place(String gift) {
     if (gift.startsWith(_itemPrefix)) {
       final item = items[gift.substring(_itemPrefix.length)];
-      if (item == null) return true;
+      if (item == null) {
+        _log.warning('A gift this game does not know was dropped: $gift');
+        return true;
+      }
       if (!game.hasFreeCell) return false;
       game.placeItem(item);
       return true;

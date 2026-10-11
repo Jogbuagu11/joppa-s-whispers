@@ -10,6 +10,7 @@ const offersTextKeys = [
   'deals_note',
   'shop_unavailable',
   'shop_owned',
+  'first_purchase',
   'offer_subtitle',
   'offer_ends_in',
   'offer_no_thanks',
@@ -146,6 +147,7 @@ void _checkOfferSetup(
     'max_at_session_start',
     'session_start_per_day',
     'level_every',
+    'repeat_after_days',
   ]) {
     final value = rules is Map<String, dynamic> ? rules[key] : null;
     if (value is! int || value < 0 || value > 20) {

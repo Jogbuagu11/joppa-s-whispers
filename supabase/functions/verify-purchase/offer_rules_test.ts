@@ -3,6 +3,7 @@ import { assertEquals } from 'https://deno.land/std@0.177.0/testing/asserts.ts';
 import {
   chooseOffer,
   contentsToGrant,
+  earnsFirstBonus,
   grantForProduct,
   grantIsEmpty,
   isOfferProduct,
@@ -167,4 +168,44 @@ Deno.test('the Pearls recorded on a purchase are read back, or null', () => {
   assertEquals(recordedPearls(null), null);
   assertEquals(recordedPearls({ pearls: '50' }), null);
   assertEquals(recordedPearls({}), null);
+});
+
+Deno.test('an offer switched off is still honoured for a while, then not', () => {
+  const justNow = new Date(NOW.getTime() - 60_000).toISOString();
+  const longAgo = new Date(NOW.getTime() - OFFER_GRACE_MS - 60_000).toISOString();
+  assertEquals(
+    offerCanBePaidFor(offer({ is_active: false, updated_at: justNow }), NOW),
+    true,
+  );
+  assertEquals(
+    offerCanBePaidFor(offer({ is_active: false, updated_at: longAgo }), NOW),
+    false,
+  );
+  const offers = [offer({ is_active: false, updated_at: justNow }), fallback];
+  assertEquals(
+    chooseOffer({ productId: 'offer_099', claimedOfferId: 'small', offers, now: NOW })?.id,
+    'small',
+  );
+});
+
+Deno.test('an offer for one kind of player cannot be claimed by the other', () => {
+  const offers = [
+    offer({ id: 'new_friends', audience: 'non_payer' }),
+    offer({ id: 'regulars', audience: 'payer' }),
+    offer({ id: 'everyone', audience: 'any' }),
+    fallback,
+  ];
+  const pick = (claimedOfferId: string, hasPaid: boolean) =>
+    chooseOffer({ productId: 'offer_099', claimedOfferId, offers, now: NOW, hasPaid })?.id;
+  assertEquals(pick('new_friends', false), 'new_friends');
+  assertEquals(pick('new_friends', true), 'fallback_099');
+  assertEquals(pick('regulars', true), 'regulars');
+  assertEquals(pick('regulars', false), 'fallback_099');
+  assertEquals(pick('everyone', true), 'everyone');
+});
+
+Deno.test('only a first Pearl pack earns the first-purchase bonus', () => {
+  assertEquals(earnsFirstBonus(PRODUCTS.pearls_tier1, true), true);
+  assertEquals(earnsFirstBonus(PRODUCTS.pearls_tier1, false), false);
+  assertEquals(earnsFirstBonus(PRODUCTS.starter_pack, true), false);
 });

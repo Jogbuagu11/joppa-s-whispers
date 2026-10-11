@@ -112,10 +112,19 @@ class SupabasePurchaseBackend implements PurchaseBackend {
 
   @override
   Future<List<PurchaseRecord>> myPurchases() async {
-    final rows = await _client
-        .from('purchases')
-        .select('transaction_id, product_id, status, grant_contents')
-        .order('created_at');
+    const plain = 'transaction_id, product_id, status';
+    List<Map<String, dynamic>> rows;
+    try {
+      rows = await _client
+          .from('purchases')
+          .select('$plain, grant_contents')
+          .order('created_at');
+    } on PostgrestException catch (e) {
+      // 42703: a server that does not record grants yet. Purchases must
+      // still be delivered: each then gives what its product gives.
+      if (e.code != '42703') rethrow;
+      rows = await _client.from('purchases').select(plain).order('created_at');
+    }
     return [
       for (final row in rows)
         PurchaseRecord(

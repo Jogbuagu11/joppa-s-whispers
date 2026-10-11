@@ -111,30 +111,40 @@ serve(async (req: Request) => {
     if (decision === 'grant') {
       // 3. Decide exactly what it gives. This is written onto the purchase
       //    and is what the game hands over; the app's own idea is not used.
-      const { grant, offerId } = isOffer
-        ? await offerGrant(supabase, user.id, product_id, body.offer_id)
-        : { grant: await productGrant(supabase, user.id, product!), offerId: null };
+      let { grant, offerId, firstBonus } = isOffer
+        ? { ...await offerGrant(supabase, user.id, product_id, body.offer_id), firstBonus: false }
+        : { ...await productGrant(supabase, user.id, product!), offerId: null };
       // (`product!`: not an offer, so the check above proved it is in PRODUCTS.)
 
       // 4. Record it. The unique transaction id makes a double grant impossible.
-      const { data: inserted, error: insertError } = await supabase
-        .from('purchases')
-        .insert({
-          user_id: user.id,
-          platform,
-          product_id,
-          transaction_id: transactionId,
-          status: 'granted',
-          offer_id: offerId,
-          grant_contents: grant,
-          raw_verification: store.raw as Record<string, unknown>,
-          granted_at: new Date().toISOString(),
-        })
-        .select('id')
-        .single();
-      if (insertError) {
+      const record = () =>
+        supabase
+          .from('purchases')
+          .insert({
+            user_id: user.id,
+            platform,
+            product_id,
+            transaction_id: transactionId,
+            status: 'granted',
+            offer_id: offerId,
+            grant_contents: grant,
+            first_bonus: firstBonus,
+            raw_verification: store.raw as Record<string, unknown>,
+            granted_at: new Date().toISOString(),
+          })
+          .select('id')
+          .single();
+      let { data: inserted, error: insertError } = await record();
+      if (insertError?.code === '23505' && firstBonus && !isOffer &&
+        String(insertError.message).includes('purchases_one_first_bonus')) {
+        // Another purchase took this player's first-purchase bonus at the
+        // same moment: this one is recorded at the ordinary amount.
+        ({ grant, firstBonus } = await productGrant(supabase, user.id, product!, true));
+        ({ data: inserted, error: insertError } = await record());
+      }
+      if (insertError || !inserted) {
         // 23505: two requests raced; the other one recorded it.
-        if (insertError.code !== '23505') throw insertError;
+        if (insertError?.code !== '23505') throw insertError ?? new Error('insert failed');
       } else {
         await supabase.from('wallet_grants').insert({
           user_id: user.id,

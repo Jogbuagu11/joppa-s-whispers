@@ -92,7 +92,8 @@
     "max_per_session": 3,
     "max_at_session_start": 1,
     "session_start_per_day": 1,
-    "level_every": 5
+    "level_every": 5,
+    "repeat_after_days": 7
   },
   "text": {
     "deals_title": "Today's deals",
@@ -102,6 +103,7 @@
     "deals_note": "New deals every day.",
     "shop_unavailable": "The shop is not available right now. Please try again later.",
     "shop_owned": "Owned",
+    "first_purchase": "Your first Pearl pack gives double Pearls.",
     "offer_subtitle": "A special offer, for a short time",
     "offer_ends_in": "Ends in {time}",
     "offer_no_thanks": "No thanks",

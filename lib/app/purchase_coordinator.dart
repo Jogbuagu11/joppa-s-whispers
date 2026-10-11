@@ -214,6 +214,10 @@ class PurchaseCoordinator {
         receipt: purchase.receipt,
         offerId: _offerAsked[purchase.productId],
       );
+      // Answered: a later payment at this price names its own offer.
+      if (result != VerifyResult.unavailable) {
+        _offerAsked.remove(purchase.productId);
+      }
       switch (result) {
         case VerifyResult.rejected:
           // Grant nothing and leave it unfinished, as the spec requires.

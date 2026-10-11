@@ -1,7 +1,9 @@
 // Offers (EXPANSION section 21): which one a player is shown, when, and how
 // often. Pure Dart, unit tested. What an offer gives is decided by the server.
-import 'package:whispers_of_joppa/domain/ads.dart' show dayStamp;
+import 'package:whispers_of_joppa/domain/offer_memory.dart';
 import 'package:whispers_of_joppa/domain/purchases.dart';
+
+export 'package:whispers_of_joppa/domain/offer_memory.dart';
 
 /// The moments an offer may be shown at.
 enum OfferTrigger {
@@ -122,11 +124,16 @@ class OfferRules {
   /// A level-up offer comes at every level that divides by this.
   final int levelEvery;
 
+  /// An offer that was shown (bought, turned down or left to run out) may
+  /// come round again after this long, with a fresh countdown. Zero: never.
+  final Duration repeatAfter;
+
   const OfferRules({
     this.maxPerSession = 3,
     this.maxAtSessionStart = 1,
     this.sessionStartPerDay = 1,
     this.levelEvery = 5,
+    this.repeatAfter = const Duration(days: 7),
   });
 
   factory OfferRules.fromJson(Object? json) {
@@ -140,82 +147,9 @@ class OfferRules {
       maxAtSessionStart: read('max_at_session_start', 1),
       sessionStartPerDay: read('session_start_per_day', 1),
       levelEvery: read('level_every', 5),
+      repeatAfter: Duration(days: read('repeat_after_days', 7)),
     );
   }
-}
-
-/// What the game remembers about offers between sessions (saved).
-class OfferMemory {
-  /// The day the session-start count is for.
-  final String day;
-  final int sessionStartsToday;
-
-  /// offer id -> when its countdown began.
-  final Map<String, DateTime> firstShown;
-
-  /// Offers turned down or let run out.
-  final Set<String> declined;
-
-  const OfferMemory({
-    this.day = '',
-    this.sessionStartsToday = 0,
-    this.firstShown = const {},
-    this.declined = const {},
-  });
-
-  /// Reads what was saved; anything missing or odd counts as nothing.
-  factory OfferMemory.fromJson(Map<String, dynamic>? json) => OfferMemory(
-    day: switch (json?['day']) {
-      final String day => day,
-      _ => '',
-    },
-    sessionStartsToday: switch (json?['starts']) {
-      final int n when n > 0 => n,
-      _ => 0,
-    },
-    firstShown: {
-      if (json?['shown'] case final Map<String, dynamic> shown)
-        for (final e in shown.entries)
-          if (e.value case final String at)
-            if (DateTime.tryParse(at) case final DateTime time) e.key: time,
-    },
-    declined: {
-      if (json?['declined'] case final List<dynamic> ids)
-        for (final id in ids)
-          if (id is String) id,
-    },
-  );
-
-  Map<String, dynamic> toJson() => {
-    'day': day,
-    'starts': sessionStartsToday,
-    'shown': {
-      for (final e in firstShown.entries)
-        e.key: e.value.toUtc().toIso8601String(),
-    },
-    'declined': declined.toList(),
-  };
-
-  /// Session-start offers already shown on the day of [now].
-  int startsOn(DateTime now) => day == dayStamp(now) ? sessionStartsToday : 0;
-
-  /// The memory after [offer] is shown at [now] for [trigger].
-  OfferMemory afterShown(Offer offer, OfferTrigger trigger, DateTime now) =>
-      OfferMemory(
-        day: dayStamp(now),
-        sessionStartsToday:
-            startsOn(now) + (trigger == OfferTrigger.sessionStart ? 1 : 0),
-        firstShown: {offer.id: now, ...firstShown},
-        declined: declined,
-      );
-
-  /// The memory after [offer] is turned down.
-  OfferMemory afterDeclined(Offer offer) => OfferMemory(
-    day: day,
-    sessionStartsToday: sessionStartsToday,
-    firstShown: firstShown,
-    declined: {...declined, offer.id},
-  );
 }
 
 /// When [offer]'s countdown ends for a player first shown it at
@@ -241,14 +175,19 @@ bool mayShowOffer({
       memory.startsOn(now) < rules.sessionStartPerDay;
 }
 
-/// Whether a level-up offer comes at [level].
-bool levelBringsOffer(OfferRules rules, int level) =>
-    rules.levelEvery > 0 && level > 0 && level % rules.levelEvery == 0;
+/// Whether a level-up offer comes with a rise from level [from] to [to]:
+/// when a level that divides by the rule's number was reached or passed.
+bool levelBringsOffer(OfferRules rules, {required int from, required int to}) {
+  final every = rules.levelEvery;
+  return every > 0 && to > from && to ~/ every > from ~/ every;
+}
 
 /// The offer to show for [trigger], or null: the one with the highest
 /// priority among those meant for this player and still running. An offer
 /// that was turned down (or ran out) gives way to the one named as its
-/// next, which is cheaper or bigger; with no next it is not shown again.
+/// next, which is cheaper or bigger; with no next, or once any of them has
+/// been bought, none of them is shown (until the memory of it lapses: see
+/// [OfferMemory.lapsed]).
 Offer? chooseOffer({
   required List<Offer> offers,
   required OfferTrigger trigger,
@@ -287,10 +226,13 @@ Offer? chooseOffer({
     // Walk down the chain past everything already turned down.
     Offer? offer = first;
     final seen = <String>{};
-    while (offer != null && spent(offer) && seen.add(offer.id)) {
+    var bought = false;
+    while (offer != null && seen.add(offer.id)) {
+      if (memory.bought.contains(offer.id)) bought = true;
+      if (!spent(offer)) break;
       offer = byId[offer.nextOfferId];
     }
-    if (offer == null || spent(offer) || !forPlayer(offer)) continue;
+    if (bought || offer == null || spent(offer) || !forPlayer(offer)) continue;
     if (best == null || first.priority > bestPriority) {
       best = offer;
       bestPriority = first.priority;

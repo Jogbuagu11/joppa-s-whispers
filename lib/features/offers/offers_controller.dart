@@ -7,6 +7,8 @@ import 'package:whispers_of_joppa/services/offers_source.dart';
 /// The name of the offers' record in the save file.
 const offersRecord = 'offers';
 
+const _freshFor = Duration(minutes: 10);
+
 class OffersController {
   final OffersSource source;
   final OfferRules rules;
@@ -17,29 +19,49 @@ class OffersController {
   final void Function(Offer offer, String outcome)? note;
 
   List<Offer> _offers = const [];
-  int _shownThisSession = 0;
-  int _shownAtThisStart = 0;
+  DateTime? _readAt;
+  int _shownThisSession;
+  int _shownAtThisStart;
 
+  /// [carryOn] is the controller this one takes over from in the same run
+  /// of the app (the game was reloaded): the session's count goes on.
   OffersController({
     required this.source,
     required this.rules,
     required this.extras,
     this.note,
+    OffersController? carryOn,
     DateTime Function()? clock,
-  }) : _clock = clock ?? DateTime.now;
+  }) : _clock = clock ?? DateTime.now,
+       _shownThisSession = carryOn?._shownThisSession ?? 0,
+       _shownAtThisStart = carryOn?._shownAtThisStart ?? 0;
 
-  OfferMemory get _memory => OfferMemory.fromJson(extras.read(offersRecord));
+  OfferMemory get _memory => OfferMemory.fromJson(
+    extras.read(offersRecord),
+  ).lapsed(_clock(), rules.repeatAfter);
 
-  /// Reads the offers from the server (again). Until this has finished
-  /// there are none to show.
-  Future<void> load() async => _offers = await source.fetch();
+  /// Reads the offers from the server. Until this has finished there are
+  /// none to show.
+  Future<void> load() async {
+    _offers = await source.fetch();
+    _readAt = _clock();
+  }
+
+  /// Reads them again if that was a while ago, so an offer changed or
+  /// switched off on the server is not shown from memory.
+  Future<void> refreshIfStale() async {
+    final read = _readAt;
+    if (read == null || _clock().difference(read) > _freshFor) await load();
+  }
 
   /// The offer to show for [trigger] to this player, or null: none fits,
-  /// or the rules say there have been enough for now.
+  /// or the rules say there have been enough for now. For a level-up,
+  /// [fromLevel] is the level before it.
   Offer? next(
     OfferTrigger trigger, {
     required int level,
     required bool hasPaid,
+    int? fromLevel,
   }) {
     final now = _clock();
     final memory = _memory;
@@ -52,7 +74,8 @@ class OffersController {
       now: now,
     );
     if (!allowed) return null;
-    if (trigger == OfferTrigger.levelUp && !levelBringsOffer(rules, level)) {
+    if (trigger == OfferTrigger.levelUp &&
+        !levelBringsOffer(rules, from: fromLevel ?? level - 1, to: level)) {
       return null;
     }
     return chooseOffer(
@@ -76,6 +99,10 @@ class OffersController {
     note?.call(offer, 'shown');
     return offerEndsAt(offer, now, firstShown: memory.firstShown[offer.id]);
   }
+
+  /// Records that [offer] was bought: it is not offered again.
+  void bought(Offer offer) =>
+      extras.write(offersRecord, _memory.afterBought(offer).toJson());
 
   /// Records that [offer] was turned down: next time its "next" is offered.
   void declined(Offer offer) {

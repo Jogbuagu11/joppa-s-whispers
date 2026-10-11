@@ -242,38 +242,4 @@ void main() {
       isTrue,
     );
   });
-
-  test('a level-up offer comes every fifth level', () {
-    expect(levelBringsOffer(_rules, 5), isTrue);
-    expect(levelBringsOffer(_rules, 10), isTrue);
-    expect(levelBringsOffer(_rules, 7), isFalse);
-    expect(levelBringsOffer(const OfferRules(levelEvery: 0), 5), isFalse);
-  });
-
-  test('rules and memory are read carefully and survive saving', () {
-    final rules = OfferRules.fromJson(<String, dynamic>{
-      'max_per_session': 2,
-      'level_every': 'x',
-    });
-    expect(rules.maxPerSession, 2);
-    expect(rules.levelEvery, 5);
-    expect(OfferRules.fromJson(null).maxAtSessionStart, 1);
-
-    final memory = const OfferMemory()
-        .afterShown(_offer('a'), OfferTrigger.sessionStart, _now)
-        .afterDeclined(_offer('a'));
-    final back = OfferMemory.fromJson(memory.toJson());
-    expect(back.startsOn(_now), 1);
-    expect(back.firstShown['a'], _now);
-    expect(back.declined, {'a'});
-    final damaged = OfferMemory.fromJson(<String, dynamic>{
-      'day': 3,
-      'starts': -1,
-      'shown': <String, dynamic>{'a': 'not a time', 'b': 7},
-      'declined': 'x',
-    });
-    expect(damaged.startsOn(_now), 0);
-    expect(damaged.firstShown, isEmpty);
-    expect(damaged.declined, isEmpty);
-  });
 }

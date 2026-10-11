@@ -51,11 +51,30 @@ create unique index if not exists offers_one_fallback_per_product
 alter table offers enable row level security;
 
 -- Offers hold no personal data. Players see only the ones switched on.
+-- Not ones still waiting for their day.
 drop policy if exists "Anyone can read active offers" on offers;
 create policy "Anyone can read active offers"
   on offers for select
   to anon, authenticated
-  using (is_active and not is_fallback);
+  using (is_active and not is_fallback and (starts_at is null or starts_at <= now()));
+
+-- When a row was last changed. verify-purchase uses it: an offer switched
+-- off a moment ago can still be paid for by a player who is looking at it.
+create or replace function public.touch_offer()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists offers_touch on offers;
+create trigger offers_touch
+  before update on offers
+  for each row execute function public.touch_offer();
 
 drop policy if exists "Admins manage offers" on offers;
 create policy "Admins manage offers"
@@ -85,7 +104,8 @@ alter table offer_impressions enable row level security;
 drop policy if exists "Players record their own impressions" on offer_impressions;
 create policy "Players record their own impressions"
   on offer_impressions for insert to authenticated
-  with check (auth.uid() = user_id);
+  -- 'bought' is written only by verify-purchase.
+  with check (auth.uid() = user_id and outcome in ('shown', 'dismissed'));
 
 drop policy if exists "Players read their own impressions" on offer_impressions;
 create policy "Players read their own impressions"
@@ -104,6 +124,13 @@ create policy "Admins read impressions"
 -- offer changed later never changes what an earlier payment gave.
 alter table purchases add column if not exists offer_id text;
 alter table purchases add column if not exists grant_contents jsonb;
+
+-- The first-purchase bonus (double Pearls on a player's first Pearl pack)
+-- can be given once per player: the database itself refuses a second, so
+-- two purchases arriving at the same moment cannot both be doubled.
+alter table purchases add column if not exists first_bonus boolean not null default false;
+create unique index if not exists purchases_one_first_bonus
+  on purchases (user_id) where first_bonus;
 
 -- =====================
 -- The safety net: one fallback per price

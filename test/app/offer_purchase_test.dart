@@ -143,6 +143,31 @@ void main() {
     expect(pearlsToRemove(100, backend.recorded, _products), 40);
   });
 
+  test('a purchase that cannot be handed over in full is not marked as '
+      'delivered: it is given later, whole', () {
+    final early = PurchasesController(
+      products: _products,
+      addManna: (_) {},
+      raiseGenerators: (_) {},
+    );
+    const record = PurchaseRecord(
+      transactionId: 'gift',
+      productId: 'offer_099',
+      granted: true,
+      grant: PurchaseGrant(pearls: 40, items: ['manna_jar_02']),
+    );
+    // The part of the game that places items is not there yet.
+    expect(early.applyConfirmed([record]).isEmpty, isTrue);
+    expect(early.pearls, 0);
+    expect(early.hasApplied('gift'), isFalse);
+    final got = <String>[];
+    early.giveItems = got.addAll;
+    expect(early.applyConfirmed([record]).pearls, 40);
+    expect(got, ['manna_jar_02']);
+    expect(early.hasApplied('gift'), isTrue);
+    early.dispose();
+  });
+
   test('the server\'s record is read carefully', () {
     expect(PurchaseGrant.fromJson(null), isNull);
     expect(PurchaseGrant.fromJson('x'), isNull);
