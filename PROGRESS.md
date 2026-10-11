@@ -1455,6 +1455,15 @@ Where it stands (she has seen each step; the last one is not yet approved):
   be left in Downloads and its name told to Claude (stored only as the Supabase secret
   `GOOGLE_PLAY_SERVICE_ACCOUNT`).
 - Not in a build yet: the jar pictures and lucky boost came after build 19.
+- **2026-10-11: Play service account stored** as the Supabase secret
+  `GOOGLE_PLAY_SERVICE_ACCOUNT` (project sincvubcsnqzjefzsifq), from the file she made
+  (`joppa-play-purchases`, left in her Downloads folder; not copied into the project).
+  Not yet proven with a real purchase; Google can take a day to honour a new key.
+- **Still missing on the server: the Apple In-App Purchase key** (`APPLE_IAP_KEY_ID`,
+  `APPLE_IAP_ISSUER_ID`, `APPLE_IAP_PRIVATE_KEY`). Claude wrongly told her on 2026-10-11
+  that Apple's side was already set up; corrected the same day. Until it is stored,
+  iPhone purchases answer "try again later". Also still open from the list above: store
+  notification addresses (Apple and Google), and the daily sweep.
 
 ## Milestone 30 — state (2026-10-10, in progress)
 
