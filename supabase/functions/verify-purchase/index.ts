@@ -15,6 +15,8 @@ import {
   PRODUCTS,
   type Check,
 } from './rules.ts';
+import { isOfferProduct } from './offer_rules.ts';
+import { offerGrant, productGrant } from './grants.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -32,6 +34,8 @@ interface VerifyRequest {
   product_id: string;
   transaction_id: string;
   receipt_data: string; // Android: the purchase token. iOS: unused.
+  /** For the reusable offer products: the offer the player was shown. */
+  offer_id?: string;
 }
 
 /** What a store said, plus what is needed to finish the purchase there. */
@@ -64,9 +68,12 @@ serve(async (req: Request) => {
     const body = await req.json() as Partial<VerifyRequest>;
     const { platform, product_id, transaction_id, receipt_data } = body;
     const product = typeof product_id === 'string' ? PRODUCTS[product_id] : undefined;
+    // An offer product carries only a price; the offers table says what it gives.
+    const isOffer = isOfferProduct(product_id);
+    const consumable = isOffer || (product?.consumable ?? false);
     if (
       (platform !== 'ios' && platform !== 'android') ||
-      !product || typeof product_id !== 'string' ||
+      (!product && !isOffer) || typeof product_id !== 'string' ||
       typeof transaction_id !== 'string' || transaction_id.length === 0
     ) {
       return json({ success: false, error: 'Bad request' }, 400);
@@ -75,7 +82,7 @@ serve(async (req: Request) => {
     // 1. Ask the store. What it says decides everything that follows.
     const store = platform === 'ios'
       ? await verifyApple(product_id, transaction_id, user.id)
-      : await verifyGoogle(product_id, String(receipt_data ?? ''), user.id);
+      : await verifyGoogle(product_id, String(receipt_data ?? ''), user.id, consumable);
     if (!store.check.ok) {
       console.warn(`Rejected ${platform} ${product_id}: ${store.check.reason}`);
       return json({ success: false, error: 'Verification failed' }, 400);
@@ -93,7 +100,7 @@ serve(async (req: Request) => {
 
     const decision = decideGrant(existing, {
       userId: user.id,
-      consumable: product.consumable,
+      consumable,
       consumedAtStore: store.consumedAtStore,
     });
     if (decision === 'reject') {
@@ -102,7 +109,14 @@ serve(async (req: Request) => {
     }
 
     if (decision === 'grant') {
-      // 3. Record it. The unique transaction id makes a double grant impossible.
+      // 3. Decide exactly what it gives. This is written onto the purchase
+      //    and is what the game hands over; the app's own idea is not used.
+      const { grant, offerId } = isOffer
+        ? await offerGrant(supabase, user.id, product_id, body.offer_id)
+        : { grant: await productGrant(supabase, user.id, product!), offerId: null };
+      // (`product!`: not an offer, so the check above proved it is in PRODUCTS.)
+
+      // 4. Record it. The unique transaction id makes a double grant impossible.
       const { data: inserted, error: insertError } = await supabase
         .from('purchases')
         .insert({
@@ -111,6 +125,8 @@ serve(async (req: Request) => {
           product_id,
           transaction_id: transactionId,
           status: 'granted',
+          offer_id: offerId,
+          grant_contents: grant,
           raw_verification: store.raw as Record<string, unknown>,
           granted_at: new Date().toISOString(),
         })
@@ -124,16 +140,31 @@ serve(async (req: Request) => {
           user_id: user.id,
           purchase_id: inserted.id,
           grant_type: 'purchase',
-          pearls_delta: product.pearls ?? 0,
-          items_delta: product.generator_level
-            ? [{ type: 'generator', level: product.generator_level }]
-            : [],
-          note: `Purchase: ${product_id}`,
+          pearls_delta: grant.pearls,
+          items_delta: [
+            ...(grant.generator_level
+              ? [{ type: 'generator', level: grant.generator_level }]
+              : []),
+            ...(grant.manna ? [{ type: 'manna', amount: grant.manna }] : []),
+            ...(grant.talents ? [{ type: 'talents', amount: grant.talents }] : []),
+            ...grant.items.map((id) => ({ type: 'item', id })),
+          ],
+          note: offerId ? `Purchase: ${product_id} (offer ${offerId})` : `Purchase: ${product_id}`,
         });
+        if (offerId) {
+          // For the record only; a failure here changes nothing for the player.
+          const { error: noteError } = await supabase.from('offer_impressions').insert({
+            user_id: user.id,
+            offer_id: offerId,
+            product_id,
+            outcome: 'bought',
+          });
+          if (noteError) console.error('Could not note the offer as bought:', noteError);
+        }
       }
     }
 
-    // 4. Only now is the store told the purchase is delivered.
+    // 5. Only now is the store told the purchase is delivered.
     try {
       await store.settle?.();
     } catch (err) {
@@ -182,6 +213,7 @@ async function verifyGoogle(
   productId: string,
   purchaseToken: string,
   userId: string,
+  consumable: boolean,
 ): Promise<StoreResult> {
   const packageName = Deno.env.get('ANDROID_PACKAGE_NAME') ?? 'com.whispersofjoppa.game';
   const fail = (reason: string, raw: unknown = null): StoreResult => ({
@@ -201,7 +233,6 @@ async function verifyGoogle(
   if (!res.ok) return fail('Google does not know this purchase', await res.json());
   const purchase = await res.json() as Record<string, unknown>;
 
-  const consumable = PRODUCTS[productId]?.consumable ?? false;
   return {
     check: checkGooglePurchase(purchase, { userId }),
     raw: purchase,

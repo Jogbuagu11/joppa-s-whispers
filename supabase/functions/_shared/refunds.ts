@@ -1,6 +1,7 @@
 // Records a refund the store has confirmed.
 import type { SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { refundPearls } from './refund_rules.ts';
+import { recordedPearls } from '../verify-purchase/offer_rules.ts';
 
 /**
  * Marks the purchase with this transaction id refunded and logs the Pearls
@@ -22,7 +23,7 @@ export async function recordRefund(
     .update({ status: 'refunded', refunded_at: new Date().toISOString() })
     .eq('transaction_id', transactionId)
     .eq('status', 'granted')
-    .select('id, user_id, product_id');
+    .select('id, user_id, product_id, grant_contents');
   if (error) throw error;
   if (!data || data.length === 0) return false;
   for (const purchase of data) {
@@ -30,7 +31,10 @@ export async function recordRefund(
       user_id: purchase.user_id,
       purchase_id: purchase.id,
       grant_type: 'refund',
-      pearls_delta: -refundPearls(purchase.product_id as string),
+      // What this purchase really gave (an offer, a doubled first pack);
+      // purchases from before that was recorded fall back to the catalog.
+      pearls_delta: -(recordedPearls(purchase.grant_contents) ??
+        refundPearls(purchase.product_id as string)),
       // The most that can be taken back; the app takes what is left unspent.
       note: `Refund: ${purchase.product_id} (${store}); up to this many Pearls removed`,
     });
