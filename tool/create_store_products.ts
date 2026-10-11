@@ -25,6 +25,11 @@ interface Product {
   usd: string;
   name: string;
   description: string;
+  /** The store's private name for it, where several share a shown name. */
+  reference?: string;
+  /** True for a product whose contents the server decides (an offer, a
+   * pass, the Treasure Jar): it is not in content/products.json. */
+  reusable?: boolean;
 }
 interface Result {
   store: string;
@@ -64,6 +69,7 @@ function products(): Product[] {
   return (config.products as Product[]).filter((p) =>
     !only || only.includes(p.id)
   ).map((p) => {
+    if (p.reusable) return p;
     const gives = content.find((c) => c.id === p.id);
     if (!gives) throw new Error(`${p.id} is not in content/products.json`);
     if ((gives.type === "consumable") !== p.consumable) {
@@ -177,7 +183,7 @@ async function apple(e: Record<string, string>) {
           data: {
             type: "inAppPurchases",
             attributes: {
-              name: p.name,
+              name: p.reference ?? p.name,
               productId: p.id,
               inAppPurchaseType: p.consumable ? "CONSUMABLE" : "NON_CONSUMABLE",
             },

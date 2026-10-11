@@ -9,6 +9,18 @@
     { "id": "pearls_tier4", "consumable": true,  "usd": "19.99", "name": "Chest of Pearls",     "description": "{pearls} Pearls of Great Price" },
     { "id": "pearls_tier5", "consumable": true,  "usd": "49.99", "name": "Merchant's Treasure", "description": "{pearls} Pearls of Great Price" },
     { "id": "pearls_tier6", "consumable": true,  "usd": "99.99", "name": "King's Treasury",     "description": "{pearls} Pearls of Great Price" },
-    { "id": "starter_pack", "consumable": false, "usd": "1.99",  "name": "Joppa Starter Pack",  "description": "{pearls} Pearls, {manna} Manna, and a better Pantry" }
+    { "id": "starter_pack", "consumable": false, "usd": "1.99",  "name": "Joppa Starter Pack",  "description": "{pearls} Pearls, {manna} Manna, and a better Pantry" },
+    { "id": "offer_099", "consumable": true, "reusable": true, "usd": "0.99", "name": "Special Offer", "reference": "Special Offer $0.99", "description": "A special offer; contents shown in the game" },
+    { "id": "offer_199", "consumable": true, "reusable": true, "usd": "1.99", "name": "Special Offer", "reference": "Special Offer $1.99", "description": "A special offer; contents shown in the game" },
+    { "id": "offer_299", "consumable": true, "reusable": true, "usd": "2.99", "name": "Special Offer", "reference": "Special Offer $2.99", "description": "A special offer; contents shown in the game" },
+    { "id": "offer_499", "consumable": true, "reusable": true, "usd": "4.99", "name": "Special Offer", "reference": "Special Offer $4.99", "description": "A special offer; contents shown in the game" },
+    { "id": "offer_999", "consumable": true, "reusable": true, "usd": "9.99", "name": "Special Offer", "reference": "Special Offer $9.99", "description": "A special offer; contents shown in the game" },
+    { "id": "offer_1999", "consumable": true, "reusable": true, "usd": "19.99", "name": "Special Offer", "reference": "Special Offer $19.99", "description": "A special offer; contents shown in the game" },
+    { "id": "offer_4999", "consumable": true, "reusable": true, "usd": "49.99", "name": "Special Offer", "reference": "Special Offer $49.99", "description": "A special offer; contents shown in the game" },
+    { "id": "pass_premium", "consumable": true, "reusable": true, "usd": "4.99", "name": "Season Pass", "description": "Season Pass: extra rewards this season" },
+    { "id": "pass_premium_plus", "consumable": true, "reusable": true, "usd": "9.99", "name": "Season Pass Plus", "description": "Season Pass Plus: more rewards this season" },
+    { "id": "treasure_jar_small", "consumable": true, "reusable": true, "usd": "2.99", "name": "Treasure Jar", "reference": "Treasure Jar (small)", "description": "Opens your Treasure Jar of saved Pearls" },
+    { "id": "treasure_jar_medium", "consumable": true, "reusable": true, "usd": "4.99", "name": "Treasure Jar", "reference": "Treasure Jar (medium)", "description": "Opens your Treasure Jar of saved Pearls" },
+    { "id": "treasure_jar_large", "consumable": true, "reusable": true, "usd": "9.99", "name": "Treasure Jar", "reference": "Treasure Jar (large)", "description": "Opens your Treasure Jar of saved Pearls" }
   ]
 }

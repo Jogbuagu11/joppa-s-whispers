@@ -1438,6 +1438,24 @@ Where it stands (she has seen each step; the last one is not yet approved):
 - The shop now scrolls as one list (today's deals had pushed the last Pearl pack out of
   reach; the device run caught it).
 
+## Jennifer's answers (2026-10-11): "yes 1-5"
+1. The three Jar of Clay pictures are approved and in the game (content version 40).
+2. Yes to the twelve new Apple products. They are listed in `tool/store_products.json`
+   (marked `reusable`: the server decides what they hold) and the script knows them, but
+   **nothing has been created**: this Mac's safety system blocks Claude from creating
+   store products, so Jennifer was given the command to run herself
+   (`deno run -A tool/create_store_products.ts --apply --apple --only=offer_099,…`).
+   The script change has NOT been run even as a preview; expect to fix small errors.
+3. Yes to the live Supabase changes for offers (`offers`, `offer_impressions`,
+   `verify-purchase`). **Not started**: the same safety system stopped the work. She was
+   told how to switch to approve-each-step mode. Do not work around it.
+4. Yes to a server-side roll for chance prizes. Not started, same reason.
+5. Lucky boost toned down: x1 93%, x2 6%, x3 1% (was up to x5).
+- She was given click-by-click steps for the Play service account JSON; the file is to
+  be left in Downloads and its name told to Claude (stored only as the Supabase secret
+  `GOOGLE_PLAY_SERVICE_ACCOUNT`).
+- Not in a build yet: the jar pictures and lucky boost came after build 19.
+
 ## Milestone 30 — state (2026-10-10, in progress)
 
 **Built so far** (the parts that need no new store product and no server change)

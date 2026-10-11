@@ -392,6 +392,7 @@
       {
         "tier": 1,
         "item_id": "clayjar_01",
+        "asset": "assets/items/item_clayjar_01.jpg",
         "name": "Jar of Clay",
         "sell": 3,
         "use": { "jar": "clay" }
@@ -408,6 +409,7 @@
       {
         "tier": 1,
         "item_id": "treasurejar_01",
+        "asset": "assets/items/item_treasurejar_01.jpg",
         "name": "Treasure Jar",
         "sell": 10,
         "use": { "jar": "treasure" }
@@ -424,6 +426,7 @@
       {
         "tier": 1,
         "item_id": "goldenjar_01",
+        "asset": "assets/items/item_goldenjar_01.jpg",
         "name": "Golden Jar",
         "sell": 25,
         "use": { "jar": "golden" }

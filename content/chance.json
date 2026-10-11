@@ -267,7 +267,7 @@
     "steps": [
       {
         "times": 1,
-        "weight": 90
+        "weight": 93
       },
       {
         "times": 2,
@@ -275,10 +275,6 @@
       },
       {
         "times": 3,
-        "weight": 3
-      },
-      {
-        "times": 5,
         "weight": 1
       }
     ]
