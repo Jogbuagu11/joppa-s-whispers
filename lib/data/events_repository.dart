@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:whispers_of_joppa/data/goal_event_validator.dart';
+import 'package:whispers_of_joppa/domain/global_goal.dart';
 import 'package:whispers_of_joppa/domain/goal_events.dart';
 import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/event_validator.dart';
@@ -26,11 +27,15 @@ class EventsRepository {
   /// Reads content/events.json from inside the app.
   final Future<List<Object?>> Function() loadBundled;
   final RemoteEvents? remote;
+
+  /// The server's count for global goals; null where there is none.
+  final GlobalGoalServer? globalGoals;
   final Future<Directory> Function() _directory;
 
   EventsRepository({
     required this.loadBundled,
     this.remote,
+    this.globalGoals,
     Future<Directory> Function()? directory,
   }) : _directory = directory ?? getApplicationDocumentsDirectory;
 

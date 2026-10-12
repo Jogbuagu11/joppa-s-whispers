@@ -16,6 +16,7 @@ import 'package:whispers_of_joppa/data/content_loader.dart';
 import 'package:whispers_of_joppa/data/content_repository.dart';
 import 'package:whispers_of_joppa/data/events_repository.dart';
 import 'package:whispers_of_joppa/data/notification_prefs_repository.dart';
+import 'package:whispers_of_joppa/data/supabase_global_goals.dart';
 import 'package:whispers_of_joppa/data/supabase_remote_events.dart';
 import 'package:whispers_of_joppa/data/welcome_store.dart';
 import 'package:whispers_of_joppa/data/supabase_remote_content.dart';
@@ -93,6 +94,7 @@ class WhispersApp extends ConsumerWidget {
   static final EventsRepository _events = EventsRepository(
     loadBundled: loadBundledEvents,
     remote: SupabaseRemoteEvents(Supabase.instance.client),
+    globalGoals: SupabaseGlobalGoals(Supabase.instance.client),
   );
 
   // One account link for the life of the app.

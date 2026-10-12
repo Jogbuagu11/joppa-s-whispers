@@ -157,6 +157,12 @@ const GOAL_TEMPLATES = {
     per_order: 1,
     milestones: [{ points: 5, manna: 15 }, { points: 15, talents: 80 }],
   },
+  global: {
+    type: "global",
+    blurb: "Every order delivered by every player counts. All who take part share the rewards.",
+    token: "orders by all of Joppa",
+    milestones: [{ points: 500, manna: 20 }, { points: 2000, talents: 100 }, { points: 5000, pearls: 5 }],
+  },
   race: {
     type: "race",
     blurb: "Deliver orders faster than the townsfolk. First three home win.",
@@ -211,7 +217,7 @@ function raceConfigProblems(c) {
 function goalConfigProblems(c) {
   const p = [];
   if (!Object.keys(GOAL_TEMPLATES).includes(c.type)) {
-    return ['"type" must be milestone, energy, collect, order or race (or left out for a board event).'];
+    return ['"type" must be milestone, energy, collect, order, race or global (or left out for a board event).'];
   }
   for (const key of ["blurb", "token"]) {
     const w = c[key];

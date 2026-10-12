@@ -170,6 +170,7 @@ const boardTextKeys = [
   'goal_manna',
   'goal_talents',
   'goal_close',
+  'goal_global_mine',
   'goal_race_you',
   'goal_race_rivals',
   'goal_race_start',

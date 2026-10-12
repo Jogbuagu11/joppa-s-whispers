@@ -67,6 +67,9 @@ Future<void> showGoalEvents(
                           progress: controller.progressOf(event),
                           left: event.endsAt.difference(now),
                           now: now,
+                          mine: event.kind == GoalKind.global
+                              ? controller.globalOf(event).mine
+                              : null,
                           text: text,
                           itemName: itemName,
                         ),
@@ -92,6 +95,7 @@ class _GoalCard extends StatelessWidget {
     required this.progress,
     required this.left,
     required this.now,
+    this.mine,
     required this.text,
     required this.itemName,
   });
@@ -100,6 +104,9 @@ class _GoalCard extends StatelessWidget {
   final GoalProgress progress;
   final Duration left;
   final DateTime now;
+
+  /// A global goal: this player's own part in the total.
+  final int? mine;
   final Map<String, String> text;
   final String Function(String itemId) itemName;
 
@@ -109,6 +116,7 @@ class _GoalCard extends StatelessWidget {
     GoalKind.collect: Icons.spa,
     GoalKind.order: Icons.local_shipping,
     GoalKind.race: Icons.sailing,
+    GoalKind.global: Icons.groups,
   };
 
   @override
@@ -155,6 +163,12 @@ class _GoalCard extends StatelessWidget {
             style: const TextStyle(color: _cream, fontSize: 13),
           ),
           const SizedBox(height: 8),
+          if (mine != null)
+            Text(
+              (text['goal_global_mine'] ?? '').replaceAll('{n}', '$mine'),
+              key: Key('goal_mine_${event.id}'),
+              style: const TextStyle(color: GamePalette.talents, fontSize: 12),
+            ),
           if (event.kind == GoalKind.race)
             RaceStanding(
               event: event,

@@ -66,6 +66,7 @@ mixin _BoardEvents on _BoardRoutes {
         }
       },
       random: widget.luck,
+      server: widget.events?.globalGoals,
     );
     final onDelivered = session.orders.onDelivered;
     session.orders.onDelivered = (id) {
@@ -140,6 +141,7 @@ mixin _BoardEvents on _BoardRoutes {
   ) async {
     if (_busy || _syncing || _popupOpen || !mounted) return;
     _popupOpen = true;
+    unawaited(goals.syncGlobal());
     try {
       await showGoalEvents(
         context,

@@ -8,7 +8,7 @@
 import 'package:whispers_of_joppa/domain/race.dart';
 import 'package:whispers_of_joppa/domain/season_pass.dart';
 
-enum GoalKind { milestone, energy, collect, order, race }
+enum GoalKind { milestone, energy, collect, order, race, global }
 
 /// The name of each kind in an event's settings ("type"), and the feature
 /// in content/levels.json that opens it to a player.
@@ -18,6 +18,7 @@ const goalKindNames = {
   'collect': GoalKind.collect,
   'order': GoalKind.order,
   'race': GoalKind.race,
+  'global': GoalKind.global,
 };
 const goalKindFeatures = {
   GoalKind.milestone: 'milestone_event',
@@ -25,6 +26,7 @@ const goalKindFeatures = {
   GoalKind.collect: 'collect_event',
   GoalKind.order: 'order_event',
   GoalKind.race: 'races',
+  GoalKind.global: 'milestone_event',
 };
 
 class GoalMilestone {
