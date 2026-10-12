@@ -228,6 +228,62 @@ void main() {
     await tester.tap(find.byKey(const Key('calendar_close')));
     await settle(tester);
     expect(text(tester, 'talents_count'), '45');
+
+    // The keepsake album opens and lists its sets.
+    await tapOnStrip(tester, 'album_button');
+    await settle(tester);
+    expect(find.byKey(const Key('album_popup')), findsOneWidget);
+    expect(find.byKey(const Key('album_set_people')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.byKey(const Key('album_close')));
+    await settle(tester);
+
+    // Shadow the cat eats something off the board.
+    await tapOnStrip(tester, 'pet_button');
+    await settle(tester);
+    expect(text(tester, 'pet_meter'), startsWith('Fed 0 '));
+    await tester.tap(find.byType(ActionChip).first);
+    await settle(tester);
+    expect(text(tester, 'pet_meter'), isNot(startsWith('Fed 0 ')));
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.byKey(const Key('pet_close')));
+    await settle(tester);
+
+    // The order quests: the first three are open after two chapters.
+    await tapOnStrip(tester, 'quests_button');
+    await settle(tester);
+    expect(find.byKey(const Key('quest_quest_ch1')), findsOneWidget);
+    expect(
+      find.byKey(const Key('quest_give_quest_ch1_bakery_04')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.byKey(const Key('quests_close')));
+    await settle(tester);
+
+    // The study guides: open for the finished chapters only.
+    await tapOnStrip(tester, 'letters_button');
+    await settle(tester);
+    await tester.tap(find.byKey(const Key('story_replay_button')));
+    await settle(tester);
+    expect(find.byKey(const Key('replay_ch1_s_02')), findsOneWidget);
+    await tester.pageBack();
+    await settle(tester);
+    await tester.tap(find.byKey(const Key('study_guides_button')));
+    await settle(tester);
+    expect(find.byKey(const Key('study_guide_ch1')), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('study_locked_ch3')),
+      300,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const Key('study_guides_screen')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    expect(find.byKey(const Key('study_locked_ch3')), findsOneWidget);
+    expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 3));
     await SaveRepository().clear();

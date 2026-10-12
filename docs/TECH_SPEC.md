@@ -378,3 +378,23 @@ Never send personal data in events.
 - `content/daily_tasks.json`: `per_day`, `pool` (`id`, `kind` orders/talents/manna/merges, `target`, `text`, `reward`), `chest`, `weekly` (`days`, `reward`), `text`. Rules in `lib/domain/daily_tasks.dart`; save record `daily_tasks`.
 - Race: an `events` row with `config.type` `race`: `goal` (orders), `rivals` (4 of `name`, `hours`), `prizes` (3 rewards). Rules in `lib/domain/race.dart`.
 - Global goal: `config.type` `global` with `milestones` on the total of all players. Tables `global_goals`, `global_goal_parts`; function `add_to_global_goal(p_event_id, p_amount)`. Save record `global_goals` (`mine`, `sent`, `total`, `paid`).
+
+## Calendar, album, pet, study guides, order quests, replay (Milestones 36, 38, 39)
+
+All six are content files checked by their own validators (`lib/data/*_validator.dart`)
+and mandatory in a bundle from content version 48: `calendar`, `album`, `pet`,
+`study_guides`, `quests` (plus three `replay_*` keys in `board_text`). Each keeps one
+record in the save's extras: `calendar`, `album`, `pet`, `quests`.
+
+| Feature | Rules (pure Dart) | Where it shows | Unlock |
+|---|---|---|---|
+| Login calendar | `domain/login_calendar.dart` | strip button `calendar_button` | level 3 |
+| Keepsake album | `domain/album.dart`, `features/events/album_drop.dart` | `album_button`; a card may come with a delivered order | level 6 |
+| Shadow the cat | `domain/pet.dart`, `features/events/board_gives.dart` | `pet_button` | level 4 |
+| Order quests | `domain/order_quests.dart`, `features/events/board_gives.dart` | `quests_button` | level 9 |
+| Study guides | `domain/study_guides.dart` | Esther's letters, `study_guides_button` | chapter finished |
+| Story replay | `domain/replay.dart` | Esther's letters, `story_replay_button` | task finished |
+
+Anything that takes an item off the board for a reward (feeding Shadow, giving to a
+quest) goes through `board_gives.dart`: remove from the board, write the record, then
+grant. The pet validator refuses any gift that gives as much Manna as its food costs.

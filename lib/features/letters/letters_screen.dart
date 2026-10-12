@@ -2,6 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:whispers_of_joppa/app/game_app_bar.dart';
 import 'package:whispers_of_joppa/domain/letters.dart';
+import 'package:whispers_of_joppa/domain/progression.dart';
+import 'package:whispers_of_joppa/domain/replay.dart';
+import 'package:whispers_of_joppa/domain/study_guides.dart';
+import 'package:whispers_of_joppa/features/letters/story_replay_screen.dart';
+import 'package:whispers_of_joppa/features/letters/study_guides_screen.dart';
 
 const _gold = Color(0xFFD4802A);
 const _cream = Color(0xFFF3E6C8);
@@ -14,13 +19,42 @@ class LettersScreen extends StatelessWidget {
     required this.letters,
     required this.foundLetterIds,
     this.onOpened,
+    this.studyGuides,
+    this.finishedChapters = const {},
+
+    this.chapters = const [],
+    this.completedTasks = const {},
+    this.sceneIds = const {},
+    this.replayText,
+    this.onReplay,
   });
+
+  /// For playing seen scenes again: the story, the tasks done, the scenes
+  /// there are, the board's words ('replay_button', 'replay_title',
+  /// 'replay_intro') and what plays one.
+  final List<ChapterModel> chapters;
+  final Set<String> completedTasks;
+  final Set<String> sceneIds;
+  final Object? replayText;
+  final void Function(String sceneId)? onReplay;
+
+  /// content/study_guides.json, if this content has study guides.
+  final Object? studyGuides;
+  final Set<String> finishedChapters;
 
   /// Told which letter the player opened (analytics).
   final void Function(String letterId)? onOpened;
 
   final List<LetterModel> letters;
   final Set<String> foundLetterIds;
+
+  String _words(String key) => switch (replayText) {
+    final Map<String, dynamic> text => switch (text[key]) {
+      final String words => words,
+      _ => '',
+    },
+    _ => '',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +75,40 @@ class LettersScreen extends StatelessWidget {
                 style: const TextStyle(color: _cream, fontSize: 14),
               ),
             ),
+            if (onReplay case final play?)
+              OutlinedButton.icon(
+                key: const Key('story_replay_button'),
+                style: OutlinedButton.styleFrom(foregroundColor: _cream),
+                icon: const Icon(Icons.replay),
+                label: Text(_words('replay_button')),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => StoryReplayScreen(
+                      scenes: replayScenes(chapters, completedTasks, sceneIds),
+                      title: _words('replay_title'),
+                      intro: _words('replay_intro'),
+                      onPlay: play,
+                    ),
+                  ),
+                ),
+              ),
+            if (studyGuidesFrom(studyGuides) case final guides
+                when guides.isNotEmpty)
+              OutlinedButton.icon(
+                key: const Key('study_guides_button'),
+                style: OutlinedButton.styleFrom(foregroundColor: _cream),
+                icon: const Icon(Icons.menu_book),
+                label: Text(studyGuidesText(studyGuides)['button'] ?? ''),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => StudyGuidesScreen(
+                      guides: guides,
+                      finished: finishedChapters,
+                      text: studyGuidesText(studyGuides),
+                    ),
+                  ),
+                ),
+              ),
             Expanded(
               child: ListView.separated(
                 padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),

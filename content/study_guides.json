@@ -1,0 +1,88 @@
+{
+  "text": {
+    "button": "Study guides",
+    "title": "Study Guides",
+    "intro": "A short guide for each chapter, to talk over with a friend or a small group.",
+    "locked": "Finish this chapter to open its guide",
+    "rumor": "The rumor",
+    "verse": "The verse",
+    "questions": "Talk it over",
+    "copy": "Copy to share",
+    "copied": "Copied. Paste it to your group.",
+    "footer": "From the game Whispers of Joppa"
+  },
+  "guides": [
+    {
+      "chapter": "ch1",
+      "title": "Coming Home Under a Cloud",
+      "rumor": "The docks whisper that Naomi was sent away from Caesarea in disgrace. The full truth waits, but Esther never believed a word, and Naomi answers with free bread.",
+      "verse": "A soft answer turneth away wrath: but grievous words stir up anger.",
+      "ref": "Proverbs 15:1 (KJV)",
+      "questions": [
+        "Naomi came home to whispers before anyone asked her a question. When have you been judged by a story instead of known?",
+        "Zilpah's questions sound sweet but sting. How can we tell the difference between caring about someone and collecting news?",
+        "Naomi baked for the harbor anyway, for free. What is one small, kind thing you could do this week for someone who doubts you?"
+      ]
+    },
+    {
+      "chapter": "ch2",
+      "title": "Hear the Whole Matter",
+      "rumor": "The widows' fund is missing and Joppa blames Elder Amos. In truth he used it to save widow Hannah's two sons from debt servitude and was selling his own vineyard plot to repay it.",
+      "verse": "He that answereth a matter before he heareth it, it is folly and shame unto him.",
+      "ref": "Proverbs 18:13 (KJV)",
+      "questions": [
+        "The town decided Amos was guilty before he could speak. What helps you slow down before you believe, or repeat, a report?",
+        "Hannah stayed away from the well out of shame. Who around you has gone quiet, and how could you gently check on them?",
+        "Amos forgave everyone who doubted him. What makes forgiving that freely so hard, and what makes it possible?"
+      ]
+    },
+    {
+      "chapter": "ch3",
+      "title": "More Than Meets the Eye",
+      "rumor": "The docks say Marcus cheats the fishermen and informs on them to Rome. In truth he wrote down smaller catches and paid the difference from his own wages to protect them.",
+      "verse": "Judge not according to the appearance, but judge righteous judgment.",
+      "ref": "John 7:24 (KJV)",
+      "questions": [
+        "Marcus's cloak and seal told one story; his ledger told another. When has someone's outward role kept you from seeing them?",
+        "Naomi first pretended not to know her own brother. When is it tempting to keep your distance from someone others despise?",
+        "Marcus told the truth himself, and it cost him his position. What makes honesty worth it when silence would be safer?"
+      ]
+    },
+    {
+      "chapter": "ch4",
+      "title": "The Thing That Broke Me",
+      "rumor": "Forty years ago false talk about Zilpah's purity ended her betrothal; only Tabitha stood by her and clothed her. Now the town whispers about Peter lodging with a tanner.",
+      "verse": "He that covereth his sins shall not prosper: but whoso confesseth and forsaketh them shall have mercy.",
+      "ref": "Proverbs 28:13 (KJV)",
+      "questions": [
+        "Zilpah said, 'I became the thing that broke me.' How can an old hurt quietly shape the way we talk about other people?",
+        "Acts 9:36 calls Tabitha 'full of good works.' Who has stood by you with quiet, practical kindness, and how did it change you?",
+        "Zilpah asked forgiveness in public, starting with Naomi. What does a real apology include, beyond saying sorry?"
+      ]
+    },
+    {
+      "chapter": "ch5",
+      "title": "The Story the Town Preferred",
+      "rumor": "The town says Caleb sent his wife Leah out in a badly built boat for money. In truth Leah rowed into the storm herself to rescue Tobiah from a capsized skiff, and was lost on the rocks.",
+      "verse": "Greater love hath no man than this, that a man lay down his life for his friends.",
+      "ref": "John 15:13 (KJV)",
+      "questions": [
+        "Demas's guilt became the story he told about Caleb. How can blaming someone else be a way of hiding from our own regret?",
+        "Naomi went to Demas privately, not to shame him. How do you tell someone a hard truth and still leave the door open?",
+        "Caleb forgave the man whose words ruined his name. What might forgiveness set free in the one who forgives?"
+      ]
+    },
+    {
+      "chapter": "ch6",
+      "title": "A Table Long Enough",
+      "rumor": "The Caesarea rumor reaches Joppa: Naomi kept company with a Roman household. In truth she and her husband Eliab sent bread there every week to feed the poor, and kept it secret as he asked.",
+      "verse": "And be ye kind one to another, tenderhearted, forgiving one another, even as God for Christ's sake hath forgiven you.",
+      "ref": "Ephesians 4:32 (KJV)",
+      "questions": [
+        "Zilpah refused to repeat the rumor: 'I've told my last story about another woman.' What habit of speech would you like to lay down?",
+        "Naomi kept a promise even when silence cost her good name. When is it right to stay quiet, and when should the truth be told?",
+        "Jael arrived humbled, and Naomi chose to forgive. Is there a door you have kept shut that it may be time to open?"
+      ]
+    }
+  ]
+}

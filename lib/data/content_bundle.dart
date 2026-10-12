@@ -1,10 +1,14 @@
 // All game content as one unit: what ships in the app, and what the server
 // can replace it with. Pure Dart so tool/ scripts can use it.
+import 'package:whispers_of_joppa/data/album_validator.dart';
 import 'package:whispers_of_joppa/data/calendar_validator.dart';
 import 'package:whispers_of_joppa/data/chance_validator.dart';
 import 'package:whispers_of_joppa/data/content_validator.dart';
 import 'package:whispers_of_joppa/data/daily_tasks_validator.dart';
 import 'package:whispers_of_joppa/data/offers_validator.dart';
+import 'package:whispers_of_joppa/data/pet_validator.dart';
+import 'package:whispers_of_joppa/data/quests_validator.dart';
+import 'package:whispers_of_joppa/data/study_guides_validator.dart';
 
 /// The content format this build understands. A bundle with a higher format
 /// was made for a newer app and is ignored.
@@ -36,6 +40,10 @@ const contentFileNames = [
   'offers',
   'daily_tasks',
   'calendar',
+  'album',
+  'pet',
+  'study_guides',
+  'quests',
 ];
 
 class ContentBundle {
@@ -118,7 +126,23 @@ class ContentBundle {
     final ids = itemIdsOf(files['chains']);
     final daily = dailyTasksProblems(files['daily_tasks'], itemIds: ids);
     if (daily.isNotEmpty) return daily;
-    return calendarProblems(files['calendar'], itemIds: ids);
+    final calendar = calendarProblems(files['calendar'], itemIds: ids);
+    if (calendar.isNotEmpty) return calendar;
+    final album = albumProblems(files['album'], itemIds: ids);
+    if (album.isNotEmpty) return album;
+    final pet = petProblems(
+      files['pet'],
+      itemIds: ids,
+      itemManna: itemMannaOf(files['chains']),
+    );
+    if (pet.isNotEmpty) return pet;
+    final chapters = chapterIdsOf(files['chapters']);
+    final guides = studyGuidesProblems(
+      files['study_guides'],
+      chapterIds: chapters,
+    );
+    if (guides.isNotEmpty) return guides;
+    return questsProblems(files['quests'], itemIds: ids, chapterIds: chapters);
   }
 }
 
@@ -129,6 +153,19 @@ Set<String> itemIdsOf(Object? chainsJson) => {
       if (chain case {'tiers': final List<dynamic> tiers})
         for (final tier in tiers)
           if (tier case {'item_id': final String id}) id,
+};
+
+/// Item id -> the Manna using it gives, for the items that give any.
+Map<String, int> itemMannaOf(Object? chainsJson) => {
+  if (chainsJson case final List<dynamic> chains)
+    for (final chain in chains)
+      if (chain case {'tiers': final List<dynamic> tiers})
+        for (final tier in tiers)
+          if (tier case {
+            'item_id': final String id,
+            'use': {'manna': final int manna},
+          })
+            id: manna,
 };
 
 /// Which content to start the game with: the downloaded copy only if it is
@@ -178,6 +215,10 @@ const boardTextKeys = [
   'goal_race_start',
   'goal_race_prizes',
   'goal_race_place',
+  // Story replay, in the keepsake book.
+  'replay_button',
+  'replay_title',
+  'replay_intro',
   // Not words: the picture behind everything above the board.
   'header_background',
   // The first-launch welcome.

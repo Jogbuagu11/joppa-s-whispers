@@ -148,6 +148,25 @@ mixin _BoardRoutes on _BoardState {
             letters: session.letters,
             foundLetterIds: session.story.foundLetterIds,
             onOpened: _events?.letterOpened,
+            studyGuides: session.contentBundle.files['study_guides'],
+            finishedChapters: session.endings.seen.toSet(),
+            chapters: session.story.chapters,
+            completedTasks: session.story.completedTasks.toSet(),
+            sceneIds: session.scenes.keys.toSet(),
+            replayText: session.contentBundle.files['board_text'],
+            onReplay: (sceneId) {
+              final scene = session.scenes[sceneId];
+              if (scene == null || !mounted) return;
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => SceneScreen(
+                    scene: scene,
+                    characterNames: session.characterNames,
+                    availableAssets: session.assetPaths,
+                  ),
+                ),
+              );
+            },
           ),
         ),
       );

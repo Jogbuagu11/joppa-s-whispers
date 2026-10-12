@@ -1,0 +1,125 @@
+{
+  "quests": [
+    {
+      "id": "quest_ch1",
+      "chapter": "ch1",
+      "name": "Bread for the Night Boats",
+      "text": "Silas promised the night boats bread from Esther's oven again. Help Naomi keep an old fisherman's word.",
+      "done": "Silas: \"Little loaf, the whole dock smells like your Savta's mornings again.\"",
+      "needs": {
+        "bakery_04": 2,
+        "bakery_05": 2,
+        "fruit_04": 1
+      },
+      "reward": {
+        "talents": 150,
+        "manna": 30
+      }
+    },
+    {
+      "id": "quest_ch2",
+      "chapter": "ch2",
+      "name": "A Table at Amos's House",
+      "text": "The believers have stopped meeting while Elder Amos lies ill. Naomi wants a table set so no one eats alone.",
+      "done": "The benches are full again. Someone starts a psalm, and nobody whispers.",
+      "needs": {
+        "church_04": 2,
+        "church_05": 1,
+        "bakery_05": 2,
+        "fruit_05": 1
+      },
+      "reward": {
+        "talents": 200,
+        "pearls": 5
+      }
+    },
+    {
+      "id": "quest_ch3",
+      "chapter": "ch3",
+      "name": "Feed the Dock Menders",
+      "text": "The fishermen are mending the rotten docks plank by plank. Naomi means to feed every one of them, grumblers included.",
+      "done": "Silas: \"Full bellies swing hammers straighter. That reminds me of the year... ah, later.\"",
+      "needs": {
+        "bakery_06": 2,
+        "church_05": 2,
+        "fruit_05": 2,
+        "fruit_06": 1
+      },
+      "reward": {
+        "talents": 250,
+        "manna": 50,
+        "items": [
+          "hourglass_01"
+        ]
+      }
+    },
+    {
+      "id": "quest_ch4",
+      "chapter": "ch4",
+      "name": "Furnish Simon's Guest Room",
+      "text": "Simon the tanner is expecting a guest, and his house by the sea is bare. Naomi offers to help make it welcoming.",
+      "done": "The room smells of fresh bread instead of the tanning yard. Simon cannot stop smiling.",
+      "needs": {
+        "loom_05": 2,
+        "loom_06": 2,
+        "bakery_06": 2,
+        "church_06": 1
+      },
+      "reward": {
+        "talents": 300,
+        "pearls": 10
+      }
+    },
+    {
+      "id": "quest_ch5",
+      "chapter": "ch5",
+      "name": "Ready the New Meeting House",
+      "text": "The believers have outgrown Elder Amos's home, and a new house is rising. He asks Naomi to help make it ready.",
+      "done": "Amos: \"Well now. I forget most things these days, but not this. Not this.\"",
+      "needs": {
+        "church_06": 2,
+        "oil_05": 2,
+        "loom_06": 2,
+        "bakery_07": 2
+      },
+      "reward": {
+        "talents": 400,
+        "manna": 80,
+        "items": [
+          "thread_01"
+        ]
+      }
+    },
+    {
+      "id": "quest_ch6",
+      "chapter": "ch6",
+      "name": "Light for the Watchtower",
+      "text": "The harbor watchtower has stood dark for two years. Naomi is gathering what its keepers will need for the long nights.",
+      "done": "Silas: \"Now, that reminds me of... no. No story tonight, little loaf. Only thank you.\"",
+      "needs": {
+        "oil_06": 2,
+        "word_06": 2,
+        "loom_07": 2,
+        "bakery_08": 1
+      },
+      "reward": {
+        "talents": 500,
+        "pearls": 15,
+        "items": [
+          "knife_01"
+        ]
+      }
+    }
+  ],
+  "text": {
+    "button": "Order quests",
+    "title": "Order Quests",
+    "intro": "Big requests from the town. Give what you can, when you can.",
+    "need": "{name}: {have} of {all}",
+    "give": "Give",
+    "reward": "Reward: {reward}",
+    "finished": "Quest finished! {reward}",
+    "locked": "Finish the chapter before this one to open it.",
+    "close": "Close"
+  }
+}

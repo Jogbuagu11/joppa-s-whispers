@@ -1,0 +1,170 @@
+{
+  "order_percent": 20,
+  "sets": [
+    {
+      "id": "people",
+      "name": "People of Joppa",
+      "cards": [
+        {
+          "id": "naomi",
+          "name": "Naomi",
+          "note": "A baker with flour on her sleeves and a dry answer for everything."
+        },
+        {
+          "id": "grandma_esther",
+          "name": "Grandma Esther",
+          "note": "Joppa's baker for fifty years, still guiding her girl one letter at a time."
+        },
+        {
+          "id": "caleb",
+          "name": "Caleb",
+          "note": "A boat builder of few words who answers most questions with work."
+        },
+        {
+          "id": "joy",
+          "name": "Joy",
+          "note": "Eight years old, barefoot, and always one honey cake short of content."
+        },
+        {
+          "id": "silas",
+          "name": "Silas",
+          "note": "An old fisherman whose stories take the long way round to the point."
+        },
+        {
+          "id": "zilpah",
+          "name": "Zilpah",
+          "note": "Queen of the well, with a fine embroidered shawl and very sharp eyes."
+        },
+        {
+          "id": "marcus",
+          "name": "Marcus",
+          "note": "A young official who hides a sore heart behind a quick tongue."
+        },
+        {
+          "id": "tabitha",
+          "name": "Tabitha",
+          "note": "A disciple full of good works, who made coats and garments for the widows."
+        }
+      ],
+      "reward": {
+        "pearls": 15,
+        "manna": 40
+      }
+    },
+    {
+      "id": "places",
+      "name": "Places of Joppa",
+      "cards": [
+        {
+          "id": "esthers_bakehouse",
+          "name": "Esther's Bakehouse",
+          "note": "Fifty years of early mornings live in this oven's warm stones."
+        },
+        {
+          "id": "town_well",
+          "name": "The Town Well",
+          "note": "Water is drawn here every morning, and so is all the news in Joppa."
+        },
+        {
+          "id": "fishing_docks",
+          "name": "The Fishing Docks",
+          "note": "Salt, tar and gull cries, where the boats come home at first light."
+        },
+        {
+          "id": "tanners_house",
+          "name": "The Tanner's House",
+          "note": "Simon the tanner's house by the sea side, where Peter lodged many days."
+        },
+        {
+          "id": "house_church",
+          "name": "The House Church",
+          "note": "A small room with borrowed benches and lamps, and space for one more."
+        },
+        {
+          "id": "harbor_watchtower",
+          "name": "The Harbor Watchtower",
+          "note": "It stands over the rocky harbor, waiting for its beacon to burn again."
+        },
+        {
+          "id": "marketplace",
+          "name": "The Marketplace",
+          "note": "Figs, fish and tall tales, all sold at the top of someone's voice."
+        },
+        {
+          "id": "calebs_boatyard",
+          "name": "Caleb's Boatyard",
+          "note": "Cedar shavings underfoot and a hull taking shape, one plank at a time."
+        }
+      ],
+      "reward": {
+        "pearls": 15,
+        "items": [
+          "hourglass_02"
+        ]
+      }
+    },
+    {
+      "id": "objects",
+      "name": "Harbor Town Things",
+      "cards": [
+        {
+          "id": "oil_lamp",
+          "name": "Clay Oil Lamp",
+          "note": "A thumb of flame in a palm of clay, enough to light a whole supper."
+        },
+        {
+          "id": "fishing_net",
+          "name": "Fishing Net",
+          "note": "Mended every evening, knot by knot, ready for the morning's cast."
+        },
+        {
+          "id": "loom",
+          "name": "Weaver's Loom",
+          "note": "Warp and weft and patient hands turn plain thread into a warm tunic."
+        },
+        {
+          "id": "hand_mill",
+          "name": "Hand Mill",
+          "note": "Two stones and a strong arm turn a measure of barley into tomorrow's bread."
+        },
+        {
+          "id": "water_jar",
+          "name": "Water Jar",
+          "note": "Carried home from the well each dawn, cool and heavy on the shoulder."
+        },
+        {
+          "id": "bread_basket",
+          "name": "Bread Basket",
+          "note": "Woven from palm leaf, and happiest when it goes home empty."
+        },
+        {
+          "id": "writing_shard",
+          "name": "Writing Shard",
+          "note": "A broken bit of pot makes a fine page for a few words worth keeping."
+        },
+        {
+          "id": "stone_anchor",
+          "name": "Stone Anchor",
+          "note": "A pierced stone on a rope, holding a small boat steady in a rough harbor."
+        }
+      ],
+      "reward": {
+        "pearls": 15,
+        "items": [
+          "thread_01"
+        ]
+      }
+    }
+  ],
+  "text": {
+    "button": "Keepsake album",
+    "title": "Keepsake Album",
+    "set": "{name}: {found} of {all}",
+    "prize": "Finish the set: {reward}",
+    "unknown": "Not found yet",
+    "found": "New keepsake card: {name}",
+    "finished": "{name} is complete! {reward}",
+    "close": "Close",
+    "spare": "A spare keepsake card: {name}"
+  }
+}

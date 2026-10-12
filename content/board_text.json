@@ -37,5 +37,8 @@
   "goal_race_rivals": "Racing the townsfolk of Joppa",
   "goal_race_start": "The race begins with your next order. First three home win a prize.",
   "goal_race_prizes": "1st: {first}. 2nd: {second}. 3rd: {third}.",
-  "goal_race_place": "You came home in place {place}!"
+  "goal_race_place": "You came home in place {place}!",
+  "replay_button": "The story so far",
+  "replay_title": "The Story So Far",
+  "replay_intro": "Every scene you have seen is kept here. Tap one to watch it again."
 }

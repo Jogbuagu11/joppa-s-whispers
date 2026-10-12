@@ -43,10 +43,10 @@
 | 33 | Pilgrim's Road | Not started |
 | 34 | Social: profiles & friends | Not started |
 | 35 | Prayer & Church Circles | Not started |
-| 36 | Decoration choices & order quests | Not started |
+| 36 | Decoration choices & order quests | In progress: order quests and story replay built; decoration choices and timed orders not built |
 | 37 | Story choices & hearts | Not started |
-| 38 | Daily calendar, album, pet | Not started |
-| 39 | Sharing & Manna links | Not started |
+| 38 | Daily calendar, album, pet | In progress: calendar, album, Shadow built; trading not built |
+| 39 | Sharing & Manna links | In progress: study guides built; share images and Manna links not built |
 | 40 | Release builds (was 25) | STARTED EARLY — signed Android bundle and store-signed iPhone app both build (build 12); not uploaded to TestFlight; see the Milestone 25-era notes below |
 
 ---
@@ -2783,3 +2783,69 @@ Assumptions to confirm:
 - If a daily-task toast and an event toast come at the same moment, only one shows.
 
 Not built: event-ending offers; real players racing each other.
+
+## Milestones 38 and 39, lean (2026-10-11) — under the two-day instruction
+
+Built (content version 48; four new mandatory content files `album`, `pet`,
+`study_guides`, `quests`, so content from v46 on must not be published for builds older
+than 27):
+- **Login calendar** (level 3): 28 squares, verse of the day, `content/calendar.json`.
+- **Keepsake album** (level 6): 3 sets of 8 cards, `content/album.json`. A delivered
+  order brings a card 20 times in 100; a card not yet found is favoured. A finished set
+  pays once. Save record `album` (spares are counted, for trading later).
+- **Shadow the cat** (level 4): `content/pet.json`. Fed with items from the board (an
+  item feeds as much as its tier; tools and jars cannot be fed). Every 20 he brings a
+  small gift in turn; looks open after 3, 10 and 25 gifts. Save record `pet`.
+- **Bible study guides**: `content/study_guides.json`, one per chapter (rumor, KJV verse,
+  three questions), reached from Esther's letters; open when the chapter is finished;
+  "Copy to share" puts the guide on the clipboard.
+
+Assumptions to confirm:
+- EXPANSION says album cards come "from jars, events, and the wheel"; they come from
+  delivered orders instead (simpler, and no paid chance is involved).
+- Unlock levels are mine: calendar 3, Shadow 4, album 6 (section 18 lists only
+  "25: album trading").
+- Shadow's gifts are always worth less Manna than the food cost, and never Pearls.
+- Shadow does not walk about the board; he lives behind his button (placeholder picture:
+  a paw with a coloured ribbon) until there is art.
+- Study guides are shared by copying the words; there is no share-sheet package, and
+  adding one needs Jennifer's approval.
+
+Not built (Milestone 38 and 39 are NOT done until these are, or Jennifer drops them):
+- Album trading (needs friends, Milestone 34).
+- Share images to Facebook; free Manna links (needs a server table and a claim function,
+  and deep links set up on both stores).
+
+For Jennifer's reviewer: every verse in the calendar and the study guides was written
+from memory (KJV) and must be checked against a printed text; Ephesians 4:32
+("tenderhearted"); the Chapter 6 guide uses a Pauline letter outside the story's time;
+the Chapter 4 rumor mentions Tabitha standing by Zilpah (story bible, not Acts); the
+album cards for Tabitha and the Tanner's House paraphrase Acts 9.
+
+## Milestone 36, lean (2026-10-11)
+
+Built:
+- **Order quests** (level 9): `content/quests.json`, one per chapter. A quest opens when
+  every chapter before its own is finished. Items are given one at a time from the board
+  (taken off the board first, recorded, and the reward paid once when nothing is left).
+  Save record `quests`. A quest left unpaid because newer content needs less is settled
+  when the list is opened.
+- **Story replay**: "The story so far" in Esther's letters lists the scene of every
+  finished task and plays it again. (Skipping a scene was already there.)
+
+Assumptions to confirm:
+- Quest rewards are mine (150 to 500 Talents, some Manna, 5 to 15 Pearls, a tool).
+- Quest thanks spoken by Silas and Amos are shown as `Silas: "…"`.
+- Shadow is never offered rare finds or anything an order on show is asking for.
+
+Not built (Milestone 36 is NOT done until these are, or Jennifer drops them):
+- **Decoration choices**: needs three finished pictures of every restored area from
+  Jennifer; nothing can be built without them.
+- **Orders on a timer**: changes the heart of the game (a delivered order would leave
+  an empty card for some minutes). Left for Jennifer to decide; I advise against it
+  before launch.
+- A quest's "own decoration".
+
+For Jennifer's reviewer: quest ch4 (the unnamed guest at Simon the tanner's is Peter,
+Acts 9:43); quest ch5 (jars of oil for the new meeting house: story bible, not Acts);
+quest ch6 (anointing oil listed as a watchtower supply).

@@ -1,0 +1,30 @@
+{
+  "feed_goal": 20,
+  "gifts": [
+    { "talents": 20 },
+    { "manna": 8 },
+    { "talents": 30 },
+    { "manna": 10 },
+    { "talents": 40 },
+    { "items": ["manna_jar_01"] }
+  ],
+  "looks": [
+    { "id": "plain", "name": "Just Shadow", "gifts": 0, "color": "3A3A3A" },
+    { "id": "ribbon", "name": "Blue ribbon", "gifts": 3, "color": "3F6FA8" },
+    { "id": "shells", "name": "Shell collar", "gifts": 10, "color": "E8D9B5" },
+    { "id": "scarf", "name": "Festival scarf", "gifts": 25, "color": "B5452F" }
+  ],
+  "text": {
+    "button": "Shadow the cat",
+    "title": "Shadow",
+    "intro": "Joy's cat has taken to your kitchen. Feed him something from the board and he may bring you a little gift.",
+    "meter": "Fed {fed} of {goal}",
+    "feed": "Tap something to feed him",
+    "nothing": "There is nothing on the board to feed him.",
+    "gift": "Shadow brought you a gift: {reward}",
+    "new_look": "New look for Shadow: {name}",
+    "looks": "Looks",
+    "look_locked": "After {gifts} gifts",
+    "close": "Close"
+  }
+}

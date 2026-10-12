@@ -162,4 +162,51 @@ mixin _BoardTreasure on _BoardOffers, _BoardDaily {
       _popupOpen = false;
     }
   }
+
+  /// The order quests' round button, once they are open to this player.
+  @override
+  Widget? _questsButton(BoardSession session) {
+    final quests = orderQuestsFrom(session.contentBundle.files['quests']);
+    if (quests.isEmpty || !_dayFeatureOpen(session, 'order_quests')) {
+      return null;
+    }
+    final text = _wordsOf(session, 'quests');
+    QuestsState given() =>
+        QuestsState.fromJson(session.extras.read(questsRecord));
+    return StripButton(
+      buttonKey: const Key('quests_button'),
+      icon: Icons.assignment,
+      tooltip: text['button'] ?? '',
+      onTap: () => _popup(() {
+        questsSettle(
+          quests: quests,
+          extras: session.extras,
+          grant: (reward) => _giveReward(session, reward),
+        );
+        return showOrderQuests(
+          context,
+          quests: quests,
+          state: given,
+          text: text,
+          open: (quest) => questOpen(quest, [
+            for (final chapter in session.story.chapters) chapter.id,
+          ], session.endings.seen.toSet()),
+          onBoard: session.game.itemCounts,
+          itemName: (id) => _itemName(session, id),
+          rewardWords: (reward) => _rewardWords(session, reward),
+          give: (quest, itemId) => !identical(session, _session)
+              ? ''
+              : questGiveItem(
+                  quest: quest,
+                  itemId: itemId,
+                  board: session.game,
+                  extras: session.extras,
+                  grant: (reward) => _giveReward(session, reward),
+                  text: text,
+                  rewardWords: (reward) => _rewardWords(session, reward),
+                ),
+        );
+      }),
+    );
+  }
 }

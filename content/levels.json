@@ -72,6 +72,8 @@
   "unlocks": [
     { "level": 3, "feature": "daily_tasks", "name": "Daily tasks", "available": true },
     { "level": 3, "feature": "login_calendar", "name": "Daily login calendar", "available": true },
+    { "level": 4, "feature": "pet", "name": "Shadow the cat", "available": true },
+    { "level": 6, "feature": "album", "name": "Keepsake album", "available": true },
     { "level": 5, "feature": "blessing_wheel", "name": "The Blessing Wheel: a free spin a day", "available": true },
     {
       "level": 5,
@@ -90,7 +92,7 @@
     },
     { "level": 7, "feature": "milestone_event", "name": "Milestone events", "available": true },
     { "level": 7, "feature": "treasure_jar", "name": "Treasure Jar: saves Pearls as you play", "available": true },
-    { "level": 9, "feature": "order_quests", "name": "Order quests", "available": false },
+    { "level": 9, "feature": "order_quests", "name": "Order quests", "available": true },
     { "level": 10, "feature": "races", "name": "Races", "available": true },
     { "level": 10, "feature": "profile", "name": "Profile and avatar", "available": false },
     { "level": 12, "feature": "friends", "name": "Friends and gifting", "available": false },

@@ -4,6 +4,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:whispers_of_joppa/data/offers_validator.dart';
+import 'package:whispers_of_joppa/data/pet_validator.dart';
+import 'package:whispers_of_joppa/data/quests_validator.dart';
+import 'package:whispers_of_joppa/data/study_guides_validator.dart';
+import 'package:whispers_of_joppa/data/album_validator.dart';
 import 'package:whispers_of_joppa/data/calendar_validator.dart';
 import 'package:whispers_of_joppa/data/chance_validator.dart';
 import 'package:whispers_of_joppa/data/content_bundle.dart';
@@ -46,6 +50,29 @@ void main() {
         chainsJson: _read('chains'),
         generatorsJson: _read('generators'),
       ),
+    );
+    problems.addAll(
+      questsProblems(
+        _read('quests'),
+        itemIds: itemIdsOf(_read('chains')),
+        chapterIds: chapterIdsOf(_read('chapters')),
+      ),
+    );
+    problems.addAll(
+      petProblems(
+        _read('pet'),
+        itemIds: itemIdsOf(_read('chains')),
+        itemManna: itemMannaOf(_read('chains')),
+      ),
+    );
+    problems.addAll(
+      studyGuidesProblems(
+        _read('study_guides'),
+        chapterIds: chapterIdsOf(_read('chapters')),
+      ),
+    );
+    problems.addAll(
+      albumProblems(_read('album'), itemIds: itemIdsOf(_read('chains'))),
     );
     problems.addAll(
       calendarProblems(_read('calendar'), itemIds: itemIdsOf(_read('chains'))),
