@@ -22,9 +22,10 @@ class _Server implements GlobalGoalServer {
   }
 
   @override
-  Future<int> add(String eventId, int amount) async {
+  Future<int> tell(String eventId, int mine) async {
     if (down) throw StateError('offline');
-    added += amount;
+    // The whole count: telling it twice adds nothing.
+    if (mine > added) added = mine;
     return others + added;
   }
 }
@@ -120,11 +121,37 @@ void main() {
     expect(paid, [5]);
   });
 
-  test('never more than a hundred orders in one go', () {
+  test('a goal that has ended is heard one last time, and paid', () async {
+    var now = DateTime.now();
+    final late = GoalEventsController(
+      events: playableGoalEvents([_goal()]),
+      extras: extras,
+      open: (_) => true,
+      grant: (reward) => paid.add(reward.manna + reward.talents),
+      server: server,
+      clock: () => now,
+    );
+    final event = late.events.single;
+    late.orderDelivered(40);
+    await settle();
+    expect(paid, isEmpty);
+    // The others finish it after this player's last visit; it ends.
+    server.others = 500;
+    now = now.add(const Duration(days: 30));
+    await late.syncGlobal();
+    expect(paid, [5, 40]);
+    expect(late.globalOf(event).closed, isTrue);
+    server.others = 900;
+    await late.syncGlobal();
+    expect(paid, [5, 40]);
+    late.dispose();
+  });
+
+  test('what this phone knows of the total', () {
     const progress = GlobalProgress(mine: 450, sent: 100, total: 900);
-    expect(progress.toSend, globalGoalMostAtOnce);
+    expect(progress.hasUnsent, isTrue);
     expect(progress.known, 1250);
-    expect(const GlobalProgress(mine: 2, sent: 5).toSend, 0);
+    expect(const GlobalProgress(mine: 2, sent: 5).hasUnsent, isFalse);
     expect(
       GlobalProgress.fromJson(progress.toJson()).toJson(),
       progress.toJson(),

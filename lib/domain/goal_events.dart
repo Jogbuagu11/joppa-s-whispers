@@ -231,9 +231,13 @@ class GoalProgress {
   if (before.place > 0) return (progress: before, prize: null);
   final joined = before.joinedAt ?? now;
   final points = before.points + 1;
-  final place = points >= event.raceGoal
-      ? racePlace(event.rivals, now.difference(joined))
-      : 0;
+  final taken = now.difference(joined);
+  // A clock put back mid-race wins nothing: that finish comes in last.
+  final place = points < event.raceGoal
+      ? 0
+      : taken.isNegative
+      ? event.rivals.length + 1
+      : racePlace(event.rivals, taken);
   return (
     progress: GoalProgress(
       points: points,

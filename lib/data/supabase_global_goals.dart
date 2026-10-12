@@ -25,10 +25,10 @@ class SupabaseGlobalGoals implements GlobalGoalServer {
   }
 
   @override
-  Future<int> add(String eventId, int amount) async {
+  Future<int> tell(String eventId, int mine) async {
     final total = await _client.rpc<Object?>(
       'add_to_global_goal',
-      params: {'p_event_id': eventId, 'p_amount': amount},
+      params: {'p_event_id': eventId, 'p_mine': mine},
     );
     return total is int ? total : 0;
   }

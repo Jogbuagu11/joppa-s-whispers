@@ -138,6 +138,14 @@ void main() {
     );
     expect(late.progress.place, 4);
     expect(late.prize, isNull);
+    // A clock put back mid-race comes in last.
+    final back = raceAfterOrder(
+      event,
+      GoalProgress(joinedAt: start),
+      start.subtract(const Duration(hours: 1)),
+    );
+    expect(back.progress.place, 5);
+    expect(back.prize, isNull);
     final read = GoalProgress.fromJson(
       jsonDecode(jsonEncode(late.progress.toJson())),
     );

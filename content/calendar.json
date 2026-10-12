@@ -1,0 +1,171 @@
+{
+  "days": [
+    {
+      "talents": 20,
+      "verse": "This is the day which the LORD hath made; we will rejoice and be glad in it.",
+      "ref": "Psalm 118:24 (KJV)"
+    },
+    {
+      "manna": 10,
+      "verse": "A soft answer turneth away wrath: but grievous words stir up anger.",
+      "ref": "Proverbs 15:1 (KJV)"
+    },
+    {
+      "talents": 30,
+      "verse": "Blessed are the merciful: for they shall obtain mercy.",
+      "ref": "Matthew 5:7 (KJV)"
+    },
+    {
+      "manna": 15,
+      "verse": "Keep thy tongue from evil, and thy lips from speaking guile.",
+      "ref": "Psalm 34:13 (KJV)"
+    },
+    {
+      "items": [
+        "hourglass_01"
+      ],
+      "verse": "And be ye kind one to another, tenderhearted, forgiving one another, even as God for Christ's sake hath forgiven you.",
+      "ref": "Ephesians 4:32 (KJV)"
+    },
+    {
+      "talents": 40,
+      "verse": "He that hath pity upon the poor lendeth unto the LORD; and that which he hath given will he pay him again.",
+      "ref": "Proverbs 19:17 (KJV)"
+    },
+    {
+      "pearls": 5,
+      "manna": 30,
+      "verse": "The LORD is my shepherd; I shall not want.",
+      "ref": "Psalm 23:1 (KJV)"
+    },
+    {
+      "talents": 20,
+      "verse": "Pleasant words are as an honeycomb, sweet to the soul, and health to the bones.",
+      "ref": "Proverbs 16:24 (KJV)"
+    },
+    {
+      "manna": 10,
+      "verse": "Blessed are the peacemakers: for they shall be called the children of God.",
+      "ref": "Matthew 5:9 (KJV)"
+    },
+    {
+      "talents": 30,
+      "verse": "Set a watch, O LORD, before my mouth; keep the door of my lips.",
+      "ref": "Psalm 141:3 (KJV)"
+    },
+    {
+      "manna": 15,
+      "verse": "Bear ye one another's burdens, and so fulfil the law of Christ.",
+      "ref": "Galatians 6:2 (KJV)"
+    },
+    {
+      "items": [
+        "hourglass_01"
+      ],
+      "verse": "A talebearer revealeth secrets: but he that is of a faithful spirit concealeth the matter.",
+      "ref": "Proverbs 11:13 (KJV)"
+    },
+    {
+      "talents": 40,
+      "verse": "God is our refuge and strength, a very present help in trouble.",
+      "ref": "Psalm 46:1 (KJV)"
+    },
+    {
+      "pearls": 8,
+      "items": [
+        "manna_jar_02"
+      ],
+      "verse": "Now there was at Joppa a certain disciple named Tabitha, which by interpretation is called Dorcas: this woman was full of good works and almsdeeds which she did.",
+      "ref": "Acts 9:36 (KJV)"
+    },
+    {
+      "talents": 20,
+      "verse": "Lying lips are abomination to the LORD: but they that deal truly are his delight.",
+      "ref": "Proverbs 12:22 (KJV)"
+    },
+    {
+      "manna": 10,
+      "verse": "And as ye would that men should do to you, do ye also to them likewise.",
+      "ref": "Luke 6:31 (KJV)"
+    },
+    {
+      "talents": 30,
+      "verse": "He healeth the broken in heart, and bindeth up their wounds.",
+      "ref": "Psalm 147:3 (KJV)"
+    },
+    {
+      "manna": 15,
+      "verse": "Rejoice with them that do rejoice, and weep with them that weep.",
+      "ref": "Romans 12:15 (KJV)"
+    },
+    {
+      "items": [
+        "hourglass_01"
+      ],
+      "verse": "Where no wood is, there the fire goeth out: so where there is no talebearer, the strife ceaseth.",
+      "ref": "Proverbs 26:20 (KJV)"
+    },
+    {
+      "talents": 40,
+      "verse": "Let your light so shine before men, that they may see your good works, and glorify your Father which is in heaven.",
+      "ref": "Matthew 5:16 (KJV)"
+    },
+    {
+      "pearls": 10,
+      "items": [
+        "hourglass_02"
+      ],
+      "verse": "Behold, how good and how pleasant it is for brethren to dwell together in unity!",
+      "ref": "Psalm 133:1 (KJV)"
+    },
+    {
+      "talents": 20,
+      "verse": "A word fitly spoken is like apples of gold in pictures of silver.",
+      "ref": "Proverbs 25:11 (KJV)"
+    },
+    {
+      "manna": 10,
+      "verse": "A new commandment I give unto you, That ye love one another; as I have loved you, that ye also love one another.",
+      "ref": "John 13:34 (KJV)"
+    },
+    {
+      "talents": 30,
+      "verse": "A friend loveth at all times, and a brother is born for adversity.",
+      "ref": "Proverbs 17:17 (KJV)"
+    },
+    {
+      "manna": 15,
+      "verse": "Be not overcome of evil, but overcome evil with good.",
+      "ref": "Romans 12:21 (KJV)"
+    },
+    {
+      "items": [
+        "hourglass_01"
+      ],
+      "verse": "Thy word is a lamp unto my feet, and a light unto my path.",
+      "ref": "Psalm 119:105 (KJV)"
+    },
+    {
+      "talents": 40,
+      "verse": "And let us not be weary in well doing: for in due season we shall reap, if we faint not.",
+      "ref": "Galatians 6:9 (KJV)"
+    },
+    {
+      "pearls": 20,
+      "manna": 50,
+      "items": [
+        "thread_01"
+      ],
+      "verse": "The LORD will give strength unto his people; the LORD will bless his people with peace.",
+      "ref": "Psalm 29:11 (KJV)"
+    }
+  ],
+  "text": {
+    "button": "Daily calendar",
+    "title": "Verse of the Day",
+    "take": "Take today's gift",
+    "taken": "Come back tomorrow",
+    "day": "Day {n}:",
+    "close": "Close"
+  }
+}

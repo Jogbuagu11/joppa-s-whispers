@@ -210,6 +210,24 @@ void main() {
     expect(text(tester, 'goal_count_lamps'), isNot(startsWith('0 ')));
     await tester.tap(find.byKey(const Key('goal_close')));
     await settle(tester);
+
+    // The login calendar: today's verse, and today's gift taken once.
+    await tapOnStrip(tester, 'calendar_button');
+    await settle(tester);
+    expect(find.byKey(const Key('calendar_popup')), findsOneWidget);
+    expect(text(tester, 'calendar_verse'), isNotEmpty);
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.byKey(const Key('calendar_take')));
+    await settle(tester);
+    expect(
+      tester
+          .widget<FilledButton>(find.byKey(const Key('calendar_take')))
+          .onPressed,
+      isNull,
+    );
+    await tester.tap(find.byKey(const Key('calendar_close')));
+    await settle(tester);
+    expect(text(tester, 'talents_count'), '45');
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 3));
     await SaveRepository().clear();

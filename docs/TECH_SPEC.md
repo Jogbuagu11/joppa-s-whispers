@@ -373,3 +373,8 @@ Never send personal data in events.
 - 60 fps on the board on mid-range phones; no drop below 30 fps on low-end Android.
 - Cold start to board under 4 seconds on mid-range phones.
 - App download size under 150 MB; extra art arrives with content bundles.
+
+## Daily tasks, races and the global goal (Milestone 32)
+- `content/daily_tasks.json`: `per_day`, `pool` (`id`, `kind` orders/talents/manna/merges, `target`, `text`, `reward`), `chest`, `weekly` (`days`, `reward`), `text`. Rules in `lib/domain/daily_tasks.dart`; save record `daily_tasks`.
+- Race: an `events` row with `config.type` `race`: `goal` (orders), `rivals` (4 of `name`, `hours`), `prizes` (3 rewards). Rules in `lib/domain/race.dart`.
+- Global goal: `config.type` `global` with `milestones` on the total of all players. Tables `global_goals`, `global_goal_parts`; function `add_to_global_goal(p_event_id, p_amount)`. Save record `global_goals` (`mine`, `sent`, `total`, `paid`).

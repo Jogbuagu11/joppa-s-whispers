@@ -75,52 +75,69 @@ class GoalEventsController extends ChangeNotifier {
   );
 
   /// Pays the milestones a global goal has reached (counted as paid before
-  /// anything is handed over).
-  void _payGlobal(GoalEvent event) {
+  /// anything is handed over); gives what was paid.
+  List<GoalPaid> _payGlobal(GoalEvent event) {
     final progress = globalOf(event);
     final due = globalToPay(event, progress);
-    if (due.isEmpty) return;
+    if (due.isEmpty) return const [];
     _keepGlobal(event, progress.copyWith(paid: progress.paid + due.length));
     for (final m in due) {
       grant(m.reward);
     }
-    justPaid.value = [for (final m in due) (event: event, reward: m.reward)];
+    return [for (final m in due) (event: event, reward: m.reward)];
   }
 
   bool _syncing = false;
 
-  /// Tells the server of this player's orders in the global goals that are
-  /// on, hears the totals, and pays what they have reached. Never throws.
+  /// Tells the server of this player's orders in the global goals, hears
+  /// the totals, and pays what they have reached. A goal that has ended is
+  /// heard one last time, so a milestone reached after the player's last
+  /// visit is still paid. Never throws.
   Future<void> syncGlobal() async {
     final source = server;
     if (source == null || _syncing) return;
     _syncing = true;
+    final paid = <GoalPaid>[];
+    var again = false;
     try {
-      for (final event in live.where((e) => e.kind == GoalKind.global)) {
-        final amount = source.signedIn ? globalOf(event).toSend : 0;
-        final total = amount > 0
-            ? await source.add(event.id, amount)
-            : await source.total(event.id);
-        if (_disposed) return;
-        // Read again: orders may have been delivered meanwhile.
-        final now = globalOf(event);
-        _keepGlobal(
-          event,
-          GlobalProgress(
-            mine: now.mine,
-            sent: now.sent + amount,
-            total: total > now.total ? total : now.total,
-            paid: now.paid,
-            endsAt: event.endsAt,
-          ),
-        );
-        _payGlobal(event);
+      final now = _now();
+      for (final event in events) {
+        if (event.kind != GoalKind.global || !open(event.kind)) continue;
+        final before = globalOf(event);
+        final ended = !now.isBefore(event.endsAt);
+        if (now.isBefore(event.startsAt) || before.closed) continue;
+        // Nothing to close for one who took no part.
+        if (ended && before.mine < 1) continue;
+        try {
+          final tell = !ended && source.signedIn && before.hasUnsent;
+          final total = tell
+              ? await source.tell(event.id, before.mine)
+              : await source.total(event.id);
+          if (_disposed) return;
+          // Read again: orders may have been delivered meanwhile.
+          final after = globalOf(event);
+          _keepGlobal(
+            event,
+            after.copyWith(
+              sent: tell ? before.mine : after.sent,
+              total: total > after.total ? total : after.total,
+              endsAt: event.endsAt,
+              closed: ended,
+            ),
+          );
+          paid.addAll(_payGlobal(event));
+          again = again || (tell && after.mine > before.mine);
+        } on Object catch (e) {
+          _log.info('Global goal ${event.id} not synced: $e');
+        }
       }
-      notifyListeners();
-    } on Object catch (e) {
-      _log.info('Global goal not synced: $e');
     } finally {
       _syncing = false;
+      if (!_disposed) {
+        if (paid.isNotEmpty) justPaid.value = paid;
+        notifyListeners();
+        if (again) unawaited(syncGlobal());
+      }
     }
   }
 
@@ -162,15 +179,9 @@ class GoalEventsController extends ChangeNotifier {
         final mine = globalOf(event);
         _keepGlobal(
           event,
-          GlobalProgress(
-            mine: mine.mine + 1,
-            sent: mine.sent,
-            total: mine.total,
-            paid: mine.paid,
-            endsAt: event.endsAt,
-          ),
+          mine.copyWith(mine: mine.mine + 1, endsAt: event.endsAt),
         );
-        _payGlobal(event);
+        paid.addAll(_payGlobal(event));
         global = true;
         continue;
       }
@@ -200,11 +211,12 @@ class GoalEventsController extends ChangeNotifier {
           .toJson();
       paid.addAll([for (final m in due) (event: event, reward: m.reward)]);
     }
-    if (global) {
-      notifyListeners();
-      unawaited(syncGlobal());
+    if (global) unawaited(syncGlobal());
+    if (record == null) {
+      if (paid.isNotEmpty) justPaid.value = paid;
+      if (global) notifyListeners();
+      return;
     }
-    if (record == null) return;
     extras.write(goalEventsRecord, record);
     for (final p in paid) {
       grant(p.reward);

@@ -38,8 +38,8 @@
 | 28 | Board extras | BUILT — not tagged: Jennifer has not yet played it; the new items have no art |
 | 29 | Chance features | BUILT — not tagged: Jennifer has not yet played it; store age-rating answers must be updated before release |
 | 30 | Offers & pop-ups | Built and live on the server; needs Jennifer's sandbox purchase |
-| 31 | Treasure Jar & pass tiers | Built; server NOT yet updated (needs Jennifer's OK); needs Jennifer's sandbox purchase |
-| 32 | Event suite | In progress: part 1 built (milestone, energy, collect, order events); daily tasks, race and global goal to come |
+| 31 | Treasure Jar & pass tiers | Built; server functions live; Boat Festival pass waits on `db push`; needs Jennifer's sandbox purchase |
+| 32 | Event suite | Built (milestone, energy, collect, order, daily tasks, race, global goal); server pieces wait on Jennifer's `db push`; event-ending offers not built |
 | 33 | Pilgrim's Road | Not started |
 | 34 | Social: profiles & friends | Not started |
 | 35 | Prayer & Church Circles | Not started |
@@ -2752,3 +2752,34 @@ touch them.
 Note: Android Studio is not installed on this Mac. Android is built with the command-line
 tools, a Temurin 21 JDK in `~/development/jdk`, and an emulator named `Pixel_Joppa`.
 GitHub sign-in on this Mac is through the GitHub CLI in `~/development/gh`.
+
+## Milestone 32 — part 2 (2026-10-11)
+
+Jennifer (2026-10-11): "unacceptable. you have 2 days. cut out the fluff." From here: one
+device run and one review per milestone, short reports, no build per small change. Plan
+told to her: finish 32, then 38, 36, 39; hold 33, 34, 35, 37 for an update after launch
+unless she says otherwise.
+
+Built:
+- **Daily tasks**: `content/daily_tasks.json` (new content file; content version 44). Five
+  tasks a day taken in turn from a pool of 12, by the player's own calendar day; each pays
+  when done, a chest for all five, a weekly chest for 5 days in a Monday-to-Sunday week.
+  Opens at level 3. Save record `daily_tasks`. A clock put back brings no new tasks.
+- **Race to the Harbor**: event type `race`. The four rivals are townsfolk run by the
+  game (each takes a set number of hours from the player's first order), shown as
+  "Racing the townsfolk of Joppa", never as real players. First three home win. Level 10.
+- **Global feast goal**: event type `global`. Every order adds to one total on the server
+  (`global_goals`, function `add_to_global_goal`: signed-in players only, 100 at a time,
+  3000 per player per goal). Milestones on the total pay everyone with at least one order.
+  A player not signed in adds nothing but still shares the rewards.
+
+Waiting on Jennifer's `db push`: `…000004` (Boat Festival pass), `…000005` (two first
+events), `…000006` (first race), `…000007` (global goal table and function).
+
+Assumptions to confirm:
+- Daily task numbers and rewards are mine (changeable in content).
+- Rewards for the global goal are worked out on the phone from the server's total; the
+  server does not check them (they are small and capped).
+- If a daily-task toast and an event toast come at the same moment, only one shows.
+
+Not built: event-ending offers; real players racing each other.

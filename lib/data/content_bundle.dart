@@ -1,5 +1,6 @@
 // All game content as one unit: what ships in the app, and what the server
 // can replace it with. Pure Dart so tool/ scripts can use it.
+import 'package:whispers_of_joppa/data/calendar_validator.dart';
 import 'package:whispers_of_joppa/data/chance_validator.dart';
 import 'package:whispers_of_joppa/data/content_validator.dart';
 import 'package:whispers_of_joppa/data/daily_tasks_validator.dart';
@@ -34,6 +35,7 @@ const contentFileNames = [
   'chance',
   'offers',
   'daily_tasks',
+  'calendar',
 ];
 
 class ContentBundle {
@@ -113,10 +115,10 @@ class ContentBundle {
       generatorsJson: files['generators'],
     );
     if (chance.isNotEmpty) return chance;
-    return dailyTasksProblems(
-      files['daily_tasks'],
-      itemIds: itemIdsOf(files['chains']),
-    );
+    final ids = itemIdsOf(files['chains']);
+    final daily = dailyTasksProblems(files['daily_tasks'], itemIds: ids);
+    if (daily.isNotEmpty) return daily;
+    return calendarProblems(files['calendar'], itemIds: ids);
   }
 }
 

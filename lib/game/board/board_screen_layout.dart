@@ -34,7 +34,7 @@ mixin _BoardLayout on _BoardItems, _BoardDaily, _BoardBubbles, _BoardWheel {
                       ]),
                       builder: (context, _) => BoardStrip(
                         moreButtons: [
-                          ?_dailyButton(session),
+                          ..._dailyButtons(session),
                           ?_goalsButton(session),
                           ..._wheelButton(session),
                         ],

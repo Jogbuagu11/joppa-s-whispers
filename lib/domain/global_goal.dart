@@ -11,12 +11,10 @@ abstract class GlobalGoalServer {
   /// The total so far. Throws if the server cannot be reached.
   Future<int> total(String eventId);
 
-  /// Adds [amount] of this player's orders; gives the new total.
-  Future<int> add(String eventId, int amount);
+  /// Tells the server this player has delivered [mine] orders in all (the
+  /// whole count, so telling it twice adds nothing); gives the new total.
+  Future<int> tell(String eventId, int mine);
 }
-
-/// The most orders sent to the server in one go.
-const globalGoalMostAtOnce = 100;
 
 /// A player's part in one global goal, as kept in the save file.
 class GlobalProgress {
@@ -33,12 +31,16 @@ class GlobalProgress {
   final int paid;
   final DateTime? endsAt;
 
+  /// True once the goal has ended and its last total has been heard.
+  final bool closed;
+
   const GlobalProgress({
     this.mine = 0,
     this.sent = 0,
     this.total = 0,
     this.paid = 0,
     this.endsAt,
+    this.closed = false,
   });
 
   factory GlobalProgress.fromJson(Object? json) {
@@ -55,6 +57,7 @@ class GlobalProgress {
       endsAt: json is Map<String, dynamic>
           ? DateTime.tryParse('${json['ends_at']}')
           : null,
+      closed: json is Map<String, dynamic> && json['closed'] == true,
     );
   }
 
@@ -64,16 +67,24 @@ class GlobalProgress {
     'total': total,
     'paid': paid,
     'ends_at': ?endsAt?.toUtc().toIso8601String(),
+    if (closed) 'closed': true,
   };
 
-  GlobalProgress copyWith({int? mine, int? sent, int? total, int? paid}) =>
-      GlobalProgress(
-        mine: mine ?? this.mine,
-        sent: sent ?? this.sent,
-        total: total ?? this.total,
-        paid: paid ?? this.paid,
-        endsAt: endsAt,
-      );
+  GlobalProgress copyWith({
+    int? mine,
+    int? sent,
+    int? total,
+    int? paid,
+    DateTime? endsAt,
+    bool? closed,
+  }) => GlobalProgress(
+    mine: mine ?? this.mine,
+    sent: sent ?? this.sent,
+    total: total ?? this.total,
+    paid: paid ?? this.paid,
+    endsAt: endsAt ?? this.endsAt,
+    closed: closed ?? this.closed,
+  );
 
   /// What everyone has done as far as this phone knows: the server's
   /// total, and this player's orders it has not yet been told of.
@@ -82,12 +93,8 @@ class GlobalProgress {
   /// The same, in the shape the events list shows.
   GoalProgress get shown => GoalProgress(points: known, paid: paid);
 
-  /// How many orders to send to the server now.
-  int get toSend {
-    final waiting = mine - sent;
-    if (waiting <= 0) return 0;
-    return waiting > globalGoalMostAtOnce ? globalGoalMostAtOnce : waiting;
-  }
+  /// Whether the server has yet to hear of some of this player's orders.
+  bool get hasUnsent => mine > sent;
 }
 
 /// The milestones the total has reached that this player has not been

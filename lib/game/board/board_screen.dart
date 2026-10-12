@@ -23,7 +23,6 @@ import 'package:whispers_of_joppa/domain/locations.dart';
 import 'package:whispers_of_joppa/domain/models.dart';
 import 'package:whispers_of_joppa/features/bubbles/bubble_controller.dart';
 import 'package:whispers_of_joppa/features/bubbles/bubble_layer.dart';
-import 'package:whispers_of_joppa/domain/goal_events.dart';
 import 'package:whispers_of_joppa/features/events/events.dart';
 import 'package:whispers_of_joppa/domain/chance.dart';
 import 'package:whispers_of_joppa/domain/wheel.dart';
@@ -75,6 +74,7 @@ import 'package:whispers_of_joppa/services/analytics_service.dart';
 
 part 'board_screen_actions.dart';
 part 'board_screen_bubbles.dart';
+part 'board_screen_daily.dart';
 part 'board_screen_events.dart';
 part 'board_screen_items.dart';
 part 'board_screen_jars.dart';
