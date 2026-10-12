@@ -38,8 +38,8 @@
 | 28 | Board extras | BUILT — not tagged: Jennifer has not yet played it; the new items have no art |
 | 29 | Chance features | BUILT — not tagged: Jennifer has not yet played it; store age-rating answers must be updated before release |
 | 30 | Offers & pop-ups | Built and live on the server; needs Jennifer's sandbox purchase |
-| 31 | Treasure Jar & pass tiers | Built; server functions live; Boat Festival pass waits on `db push`; needs Jennifer's sandbox purchase |
-| 32 | Event suite | Built (milestone, energy, collect, order, daily tasks, race, global goal); server pieces wait on Jennifer's `db push`; event-ending offers not built |
+| 31 | Treasure Jar & pass tiers | Built; server functions live; Boat Festival pass live (db push run 2026-10-12); needs Jennifer's sandbox purchase |
+| 32 | Event suite | Built (milestone, energy, collect, order, daily tasks, race, global goal); server pieces live (db push run 2026-10-12); event-ending offers not built |
 | 33 | Pilgrim's Road | Not started |
 | 34 | Social: profiles & friends | Not started |
 | 35 | Prayer & Church Circles | Not started |
@@ -2879,3 +2879,6 @@ the admin page says it cannot load the codes and the game says it cannot reach t
 - Assumption to confirm: the tune is her own arrangement of "This Little Light of Mine" and
   she holds the rights to this recording.
 - No code review was run for this small change (lean plan).
+
+## Server updates applied (2026-10-12)
+Jennifer ran `supabase db push --yes`: migrations `…000004` to `…000008` are live (checked with `migration list`). The earlier "Waiting on Jennifer's db push" notes no longer apply. Not yet tried against the live server from a phone: the race, the all-players goal, a Manna code.
