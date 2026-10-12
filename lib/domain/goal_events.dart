@@ -5,9 +5,10 @@
 // The kinds: a milestone event counts Talents earned from orders; an energy
 // event counts Manna spent; a collect event counts tokens that now and then
 // drop from merges; an order event counts tokens that come with orders.
+import 'package:whispers_of_joppa/domain/race.dart';
 import 'package:whispers_of_joppa/domain/season_pass.dart';
 
-enum GoalKind { milestone, energy, collect, order }
+enum GoalKind { milestone, energy, collect, order, race }
 
 /// The name of each kind in an event's settings ("type"), and the feature
 /// in content/levels.json that opens it to a player.
@@ -16,12 +17,14 @@ const goalKindNames = {
   'energy': GoalKind.energy,
   'collect': GoalKind.collect,
   'order': GoalKind.order,
+  'race': GoalKind.race,
 };
 const goalKindFeatures = {
   GoalKind.milestone: 'milestone_event',
   GoalKind.energy: 'energy_event',
   GoalKind.collect: 'collect_event',
   GoalKind.order: 'order_event',
+  GoalKind.race: 'races',
 };
 
 class GoalMilestone {
@@ -51,6 +54,12 @@ class GoalEvent {
   /// Order events: tokens that come with each order.
   final int perOrder;
 
+  /// Races: the orders to deliver, the townsfolk raced against, and the
+  /// prizes of the first places, best first.
+  final int raceGoal;
+  final List<RaceRival> rivals;
+  final List<PassReward> prizes;
+
   const GoalEvent({
     required this.id,
     required this.name,
@@ -62,6 +71,9 @@ class GoalEvent {
     this.token = '',
     this.dropPercent = 0,
     this.perOrder = 1,
+    this.raceGoal = 0,
+    this.rivals = const [],
+    this.prizes = const [],
   });
 
   /// Reads a row of the `events` table whose settings name one of the goal
@@ -81,8 +93,23 @@ class GoalEvent {
       // Each read only for its own kind (the only one it is checked for).
       dropPercent: kind == GoalKind.collect ? config['drop_percent'] as int : 0,
       perOrder: kind == GoalKind.order ? config['per_order'] as int? ?? 1 : 1,
+      raceGoal: kind == GoalKind.race ? config['goal'] as int : 0,
+      rivals: [
+        if (kind == GoalKind.race)
+          for (final r in config['rivals'] as List<dynamic>)
+            RaceRival(
+              name: (r as Map<String, dynamic>)['name'] as String,
+              hours: r['hours'] as int,
+            ),
+      ],
+      prizes: [
+        if (kind == GoalKind.race)
+          for (final p in config['prizes'] as List<dynamic>)
+            PassReward.fromJson(p),
+      ],
       milestones: [
-        for (final m in config['milestones'] as List<dynamic>)
+        // A race has prizes by place, not milestones.
+        for (final m in config['milestones'] as List<dynamic>? ?? const [])
           GoalMilestone(
             points: (m as Map<String, dynamic>)['points'] as int,
             reward: PassReward.fromJson(m),
@@ -130,6 +157,7 @@ int goalPoints(GoalEvent event, GoalAction action) {
   final points = switch ((event.kind, action)) {
     (GoalKind.milestone, OrderDelivered(:final talents)) => talents,
     (GoalKind.order, OrderDelivered()) => event.perOrder,
+    (GoalKind.race, OrderDelivered()) => 1,
     (GoalKind.energy, MannaSpent(:final amount)) => amount,
     (GoalKind.collect, ItemsMerged(:final roll)) =>
       roll < event.dropPercent ? 1 : 0,
@@ -149,7 +177,18 @@ class GoalProgress {
   /// forgotten once that has passed, and not before).
   final DateTime? endsAt;
 
-  const GoalProgress({this.points = 0, this.paid = 0, this.endsAt});
+  /// Races: when this player's race began (their first order in it), and
+  /// the place they finished in (0 while still racing).
+  final DateTime? joinedAt;
+  final int place;
+
+  const GoalProgress({
+    this.points = 0,
+    this.paid = 0,
+    this.endsAt,
+    this.joinedAt,
+    this.place = 0,
+  });
 
   factory GoalProgress.fromJson(Object? json) {
     int count(String key) =>
@@ -163,6 +202,10 @@ class GoalProgress {
       endsAt: json is Map<String, dynamic>
           ? DateTime.tryParse('${json['ends_at']}')
           : null,
+      joinedAt: json is Map<String, dynamic>
+          ? DateTime.tryParse('${json['joined_at']}')
+          : null,
+      place: count('place'),
     );
   }
 
@@ -170,7 +213,37 @@ class GoalProgress {
     'points': points,
     'paid': paid,
     'ends_at': ?endsAt?.toUtc().toIso8601String(),
+    'joined_at': ?joinedAt?.toUtc().toIso8601String(),
+    if (place > 0) 'place': place,
   };
+}
+
+/// A race after one more order, delivered at [now]: the race begins with
+/// the first, and the order that reaches the goal settles the place. The
+/// prize is null unless that place wins one. Once finished nothing changes.
+({GoalProgress progress, PassReward? prize}) raceAfterOrder(
+  GoalEvent event,
+  GoalProgress before,
+  DateTime now,
+) {
+  if (before.place > 0) return (progress: before, prize: null);
+  final joined = before.joinedAt ?? now;
+  final points = before.points + 1;
+  final place = points >= event.raceGoal
+      ? racePlace(event.rivals, now.difference(joined))
+      : 0;
+  return (
+    progress: GoalProgress(
+      points: points,
+      paid: place > 0 ? 1 : 0,
+      endsAt: event.endsAt,
+      joinedAt: joined,
+      place: place,
+    ),
+    prize: place > 0 && place <= event.prizes.length
+        ? event.prizes[place - 1]
+        : null,
+  );
 }
 
 /// The milestones [progress] has reached and not been paid for.

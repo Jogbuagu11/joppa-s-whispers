@@ -49,6 +49,10 @@ List<String> goalEventProblems(Object? raw) {
       (perOrder is! int || perOrder < 1 || perOrder > 20)) {
     problems.add('$label: per_order must be 1 to 20');
   }
+  if (kind == GoalKind.race) {
+    final length = start != null && end != null ? end.difference(start) : null;
+    return [...problems, ..._raceProblems(config, label, length)];
+  }
   final milestones = config['milestones'];
   if (milestones is! List<dynamic> ||
       milestones.isEmpty ||
@@ -66,6 +70,44 @@ List<String> goalEventProblems(Object? raw) {
     if (!_rewardIsSound(m)) {
       problems.add('$label: milestone at $points gives nothing or too much');
     }
+  }
+  return problems;
+}
+
+/// A race: orders to deliver, four townsfolk with their hours, and three
+/// prizes. [length] is how long the event runs.
+List<String> _raceProblems(
+  Map<String, dynamic> config,
+  String label,
+  Duration? length,
+) {
+  final problems = <String>[];
+  final goal = config['goal'];
+  if (goal is! int || goal < 1 || goal > 500) {
+    problems.add('$label: goal must be 1 to 500 orders');
+  }
+  final rivals = config['rivals'];
+  if (rivals is! List<dynamic> || rivals.length != 4) {
+    problems.add('$label: a race needs exactly 4 rivals');
+  } else {
+    for (final rival in rivals) {
+      if (rival case {
+        'name': final String name,
+        'hours': final int hours,
+      } when name.trim().isNotEmpty && name.length <= 30 && hours >= 1) {
+        if (length != null && hours > length.inHours) {
+          problems.add('$label: "$name" takes longer than the race lasts');
+        }
+      } else {
+        problems.add('$label: a rival needs a name (to 30 letters) and hours');
+      }
+    }
+  }
+  final prizes = config['prizes'];
+  if (prizes is! List<dynamic> ||
+      prizes.length != 3 ||
+      !prizes.every(_rewardIsSound)) {
+    problems.add('$label: a race needs 3 prizes, none empty or too large');
   }
   return problems;
 }

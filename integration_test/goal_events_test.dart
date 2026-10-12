@@ -35,6 +35,24 @@ class _Server implements RemoteEvents {
       },
     ),
     goalRow(id: 'harvest'),
+    goalRow(
+      id: 'race',
+      type: 'race',
+      more: {
+        'goal': 12,
+        'rivals': [
+          {'name': 'Miriam', 'hours': 5},
+          {'name': 'Old Tobias', 'hours': 9},
+          {'name': 'Lydia', 'hours': 16},
+          {'name': 'Young Reuben', 'hours': 30},
+        ],
+        'prizes': [
+          {'pearls': 5},
+          {'manna': 30},
+          {'talents': 60},
+        ],
+      },
+    ),
   ];
 }
 
@@ -138,6 +156,11 @@ void main() {
     expect(find.byKey(const Key('goal_lamps')), findsOneWidget);
     expect(find.byKey(const Key('goal_harvest')), findsOneWidget);
     expect(text(tester, 'goal_count_lamps'), startsWith('0 '));
+    await tester.ensureVisible(
+      find.byKey(const Key('goal_race'), skipOffstage: false),
+    );
+    await settle(tester);
+    expect(find.text('Old Tobias'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.tap(find.byKey(const Key('goal_close')));
     await settle(tester);

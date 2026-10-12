@@ -170,6 +170,11 @@ const boardTextKeys = [
   'goal_manna',
   'goal_talents',
   'goal_close',
+  'goal_race_you',
+  'goal_race_rivals',
+  'goal_race_start',
+  'goal_race_prizes',
+  'goal_race_place',
   // Not words: the picture behind everything above the board.
   'header_background',
   // The first-launch welcome.

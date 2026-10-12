@@ -157,12 +157,61 @@ const GOAL_TEMPLATES = {
     per_order: 1,
     milestones: [{ points: 5, manna: 15 }, { points: 15, talents: 80 }],
   },
+  race: {
+    type: "race",
+    blurb: "Deliver orders faster than the townsfolk. First three home win.",
+    token: "Orders delivered",
+    goal: 12,
+    rivals: [
+      { name: "Miriam", hours: 5 },
+      { name: "Old Tobias", hours: 9 },
+      { name: "Lydia", hours: 16 },
+      { name: "Young Reuben", hours: 30 },
+    ],
+    prizes: [{ pearls: 5, manna: 30 }, { manna: 30, talents: 60 }, { talents: 60 }],
+  },
 };
+
+function rewardIsSound(step) {
+  const most = { pearls: 100, manna: 500, talents: 5000 };
+  if (!step || typeof step !== "object") return false;
+  let gives = false;
+  for (const [key, max] of Object.entries(most)) {
+    const n = step[key] == null ? 0 : step[key];
+    if (!Number.isInteger(n) || n < 0 || n > max) return false;
+    if (n > 0) gives = true;
+  }
+  const items = step.items == null ? [] : step.items;
+  if (
+    !Array.isArray(items) || items.length > 3 ||
+    items.some((id) => typeof id !== "string" || id === "")
+  ) return false;
+  return gives || items.length > 0;
+}
+
+function raceConfigProblems(c) {
+  const p = [];
+  if (!Number.isInteger(c.goal) || c.goal < 1 || c.goal > 500) {
+    p.push("goal must be 1 to 500 orders.");
+  }
+  if (!Array.isArray(c.rivals) || c.rivals.length !== 4) {
+    p.push("A race needs exactly 4 rivals.");
+  } else if (
+    c.rivals.some((r) =>
+      !r || typeof r.name !== "string" || r.name.trim() === "" || r.name.length > 30 ||
+      !Number.isInteger(r.hours) || r.hours < 1
+    )
+  ) p.push("Each rival needs a name (to 30 letters) and whole hours, 1 or more.");
+  if (!Array.isArray(c.prizes) || c.prizes.length !== 3 || !c.prizes.every(rewardIsSound)) {
+    p.push("A race needs 3 prizes, none empty or too large.");
+  }
+  return p;
+}
 
 function goalConfigProblems(c) {
   const p = [];
   if (!Object.keys(GOAL_TEMPLATES).includes(c.type)) {
-    return ['"type" must be milestone, energy, collect or order (or left out for a board event).'];
+    return ['"type" must be milestone, energy, collect, order or race (or left out for a board event).'];
   }
   for (const key of ["blurb", "token"]) {
     const w = c[key];
@@ -174,6 +223,7 @@ function goalConfigProblems(c) {
     c.type === "collect" &&
     (!Number.isInteger(c.drop_percent) || c.drop_percent < 1 || c.drop_percent > 100)
   ) p.push("drop_percent must be 1 to 100.");
+  if (c.type === "race") return p.concat(raceConfigProblems(c));
   const per = c.per_order == null ? 1 : c.per_order;
   if (c.type === "order" && (!Number.isInteger(per) || per < 1 || per > 20)) {
     p.push("per_order must be 1 to 20.");
@@ -182,7 +232,6 @@ function goalConfigProblems(c) {
   if (!Array.isArray(m) || m.length === 0 || m.length > 40) {
     return p.concat("There must be 1 to 40 reward steps.");
   }
-  const most = { pearls: 100, manna: 500, talents: 5000 };
   let last = 0;
   for (const step of m) {
     if (!step || !Number.isInteger(step.points) || step.points <= last) {
@@ -190,19 +239,7 @@ function goalConfigProblems(c) {
       break;
     }
     last = step.points;
-    let gives = false, bad = false;
-    for (const [key, max] of Object.entries(most)) {
-      const n = step[key] == null ? 0 : step[key];
-      if (!Number.isInteger(n) || n < 0 || n > max) bad = true;
-      else if (n > 0) gives = true;
-    }
-    const items = step.items == null ? [] : step.items;
-    if (
-      !Array.isArray(items) || items.length > 3 ||
-      items.some((id) => typeof id !== "string" || id === "")
-    ) bad = true;
-    else if (items.length > 0) gives = true;
-    if (bad || !gives) {
+    if (!rewardIsSound(step)) {
       p.push(
         "Step at " + step.points +
           " gives nothing or too much (max 100 Pearls, 500 Manna, 5000 Talents, 3 items).",

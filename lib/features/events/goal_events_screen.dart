@@ -7,6 +7,7 @@ import 'package:whispers_of_joppa/domain/events.dart';
 import 'package:whispers_of_joppa/domain/goal_events.dart';
 import 'package:whispers_of_joppa/domain/season_pass.dart';
 import 'package:whispers_of_joppa/features/events/goal_events_controller.dart';
+import 'package:whispers_of_joppa/features/events/goal_race_card.dart';
 
 const _cream = Color(0xFFF3E5C8);
 
@@ -65,6 +66,7 @@ Future<void> showGoalEvents(
                           event: event,
                           progress: controller.progressOf(event),
                           left: event.endsAt.difference(now),
+                          now: now,
                           text: text,
                           itemName: itemName,
                         ),
@@ -89,6 +91,7 @@ class _GoalCard extends StatelessWidget {
     required this.event,
     required this.progress,
     required this.left,
+    required this.now,
     required this.text,
     required this.itemName,
   });
@@ -96,6 +99,7 @@ class _GoalCard extends StatelessWidget {
   final GoalEvent event;
   final GoalProgress progress;
   final Duration left;
+  final DateTime now;
   final Map<String, String> text;
   final String Function(String itemId) itemName;
 
@@ -104,6 +108,7 @@ class _GoalCard extends StatelessWidget {
     GoalKind.energy: Icons.bolt,
     GoalKind.collect: Icons.spa,
     GoalKind.order: Icons.local_shipping,
+    GoalKind.race: Icons.sailing,
   };
 
   @override
@@ -150,35 +155,48 @@ class _GoalCard extends StatelessWidget {
             style: const TextStyle(color: _cream, fontSize: 13),
           ),
           const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: LinearProgressIndicator(
-              value: goalFraction(event, progress).clamp(0, 1).toDouble(),
-              minHeight: 10,
-              backgroundColor: GamePalette.panel,
-              color: GamePalette.ready,
+          if (event.kind == GoalKind.race)
+            RaceStanding(
+              event: event,
+              progress: progress,
+              now: now,
+              text: text,
+              rewardWords: (r) => goalRewardWords(r, text, itemName),
+            )
+          else ...[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: LinearProgressIndicator(
+                value: goalFraction(event, progress).clamp(0, 1).toDouble(),
+                minHeight: 10,
+                backgroundColor: GamePalette.panel,
+                color: GamePalette.ready,
+              ),
             ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            (text['goal_count'] ?? '')
-                .replaceAll('{points}', '${progress.points}')
-                .replaceAll('{token}', event.token),
-            key: Key('goal_count_${event.id}'),
-            style: const TextStyle(color: _cream, fontWeight: FontWeight.w700),
-          ),
-          Text(
-            next == null
-                ? text['goal_done'] ?? ''
-                : (text['goal_next'] ?? '')
-                      .replaceAll(
-                        '{reward}',
-                        goalRewardWords(next.reward, text, itemName),
-                      )
-                      .replaceAll('{points}', '${next.points}'),
-            key: Key('goal_next_${event.id}'),
-            style: const TextStyle(color: GamePalette.muted, fontSize: 12),
-          ),
+            const SizedBox(height: 6),
+            Text(
+              (text['goal_count'] ?? '')
+                  .replaceAll('{points}', '${progress.points}')
+                  .replaceAll('{token}', event.token),
+              key: Key('goal_count_${event.id}'),
+              style: const TextStyle(
+                color: _cream,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Text(
+              next == null
+                  ? text['goal_done'] ?? ''
+                  : (text['goal_next'] ?? '')
+                        .replaceAll(
+                          '{reward}',
+                          goalRewardWords(next.reward, text, itemName),
+                        )
+                        .replaceAll('{points}', '${next.points}'),
+              key: Key('goal_next_${event.id}'),
+              style: const TextStyle(color: GamePalette.muted, fontSize: 12),
+            ),
+          ],
         ],
       ),
     );

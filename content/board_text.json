@@ -31,5 +31,10 @@
   "goal_pearls": "{n} Pearls",
   "goal_manna": "{n} Manna",
   "goal_talents": "{n} Talents",
-  "goal_close": "Close"
+  "goal_close": "Close",
+  "goal_race_you": "You",
+  "goal_race_rivals": "Racing the townsfolk of Joppa",
+  "goal_race_start": "The race begins with your next order. First three home win a prize.",
+  "goal_race_prizes": "1st: {first}. 2nd: {second}. 3rd: {third}.",
+  "goal_race_place": "You came home in place {place}!"
 }

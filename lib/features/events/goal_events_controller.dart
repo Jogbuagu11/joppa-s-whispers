@@ -77,6 +77,14 @@ class GoalEventsController extends ChangeNotifier {
       final points = goalPoints(event, action);
       if (points == 0) continue;
       final before = progressOf(event);
+      if (event.kind == GoalKind.race) {
+        final (:progress, :prize) = raceAfterOrder(event, before, _now());
+        if (identical(progress, before)) continue;
+        (record ??= {...?extras.read(goalEventsRecord)})[event.id] = progress
+            .toJson();
+        if (prize != null) paid.add((event: event, reward: prize));
+        continue;
+      }
       var after = GoalProgress(
         points: before.points + points,
         paid: before.paid,
