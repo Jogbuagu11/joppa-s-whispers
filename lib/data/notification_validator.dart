@@ -8,6 +8,8 @@ const _textLimits = {
     'title': 30,
     'sound': 40,
     'sound_hint': 90,
+    'music': 40,
+    'music_hint': 90,
     'haptics': 40,
     'haptics_hint': 90,
     'tier_numbers': 40,

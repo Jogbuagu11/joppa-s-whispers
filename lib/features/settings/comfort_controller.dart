@@ -11,6 +11,7 @@ class ComfortController extends ChangeNotifier {
 
   ComfortPrefs _prefs = const ComfortPrefs();
   Future<void>? _loading;
+  bool _hushed = false;
 
   ComfortController({required this.player, required this.repository});
 
@@ -24,7 +25,17 @@ class ComfortController extends ChangeNotifier {
     _prefs = await repository.load();
     notifyListeners();
     await player.prepare();
+    _tune();
   }
+
+  /// Something else needs the speaker (an ad is showing): the tune waits
+  /// until it is done.
+  void hush(bool on) {
+    _hushed = on;
+    _tune();
+  }
+
+  void _tune() => player.music(_prefs.music && !_hushed);
 
   /// Something happened: play its sound and vibration, unless turned off.
   void cue(GameCue cue) {
@@ -36,6 +47,11 @@ class ComfortController extends ChangeNotifier {
     await _set(_prefs.copyWith(sound: on));
     // Lets the player hear (or not hear) what they just chose.
     if (on) player.sound(GameCue.merge);
+  }
+
+  Future<void> setMusic(bool on) async {
+    await _set(_prefs.copyWith(music: on));
+    _tune();
   }
 
   Future<void> setHaptics(bool on) async {

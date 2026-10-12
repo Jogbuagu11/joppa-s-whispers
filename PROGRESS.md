@@ -2865,3 +2865,17 @@ Assumptions to confirm:
 
 Waiting on Jennifer's `db push`: `…000004` to `…000008` (five migrations). Until then
 the admin page says it cannot load the codes and the game says it cannot reach the server.
+
+## Background music (2026-10-12, build 28)
+- Jennifer's tune (`assets_incoming/this_little_light_v15_synced_percussion_v19.wav`, 128 s)
+  is in the game as `assets/audio/music.m4a` (AAC, 1.4 MB; the 16 MB original is not shipped).
+- It loops quietly (volume 0.3) from the moment the board loads, pauses when the game leaves
+  the screen and while a rewarded ad shows, and has its own "Music" switch in Settings
+  (on by default, remembered). Content version 50.
+- Checked: unit tests for the switch and the ad pause; the device test loads and starts the
+  real file on both simulators.
+- Not checked by ear on a real phone. The loop point may have a very short gap on Android
+  (AAC files do not loop perfectly there); if she hears one, the fix is an OGG copy for Android.
+- Assumption to confirm: the tune is her own arrangement of "This Little Light of Mine" and
+  she holds the rights to this recording.
+- No code review was run for this small change (lean plan).

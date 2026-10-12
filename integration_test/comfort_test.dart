@@ -143,6 +143,15 @@ void main() {
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(milliseconds: 800)),
     );
+    // The background tune loads and starts, and can be paused.
+    real.music(true);
+    await tester.runAsync(() => real.musicSettled);
+    expect(real.musicStarted, isTrue);
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 800)),
+    );
+    real.music(false);
+    await tester.runAsync(() => real.musicSettled);
     expect(tester.takeException(), isNull);
     // Nothing may still be playing when the test ends.
     await tester.runAsync(real.dispose);

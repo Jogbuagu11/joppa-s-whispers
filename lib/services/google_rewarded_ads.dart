@@ -21,7 +21,10 @@ class GoogleRewardedAds implements AdService {
   /// is due). Tests pass their own.
   final Future<bool> Function() _consent;
 
-  GoogleRewardedAds({Future<bool> Function()? consent})
+  /// Told true when an ad takes the screen and false when it is gone.
+  final void Function(bool showing)? onFullScreen;
+
+  GoogleRewardedAds({Future<bool> Function()? consent, this.onFullScreen})
     : _consent = consent ?? gatherAdConsent;
 
   final ValueNotifier<bool> _ready = ValueNotifier<bool>(false);
@@ -126,8 +129,11 @@ class GoogleRewardedAds implements AdService {
     final done = Completer<bool>();
     var earned = false;
     var appeared = false;
+    // The ad has its own sound: the game's tune waits.
+    onFullScreen?.call(true);
     void finish() {
       if (done.isCompleted) return;
+      onFullScreen?.call(false);
       done.complete(earned);
       unawaited(ad.dispose());
       _load();

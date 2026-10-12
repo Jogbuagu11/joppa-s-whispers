@@ -57,4 +57,14 @@ void main() {
     expect(maxTextScale, greaterThan(1.0));
     expect(maxTextScale, lessThanOrEqualTo(1.5));
   });
+
+  test('the tune starts on, is saved, and its file is in assets/audio', () {
+    expect(const ComfortPrefs().music, isTrue);
+    final back = ComfortPrefs.fromJson(
+      const ComfortPrefs(music: false).toJson(),
+    );
+    expect(back.music, isFalse);
+    expect(back.sound, isTrue);
+    expect(File('assets/audio/$musicFile').existsSync(), isTrue);
+  });
 }

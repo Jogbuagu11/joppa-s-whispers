@@ -23,6 +23,8 @@
     "title": "Settings",
     "sound": "Sound",
     "sound_hint": "Soft chimes when you merge, deliver an order or finish a task.",
+    "music": "Music",
+    "music_hint": "A quiet tune while you play. It stops when you leave the game.",
     "haptics": "Vibration",
     "haptics_hint": "A small tap you can feel when something happens on the board.",
     "tier_numbers": "Numbers on items",

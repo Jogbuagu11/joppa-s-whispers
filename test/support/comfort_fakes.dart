@@ -20,6 +20,12 @@ class FakeFeedbackPlayer implements FeedbackPlayer {
 
   @override
   void haptic(HapticStrength strength) => haptics.add(strength);
+
+  /// Every time the tune was started (true) or paused (false).
+  final List<bool> tune = [];
+
+  @override
+  void music(bool on) => tune.add(on);
 }
 
 /// A controller that plays into [player] and keeps its choices in a

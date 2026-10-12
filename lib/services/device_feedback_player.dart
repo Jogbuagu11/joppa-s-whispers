@@ -12,6 +12,9 @@ final _log = Logger('DeviceFeedbackPlayer');
 class DeviceFeedbackPlayer implements FeedbackPlayer {
   static const double _volume = 0.8;
 
+  // The tune sits well under the chimes.
+  static const double _musicVolume = 0.3;
+
   // Sound effects play over the player's own music instead of stopping it,
   // and on an iPhone they obey the silent switch.
   static final AudioContext _context = AudioContext(
@@ -67,9 +70,47 @@ class DeviceFeedbackPlayer implements FeedbackPlayer {
     }
   }
 
+  bool _musicOn = false;
+  bool _musicLoaded = false;
+  Future<void> _musicWork = Future.value();
+
+  /// True once the tune has been loaded and started.
+  bool get musicStarted => _musicLoaded;
+
+  /// Done when every change asked of the tune has been made.
+  Future<void> get musicSettled => _musicWork;
+
+  // The tune loops, and stops by itself while the game is not on screen.
+  @override
+  void music(bool on) {
+    if (on == _musicOn) return;
+    _musicOn = on;
+    // One change at a time, in the order they were asked for.
+    _musicWork = _musicWork.then((_) => _setMusic(on));
+  }
+
+  Future<void> _setMusic(bool on) async {
+    try {
+      final bgm = FlameAudio.bgm;
+      if (!on) {
+        if (_musicLoaded) await bgm.pause();
+      } else if (_musicLoaded) {
+        await bgm.resume();
+      } else {
+        await bgm.initialize(audioContext: _context);
+        await bgm.play(musicFile, volume: _musicVolume);
+        _musicLoaded = true;
+      }
+    } on Object catch (e) {
+      _log.warning('The tune could not be ${on ? 'played' : 'paused'}: $e');
+    }
+  }
+
   /// Stops every sound and lets the players go.
   Future<void> dispose() async {
     _ready = false;
+    if (_musicLoaded) await FlameAudio.bgm.stop();
+    _musicOn = false;
     final pools = _pools.values.toList();
     _pools.clear();
     for (final pool in pools) {

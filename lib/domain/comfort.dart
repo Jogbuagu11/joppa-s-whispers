@@ -34,9 +34,15 @@ HapticStrength hapticFor(GameCue cue) => switch (cue) {
 /// The sound file for [cue], inside assets/audio/.
 String soundFileFor(GameCue cue) => '${cue.name}.wav';
 
+/// The background tune, inside assets/audio/.
+const musicFile = 'music.m4a';
+
 class ComfortPrefs {
   /// Sound effects.
   final bool sound;
+
+  /// The background tune.
+  final bool music;
 
   /// Vibration.
   final bool haptics;
@@ -47,6 +53,7 @@ class ComfortPrefs {
 
   const ComfortPrefs({
     this.sound = true,
+    this.music = true,
     this.haptics = true,
     this.tierNumbers = false,
   });
@@ -62,6 +69,7 @@ class ComfortPrefs {
 
     return ComfortPrefs(
       sound: read('sound', usual.sound),
+      music: read('music', usual.music),
       haptics: read('haptics', usual.haptics),
       tierNumbers: read('tierNumbers', usual.tierNumbers),
     );
@@ -69,16 +77,22 @@ class ComfortPrefs {
 
   Map<String, dynamic> toJson() => {
     'sound': sound,
+    'music': music,
     'haptics': haptics,
     'tierNumbers': tierNumbers,
   };
 
-  ComfortPrefs copyWith({bool? sound, bool? haptics, bool? tierNumbers}) =>
-      ComfortPrefs(
-        sound: sound ?? this.sound,
-        haptics: haptics ?? this.haptics,
-        tierNumbers: tierNumbers ?? this.tierNumbers,
-      );
+  ComfortPrefs copyWith({
+    bool? sound,
+    bool? music,
+    bool? haptics,
+    bool? tierNumbers,
+  }) => ComfortPrefs(
+    sound: sound ?? this.sound,
+    music: music ?? this.music,
+    haptics: haptics ?? this.haptics,
+    tierNumbers: tierNumbers ?? this.tierNumbers,
+  );
 }
 
 /// The most the phone's text-size setting may enlarge the game's words.

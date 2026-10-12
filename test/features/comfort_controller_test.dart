@@ -34,6 +34,27 @@ void main() {
     expect(player.prepared, 1);
   });
 
+  test(
+    'the tune plays once loaded, waits for an ad, and obeys its switch',
+    () async {
+      final c = fakeComfort(player, folder: folder);
+      await c.load();
+      expect(player.tune, [true]);
+      c.hush(true);
+      c.hush(false);
+      expect(player.tune, [true, false, true]);
+      await c.setMusic(false);
+      expect(player.tune.last, isFalse);
+      // An ad ending must not bring back a tune the player turned off.
+      c.hush(true);
+      c.hush(false);
+      expect(player.tune.last, isFalse);
+      final again = fakeComfort(FakeFeedbackPlayer(), folder: folder);
+      await again.load();
+      expect(again.prefs.music, isFalse);
+    },
+  );
+
   test('sound off: silent, but still vibrates', () async {
     final c = fakeComfort(player, folder: folder);
     await c.setSound(false);

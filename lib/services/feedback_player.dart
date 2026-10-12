@@ -9,4 +9,7 @@ abstract class FeedbackPlayer {
   void sound(GameCue cue);
 
   void haptic(HapticStrength strength);
+
+  /// Starts or pauses the background tune.
+  void music(bool on);
 }

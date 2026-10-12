@@ -61,6 +61,13 @@ class NotificationSettingsScreen extends StatelessWidget {
                     prefix: 'comfort',
                   ),
                   _switch(
+                    'music',
+                    text,
+                    comfort.prefs.music,
+                    comfort.setMusic,
+                    prefix: 'comfort',
+                  ),
+                  _switch(
                     'haptics',
                     text,
                     comfort.prefs.haptics,

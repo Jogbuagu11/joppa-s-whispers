@@ -76,7 +76,7 @@ class WhispersApp extends ConsumerWidget {
   );
 
   // Optional rewarded ads (bonus Manna). Never shown unless asked for.
-  static final AdService _ads = GoogleRewardedAds();
+  static final AdService _ads = GoogleRewardedAds(onFullScreen: _comfort.hush);
 
   // Notifications: reminders on the phone, and push topics.
   static final NotificationsController _notifications = NotificationsController(
