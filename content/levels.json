@@ -70,6 +70,7 @@
     { "level": 60, "xp": 1440, "talents": 620 }
   ],
   "unlocks": [
+    { "level": 2, "feature": "manna_links", "name": "Free Manna codes", "available": true },
     { "level": 3, "feature": "daily_tasks", "name": "Daily tasks", "available": true },
     { "level": 3, "feature": "login_calendar", "name": "Daily login calendar", "available": true },
     { "level": 4, "feature": "pet", "name": "Shadow the cat", "available": true },

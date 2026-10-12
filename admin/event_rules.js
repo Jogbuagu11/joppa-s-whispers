@@ -254,3 +254,16 @@ function goalConfigProblems(c) {
   }
   return p;
 }
+
+// A free Manna code as typed into the panel: plain-English problems.
+function mannaLinkProblems(code, manna, days) {
+  const p = [];
+  if (!/^[A-Z0-9]{4,20}$/.test(String(code).trim().toUpperCase())) {
+    p.push("The code must be 4 to 20 letters and digits, with no spaces.");
+  }
+  const m = Number(manna);
+  if (!Number.isInteger(m) || m < 1 || m > 100) p.push("Manna must be 1 to 100.");
+  const d = Number(days);
+  if (!Number.isInteger(d) || d < 1 || d > 60) p.push("Days must be 1 to 60.");
+  return p;
+}

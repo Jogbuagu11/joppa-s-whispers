@@ -40,5 +40,17 @@
   "goal_race_place": "You came home in place {place}!",
   "replay_button": "The story so far",
   "replay_title": "The Story So Far",
-  "replay_intro": "Every scene you have seen is kept here. Tap one to watch it again."
+  "replay_intro": "Every scene you have seen is kept here. Tap one to watch it again.",
+  "link_button": "Free Manna code",
+  "link_title": "Free Manna",
+  "link_body": "Have a code from our Facebook or Instagram page? Type it here for free Manna.",
+  "link_hint": "Your code",
+  "link_claim": "Claim",
+  "link_close": "Close",
+  "link_ok": "A gift for you: {manna} Manna!",
+  "link_used": "You have already claimed this code.",
+  "link_over": "This code is not open right now.",
+  "link_unknown": "We could not find that code. Check the spelling and try again.",
+  "link_signed_out": "Sign in first (Settings, then Account) so your gift is saved to you.",
+  "link_failed": "We could not reach the server. Please try again in a little while."
 }

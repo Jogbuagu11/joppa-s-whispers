@@ -10,6 +10,7 @@ void main() {
       'index.html',
       'admin.js',
       'admin_more.js',
+      'admin_links.js',
       'event_rules.js',
       'admin.css',
       'supabase.min.js',

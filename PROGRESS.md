@@ -46,7 +46,7 @@
 | 36 | Decoration choices & order quests | In progress: order quests and story replay built; decoration choices and timed orders not built |
 | 37 | Story choices & hearts | Not started |
 | 38 | Daily calendar, album, pet | In progress: calendar, album, Shadow built; trading not built |
-| 39 | Sharing & Manna links | In progress: study guides built; share images and Manna links not built |
+| 39 | Sharing & Manna links | In progress: study guides and typed Manna codes built; share images and real links not built |
 | 40 | Release builds (was 25) | STARTED EARLY — signed Android bundle and store-signed iPhone app both build (build 12); not uploaded to TestFlight; see the Milestone 25-era notes below |
 
 ---
@@ -2849,3 +2849,19 @@ Not built (Milestone 36 is NOT done until these are, or Jennifer drops them):
 For Jennifer's reviewer: quest ch4 (the unnamed guest at Simon the tanner's is Peter,
 Acts 9:43); quest ch5 (jars of oil for the new meeting house: story bible, not Acts);
 quest ch6 (anointing oil listed as a watchtower supply).
+
+## Free Manna codes (Milestone 39, lean; 2026-10-11)
+
+Built: a gift button on the board (level 2) where a player types a code posted on
+Facebook or Instagram; the server (`claim_manna_link`, migration `…000008`) gives it once
+to each signed-in player. Content version 49. The admin panel has a new "Free Manna
+codes" page to make and remove codes (1 to 100 Manna, open 1 to 60 days).
+
+Assumptions to confirm:
+- Codes are typed, not opened from a link: real links that open the game need a web
+  page and settings on both stores (Associated Domains, App Links). Not built.
+- A player must be signed in to claim (that is how "one claim per player" is counted).
+- The Manna is added on the phone after the server says yes; the server keeps the claim.
+
+Waiting on Jennifer's `db push`: `…000004` to `…000008` (five migrations). Until then
+the admin page says it cannot load the codes and the game says it cannot reach the server.

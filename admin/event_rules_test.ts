@@ -134,3 +134,14 @@ Deno.test('mistakes in a goal event are caught', () => {
     1,
   );
 });
+
+Deno.test('a free Manna code is checked before it is saved', () => {
+  const { mannaLinkProblems } = new Function(
+    `${source}; return { mannaLinkProblems };`,
+  )() as { mannaLinkProblems: (c: unknown, m: unknown, d: unknown) => string[] };
+  assertEquals(mannaLinkProblems('joppa25', '25', '3'), []);
+  assertEquals(mannaLinkProblems('ab', '25', '3').length, 1);
+  assertEquals(mannaLinkProblems('has space', '25', '3').length, 1);
+  assertEquals(mannaLinkProblems('JOPPA25', '500', '3').length, 1);
+  assertEquals(mannaLinkProblems('JOPPA25', '2.5', '0').length, 2);
+});

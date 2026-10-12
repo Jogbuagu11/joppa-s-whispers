@@ -209,4 +209,30 @@ mixin _BoardTreasure on _BoardOffers, _BoardDaily {
       }),
     );
   }
+
+  /// The free Manna code's round button, where there is a server to ask.
+  @override
+  Widget? _linkButton(BoardSession session) {
+    final server = widget.events?.mannaLinks;
+    if (server == null || !_dayFeatureOpen(session, 'manna_links')) {
+      return null;
+    }
+    return StripButton(
+      buttonKey: const Key('manna_link_button'),
+      icon: Icons.card_giftcard,
+      tooltip: _boardText['link_button'] ?? '',
+      onTap: () => _popup(
+        () => showMannaLink(
+          context,
+          server: server,
+          text: _boardText,
+          give: (manna) {
+            if (!identical(session, _session)) return false;
+            session.manna.add(manna);
+            return true;
+          },
+        ),
+      ),
+    );
+  }
 }

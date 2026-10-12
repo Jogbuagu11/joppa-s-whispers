@@ -10,6 +10,9 @@ mixin _BoardDaily on _BoardEvents {
   /// The order quests' round button (see the treasure part).
   Widget? _questsButton(BoardSession session);
 
+  /// The free Manna code's round button (see the treasure part).
+  Widget? _linkButton(BoardSession session);
+
   /// Starts daily tasks for [session], which must be the game in play.
   void _wireDaily(BoardSession session) {
     _wireTasks(session);
@@ -254,6 +257,7 @@ mixin _BoardDaily on _BoardEvents {
     ?_albumButton(session),
     ?_petButton(session),
     ?_questsButton(session),
+    ?_linkButton(session),
     ?_dailyButton(session),
   ];
 

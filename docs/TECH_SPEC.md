@@ -398,3 +398,12 @@ record in the save's extras: `calendar`, `album`, `pet`, `quests`.
 Anything that takes an item off the board for a reward (feeding Shadow, giving to a
 quest) goes through `board_gives.dart`: remove from the board, write the record, then
 grant. The pet validator refuses any gift that gives as much Manna as its food costs.
+
+### Free Manna codes (Milestone 39)
+
+Tables `manna_links` (admins only) and `manna_link_claims` (a player reads only their
+own); function `claim_manna_link(p_code)` answers `ok`, `used`, `over` or `unknown` and
+writes the claim once (primary key `code, user_id`). In the app: `domain/manna_links.dart`
+(rules), `data/supabase_manna_links.dart`, `features/settings/manna_link_dialog.dart`
+(the pop-up, opened from the board's `manna_link_button`, level 2). Codes are made and
+ended (never deleted) on the admin panel's "Free Manna codes" page (`admin/admin_links.js`).

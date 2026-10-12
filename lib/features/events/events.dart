@@ -19,4 +19,5 @@ export 'package:whispers_of_joppa/domain/order_quests.dart';
 export 'package:whispers_of_joppa/domain/pet.dart';
 export 'package:whispers_of_joppa/domain/season_pass.dart' show PassReward;
 export 'package:whispers_of_joppa/features/orders/order_quests_screen.dart';
+export 'package:whispers_of_joppa/features/settings/manna_link_dialog.dart';
 export 'pet_screen.dart';
