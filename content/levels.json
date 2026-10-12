@@ -70,7 +70,7 @@
     { "level": 60, "xp": 1440, "talents": 620 }
   ],
   "unlocks": [
-    { "level": 3, "feature": "daily_tasks", "name": "Daily tasks", "available": false },
+    { "level": 3, "feature": "daily_tasks", "name": "Daily tasks", "available": true },
     { "level": 3, "feature": "login_calendar", "name": "Daily login calendar", "available": false },
     { "level": 5, "feature": "blessing_wheel", "name": "The Blessing Wheel: a free spin a day", "available": true },
     {

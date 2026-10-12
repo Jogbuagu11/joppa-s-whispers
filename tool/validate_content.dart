@@ -7,6 +7,7 @@ import 'package:whispers_of_joppa/data/offers_validator.dart';
 import 'package:whispers_of_joppa/data/chance_validator.dart';
 import 'package:whispers_of_joppa/data/content_bundle.dart';
 import 'package:whispers_of_joppa/data/content_validator.dart';
+import 'package:whispers_of_joppa/data/daily_tasks_validator.dart';
 
 Object? _read(String name) =>
     jsonDecode(File('content/$name.json').readAsStringSync());
@@ -43,6 +44,12 @@ void main() {
         _read('chance'),
         chainsJson: _read('chains'),
         generatorsJson: _read('generators'),
+      ),
+    );
+    problems.addAll(
+      dailyTasksProblems(
+        _read('daily_tasks'),
+        itemIds: itemIdsOf(_read('chains')),
       ),
     );
   }

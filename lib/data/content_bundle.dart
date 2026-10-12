@@ -2,6 +2,7 @@
 // can replace it with. Pure Dart so tool/ scripts can use it.
 import 'package:whispers_of_joppa/data/chance_validator.dart';
 import 'package:whispers_of_joppa/data/content_validator.dart';
+import 'package:whispers_of_joppa/data/daily_tasks_validator.dart';
 import 'package:whispers_of_joppa/data/offers_validator.dart';
 
 /// The content format this build understands. A bundle with a higher format
@@ -32,6 +33,7 @@ const contentFileNames = [
   'board_text',
   'chance',
   'offers',
+  'daily_tasks',
 ];
 
 class ContentBundle {
@@ -105,13 +107,27 @@ class ContentBundle {
       productsJson: files['products'],
     );
     if (offers.isNotEmpty) return offers;
-    return chanceProblems(
+    final chance = chanceProblems(
       files['chance'],
       chainsJson: files['chains'],
       generatorsJson: files['generators'],
     );
+    if (chance.isNotEmpty) return chance;
+    return dailyTasksProblems(
+      files['daily_tasks'],
+      itemIds: itemIdsOf(files['chains']),
+    );
   }
 }
+
+/// Every item id in the (already checked) chains file.
+Set<String> itemIdsOf(Object? chainsJson) => {
+  if (chainsJson case final List<dynamic> chains)
+    for (final chain in chains)
+      if (chain case {'tiers': final List<dynamic> tiers})
+        for (final tier in tiers)
+          if (tier case {'item_id': final String id}) id,
+};
 
 /// Which content to start the game with: the downloaded copy only if it is
 /// newer than what shipped in the app and has no problems.

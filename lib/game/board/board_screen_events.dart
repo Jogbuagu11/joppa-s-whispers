@@ -77,7 +77,11 @@ mixin _BoardEvents on _BoardRoutes {
       onMerge?.call();
       goals.merged();
     };
-    session.manna.onSpent = goals.mannaSpent;
+    final onSpent = session.manna.onSpent;
+    session.manna.onSpent = (amount) {
+      onSpent?.call(amount);
+      goals.mannaSpent(amount);
+    };
     goals.justPaid.addListener(() => _announceGoals(session, goals));
     setState(() {});
   }

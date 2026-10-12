@@ -3,7 +3,7 @@
 // says so once when it is full.
 part of 'board_screen.dart';
 
-mixin _BoardTreasure on _BoardOffers, _BoardEvents {
+mixin _BoardTreasure on _BoardOffers, _BoardDaily {
   TreasureJarController? _treasure;
 
   Map<String, dynamic>? _treasureJson(BoardSession session) =>
@@ -32,6 +32,7 @@ mixin _BoardTreasure on _BoardOffers, _BoardEvents {
   /// Starts the jar for [session], which must be the game in play.
   @override
   void _wireTreasure(BoardSession session) {
+    _wireDaily(session);
     final rules = TreasureJarRules.fromJson(_treasureJson(session));
     final jar = _treasure = rules == null
         ? null
@@ -160,5 +161,115 @@ mixin _BoardTreasure on _BoardOffers, _BoardEvents {
     } finally {
       _popupOpen = false;
     }
+  }
+}
+
+/// The board screen's part in daily tasks: counting what the player does
+/// and the button that shows today's.
+mixin _BoardDaily on _BoardEvents {
+  DailyTasksController? _daily;
+
+  Map<String, String> _dailyText(BoardSession session) => {
+    if (session.contentBundle.files['daily_tasks'] case {
+      'text': final Map<String, dynamic> text,
+    })
+      for (final e in text.entries)
+        if (e.value case final String words) e.key: words,
+  };
+
+  /// Starts daily tasks for [session], which must be the game in play.
+  void _wireDaily(BoardSession session) {
+    _daily?.dispose();
+    final config = DailyTasksConfig.fromJson(
+      session.contentBundle.files['daily_tasks'],
+    );
+    final unlock = session.levels.config.unlock('daily_tasks');
+    if (config == null || unlock == null) return _daily = null;
+    final daily = _daily = DailyTasksController(
+      config: config,
+      extras: session.extras,
+      open: () =>
+          session.tutorial.isOver &&
+          !session.downgraded &&
+          session.levels.level >= unlock.level,
+      grant: (reward) {
+        if (reward.manna > 0) session.manna.add(reward.manna);
+        if (reward.talents > 0) session.orders.addTalents(reward.talents);
+        if (reward.pearls > 0) session.purchases.earnPearls(reward.pearls);
+        if (reward.items.isNotEmpty) session.grants.give(itemIds: reward.items);
+      },
+    );
+    final onDelivered = session.orders.onDelivered;
+    session.orders.onDelivered = (id) {
+      onDelivered?.call(id);
+      daily.orderDelivered(session.orders.talentsFor(id));
+    };
+    final onMerge = session.game.onMerge;
+    session.game.onMerge = () {
+      onMerge?.call();
+      daily.merged();
+    };
+    final onSpent = session.manna.onSpent;
+    session.manna.onSpent = (amount) {
+      onSpent?.call(amount);
+      daily.mannaSpent(amount);
+    };
+    daily.justPaid.addListener(() {
+      if (!mounted || !identical(session, _session)) return;
+      final text = _dailyText(session);
+      const keys = {
+        DailyPrize.task: 'toast_task',
+        DailyPrize.chest: 'toast_chest',
+        DailyPrize.weekly: 'toast_weekly',
+      };
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            key: const Key('daily_toast'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: GamePalette.panel,
+            content: Text(
+              [
+                for (final paid in daily.justPaid.value)
+                  (text[keys[paid.prize]] ?? '').replaceAll(
+                    '{reward}',
+                    _rewardWords(session, paid.reward),
+                  ),
+              ].join('\n'),
+              style: const TextStyle(color: GamePalette.talents),
+            ),
+          ),
+        );
+    });
+  }
+
+  String _rewardWords(BoardSession session, PassReward reward) =>
+      goalRewardWords(reward, _boardText, (id) => _itemName(session, id));
+
+  /// The daily tasks' round button, once they are open to this player.
+  Widget? _dailyButton(BoardSession session) {
+    final daily = _daily;
+    if (daily == null || !daily.open()) return null;
+    return StripButton(
+      buttonKey: const Key('daily_tasks_button'),
+      icon: Icons.checklist,
+      tooltip: _dailyText(session)['button'] ?? '',
+      onTap: () async {
+        if (_busy || _syncing || _popupOpen || !mounted) return;
+        _popupOpen = true;
+        try {
+          await showDailyTasks(
+            context,
+            controller: daily,
+            text: _dailyText(session),
+            rewardWords: (reward) => _rewardWords(session, reward),
+          );
+        } finally {
+          _popupOpen = false;
+        }
+      },
+      lit: !daily.state.chest,
+    );
   }
 }

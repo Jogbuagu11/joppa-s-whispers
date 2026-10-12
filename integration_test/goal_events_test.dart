@@ -142,6 +142,23 @@ void main() {
     await tester.tap(find.byKey(const Key('goal_close')));
     await settle(tester);
 
+    // Today's tasks: five of them, with a chest for the lot.
+    await tapOnStrip(tester, 'daily_tasks_button');
+    await settle(tester);
+    expect(find.byKey(const Key('daily_tasks_popup')), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w.key is ValueKey<String> &&
+            (w.key! as ValueKey<String>).value.startsWith('daily_count_'),
+        skipOffstage: false,
+      ),
+      findsNWidgets(5),
+    );
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.byKey(const Key('daily_close')));
+    await settle(tester);
+
     // One tap on the generator spends Manna: the first milestone pays.
     expect(text(tester, 'talents_count'), '0');
     final rect = tester.getRect(board);

@@ -186,6 +186,7 @@ class _BoardScreenState extends State<BoardScreen>
         _BoardRoutes,
         _BoardNotifications,
         _BoardEvents,
+        _BoardDaily,
         _BoardItems,
         _BoardWheel,
         _BoardBubbles,

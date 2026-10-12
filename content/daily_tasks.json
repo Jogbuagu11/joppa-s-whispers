@@ -1,0 +1,38 @@
+{
+  "per_day": 5,
+  "pool": [
+    { "id": "orders_3", "kind": "orders", "target": 3, "text": "Deliver 3 orders", "reward": { "talents": 15 } },
+    { "id": "merges_25", "kind": "merges", "target": 25, "text": "Merge 25 times", "reward": { "manna": 8 } },
+    { "id": "manna_40", "kind": "manna", "target": 40, "text": "Spend 40 Manna", "reward": { "talents": 20 } },
+    { "id": "talents_60", "kind": "talents", "target": 60, "text": "Earn 60 Talents from orders", "reward": { "manna": 10 } },
+    { "id": "merges_50", "kind": "merges", "target": 50, "text": "Merge 50 times", "reward": { "talents": 25 } },
+    { "id": "orders_5", "kind": "orders", "target": 5, "text": "Deliver 5 orders", "reward": { "manna": 12 } },
+    { "id": "manna_70", "kind": "manna", "target": 70, "text": "Spend 70 Manna", "reward": { "talents": 30 } },
+    { "id": "merges_15", "kind": "merges", "target": 15, "text": "Merge 15 times", "reward": { "talents": 10 } },
+    { "id": "talents_120", "kind": "talents", "target": 120, "text": "Earn 120 Talents from orders", "reward": { "manna": 15 } },
+    { "id": "orders_2", "kind": "orders", "target": 2, "text": "Deliver 2 orders", "reward": { "talents": 10 } },
+    { "id": "manna_25", "kind": "manna", "target": 25, "text": "Spend 25 Manna", "reward": { "manna": 6 } },
+    { "id": "merges_35", "kind": "merges", "target": 35, "text": "Merge 35 times", "reward": { "talents": 20 } }
+  ],
+  "chest": { "manna": 25, "talents": 40, "items": ["hourglass_01"] },
+  "weekly": {
+    "days": 5,
+    "reward": { "pearls": 10, "manna": 50, "items": ["thread_01", "manna_jar_02"] }
+  },
+  "text": {
+    "button": "Daily tasks",
+    "title": "Today in Joppa",
+    "new_in": "New tasks in {time}",
+    "progress": "{done} of {target}",
+    "reward": "Gives {reward}",
+    "done": "Done",
+    "chest": "Finish all {n}: {reward}",
+    "chest_done": "Today's chest is opened. Well done!",
+    "weekly": "Week: {done} of {days} days. Weekly chest: {reward}",
+    "weekly_done": "This week's chest is opened. A new week starts Monday.",
+    "toast_task": "Task done: {reward}",
+    "toast_chest": "Today's chest: {reward}",
+    "toast_weekly": "Weekly chest: {reward}",
+    "close": "Close"
+  }
+}

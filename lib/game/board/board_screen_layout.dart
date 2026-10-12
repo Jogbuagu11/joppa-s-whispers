@@ -2,7 +2,7 @@
 // and the board), and the new player's spotlight.
 part of 'board_screen.dart';
 
-mixin _BoardLayout on _BoardItems, _BoardEvents, _BoardBubbles, _BoardWheel {
+mixin _BoardLayout on _BoardItems, _BoardDaily, _BoardBubbles, _BoardWheel {
   Future<void> _doNextTask();
 
   Widget _playArea(BoardSession session) {
@@ -34,6 +34,7 @@ mixin _BoardLayout on _BoardItems, _BoardEvents, _BoardBubbles, _BoardWheel {
                       ]),
                       builder: (context, _) => BoardStrip(
                         moreButtons: [
+                          ?_dailyButton(session),
                           ?_goalsButton(session),
                           ..._wheelButton(session),
                         ],
